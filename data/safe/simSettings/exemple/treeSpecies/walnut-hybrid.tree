@@ -1,0 +1,116 @@
+## GENERIC
+treeSpecies = walnut-hybrid
+
+## ALLOMETRY
+crownShape = 1
+
+# Height vs. dbh
+heightDbhAllometricCoeffA = 30.9
+heightDbhAllometricCoeffB = 0.72
+
+# Crown area vs. dcb
+crownDbhAllometricCoeffA = 887.4
+crownDbhAllometricCoeffB = 1.95
+
+# Volume vs. height & dbh
+stemDbhAllometricCoeffA = -1.29
+stemDbhAllometricCoeffB = 1.75
+stemDbhAllometricCoeffC = 0.86
+
+# dcb vs. dbh
+dcbFromDbhAllometricCoeff = 2.14
+
+stumpToStemBiomassRatio = 0.20
+maxCrownRadiusInc = 100
+maxHeightInc = 100
+
+## PHENOLOGY
+phenologyType = 1
+budBurstTempAccumulationDateStart = 61
+budBurstTempThreshold = 0
+budBurstAccumulatedTemp = 612
+budBurstDelayMinAfterPollaring = 14
+budBurstDelayMaxAfterPollaring = 28
+leafExpansionDuration = 76
+budBurstToLeafFallDuration = 184
+leafFallDuration = 49
+leafFallFrostThreshold = 0
+
+## LIGHT
+woodAreaDensity = 0.026
+leafParAbsorption = 0.85
+leafNirAbsorption = 0.15
+clumpingCoef = 1
+
+## MICROCLIMATE
+stemFlowCoefficient = 1
+stemFlowMax = 0
+wettability = 0.1
+transpirationCoefficient = 1
+
+## C ALLOCATION
+lueMax = 0.65
+leafAgeForLueMax = 60
+leafSenescenceTimeConstant = 0.0000781
+leafAreaCrownVolCoefA = 5.57
+leafAreaCrownVolCoefB = 0.62
+woodCarbonContent = 0.5
+leafCarbonContent = 0.5
+leafMassArea = 0.1
+woodDensity = 616
+branchVolumeRatio =  0.0006
+imbalanceThreshold = 0.1
+
+rsStressMethod = 1
+rsWaterStressResponsiveness = 1.62
+rsNitrogenStressResponsiveness = 0
+rsNoStressResponsiveness = 0.02
+lueStressMethod = 1
+lueWaterStressResponsiveness = 1
+lueNitrogenStressResponsiveness = 1
+
+maxTargetLfrRatioDailyVariation = 0.00264
+targetLfrRatioUpperDrift = 0.171 
+minTargetLfrRatio = 0.15
+maxTargetLfrRatio = 0.85
+optiNCBranch = 0.01
+optiNCCoarseRoot = 0.01
+optiNCFineRoot = 0.03
+optiNCFoliage = 0.04
+optiNCStem = 0.01
+optiNCStump = 0.01
+targetNCoefficient = 1.2
+luxuryNCoefficient = 2
+
+maxNSCUseFoliageFraction = 0.1
+maxNSCUseFraction = 0.2
+targetNSCFraction = 0.1
+
+leafNRemobFraction = 0.2
+rootNRemobFraction = 0.2
+leafSenescenceRate = 0
+
+## ROOTS
+cRAreaToFRLengthRatio = 1.51e-07
+initialTargetLfrRatio = 0.5
+coarseRootAnoxiaResistance = 60
+specificRootLength = 31.0
+fineRootLifespan = 175
+fineRootAnoxiaLifespan = 30
+colonisationThreshold = 500
+colonisationFraction = 0.1
+horizontalPreference = 0.5
+geotropismFactor = 0.5
+localWaterUptakeFactor = 1
+sinkDistanceEffect = 1
+localNitrogenUptakeFactor = 1
+coarseRootTopologyType = 1
+
+## WATER REPARTITION MODULE
+treeRootDiameter = 0.049
+treeRootConductivity = 0.00001
+treeAlpha = 0.1
+treeMinTranspirationPotential = -30000
+treeMaxTranspirationPotential = -15000
+treeBufferPotential = 0.05
+treeLongitudinalResistantFactor = 2000

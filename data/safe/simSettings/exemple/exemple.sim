@@ -1,0 +1,73 @@
+# 
+# file for usual simulation unsing pld entry  
+#
+# SIMULATION 
+
+nbSimulations = 2
+simulationYearStart = 1997
+simulationDayStart = 1
+simulationNbrDays = 365
+saveProjectOption = 1
+
+debugMode = 1
+
+#CROP ROTATION
+mainCropSpecies = maize.plt
+interCropSpecies = baresoil.plt
+mainCropItk = maize.tec
+interCropItk = baresoil.tec
+treeCropDistance = 0.5
+treeCropRadius = 0
+
+#EXPORTS
+profileNames = trees,cells,plot
+exportFrequencies = 1,1,1
+
+#ACTIVATE TORIC SYMETRIE (0=No 1=YES)
+toricXp = 1
+toricXn = 1
+toricYp = 1
+toricYn = 1
+
+#TREE carbon and nitrogen litter incorporation in SOIL
+
+#TREE carbon and nitrogen litter incorporation in SOIL
+treesLeafLitterIncorporated = 1 			
+treesRootLitterIncorporated = 1 			
+treesDeepRootLitterIncorporated = 1 
+	
+
+# tree planting (years separated with ,)
+treePlantingYears = 1
+treePlantingDays = 1
+
+# tree pruning (years separated with ,)
+#treePruningYears = 2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40
+#treePruningDays = 365,365,365,365,365,365,365,365,365,365,365,365,365,365,365,365,365,365,365,365
+#treePruningProp = 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5
+#treeDensityReduction = 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5
+#treePruningMaxHeight = 4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4
+
+
+# tree pollarding (1=regular, 2=threshold)
+#treePollardingMethod = 1
+#treePollardingYears = 18,21,24,27,30,33,36,39
+#treePollardingDays = 365,365,365,365,365,365,365,365
+#treePollardingHeight = 4.0,4.0,4.0,4.0,4.0,4.0,4.0,4.0
+#treePollardingCanopyLeft = 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5
+
+# tree thinning (years separated with ,)
+#treeThinningIds = 2
+#treeThinningYears = 2
+#treeThinningDays = 1
+
+
+
+
+
+
+
+
+
+
+
