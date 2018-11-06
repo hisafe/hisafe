@@ -1,0 +1,635 @@
+Name;Definition;Unit;File;dim;type;min;max;codeoptimisation;variete
+aangst;coefficient of the Angstrom's relationship for extraterrestrial radiation;SD;STATION;1;real;0;0.9;1;0
+abscission;fraction of senescent leaves falling to the soil;SD;PARPLT;1;real;0;100;1;0
+aclim;climatic component of A to calculate actual soil evaporation;mm;STATION;1;real;4;25;1;0
+adens;Interplant competition parameter;SD;PARPLT;1;real;-2;0;1;1
+adfol;parameter determining the leaf density evolution within the chosen shape;m-1;PARPLT;1;real;-10;10;1;0
+adil;parameter of the critical dilution curve [Nplante]=adil MS^(-bdil);% DM;PARPLT;1;real;1;7;1;0
+adilmax;parameter of the maximum dilution curve [Nplante]=adilmax MS^(-bdilmax);% DM;PARPLT;1;real;3;10;1;0
+afpf;parameter of the logistic function defining sink strength of fruits (indeterminate growth) : relative fruit age at which growth is maximal;SD;PARPLT;1;real;0.01;1;1;0
+afruitpot;maximal number of set fruits per degree-day (indeterminate growth);degree-d-1;PARPLT;1;real;0.5;20;1;1
+ahres;parameter of organic residues humification: hres=1-ahres*CsurNres/(bhres+CsurNres);g.g-1;PARAM;21;real;0;500;1;0
+akres;parameter of organic residues decomposition: kres=akres+bkres/CsurNres;d-1;PARAM;21;real;0;1000;1;0
+aks;parameter of calculation of the energetic loss between the inside and the outside of a greenhouse ;W.m-2.K-1;STATION;1;real;0.01;100;1;0
+albedo;albedo of the bare dry soil;SD;PARSOL;1;real;0.05;0.6;1;0
+albedomulchplastique;albedo of plastic cover;SD;PARTEC;1;real;0.05;0.8;1;0
+albedomulchresidus;albedo of crop mulch;SD;PARAM;21;real;0.05;0.8;1;0
+albveg;albedo of the vegetation;SD;STATION;1;real;0.05;0.3;1;0
+allocfrmax;maximal daily allocation to fruits;SD;PARPLT;1;real;0.05;0.3;1;0
+alphaCO2;coefficient accounting for the modification of radiation use efficiency in case of atmospheric CO2 increase;SD;PARPLT;1;real;1;2;1;0
+alphapH;maximal soil pH variation per unit of inorganic N added with slurry;kg-1 ha;PARAM;1;real;0.001;0.02;1;0
+alphaphot;parameter of photoperiodic effect on leaf lifespan;SD;PARPLT;1;real;0;1000;1;0
+alphapt;parameter of Priestley-Taylor formula;SD;STATION;1;real;1;2;1;0
+altinversion;altitude of inversion of the thermal gradient;m;STATION;1;real;0;2000;1;0
+altisimul;altitude of simulated site;m;STATION;1;real;0;2000;0;0
+altistation;altitude of the input metorological station ;m;STATION;1;real;0;2000;0;0
+ampfroid;semi thermal amplitude for vernalising effect;degreeC;PARPLT;1;real;1;30;1;0
+an_debut_serie_histo;beginning year for the calculation of moving average temperature on period_adapt_CC;y;PARAMV6;1;integer;0;3000;0;0
+an_fin_serie_histo;ending year for the calculation of moving average temperature on period_adapt_CC;y;PARAMV6;1;integer;0;3000;0;0
+anitcoupe;amount of mineral N added by fertiliser application at each cut of a forage crop;kg.ha-1;PARTEC;20;real;0;400;1;0
+argi;clay content in the surface layer ;%;PARSOL;1;real;0;60;1;0
+awb;parameter determining C/N ratio of biomass during organic residues decomposition: CsurNbio=awb+bwb/CsurNres;SD;PARAM;21;real;0;500;1;0
+bangst;coefficient of the Angstrom's relationship for extraterrestrial radiation;SD;STATION;1;real;0;1;1;0
+bdens;minimal density above which interplant competition starts;m-2;PARPLT;1;real;1;200;1;0
+bdil;parameter of the critical dilution curve [Nplante]=adil MS^(-bdil);SD;PARPLT;1;real;0.01;0.8;1;0
+bdilmax;parameter of the maximum dilution curve [Nplante]=adilmax MS^(-bdilmax);SD;PARPLT;1;real;0.01;0.8;1;0
+belong;parameter of the curve of coleoptile elongation;degree-d-1;PARPLT;1;real;0.005;0.04;1;0
+beta;parameter of increase of maximal transpiration when a water stress occurs ;SD;PARAM;1;real;1;2;1;0
+bformnappe;coefficient for the water table shape (artificially drained soil);SD;PARAM;1;real;0;1;1;0
+bfpf;parameter of the logistic curve defining sink strength of fruits (indeterminate growth): maximum growth rate relative to maximum fruit weight;SD;PARPLT;1;real;0;30;1;0
+bhres;parameter of organic residues humification: hres=1-ahres*CsurNres/(bhres+CsurNres);g.g-1;PARAM;21;real;0;10000;1;0
+biorognem;minimal biomass to be removed when tipping (automatic calculation);t.ha-1;PARTEC;1;real;0;10;1;0
+bkres;potential rate of decomposition of organic residues: kres=akres+bkres/CsurNres;g.g-1;PARAM;21;real;-5;1000;1;0
+bks;parameter of calculation of the energetic lost between the inside and the outside of a greenhouse ;W.m-2.K-1;STATION;1;real;0;100;1;0
+bwb;parameter determining C/N ratio of biomass during organic residues decomposition: CsurNbio=awb+bwb/CsurNres;g.g-1;PARAM;21;real;-2500;0;1;0
+cadencerec;number of days between two harvests;d;PARTEC;1;integer;1;30;1;0
+cailloux;volumic content of pebbles per soil layer;m3.m-3;PARSOL;5;real;0;100;1;0
+calc;limestone content in the surface layer;%;PARSOL;1;real;0;100;1;0
+capiljour;capillary rise upward water flux;mm.d-1;PARSOL;1;real;0.1;20;1;0
+celong;parameter of the plantlet elongation curve;SD;PARPLT;1;real;1;10;1;0
+cfes;parameter defining the soil contribution to evaporation versus depth ;SD;PARSOL;1;real;-10;10;1;0
+cfpf;parameter of the first potential growth phase of fruit, corresponding to an exponential type function describing the cell division phase;SD;PARPLT;1;real;0.1;100;1;0
+cgrain;slope of the relationship between grain number and growth rate ;grains.g-1.d;PARPLT;1;real;0.01;1;1;0
+cgrainv0;number of grains produced when growth rate is zero;grains.m-2;PARPLT;1;real;0;15000;1;0
+cielclair;fraction of sunny hours allowing the inversion of thermal gradient with altitude;SD;STATION;1;real;0;1;1;0
+CNgrainrec;minimal N content of grain at harvest ;SD;PARTEC;1;real;0;1;1;0
+CNresmax;maximum value of C/N ratio of organic residue;g.g-1;PARAM;21;real;3;200;1;0
+CNresmin;minimum value of C/N ratio of organic residue;g.g-1;PARAM;21;real;3;200;1;0
+codabri;"option to activate cropping under shelter (1 = no; 2 = yes)";code 1/2;PARTEC;1;integer;1;2;0;0
+codadret;option to calculate mountain climate taking into account the orientation (1 = south, 2 = north);code 1/2;STATION;1;integer;1;2;0;0
+codaltitude;"option to activate the calculation of the climate in altitude (1 = no; 2 = yes)";code 1/2;STATION;1;integer;1;2;0;0
+codazofruit;"option to activate the direct effect of N plant status on the fruit/grain number (1 = no; 2 = yes)";code 1/2;PARPLT;1;integer;1;2;0;0
+codazorac;"option to activate the N influence on root partitioning within the soil profile (1 = no; 2 = yes)";code 1/2;PARPLT;1;integer;1;2;0;0
+codcaleffeuil;"option for the method to use for the calculation of leaf removal  (1 = no; 2 =yes)";code 1/2;PARTEC;1;integer;1;2;0;0
+codcalinflo;"option for calculating the inflorescences number  (1 = read in param.par; 2 = calculated at the amf stage)";code 1/2;PARPLT;1;integer;1;2;0;0
+codcalrogne;"option of calculation of tipping (1 = forced tipping; 2 = automatic calculation)";code 1/2;PARTEC;1;integer;1;2;0;0
+codcueille;"option of harvest type (1 =single harvest; 2 = multiple harvests)";code 1/2;PARTEC;1;integer;1;2;0;0
+code_adapt_MO_CC;"option to activate adaptation of organic matter decomposition to climate change (1 = yes; 2 = no)";code 1/2;PARAMV6;1;integer;1;2;0;0
+code_adaptCC_denit;"option to activate the impact of climate change on denitrification rate (trefdenit1 and trefdenit2) (1 = yes; 2 = no)";code 1/2;PARAMV6;1;integer;1;2;0;0
+code_adaptCC_miner;"option to activate the impact of climate change on soil mineralisation rate (trefh and trefr) (1 = yes; 2 = no)";code 1/2;PARAMV6;1;integer;1;2;0;0
+code_adaptCC_nit;"option to activate the impact of climate change on soil nitrification rate (tnitmin, tnitmax, tnitopt) (1 = yes; 2 = no)";code 1/2;PARAMV6;1;integer;1;2;0;0
+codeactimulch;"option to activate the natural mulch effect i.e. drying out of soil surface (1 = no; 2 = yes)";code 1/2;PARAM;1;integer;1;2;0;0
+codeaumin;option to activate the harvest as a function of grain/fruit water content;code 1/2;PARTEC;1;integer;1;2;0;0
+codebeso;"option of computation water requirements (1 = k.ETP approach; 2= resistive approach)";code 1/2;PARPLT;1;integer;1;2;0;0
+codebfroid;"option of chilling requirements (1 = no need; 2 = vernalising days; 3 = development stage)";code 1/2/3;PARPLT;1;integer;1;3;0;0
+codecailloux;"option to take into account pebbles in the water and N balances (0 = no; 1 = yes)";code 0/1;PARSOL;1;integer;0;1;0;0
+codecalferti;"option to activate the automatic calculation of fertilisation rate (1 = no; 2= yes)";code 1/2;PARAMV6;1;integer;1;2;0;0
+codecalirrig;"code to activate the automatic calculation of irrigation requirements (1 = no; 2 =yes)";code 1/2;PARTEC;1;integer;1;2;1;0
+codecaltemp;"option to activate the use of crop temperature for phasic development calculation (1 = no; 2 =yes)";code 1/2;STATION;1;integer;1;2;0;0
+codeclaircie;"option for the method of fruit removal (1 = no; 2 = yes for smallest fruits) ";code 1/2;PARTEC;1;integer;1;2;0;0
+codeclichange;"option to activate climate change (1 = no; 2 =yes)";code 1/2;STATION;1;integer;1;2;0;0
+codedateappH2O;"irrigation application dates given as sum of temperatures (1 = yes; 2 = no)";code 1/2;PARTEC;1;integer;1;2;0;0
+codedateappN;"mineral fertilizer application dates given as sum of temperatures (1 = yes; 2 = no)";code 1/2;PARTEC;1;integer;1;2;0;0
+codedecirecolte;"option to activate moisture and frost effects on harvest decision (1 = yes; 2 = no)";code 1/2;PARTEC;1;integer;1;2;0;0
+codedecisemis;"option to activate the moisture effect on harvest decision (1 = yes; 2 = no)";code 1/2;PARTEC;1;integer;1;2;0;0
+codedenit;"option to activate the calculation of denitrification model (1 = yes; 2 = no)";code 1/2;PARSOL;1;integer;1;2;0;0
+codedormance;option for the calculation of dormancy and chilling requirements (1 = forcing, 2 = Richardson, 3 = Bidabe);code 1/2/3;PARPLT;1;integer;1;3;0;0
+codeDST;"option to activate the variations in soil physical soil conditions due to tillage (1 = yes; 2 = no)";code 1/2;PARTEC;1;integer;1;2;0;0
+codeDSTnbcouche;"number of compacted soil layers (1 = one layer; 2 = two layers)";code 1/2;PARTEC;1;integer;1;2;0;0
+codeDSTtass;"option to activate the soil compaction at sowing and harvest  (1 = yes; 2 = no)";code 1/2;PARTEC;1;integer;1;2;0;0
+codedyntalle;"option to activate the module simulating tillers dynamics (1 = yes; 2 = no)";code 1/2;PARAMV6/PLT;1;integer;1;2;0;0
+codeetp;"option for the method of calculating PET (1 = forced Penman; 2 = calculated Penman; 3= Shuttleworth & Wallace; 4 = Priestley & Taylor)";code 1/2/3/4;STATION;1;integer;1;4;0;0
+codefauche;"option to activate cuts of forage crops (1 = yes; 2 = no)";code 1/2;PARTEC;1;integer;1;2;0;0
+codefente;"option to activate an additional water compartment for swelling soils (0 = no; 1 = yes)";code 0/1;PARSOL;1;integer;0;1;0;0
+codeffeuil;"option to activate thinning (1 = yes; 2 = no)";code 1/2;PARTEC;1;integer;1;2;0;0
+codefixpot;"option of calculation of the maximal symbiotic fixation (1 = fixed; 2 =depending on growth rate)";code 1/2;PARPLT;1;integer;1;3;0;0
+codefracappN;"option to activate splitting applications of N fertiliser (1 = no; 2 = yes)";code 1/2;PARTEC;1;integer;1;2;0;0
+codefrmur;"1 = CHARGEFRUIT accounts for rape fruits (last box n);  2 = CHARGEFRUIT accounts for the n-1 boxes only";code 1/2;PARAM;1;integer;1;2;0;0
+codefxn;"option defining the effect of soil nitrate on N fixation (1 = no effect; 2 = effect of nitrate amount ; 3 = effect of nitrate concentration)";code 1/2/3;PARAM;1;integer;1;3;0;0
+codegdh;"time step used for calculating development units (1 = hourly; 2 = daily)";code 1/2;PARPLT;1;integer;1;2;0;0
+codegdhdeb;"option of time step used for calculating bud break date (1 = daily; 2 = hourly growing degrees)";code 1/2;PARPLT;1;integer;1;2;0;0
+codegermin;option of simulation of a germination phase or a delay at the beginning of the crop (1) or  direct starting (2);code 1/2;PARPLT;1;integer;1;2;0;0
+codeh2oact;"option to activate water stress effect on the crop (1 = yes; 2 = no)";code 1/2;PARAM;1;integer;1;2;0;0
+codehypo;option of simulation of a phase of hypocotyl growth (1) or planting of plantlets (2);code 1/2;PARPLT;1;integer;1;2;0;0
+codeindetermin;"option of simulation of the leaf growth and fruit growth (1 = determinate; 2 =indeterminate)";code 1/2;PARPLT;1;integer;1;2;0;0
+codeinitprec;"option to activate reinitialization of initial conditions in case of chained simulations (1 = yes; 2 = no)";code 1/2;PARAM;1;integer;1;2;0;0
+codeINN;"option to compute INN (1 = cumulative; 2 = instantaneous) ";code 1/2;PARPLT;1;integer;1;2;0;0
+codeinnact;"option of activation of N stress effect on the crop (1 = yes; 2 = no)";code 1/2;PARAM;1;integer;1;2;0;0
+codeintercept;"option of simulation rainfall interception by leaves (1 = yes; 2 = no)";code 1/2;PARPLT;1;integer;1;2;0;0
+codeir;option of computing the ratio grain weight/total biomass: proportional to time (1), proportional to sum temperatures (2);code 1/2;PARPLT;1;integer;1;2;0;0
+codelaitr;"option used for calculating intercepted radiation (1 = LAI; 2 = soil cover)";code 1/2;PARPLT;1;integer;1;2;0;0
+codelegume;"is the crop a legume fixing N ? (1 = yes; 2 = no)";code 1/2;PARPLT;1;integer;1;2;0;0
+codemacropor;"option to activate calculation of water flux in soil macroporosity (0 = no; 1 = yes)";code 0/1;PARSOL;1;integer;0;1;0;0
+codemicheur;option of calculation of hourly microclimatic outputs (output file humidite.sti);code 1/2;PARAM;1;integer;1;2;0;0
+codeminopt;"option to maintain a constant water content in bare soil during the simulation (0 = no; 1 = yes) ";code 0/1;PARAM;1;integer;0;1;0;0
+codemodfauche;"option defining the cut mode (1 = automatic calculation depending on phenologic and trophic state;  2 = pre-established calendar in days; 3 = pre-established calendar in degree-days)";code 1/2/3;PARTEC;1;integer;1;3;0;0
+codemonocot;"type of plant: 1 = monocot; 2 =dicot";code 1/2;PARPLT;1;integer;1;2;0;0
+codemontaison;"option to stop the reserve limitation after stem elongation in grassland (1 = yes; 2 = no)";code 1/2;PARAMV6;1;integer;1;2;0;0
+codemsfinal;"option defining the value of plant biomass after harvest (1 = maintained equal to harvest ; 2 = set at 0)";code 1/2;PARAM;1;integer;1;2;0;0
+codenitrif;"option to activate nitrification rate model (1 = yes; 2 = no)";code 1/2;PARSOL;1;integer;1;2;0;0
+codeNmindec;"option to activate the limitation of mineral N availability for residues decomposition in soil (1 = yes; 2 = no)";code 1/2;PARAMV6;1;integer;1;2;0;0
+codeoptim;"optimisation code (0 = no;  1 = yes main plant; 2 = yes associated plant)";code 0/1/2;USM;1;integer;0;2;0;0
+codeoutscien;"option to write outputs files with scientific format (1 = yes; 2 = no)";code 1/2;PARAM;1;integer;1;2;0;0
+codepaillage;option: 1 = no cover, 2 = plastic cover partly covering the soil ;code 1/2;PARTEC;1;integer;1;2;0;0
+codepalissage;"option defining if the plant is fixed onto a vertical suuport (palissage) (1 = no; 2 =yes)";code 1/2;PARTEC;1;integer;1;3;0;0
+codeperenne;option defining the annual (1) or perenial (2) character of the plant;code 1/2;PARPLT;1;integer;1;2;0;0
+codephot;"option of plant photoperiodism (1 = yes; 2 = no)";code1/2;PARPLT;1;integer;1;2;0;0
+codeplante;Name code of the plant in 3 letters;SD;PARPLT;1;character;;;0;0
+codeplisoleN;"code for N requirement calculations at the beginning of the cycle (1 = dense plant population; 2 = isolated plants)";code 1/2;PARPLT;1;integer;1;2;0;0
+codepluiepoquet;"option to replace rainfall by irrigation at poquet depth in the case of poquet sowing (1 = yes; 2 = no) ";code 1/2;PARAMV6;1;integer;1;2;0;0
+codeprofmes;"option of soil depth for calculating water and N stocks (1 = profmes;  2 = soil depth)";code 1/2;PARAM;1;integer;1;2;0;0
+coderacine;"option of simulating root growth and extension (1 = standard profile; 2 = root length density)";code 1/2;PARPLT;1;integer;1;2;0;0
+coderecolteassoc;"option to harvest intercrop species simultaneously, at the physiological maturity date of the earliest one (1 = yes; 2 = no)";code 1/2;PARTEC;1;integer;1;2;0;0
+coderemontcap;"option to activate capillary rise (1 = yes; 2 = no)";code 1/2;PARSOL;1;integer;1;2;0;0
+coderes;residue type: 1=mature crop residues,  2  non mature crop residues,  3=manure,  4=compost OM,  5=sewage sludge,  6=vinasse,  7=corn,  8=other;code 1 to 10;PARTEC;1;integer;1;10;0;0
+coderetflo;"option to activate the slow down effect of water stress on development before the stage DRP (1 = yes; 2 = no)";code 1/2;PARPLT;1;integer;1;2;0;0
+codernet;"option of calculation of net radiation (1 = Brunt's method; 2 = Cellier's method)";code 1/2/3;STATION;1;integer;1;3;0;0
+codesensibilite;"option to activate the sensitivity analysis version of the model (1 = yes; 2 = no)";code 1/2;PARAM;1;integer;1;2;0;0
+codeseprapport;"option to select the column separator in the rapport.sti file (1 = separator chosen in param.par file; 2 = space separator)";code 1/2;STATION;1;integer;1;2;0;0
+codesimul;"simulation code: ""culture"" or ""feuille"" (forced LAI)";SD;USM/USMXML;1;character;;;0;0
+codestade;"option to force one or several development stages (1 =no; 2 = yes)";code 1/2;PARTEC;1;integer;1;2;0;0
+codestrphot;"option to activate the photoperiodic stress on lifespan (1 = yes; 2 = no)";code 1/2;PARPLT;1;integer;1;2;0;0
+codesuite;"option to simulate several successive USM (0 = no; 1 = yes)";code 0/1;USM/USMXML;1;integer;0;0;0;0
+codesymbiose;"option for calculating symbiotic N fixation (1 = critical dilution curve; 2 = calculated N fixation)";code 1/2;PARAM;1;integer;1;2;0;0
+codetaille;"option to activate pruning (1 = no; 2 = yes)";code 1/2;PARTEC;1;integer;1;2;0;0
+codetemp;"option to calculate thermal time for plant growth (1 = air temperature; 2 = crop temperature)";code 1/2;PARPLT;1;integer;1;2;0;0
+codetempfauche;"option of the reference temperature to compute cutting sum of temperatures (1 = upvt; 2 = udevair)";code 1/2;PARAMV6;1;integer;1;2;0;0
+codetemprac;"option to calculate thermal time for root growth (1 = crop temperature; 2 = soil temperature)";code 1/2;PARPLT;1;integer;1;2;0;0
+codetesthumN;"option for automatic N fertilisation calculation (1 = based on rainfall; 2 = based on soil water content)";code 1/2;PARAMV6;1;integer;1;2;0;0
+codetradtec;"description of crop structure with use of radiation transfer (1 =no; 2 = yes)";code1/2;PARTEC;1;integer;1;2;0;0
+codetranspitalle;"choice of the ratio used to calculate tiller mortality (1 = et/etm; 2 = epc2/eopC)";code 1/2;PARAMV6;1;integer;1;2;0;0
+codetransrad;"option of simulating radiation interception (1 = Beer's law; 2 = radiative transfer)";code 1/2;PARPLT;1;integer;1;2;0;0
+codetremp;"option to activate heat effect on grain filling (1 = no; 2 = yes)";code 1/2;PARPLT;1;integer;1;2;0;0
+codetycailloux;pebble type code;code 1 to 10;PARAM;1;integer;1;10;0;0
+codetypeng;fertiliser type code;code 1 to 8;PARAM;1;integer;1;8;0;0
+codetypres;organic residue type code;code 1 to 8;PARAM;1;integer;1;8;0;0
+codevar;cultivar name;SD;PARPLT;1;character;;;0;1
+codgelflo;"option to activate frost effect at anthesis (1 = no; 2 = yes)";code 1/2;PARPLT;1;integer;1;2;0;0
+codgeljuv;"option to activate frost effect on LAI at the juvenile stage (1 = no; 2 = yes)";code 1/2;PARPLT;1;integer;1;2;0;0
+codgellev;"option to activate frost effect on plantlet (1 = no; 2 = yes)";code 1/2;PARPLT;1;integer;1;2;0;0
+codgelveg;"option to activate frost effect on LAI at adult stage (1 = no; 2 = yes)";code 1/2;PARPLT;1;integer;1;2;0;0
+codhauteff;"option of leaf removal height (1 = bottom of the canopy; 2 = top of the canopy)";code 1/2;PARTEC;1;integer;1;2;0;0
+codhnappe;"mode of calculation of watertable level (1 = mean height; 2 = height at the distance distdrain)";code 1/2;PARAM;1;integer;1;2;0;0
+codlainet;"option of calculation of the LAI (1 : direct LAInet; 2 : LAInet = gross LAI - senescent LAI)";code 1/2;PARPLT;1;integer;1;2;0;0
+codlocferti;"option to code of fertilisation localisation (1 = at soil surface; 2 = in the soil)";code 1/2;PARTEC;1;integer;1;2;0;0
+codlocirrig;code of irrigation localisation: 1= above the foliage, 2= below the foliage above the soil, 3 = in the soil;code 1/2/3;PARTEC;1;integer;1;3;0;0
+codrainage;"option to simulate artificial drainage (1 = yes; no = 2)";code 1/2;PARSOL;1;integer;0;1;0;0
+codrecolte;"option to harvest (1 = whole plant; 2 = fruits only)";code 1/2;PARTEC;1;integer;1;2;0;0
+codrognage;"option of foliage control by trimming (1 = no; 2 = yes)";code 1/2;PARTEC;1;integer;1;2;0;0
+codtrophrac;"trophic effect on root length growth (1 = permanent link; 2 = link by thresholds ;3 = no effect)";code 1/2/3;PARPLT;1;integer;1;3;0;0
+coefamflax;multiplier coefficient of the development phase AMF - LAX to use crop temperature;SD;PARPLT;1;real;1;2;1;0
+coefb;parameter defining radiation effect on conversion efficiency;SD;PARAM;1;real;0.05;0.15;1;0
+coefdevil;multiplier coefficient of the exterior radiation to compute PET inside of a greenhouse;SD;STATION;1;real;0.3;1.2;1;0
+coefdrpmat;multiplier coefficient of the development phase DRP - MAT to use crop temperature;SD;PARPLT;1;real;1;2;1;0
+coefflodrp;multiplier coefficient of the development phase FLO - DRP to use crop temperature;SD;PARPLT;1;real;1;2;1;0
+coeflaxsen;multiplier coefficient of the development phase LAX - SEN to use crop temperature;SD;PARPLT;1;real;1;2;1;0
+coeflevamf;multiplier coefficient of the development phase LEV - AMF to use crop temperature;SD;PARPLT;1;real;1;2;1;0
+coeflevdrp;multiplier coefficient of the development phase LEV - DRP to use crop temperature;SD;PARPLT;1;real;1;2;1;0
+coefmshaut;ratio biomass/ useful height cut of crops ;t.ha-1.m-1;PARPLT;1;real;2;50;1;0
+coefracoupe;coefficient to define the proportion of dying roots after cut of forage crops;SD;PARAMV6/PLT;1;real;0.001;1;1;0
+coefrnet;coefficient of calculation of the net radiation under greenhouse;SD;STATION;1;real;0.001;1;1;0
+coefsenlan;multiplier coefficient of the development phase SEN - LAN to use crop temperature;SD;PARPLT;1;real;1;2;1;0
+concirr;concentration of mineral N (NH4+NO3-N) in irrigation water;kg.ha-1 mm-1;PARTEC;1;real;0;0.2;1;0
+concNnodseuil;maximal concentration of mineral N in soil for nodule onset ;kg.ha-1.mm-1;PARPLT;1;real;0;10;1;0
+concNrac0;nitrate-N concentration (if codefxN=3) or nitrate-N amount (if codefxN=2) above which N fixation is totally inhibited;kg.ha-1.mm-1 or kg.ha-1.cm-1;PARPLT;1;real;0;10;1;0
+concNrac100;nitrate-N concentration (if codefxN=3) or nitrate-N amount (if codefxN=2) below which N fixation is maximum;kg.ha-1.mm-1 or kg.ha-1.cm-2;PARPLT;1;real;0;2;1;0
+concrr;inorganic N concentration (NH4+NO3-N) in the rain;kg.ha-1 mm-1;PARAM;1;real;0;3;1;0
+concseuil;minimum concentration of NH4-N in soil;kg.ha-1 mm-1;PARSOL;1;real;0;0.5;1;0
+contrdamax;maximal reduction in root growth rate due to soil strengthness (high bulk density);SD;PARPLT;1;real;0;1;1;0
+corecTrosee;temperature to substract to Tmin to estimate dew point temperature (in case of missing air humidity data);degreeC;STATION;1;real;-5;5;1;0
+couvermulchplastique;fraction of soil covered by the plastic mulch ;SD;PARTEC;1;real;0;1;1;0
+Crespc;C content in organic residue;% FW;PARTEC;11;real;0;100;1;0
+CroCo;fraction of organic residue which is decomposable;SD;PARAM;21;real;0;1;1;0
+croirac;elongation rate of the root apex;cm.degree-d-1;PARPLT;1;real;0.005;0.5;1;1
+CsurNres;C/N ratio of residue;g.g-1;PARTEC;11;real;6;200;1;0
+CsurNsol;Initial C to N ratio of soil humus;SD;PARSOL;1;real;8;20;1;0
+culturean;number of calendar years involved in the crop cycle (1 = 1 year e.g. for spring crops, 2 = two years, e.g. for winter crops);code 1/2;USM/USMXML;1;integer;0;0;0;0
+cvent;parameter of the climate calculation under the shelter;SD;STATION;1;real;0.001;1;1;0
+cwb;minimum ratio C/N of microbial biomass decomposing organic residues;g.g-1;PARAM;21;real;5;60;1;0
+dachisel;bulk density of soil after soil tillage (Chisel);g.cm-3;PARTEC;1;real;0.8;2;1;0
+dacohes;bulk density of soil below which root growth is reduced due to a lack of soil cohesion;g.cm-3;PARAM;1;real;0.001;1.4;1;0
+DAF;bulk density of fine soil in each soil layer ;g.cm-3;PARSOL;5;real;0.8;2;1;0
+dalabour;bulk density of soil after full inversion tillage (plough);g.cm-3;PARTEC;1;real;0.8;2;1;0
+darecolte;bulk density of soil after harvest;g.cm-3;PARTEC;1;real;0.8;2;1;0
+dasemis;bulk density of soil after sowing;g.cm-3;PARTEC;1;real;0.8;2;1;0
+daseuilbas;bulk density of soil above which root growth is maximal;g.cm-3;PARAM;1;real;1;1.4;1;0
+daseuilhaut;bulk density of soil above which root growth becomes impossible;g.cm-3;PARAM;1;real;1.4;2.5;1;0
+datedebut;date of the beginning simulation;julian day;USMXML;1;integer;0;730;0;0
+datefin;date of the end of the simulation;julian day;USMXML;1;integer;0;730;0;0
+debsenrac;sum of degrees.days defining the beginning of root senescence (root life time);degree-d;PARPLT;1;real;0;2000;1;0
+deneng;maximal fraction of the mineral fertilizer that can be denitrified (used if codedenit is not activated);SD;PARAM;8;real;0;1;1;0
+densinitial;initial root density in each of the five soil layers;cm.cm-3;INIT;5;real;0;10;1;0
+densitesem;plant sowing density ;plants.m-2;PARTEC;1;real;0.05;2000;1;0
+deshydbase;rate of change of fruit water content vs thermal time (>0 or <0);g.g-1 FM.degree-d-1;PARPLT;1;real;-0.02;0.02;1;0
+dfolbas;minimal foliar density within the considered shape;m2 leaf.m-3;PARPLT;1;real;1;10;1;0
+dfolhaut;maximal foliar density within the considered shape;m2 leaf.m-3;PARPLT;1;real;1;10;1;0
+dfpf;parameter of the first potential growth phase of fruit, corresponding to an exponential type function describing the cell division phase;SD;PARPLT;1;real;0.01;5;1;0
+difN;diffusion coefficient of nitrate N in soil at field capacity;cm2.d-1;PARAM;1;real;0.01;0.1;1;0
+diftherm;soil thermal diffusivity;cm2.s-1;PARAM;1;real;0.001;0.01;1;0
+distdrain;distance to the drain to calculate watertable height;cm;PARAM;1;real;0;25000;1;0
+dlaimax;maximum rate of the setting up of LAI;m2 leaf.plant-1.degree-d-1;PARPLT;1;real;0.01;0.5;1;0
+dlaimaxbrut;maximum rate of the setting up of LAI;m2 leaf.plant-1.degree-d-1;PARPLT;1;real;0.01;0.5;1;0
+dlaimin;accelerating parameter for the lai growth rate;SD;PARPLT;1;real;0.01;1;1;0
+dltamsmaxsen;threshold value of growth rate from which there is no more photoperiodic effect on senescence;t.ha-1.d-1;PARPLT;1;real;0.01;0.1;1;0
+dltamsminsen;threshold value of growth rate from which the photoperiodic effect on senescence is maximal;t.ha-1.d-1;PARPLT;1;real;0.01;0.1;1;0
+doseI;irrigation amount;mm.d-1;PARTEC;30;real;0;500;1;0
+doseirrigmin;minimal amount of irrigation;mm;PARTEC;1;real;0;500;1;0
+doseN;daily amount of N added through fertilizers;kg.d-1;PARTEC;20;real;0;500;1;0
+dosimx;maximum water amount of irrigation authorised at each time step (mode automatic irrigation);mm.d-1;PARTEC;1;real;10;500;1;0
+dosimxN;maximum amount of fertiliser N applied on a given day (mode automatic fertilisation);kg.ha-1;PARAMV6;1;real;5;500;1;0
+dpHvolmax;maximal pH increase following the application of slurry;SD;PARAM;1;real;0;3;1;0
+draclong;maximum rate of root length production per plant;cm.plant-1.degree-d-1;PARPLT;1;real;1;1000;1;0
+dureefruit;total growth period of a fruit at the setting stage to the physiological maturity;degree-d;PARPLT;1;real;10;1000;1;1
+durvieF;maximal lifespan of an adult leaf expressed in summation of Q10=2 (2**(T-Tbase));SD;PARPLT;1;real;10;500;1;1
+durviesupmax;relative additional lifespan due to N excess in plant (INN > 1);SD;PARPLT;1;real;0;1;1;0
+eau_mini_decisemis;minimum amount of rainfall to start sowing (when codesemis is activated);mm;PARAMV6;1;integer;0;40;1;0
+eaures;water content of organic residue (relative to fresh weight);% FW;PARTEC;11;real;0;99;1;0
+ecartdrain;distance between mole drains;cm;PARSOL;1;real;100;5000;1;0
+efcroijuv;maximum radiation use efficiency during the juvenile phase(LEV-AMF);g.MJ-1;PARPLT;1;real;1;7;1;0
+efcroirepro;maximum radiation use efficiency during the grain filling phase (DRP-MAT);g.MJ-1;PARPLT;1;real;1;10;1;0
+efcroiveg;maximum radiation use efficiency during the vegetative stage (AMF-DRP);g.MJ-1;PARPLT;1;real;1;10;1;0
+effeuil;fraction of daily leaf removed at thinning;0-1 ;PARTEC;1;real;0;1;1;0
+effirr;irrigation efficiency;SD;PARTEC;1;real;0.2;1;1;0
+elmax;maximum elongation of the coleoptile in darkness condition;cm;PARPLT;1;real;2;40;1;0
+engamm;fraction of ammonium in the N fertilizer;SD;PARAM;8;real;0;1;1;0
+engrais;"fertilizer type (1=ammonium nitrate; 2=UAN solution; 3=urea; 4=anhydrous ammonia; 5=ammonium sulfate; 6=ammonium phosphate; 7=calcium nitrate; 8= fixed efficiency fertiliser)  ";*;PARTEC;1;integer;0;8;1;0
+envfruit;fraction of envelop in grainmaxi (w:w) ;SD;PARPLT;1;real;0;0.5;1;0
+epc;thickness of each soil layer;cm  ;PARSOL;5;real;1;1000;1;0
+epd;thickness of mixing cells in each soil layer ( = 2 * dispersion length);cm;PARSOL;5;integer;1;50;1;0
+extin;extinction coefficient of photosynthetic active radiation in the canopy;SD;PARPLT;1;real;0.1;1.5;1;0
+fclim1;name of the first climate file;SD;USMXML;1;character;;;0;0
+fclim2;name of the second climate file;SD;USMXML;1;character;;;0;0
+fhminsat;relative soil mineralisation rate at water saturation;SD;PARAM;1;real;0;1;1;0
+ficinit;name of the initialization file ;SD;USM;1;character;;;0;0
+ficstation;name of the weather station file;SD;USM;1;character;;;0;0
+finert;initial fraction of soil organic N inactive for mineralisation  (= stable SON/ total SON);SD;PARAM;1;real;0;1;1;0
+fixmax;maximal N symbiotic fixation rate;kg.ha-1.d-1;PARPLT;1;real;2;12;1;0
+fixmaxgr;maximal N symbiotic fixation rate per unit of grain growth rate;kg.t-1;PARPLT;1;real;0;50;1;0
+fixmaxveg;maximal N symbiotic fixation rate per unit of vegetative growth rate;kg.t-1;PARPLT;1;real;0;50;1;0
+flagecriture;option for writing the output files (1 = mod_history.sti, 2=daily outputs,4= report outut, 8=balance outputs,16 = profil outputs,  32= debug outputs, 64 = screen outputs, 128 = agmip outputs) add to have several types of outputs;0-511;PARAM;1;integer;0;511;1;0
+flai;name of the LAI file;SD;USM/USMXML;1;character;;;0;0
+fmin1;relative potential mineralization rate: K2 = fmin1 * exp(-fmin2*argi) / (1+fmin3*calc);d-1;PARAM;1;real;0;1;1;0
+fmin2;parameter defining the effect of clay on the potential mineralization rate: K2 = fmin1 * exp(-fmin2*argi) / (1+fmin3*calc);-1%;PARAM;1;real;0;1;1;0
+fmin3;parameter defining the effect of CaCO3 on the potential mineralization rate: K2 = fmin1 * exp(-fmin2*argi) / (1+fmin3*calc);-1%;PARAM;1;real;0;1;1;0
+fNCbiomin;minimal value for the ratio N/C of the microbial biomass when N limits decomposition;SD;PARAM;1;real;0.01;0.1;1;0
+fNmindecmin;minimal fraction of mineral N available for residues decomposition (if codeNmindec is activated);SD;PARAMV6;1;real;0;1;1;0
+fnx;potential nitrification rate constant (at temperature tnitopt);d-1;PARAM;1;real;0.01;1;1;0
+forme;"option to define the shape of leaf density profile (1 = rectangle; 2 = triangle)";code 1/2;PARPLT;1;integer;0;0;0;0
+fplt;name of the plant file;SD;USM/USMXML;1;character;;;0;0
+fracN;proportion of fertiliser N applied at each application;%;PARTEC;1;real;5;100;1;0
+fredkN;reduction factor of decomposition rate of organic residues when mineral N is limiting;SD;PARAM;1;real;0.1;1;1;0
+fredlN;reduction factor of decomposition rate of microbial biomass when mineral N is limiting;SD;PARAM;1;real;0.2;1;1;0
+fredNsup;additional reduction factor of residues decomposition rate when mineral N is very limited in soil;SD;PARAM;1;real;0;1;1;0
+fstation;name of the weather station file;SD;USMXML;1;character;;;0;0
+ftec;name of the technical file;SD;USM/USMXML;1;character;;;0;0
+ftemh;parameter (1/2) of the temperature function on humus decomposition rate;K-1;PARAM;1;real;0.05;0.5;1;0
+ftemha;parameter (2/2) of the temperature function on humus decomposition rate;*;PARAM;1;real;10;50;1;0
+ftemr;parameter (1/2) of the temperature function on decomposition rate of organic residues;K-1;PARAM;1;real;0.05;0.5;1;0
+ftemra;parameter (2/2) of the temperature function on decomposition rate of organic residues;*;PARAM;1;real;5;30;1;0
+gradtn;thermal gradient in altitude for minimal temperatures ;degreeC.m-1;STATION;1;real;0.1;3;1;0
+gradtninv;thermal gradient in altitude for minimal temperatures under the inversion level;degreeC.m-1;STATION;1;real;0.1;3;1;0
+gradtx;thermal gradient in altitude for maximal temperatures ;degreeC.m-1;STATION;1;real;0.1;3;1;0
+h2ofeuiljaune;water content of yellow leaves (relative to fresh matter);g.g-1 FW;PARPLT;1;real;0.05;1;1;0
+h2ofeuilverte;water content of green leaves (relative to fresh matter);g.g-1 FW;PARPLT;1;real;0.5;1;1;0
+h2ofrvert;water content of fruits before the beginning of dehydration (DEBDESHYD)  (/fresh matter);g.g-1 FW;PARPLT;1;real;0.1;1;1;0
+h2ograinmax;maximal water content of fruits at harvest  (/fresh matter);g.g-1 FW;PARTEC;1;real;0.05;1;1;0
+h2ograinmin;minimal water content of fruits at harvest  (/fresh matter);g.g-1 FW;PARTEC;1;real;0.05;1;1;0
+h2oreserve;reserve water content  (/fresh matter);g.g-1 FW;PARPLT;1;real;0.5;1;1;0
+h2otigestruc;structural stem part water content  (/fresh matter);g.g-1 FW;PARPLT;1;real;0.5;1;1;0
+hautbase;basal height of crop;m;PARPLT;1;real;0.1;2;1;0
+hautcoupe;cut height for forage crops (calendar fixed);m;PARTEC;20;real;0.01;0.5;1;0
+hautcoupedefaut;cut height for forage crops (calendar calculated);m;PARTEC;1;real;0.01;0.5;1;0
+hautmax;maximum height of crop;m;PARPLT;1;real;0.1;5;1;0
+hautmaxtec;maximal height of the plant allowed by the management;m;PARTEC;1;real;0.5;3;1;0
+hautrogne;cutting height for trimmed plants;m;PARTEC;1;real;0.2;2;1;0
+hcccx;water content at field capacity of each type of pebble;% w;PARAM;10;real;10;110;1;0
+hccf;water content at field capacity of each soil layer (/fine earth);% w;PARSOL;5;real;10;110;1;0
+Hinitf;initial water content of each soil layer (/fine earth);% w;INIT;5;real;5;110;1;0
+hminf;water content at wilting point of each soil layer (/fine earth);% w;PARSOL;5;real;2;25;1;0
+hminm;relative water content (fraction of field capacity) below which mineralisation rate is nil;SD;PARAM;1;real;0.1;1;1;0
+hminn;relative water content (fraction of field capacity) below which nitrification rate is nil;SD;PARAM;1;real;0.1;1;1;0
+hoptm;relative water content (fraction of field capacity) below which mineralisation rate is maximum;SD;PARAM;1;real;0.1;1;1;0
+hoptn;relative water content (fraction of field capacity) below which nitrification rate is maximum;SD;PARAM;1;real;0.1;1;1;0
+huilerec;minimal oil content of fruits at harvest (/fresh matter);g.g-1 FW;PARTEC;1;real;0.1;1;1;0
+humcapil;threshold of soil water content under which capillary rise occurs;% w;PARSOL;1;real;2;10;1;0
+humirac_decisemis;"effect of soil moisture for sowing decision ( from 0 to 1 : 0 = no sensitivity to drought; 1 = very sensitive)";SD;PARAMV6;1;real;0;1;1;0
+iamf;day of the stage AMF (maximal rate of leaf growth, end of juvenile phase) when the stage is observed (else 999);julian.d;PARTEC;1;integer;1;731;1;0
+ichsl;"soil number in the ""param.soil"" file";SD;USM;1;integer;1;999;1;0
+idebdorm;day of the dormancy entrance;julian.d;PARPLT;1;integer;1;731;1;0
+idrp;day of the stage DRP (beginning of grain filling) when the stage is observed (else 999);julian.d;PARTEC;1;integer;1;731;1;0
+ifindorm;day of dormancy break;julian.d;PARPLT;1;integer;1;731;1;0
+iflo;day of anthesis;julian.d;PARTEC;1;integer;1;731;1;0
+ifwater;day of the end of simulation;julian.d;USM;1;integer;1;731;1;0
+ilan;day of the stage LAN () if the stage is observed (else 999);julian.d;PARTEC;1;integer;1;731;1;0
+ilax;day of the stage LAX (maximal leaf area index) when the stage is observed (else 999);julian.d;PARTEC;1;integer;1;731;1;0
+ilev;day of the stage LEV (emergence) when the stage is observed (else 999);julian.d;PARTEC;1;integer;1;731;1;0
+imat;day of the stage MAT (physiological maturity) when the stage is observed (else 999);julian.d;PARTEC;1;integer;1;731;1;0
+infil;infiltrability rate at the base of each soil layer;mm.d-1;PARSOL;6;real;0.1;100;1;0
+inflomax;maximal number of inflorescences per plant;SD;PARPLT;1;real;0;100;1;0
+infrecouv;ulai at the stage AMF (maximal rate of leaf growth);SD;PARPLT;1;real;0;3;1;0
+iniprofil;"option of smoothing out the initial N and water profiles (spline function) (0 = no; 1 = yes)";code 0/1;PARAM;1;integer;0;1;0;0
+inngrain1;minimal INN for net absorption of N during grain filling ;SD;PARPLT;1;real;0.3;2;1;0
+inngrain2;INN minimal for null net absorption of N during grain filling ;SD;PARPLT;1;real;0.3;2;1;0
+INNimin;INNI (instantaneous INN) corresponding to INNmin;SD;PARPLT;1;real;0;1;1;0
+INNmin;minimum value of INN possible for the crop;SD;PARPLT;1;real;0;1;1;0
+innsen;parameter of the N stress function active on senescence (INNsenes), bilinear function vs INN passing through the point (INNmin, INNsen);SD;PARPLT;1;real;-2;1;1;0
+innturgmin;parameter of the N stress function active on leaf expansion (INNLAI), bilinear function vs INN passing through the point (INNmin, INNturgmin);SD;PARPLT;1;real;-2;1;1;0
+interrang;width of the crop interrow;m;PARTEC;1;real;0;10;1;0
+iplt0;date of sowing;julian.d;PARTEC;1;integer;1;731;1;0
+irec;day of the stage REC (harvest) when the stage is observed (else 999);julian.d;PARTEC;1;integer;1;731;1;0
+irecbutoir;latest date of harvest (imposed if the crop cycle is not finished at this date);julian.d;PARTEC;1;integer;1;731;1;0
+irmax;maximum harvest index;SD;PARPLT;1;real;0.2;1;1;0
+irrlev;amount of irrigation applied automatically on the sowing day to allow germination when the model calculates irrigation;mm;PARAM;1;real;0;50;1;0
+isen;day of the stage SEN (beginning of net senescence) when the stage is observed (else 999);julian.d;PARTEC;1;integer;1;731;1;0
+iwater;day of the beginning of the simulation;julian.d;USM;1;integer;1;731;1;0
+julapI;date(s) of irrigation ;julian.d;PARTEC;30;integer;1;731;1;0
+julapN;date(s) of fertilizer application;julian.d;PARTEC;20;integer;1;731;1;0
+juleclair;day of fruits removal;julian.d;PARTEC;1;integer;1;731;1;0
+juleffeuil;day of leaf removal;julian.d;PARTEC;1;integer;1;731;1;0
+julfauche;date(s) of each cut for forage crops ;julian.d;PARTEC;20;integer;1;731;1;0
+julouvre2;day (1/2) of opening the shelter;julian.d;PARTEC;1;integer;1;731;1;0
+julouvre3;day (2/2) of opening the shelter;julian.d;PARTEC;1;integer;1;731;1;0
+julres;date(s) of organic residue addition to soil;julian.d;PARTEC;8;integer;1;731;1;0
+julrogne;day of plant trimming;julian.d;PARTEC;1;integer;1;731;1;0
+jultaille;day of pruning;julian.d;PARTEC;1;integer;1;731;1;0
+jultrav;date(s) of soil tillage;julian.d;PARTEC;8;integer;1;731;1;0
+julvernal;day of initiation of vernalisation in perennial crops (between 1 and 365) ;julian.d;PARPLT;1;integer;1;731;1;0
+jvc;number of vernalising days;d;PARPLT;1;integer;0;70;1;1
+jvcmini;minimum number of vernalising days ;d;PARPLT;1;integer;0;7;1;0
+kbio;potential decay rate of microbial biomass decomposing organic residues;d-1;PARAM;21;real;0;250;1;0
+kcouvmlch;extinction coefficient connecting the soil cover to the amount of plant mulch;*;PARAM;21;real;0;150;1;0
+khaut;extinction coefficient connecting LAI to crop height;*;PARAM;1;real;0.2;2;1;0
+Kmabs1;affinity constant of N uptake by roots for the fast uptake system;µmole.L-1;PARPLT;1;real;20;200;1;0
+Kmabs2;affinity constant of N uptake by roots for the low uptake system;µmole.L-1;PARPLT;1;real;4000;40000;1;0
+kmax;maximum crop coefficient for water requirements (= MET/PET);SD;PARPLT;1;real;1;4;1;0
+krepracperm;parameter of biomass root partitioning : evolution of the ratio root/total (permanent trophic link);SD;PARPLT;1;real;0.0001;1;1;0
+krepracseu;parameter of biomass root partitioning : evolution of the ratio root/total (trophic link by thresholds);SD;PARPLT;1;real;0.0001;1;1;0
+ksol;soil hydraulic conductivity in the vicinity of mole drains;SD;PARSOL;1;real;0.0001;1;1;0
+kstemflow;extinction coefficient connecting LAI to stemflow;*;PARPLT;1;real;0.1;2;1;0
+ktrou;extinction coefficient of PAR through the crop (used in the radiative transfer module);*;PARPLT;1;real;0.1;2;1;0
+lai0;initial leaf area index;m2.m-2;INIT;1;real;0;10;1;0
+laicomp;LAI above which competition between plants starts;m2.m-2;PARPLT;1;real;0.4;1;1;0
+laidebeff;LAI of the beginning of leaf removal;m2.m-2;PARTEC;1;real;1;10;1;0
+laieffeuil;LAI removed from the crop at day juleffeuil;m2.m-2;PARTEC;1;real;0.05;10;1;0
+laiplantule;LAI of plantlet at the plantation;m2.m-2;PARPLT;1;real;0;8;1;0
+lairesiduel;residual LAI after each cut of forage crop;m2.m-2;PARTEC;20;real;0;2;1;0
+largrogne;trimmed width;m;PARTEC;1;real;0.1;2;1;0
+largtec;technical width;m;PARTEC;1;real;0.1;2;1;0
+latitude;latitude of the site;degree;STATION;1;real;-90;90;0;0
+locferti;soil depth at which fertiliser is applied;cm;PARTEC;1;integer;0;30;1;0
+locirrig;soil depth at which irrigation is applied;cm;PARTEC;1;integer;0;30;1;0
+longsperac;specific root length;cm.g-1;PARPLT;1;real;250;25000;1;0
+lvfront;root density at the root apex;cm.cm-3;PARPLT;1;real;0.02;1;1;0
+lvopt;root length density (RLD) above which water and N uptake are maximum and independent of RLD;cm.cm-3;PARAM;1;real;0.2;1;1;0
+magrain0;initial grain dry weight;g.m-2;INIT;1;real;1;5;1;0
+margerogne;topping occurs when plant height exceeds (hautrogne+margerogne) when automatic trimming is activated;m;PARTEC;1;real;0.01;1;1;0
+masec0;initial aerial biomass;t.ha-1;INIT;1;real;0;10;1;0
+masecmeta;biomass of the plantlet supposed to be composed of metabolic N;t.ha-1;PARPLT;1;real;0.1;1;1;0
+masecNmax;aerial biomass above which N dilution occurs (critical and maximal curves);t.ha-1;PARPLT;1;real;0.05;5;1;0
+masecplantule;initial shoot biomass of plantlet;t.ha-1;PARPLT;1;real;0.002;4;1;0
+masvolcx;bulk density of each type of pebble;g.cm-3;PARAM;10;real;0.5;5;1;0
+maxazorac;mineral N concentration in soil above which root growth is maximum ;kg.ha-1.cm-1;PARPLT;1;real;0.1;5;1;0
+maxtalle;maximum tillers density  per soil area;nb.m-2;PARAMV6/PLT;1;real;0;10000;1;0
+minazorac;mineral N concentration in soil below which root growth is reduced ;kg.ha-1.cm-1;PARPLT;1;real;0;5;1;0
+minefnra;reduction factor on root growth when soil mineral N is limiting (< minazorac);SD;PARPLT;1;real;0;1;1;0
+mouillabil;maximum wettability of leaves;mm.LAI-1;PARPLT;1;real;0.05;3;1;0
+mouillabilmulch;maximum wettability of crop mulch;mm.t-1.ha;PARAM;5;real;0.05;5;1;0
+mscoupemini;minimum value of aerial biomass required to make a cut of forage crop;t.ha-1;PARTEC;1;real;1;10;1;0
+msresiduel;residual aerial biomass after a cut of a forage crop;t.ha-1;PARTEC;20;real;0;5;1;0
+mulchbat;mulch depth from which a crust occurs;cm;PARSOL;1;real;0;2;1;0
+nbcueille;number of fruit harvestings;code 1/2;PARTEC;1;integer;1;2;0;0
+nbfeuilplant;leaf number per plant when planting;nb pl-1;PARPLT;1;integer;0;10;1;0
+nbfgellev;leaf number at the end of the juvenile phase (frost sensitivity) ;nb pl-1;PARPLT;1;integer;1;5;1;0
+nbgrmax;maximum number of fruits per surface area;nb.m-2;PARPLT;1;real;0;10000;1;1
+nbgrmin;minimum number of fruits per surface area;nb.m-2 ;PARPLT;1;real;0;10000;1;0
+nbinflo;imposed number of inflorescences per plant;nb.pl-1;PARPLT;1;real;1;10;1;0
+nbinfloecl;"number of inflorescences or fruits removed at ""fruit removal"" ";nb.pl-1;PARTEC;1;real;0;10;1;0
+nbj_pr_apres_semis;number of days used to calculate rainfall requirement to start sowing (if codesemis is activated);d;PARAMV6;1;integer;1;20;1;0
+nbjgerlim;maximum number of days after grain imbibition allowing full germination;d;PARPLT;1;integer;1;50;1;0
+nbjgrain;number of days used to compute the number of viable grains;d;PARPLT;1;integer;5;40;1;0
+nbjmaxapresrecolte;maximal delay allowed for harvest (number of days) (if the soil compaction option is activated);d;PARTEC;1;integer;0;90;1;0
+nbjmaxapressemis;maximal delay allowed for sowing (number of days) (if the soil compaction option is activated);d;PARTEC;1;integer;0;90;1;0
+nbjoursrrversirrig;number of days during which rainfall is replaced by irrigation in the soil after a sowing poquet;d;PARAMV6;1;integer;0;0;1;0
+nbjres;number of residue additions;d;PARTEC;1;integer;0;8;1;0
+nbjseuiltempref;number of days without frost for sowing (if sowing decision option is activated);d;PARTEC;1;integer;1;60;1;0
+nbjtrav;number of tillage operations;SD;PARTEC;1;integer;0;8;1;0
+nboite;"number of ""boxes"" or ""age classes"" of fruits used to calculate fruit growth for undeterminate crops ";SD;PARPLT;1;integer;1;20;1;0
+nbplantes;number of simulated plants;SD;USM/USMXML;1;integer;0;0;0;0
+NH3ref;NH3 concentration in the atmosphere;µg.m-3;STATION;1;real;0;10;1;0
+NH4initf;initial amount of NH4-N in each of the soil layers;kg.ha-1;INIT;5;real;0;200;1;0
+nlevlim1;number of days after germination after which plant emergence is reduced;d;PARPLT;1;integer;1;100;1;0
+nlevlim2;number of days after germination after which plant emergence is impossible;d;PARPLT;1;integer;1;100;1;0
+Nmeta;proportion of metabolic N in the plantlet;%;PARPLT;1;real;0;100;1;0
+Nminres;proportion of N mineral content of organic residues (/fresh matter);% FW;PARTEC;10;real;0;30;1;0
+NO3initf;initial amount of NO3-N in each of the soil layers;kg.ha-1;INIT;5;real;0;200;1;0
+nomsimulation;name of the USM;SD;USM;1;character;;;0;0
+nomsol;name of the soil;SD;USM/USMXML;1;character;;;0;0
+Norg;soil organic N content in the first soil layer  (supposed constant down to the depth profhum);% dry soil;PARSOL;1;real;0.05;0.5;1;0
+Nreserve;maximal amount of N in plant reserves (difference between the maximal and critical dilution curves) (percentage of aerial biomass);%;PARPLT;1;real;0;100;1;0
+numsol;soil number;SD;PARSOL;1;integer;0;1000;1;0
+obstarac;soil depth at which root growth is impeded due to physical constraints ;cm;PARSOL;1;real;10;1000;1;0
+ombragetx;change in air temperature in the northern hillslope of mountains (activated if codadret=2);degreeC;STATION;1;real;-5;5;1;0
+orgeng;maximal amount of fertilizer N that can be immobilized in the soil (fraction for type 8);kg.ha-1;PARAM;8;real;0;100;1;0
+orientrang;direction of crop rows (relative to north);rad;PARTEC;1;real;0;6.28;1;0
+param_tmoy_histo;mean temperature over the period of adaptation to climate change;degreeC;PARAMV6;1;real;0;0;1;0
+parazofmorte;parameter relating the C/N of dead leaves and the INN;SD;PARPLT;1;real;10;20;1;0
+parsurrg;ratio of PAR to RG (global radiation) ;SD;PARAM;1;real;0.4;0.6;1;0
+patm;atmospheric pressure;mbar;STATION;1;real;800;1200;1;0
+penterui;run-off coefficient taking account for plant mulch;SD;PARSOL;1;real;0;5;1;0
+pentinflores;parameter used to calculate the inflorescences number ;10*inflo*kg-1;PARPLT;1;real;0;10;1;0
+pentlaimax;parameter of the logistic curve of LAI growth ;SD;PARPLT;1;real;0;10;1;0
+pentrecouv;parameter of the logistic curve of soil cover rate;SD;PARPLT;1;real;0;10;1;0
+periode_adapt_CC;number of successive years used to calculate moving temperature average;SD;PARAMV6;1;integer;0;0;1;0
+pgrainmaxi;maximum grain weight (at 0% water content);g;PARPLT;1;real;0.003;0.5;1;1
+pH;Initial soil pH;pH;PARSOL;1;real;4;9;1;0
+phiv0;parameter allowing the calculation of the climate under shelter;SD;STATION;1;real;0;0.01;1;0
+pHmaxnit;soil pH above which nitrification is maximum;pH;PARAM;1;real;6;9;1;0
+pHmaxvol;soil pH above which NH3 volatilisation derived from fertiliser is maximum;pH;PARAM;1;real;6;9;1;0
+pHminnit;soil pH below which nitrification is nil;pH;PARAM;1;real;3;6;1;0
+pHminvol;soil pH below which NH3 volatilisation derived from fertiliser is nil;pH;PARAM;1;real;3;6;1;0
+phobase;basal photoperiod ;hours;PARPLT;1;real;0;24;1;0
+phobasesen;photoperiod under which the photoperiodic stress affects the lifespan of leaves;hours;PARPLT;1;real;1;12;1;0
+phosat;saturating photoperiod;hours;PARPLT;1;real;0;24;1;0
+pHvols;parameter used to calculate the variation of soil pH after the addition of slurry;pH;PARAM;1;real;5;9;1;0
+phyllotherme;thermal duration between the apparition of two successive leaves on the main stem;degree-d;PARPLT;1;real;10;150;1;0
+plNmin;minimal amount of rain required to start an automatic N fertilisation;mm;PARAM;1;real;5;30;1;0
+pluiebat;minimal amount of rain required to create a soil crust;mm.d-1;PARSOL;1;real;5;100;1;0
+pminruis;minimal amount of rain required to produce runoff ;mm.d-1;PARAM;1;real;2;50;1;0
+potgermi;soil water potential above which seed imbibition is impeded;MPa;PARPLT;1;real;0.0001;1;1;0
+primingmax;maximum priming ratio (relative to SOM decomposition rate);SD;PARAM;1;real;1;5;1;0
+profdenit;soil depth on which denitrification is active (if codedenit is activated);cm;PARSOL;1;real;10;40;1;0
+profdrain;depth of mole drains;cm;PARSOL;1;integer;20;200;1;0
+profhum;maximum soil depth with an active biological activity  (max.60 cm);cm;PARSOL;1;real;10;150;1;0
+profhumrecolteuse;soil depth at which moisture is considered to allow harvesting (if soil compaction is activated);cm;PARTEC;1;real;0;100;1;0
+profhumsemoir;soil depth at which moisture is considered to allow sowing (if soil compaction is activated);cm;PARTEC;1;real;0;100;1;0
+profimper;depth of occurrence of the watertight layer ;cm;PARSOL;1;real;50;200;1;0
+proflabour;minimal soil depth for ploughing (if soil compaction is activated);cm;PARAM;1;real;0;100;1;0
+profmes;depth of measurement of the soil water reserve;cm;PARTEC;1;real;10;1000;1;0
+profnod;maximum depth of N2 fixation by legume crops;cm;PARPLT;1;real;10;50;1;0
+profres;upper depth of organic residue incorporation ;cm;PARTEC;11;real;0;30;1;0
+profsem;depth of sowing;cm;PARTEC;1;real;0;10;1;0
+proftrav;maximum depth of organic residue incorporation;cm;PARTEC;11;real;0;50;1;0
+proftravmin;minimal soil depth for chisel tillage (if soil compaction is activated);cm;PARAM;1;real;0;100;1;0
+prophumtassrec;soil moisture content (fraction of field capacity) above which compaction may occur and delay harvest;SD;PARAM;1;real;0.8;1.8;1;0
+prophumtasssem;soil moisture content (fraction of field capacity) above which compaction may occur and delay sowing;SD;PARAM;1;real;0.8;1.8;1;0
+propjgermin;minimal proportion of the duration nbjgerlim when the temperature is higher than the temperature threshold Tdmax ;%;PARPLT;1;real;0;100;1;0
+proprac;ratio of root mass to aerial mass at harvest;g.g.-1;PARAM;1;real;0.05;0.5;1;0
+psihucc;soil water potential corresponding to field capacity ;Mpa;PARAM;1;real;-5;-0.1;1;0
+psihumin;soil water potential corresponding to wilting point;Mpa;PARAM;1;real;-5;-0.1;1;0
+psisto;potential of stomatal closing (absolute value);bars;PARPLT;1;real;1;25;1;0
+psiturg;potential of the beginning of decrease of the cellular extension (absolute value);bars;PARPLT;1;real;1;15;1;0
+q0;cumulative soil evaporation above which evaporation rate is decreased ;mm;PARSOL;1;real;0;50;1;0
+q10;Q10 used for the dormancy break calculation ;SD;PARPLT;1;real;1.5;3.5;1;0
+qmulchdec;maximal amount of decomposable mulch;t.ha-1;PARAM;21;real;0;5;1;0
+qmulchruis0;amount of mulch above which runoff is suppressed;t.ha-1;PARAM;21;real;0;5;1;0
+QNplante0;initial N amount in the plant;kg.ha-1;INIT;1;real;0;200;1;0
+QNpltminINN;minimal amount of N in the plant required to compute INN;kg.ha-1;PARAM;1;real;0;50;1;0
+qres;mass of organic residues added to soil (fresh weight);t.ha-1;PARTEC;11;real;0;200;1;0
+Qtot_N;amount of total mineral N fertilizer applications ;kg.ha-1;PARTEC;1;integer;0;200;1;0
+ra;aerodynamic resistance (used in volatilization module when we use ETP approach);s.m-1;STATION;1;real;10;70;1;0
+rapforme;ratio of thickness to /width of the crop shape (negative when the base of the form < top);SD;PARPLT;1;real;-5;5;1;0
+rapNmindec;slope of the linear relationship between the fraction of mineral N available for residue decomposition and the amount of C in decomposing residues (0.001);g.g-1;PARAMV6;1;real;0;0.01;1;0
+rapsenturg;threshold soil water content active to simulate water senescence stress as a proportion of the turgor stress;SD;PARPLT;1;real;0.5;1.5;1;0
+ratiodenit;fraction of N2O emitted per unit of N denitrified;SD;PARAM;1;real;0;1;1;0
+ratiodurvieI;life span of early leaves expressed as a fraction of the life span of the last leaves emitted DURVIEF;SD;PARPLT;1;real;0;1;1;0
+ratiol;water stress index below which irrigation is started in automatic mode (0 in manual mode);SD;PARTEC;1;real;0.2;1;1;0
+ratiolN;nitrogen stress index below which fertilisation is started in automatic mode (0 in manual mode);SD;PARAMV6;1;real;0.2;1;1;0
+rationit;fraction of N2O emitted per unit of N nitrified;SD;PARAM;1;real;0;1;1;0
+ratiosen;fraction of senescent biomass (relative to total biomass);SD;PARPLT;1;real;0;1;1;0
+rayon;average root radius;cm ;PARAM;1;real;0.005;0.07;1;0
+rdrain;drain radius;cm;PARAM;1;real;1;100;1;0
+remobres;fraction of daily remobilisable C reserves;SD;PARPLT;1;real;0;0.5;1;0
+repracpermax;maximum root biomass relative to total biomass (permanent trophic link);SD;PARPLT;1;real;0.1;0.9;1;0
+repracpermin;minimum root biomass relative to total biomass (permanent trophic link);SD;PARPLT;1;real;0.1;0.9;1;0
+repracseumax;maximum root biomass relative to total biomass (trophic link by thresholds);SD;PARPLT;1;real;0.1;0.9;1;0
+repracseumin;minimum root biomass relative to total biomass (trophic link by thresholds);SD;PARPLT;1;real;0.1;0.9;1;0
+resperenne0;initial reserve of biomass;t.ha-1;INIT;1;real;0;5;1;0
+resplmax;maximal reserve of biomass;t.ha-1;PARAMV6;1;real;0;100;1;0
+ressuite;"type of crop residue (""roots"" or ""whole_crop"" or ""straw+roots"" or ""stubble+roots"" or ""straw_residu9+roots"" or  ""straw_residu10+roots"" )";SD;PARTEC;1;character;;;0;0
+rsmin;minimal stomatal resistance of leaves;s.m-1;PARPLT;1;real;20;500;1;0
+rugochisel;roughness length of bare soil after chisel tillage (if soil compaction is activated);m;PARTEC;1;real;0.01;0.2;1;0
+rugolabour;roughness length of bare soil after mouldboard ploughing (if soil compaction is activated);m;PARTEC;1;real;0.01;0.2;1;0
+ruisolnu;fraction of runoff (relative to total rainfall) in a bare soil ;SD;PARSOL;1;real;0;1;1;0
+sea;specific area of fruit envelops;cm2.g-1;PARPLT;1;real;10;300;1;0
+sensanox;index of anoxia sensitivity (0 = insensitive);SD;PARPLT;1;real;0;1;1;0
+sensiphot;index of photoperiod sensitivity (1=insensitive);SD;PARPLT;1;real;0;1;1;1
+sensrsec;index of root sensitivity to drought (1=insensitive);SD;PARPLT;1;real;0;1;1;0
+separateurrapport;column separator in rapport.sti file;SD;PARAM;1;character;;;0;0
+seuilLAIapex;maximal value of LAI+LAIapex when LAIapex is > 0;m2.m-2;PARAMV6/PLT;1;real;0;10;1;0
+seuilmortalle;relative transpiring threshold to calculate tiller mortality;mm;PARAMV6/PLT;1;real;0;10;1;0
+seuilreconspeupl;tiller density below which the entire population will not be regenerated;nb.m-2;PARAMV6/PLT;1;real;0;4000;1;0
+sigmadistalle;parameter used for calculating tiller mortality (gamma law) ;SD;PARAMV6/PLT;1;real;0;0.5;1;0
+slamax;maximum SLA (specific leaf area) of green leaves;cm2.g-1;PARPLT;1;real;50;500;1;0
+slamin;minimum SLA (specific leaf area) of green leaves;cm2.g-1;PARPLT;1;real;50;500;1;0
+spfrmax;maximal sources/sinks value allowing the trophic stress calculation for fruit onset;SD;PARPLT;1;real;0.7;2;1;0
+spfrmin;minimal sources/sinks value allowing the trophic stress calculation for fruit onset;SD;PARPLT;1;real;0;1;1;0
+splaimax;maximal sources/sinks value allowing the trophic stress calculation for leaf growing;SD;PARPLT;1;real;0.7;2;1;0
+splaimin;minimal value of ratio sources/sinks for the leaf growth ;SD;PARPLT;1;real;0.01;1;1;0
+stade0;crop stage at the beginning of simulation;SD;INIT;1;character;;;0;0
+stadebbchamf;equivalent stage in BBCH-scale (amf);SD;PARPLT;1;character;;;0;0
+stadebbchdebdes;equivalent stage in BBCH-scale (debdes);SD;PARPLT;1;character;;;0;0
+stadebbchdrp;equivalent stage in BBCH-scale (drp);SD;PARPLT;1;character;;;0;0
+stadebbchfindorm;equivalent stage in BBCH-scale (end of dormancy);SD;PARPLT;1;character;;;0;0
+stadebbchflo;equivalent stage in BBCH-scale (flowering);SD;PARPLT;1;character;;;0;0
+stadebbchger;equivalent stage in BBCH-scale (germination);SD;PARPLT;1;character;;;0;0
+stadebbchlax;equivalent stage in BBCH-scale (lax);SD;PARPLT;1;character;;;0;0
+stadebbchlev;equivalent stage in BBCH-scale (emergence);SD;PARPLT;1;character;;;0;0
+stadebbchmat;equivalent stage in BBCH-scale (maturity);SD;PARPLT;1;character;;;0;0
+stadebbchnou;equivalent stage in BBCH-scale (fruit set);SD;PARPLT;1;character;;;0;0
+stadebbchplt;equivalent stage in BBCH-scale (sowing);SD;PARPLT;1;character;;;0;0
+stadebbchrec;equivalent stage in BBCH-scale (harvest);SD;PARPLT;1;character;;;0;0
+stadebbchsen;equivalent stage in BBCH-scale (senescence);SD;PARPLT;1;character;;;0;0
+stadecoupedf;stage of automatic cut for forage crops;SD;PARTEC;1;character;;;0;0
+stamflax;cumulative thermal time between the stages AMF and LAX;degree-d;PARPLT;1;real;0;6000;1;1
+stdnofno;cumulative thermal time between the beginning and the end of nodulation;degree-d;PARPLT;1;real;0;500;1;0
+stdordebour;cumulative thermal time between the dormancy break and the bud break ;degree-d;PARPLT;1;real;0;500;1;0
+stdrpdes;cumulative thermal time between the DRP stage and the beginning of the water fruit dynamics ;degree-d;PARPLT;1;real;0;900;1;1
+stdrpmat;cumulative thermal time between the stages DRP and MAT;degree-d;PARPLT;1;real;0;2000;1;1
+stdrpnou;cumulative thermal time between the stages DRP and NOU (end of  setting);degree-d;PARPLT;1;real;0;6000;1;0
+stemflowmax;maximal fraction of rainfall flowing down along the stems ;SD;PARPLT;1;real;0;1;1;0
+stflodrp;cumulative thermal time between FLO and DRP (only for indication);degree-d;PARPLT;1;real;0;500;1;1
+stfnofvino;cumulative thermal time between the end of the nodulation and the end of the nodule life  ;degree-d;PARPLT;1;real;0;500;1;0
+stlaxsen;cumulative thermal time between the stages LAX and SEN;degree-d;PARPLT;1;real;0;6000;1;1
+stlevamf;cumulative thermal time between the stages LEV and AMF;degree-d;PARPLT;1;real;0;6000;1;1
+stlevdno;cumulative thermal time between emergence and the beginning of nodulation ;degree-d;PARPLT;1;real;0;500;1;0
+stlevdrp;cumulative thermal time between the stages LEV and DRP;degree-d;PARPLT;1;real;0;6000;1;1
+stoprac;stage when root growth stops (LAX or SEN);SD;PARPLT;1;character;;;0;0
+stpltger;cumulative thermal time allowing germination;degree-d;PARPLT;1;real;0;100;1;0
+stressdev;maximum phasic delay allowed due to stresses ;SD;PARPLT;1;real;0.1;0.9;1;0
+stsenlan;cumulative thermal time between the stages SEN et LAN;degree-d;PARPLT;1;real;0;6000;1;1
+sucrerec;minimal sugar concentration at harvest (/ fresh matter);g.g-1 FW;PARTEC;1;real;0.0001;0.5;1;0
+surfapex;equivalent surface of a transpiring apex;m2;PARAMV6/PLT;1;real;0;0.0001;1;0
+surfouvre1;relative area of the shelter opened the first day of opening;SD;PARTEC;1;real;0.1;0.8;1;0
+surfouvre2;relative area of the shelter opened the second day of opening;SD;PARTEC;1;real;0.1;0.8;1;0
+surfouvre3;relative area of the shelter opened the third day of opening;SD;PARTEC;1;real;0.1;0.8;1;0
+swfacmin;minimal value for drought stress index (turfac, swfac, senfac);SD;PARAMV6;1;real;0;1;1;0
+tauxrecouvkmax;soil cover rate corresponding to the maximal crop coefficient for water requirement (plant surface / soil surface);m2.m-2;PARPLT;1;real;0.5;1;1;0
+tauxrecouvmax;maximal soil cover rate (plant surface / soil surface);m2.m-2;PARPLT;1;real;0.5;1;1;0
+tcmax;maximum temperature at which growth ceases;degreeC;PARPLT;1;real;10;50;1;0
+tcmin;minimum temperature at which growth ceases;degreeC;PARPLT;1;real;-10;15;1;0
+tcxstop;temperature beyond which foliar growth stops;degreeC;PARPLT;1;real;0.0001;50;1;0
+tdebgel;temperature below which frost affects plant growth;degreeC;PARPLT;1;real;-5;5;1;0
+tdmax;maximum temperature above which development stops;degreeC;PARPLT;1;real;15;40;1;0
+tdmaxdeb;maximal temperature for hourly calculation of phasic duration between dormancy and bud breaks;degreeC;PARPLT;1;real;0;40;1;0
+tdmin;minimum temperature below which development stops;degreeC;PARPLT;1;real;-10;15;1;0
+tdmindeb;minimal thermal threshold for hourly calculation of phasic duration between dormancy and bud breaks;degreeC;PARPLT;1;real;0;40;1;0
+temax;maximal temperature above which plant growth stops;degreeC;PARPLT;1;real;15;40;1;0
+temin;minimum temperature for development;degreeC;PARPLT;1;real;-10;15;1;0
+tempdeshyd;increase in fruit dehydration rate due to the increase in crop temperature (Tcult-Tair);% water.degreeC-1;PARPLT;1;real;0.0001;0.05;1;0
+tempfauche;cumulative thermal time between two cuts of forage crops ;degree-d;PARTEC;1;real;0;2000;1;0
+tempnod1;temperature parameter (1/4) used to calculate N fixation by legumes  ;degreeC;PARPLT;1;real;-10;40;1;0
+tempnod2;temperature parameter (2/4) used to calculate N fixation by legumes  ;degreeC;PARPLT;1;real;-10;40;1;0
+tempnod3;temperature parameter (3/4) used to calculate N fixation by legumes  ;degreeC;PARPLT;1;real;-10;40;1;0
+tempnod4;temperature parameter (4/4) used to calculate N fixation by legumes  ;degreeC;PARPLT;1;real;-10;40;1;0
+teopt;optimal temperature (1/2) for plant growth;degreeC;PARPLT;1;real;10;30;1;0
+teoptbis;optimal temperature (2/2) for plant growth;degreeC;PARPLT;1;real;10;30;1;0
+tfroid;optimal temperature for vernalisation;degreeC;PARPLT;1;real;-5;10;1;0
+tgelflo10;temperature resulting in 10% of frost damages on flowers and fruits;degreeC;PARPLT;1;real;-25;0;1;0
+tgelflo90;temperature resulting in 90% of frost damages on flowers and fruits;degreeC;PARPLT;1;real;-25;0;1;0
+tgeljuv10;temperature resulting in 10% of frost damage on LAI (juvenile stage);degreeC;PARPLT;1;real;-25;0;1;0
+tgeljuv90;temperature resulting in 90% of frost damage on LAI (juvenile stage);degreeC;PARPLT;1;real;-25;0;1;0
+tgellev10;temperature resulting in 10% of frost damages on plantlet;degreeC;PARPLT;1;real;-25;0;1;0
+tgellev90;temperature resulting in 90% of frost damages on plantlet;degreeC;PARPLT;1;real;-25;0;1;0
+tgelveg10;temperature resulting in 10% of frost damage on LAI (adult stage);degreeC;PARPLT;1;real;-25;0;1;0
+tgelveg90;temperature resulting in 90% of frost damage on LAI (adult stage);degreeC;PARPLT;1;real;-25;0;1;0
+tgmin;minimum temperature below which emergence is stopped;degreeC;PARPLT;1;real;-10;15;1;0
+tigefeuil;ratio stem (structural part)/leaf;SD;PARPLT;1;real;0;3;1;0
+tigefeuilcoupe;ratio stem (structural part)/leaf on the cutting day;SD;PARAMV6/PLT;1;real;0;3;1;0
+tletale;lethal temperature for the plant;degreeC;PARPLT;1;real;-30;-1;1;0
+tmaxremp;maximal temperature above which grain filling stops;degreeC;PARPLT;1;real;10;40;1;0
+tminremp;minimal temperature below which grain filling stops;degreeC;PARPLT;1;real;0;20;1;0
+tnitmax;maximal temperature above which nitrification stops;degreeC;PARAM;1;real;0;40;1;0
+tnitmin;minimal temperature below which nitrification stops;degreeC;PARAM;1;real;0;40;1;0
+tnitopt;optimal temperature (1/2) for nitrification;degreeC;PARAM;1;real;20;40;1;0
+tnitopt2;optimal temperature (2/2) for nitrification;degreeC;PARAM;1;real;35;45;1;0
+transplastic;transmission coefficient of the plastic shelter;SD;PARTEC;1;real;0.3;0.9;1;0
+trefdenit1;reference temperature for the soil denitrification (11 °C for temperate soils and 20 °C for tropical soils);degreeC;PARAMV6;1;real;-10;20;1;0
+trefdenit2;reference temperature for the soil denitrification (20 °C for temperate soils and 29 °C for tropical soils);degreeC;PARAMV6;1;real;-10;20;1;0
+trefh;reference temperature for decomposition of humified organic matter;degreeC;PARAM;1;real;-10;20;1;0
+trefr;reference temperature for decomposition of organic residues;degreeC;PARAM;1;real;-10;20;1;0
+tustressmin;water stress index (min(turfac,inns)) below which there is an extra LAI senescence;SD;PARPLT;1;real;0.3;1;1;0
+typecailloux;Pebbles type: 1=calcaire B1,  2=calcaire B2,  3=calcaire L,  4=caillasse L,  5=gravier m,  6=silex, 7=granite, 8=calcaire J, 9-10=others;SD;PARSOL;1;integer;0;0;1;0
+typsol;soil type;SD;PARSOL;1;character;;;0;0
+udlaimax;ulai from which the rate of leaf growth decreases ;SD;PARPLT;1;real;1;3;1;0
+upvttapI;thermal time from emergence (UPVT units) driving irrigation;degreeC;PARTEC;1;integer;0;200;1;0
+upvttapN;thermal time from emergence (UPVT units) driving fertilization;degreeC;PARTEC;1;integer;0;200;1;0
+usm;name of the USM;SD;USMXML;1;character;;;0;0
+Vabs2;N uptake rate at which fertilizer loss is divided by 2;kg.ha-1.d-1;PARAM;1;real;0.5;5;1;0
+variete;cultivar number corresponding to the cultivar name in the plant file;SD;PARTEC;1;integer;0;200;1;0
+vigueurbat;plant vigor index allowing to emerge through a soil crust ;SD;PARPLT;1;real;0.0001;1;1;0
+vitirazo;rate of increase of the N harvest index vs time;g grain.g-1.d-1;PARPLT;1;real;0.001;0.04;1;0
+vitircarb;rate of increase of the C harvest index vs time;g grain.g-1.d-1;PARPLT;1;real;0.001;0.02;1;0
+vitircarbT;rate of increase of the C harvest index vs thermal time;g grain.g-1.d-1;PARPLT;1;real;0.00005;0.002;1;0
+vitno;"rate of nodule onset expressed as a proportion of ""fixmax"" per degree day ";degree-d-1;PARPLT;1;real;0.001;0.01;1;0
+vitprophuile;rate of increase of oil harvest index vs time;g oil.g-1.d-1;PARPLT;1;real;0.001;0.01;1;0
+vitpropsucre;rate of increase of sugar harvest index vs time;g sugar.g-1.d-1;PARPLT;1;real;0.001;0.01;1;0
+vitreconspeupl;rate of regeneration of the tiller population;degreeC-1;PARAMV6;1;real;0;0.1;1;0
+vlaimax;ulai at the inflexion point of the function DELTAI=f(ULAI);SD;PARPLT;1;real;1.5;2.5;1;0
+Vmax1;maximum specific N uptake rate with the low affinity transport system;µmole.cm-1 h-1;PARPLT;1;real;0.0002;0.01;1;0
+Vmax2;maximum specific N uptake rate with the high affinity transport system;µmole.cm-1 h-1;PARPLT;1;real;0.002;0.1;1;0
+voleng;maximal fraction of mineral fertilizer that can be volatilized ;SD;PARAM;8;real;0;1;1;0
+vpotdenit;potential rate of denitrification for the whole denitrifying layer;kg.ha-1.d-1;PARSOL;1;real;0.3;10;1;0
+wdata1;name of the first climate file;SD;USM;1;character;;;0;0
+wdata2;name of the last climate file;SD;USM;1;character;;;0;0
+Wh;N/C ratio of soil humus;g.g–1;PARAM;1;real;0.05;0.14;1;0
+Xorgmax;maximal amount of N immobilised in soil derived from the mineral fertilizer ;kg.ha-1;PARAM;1;real;100;500;1;0
+y0msrac;minimal amount of root mass at harvest (when aerial biomass is nil);t.ha-1;PARAM;1;real;0;5;1;0
+yres;Carbon assimilation yield by the microbial biomass during crop residues decomposition;g.g-1;PARAM;21;real;0.3;0.7;1;0
+z0solnu;roughness length of bare soil;m;PARSOL;1;real;0.01;0.2;1;0
+zesx;maximal soil depth affected by soil evaporation;cm;PARSOL;1;real;10;150;1;0
+zlabour;depth of ploughing (reference profile);cm;PARPLT;1;real;0;100;1;0
+zpente;depth at which root density is 50% of the surface root density (reference profile);cm ;PARPLT;1;real;10;200;1;0
+zprlim;maximum depth of the root profile (reference profile);cm ;PARPLT;1;real;10;200;1;0
+zr;reference height of meteorological data measurement;m;STATION;1;real;2;10;1;0
+zrac0;initial depth of root apex of the crop;cm;INIT;1;real;0;200;1;0
+zracplantule;initial depth of root apex of the plantlet;cm;PARPLT;1;real;0;200;1;0
