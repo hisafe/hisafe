@@ -20,7 +20,7 @@ import safe.pgms.SafeDbhCalibrationLoader;
 public class SafeEvolutionParameters implements EvolutionParameters {
 
 	public static final int NB_SIMULATION_MAX = 100; // max number of simulation
-	public static final int NB_PROFIL_MAX = 10; // max number of export profiles
+	public static final int NB_PROFIL_MAX = 20; // max number of export profiles
 
 	// EXPORTATION
 	public String simulationDir;
