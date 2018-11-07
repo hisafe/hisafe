@@ -27,7 +27,7 @@ You can install the lastest Hi-sAFe release from the Hi-sAFe website. The model 
 
 ### hisafer
 
-A suite of tools for building, running, and analyzing Hi-sAFe simulations is also available via the hisafer R package. The package includes a vignette to introduce users to the available functions. The hisafer source code is hosted online in [GitHub](www.github.com/kevinwolz/hisafer) and includes an [issue tracker](www.github.com/kevinwolz/hisafer/issues) where users can report bugs or suggest changes. To install hisafer from within R, you can run:
+A suite of tools for building, running, and analyzing Hi-sAFe simulations is also available via the hisafer R package. The package includes a vignette to introduce users to the available functions. The hisafer source code is hosted online in [GitHub](https://github.com/kevinwolz/hisafer) and includes an [issue tracker](https://github.com/kevinwolz/hisafer/issues) where users can report bugs or suggest changes. To install hisafer from within R, you can run:
 
 ``` r
 # install.packages("devtools")
