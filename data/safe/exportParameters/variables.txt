@@ -161,7 +161,7 @@ SafeCell	1	nitrogenMicrobesMulch	mm	mm	nitrogenMicrobesMulch	nitrogenMicrobesMul
 SafeCell	1	nitrogenHarvested	mm	mm	nitrogenHarvested	nitrogenHarvested
 SafeCell	1	biomassHarvested	mm	mm	biomassHarvested	biomassHarvested
 SafeCell	1	nitrogenLossNitrification	kg N ha-1	kg N ha-1	nitrogenLossNitrification	nitrogenLossNitrification
-SafeCell	1	nitrogenResidus2	kg N ha-1	kg N ha-1	nitrogenResidus2	nitrogenResidus2
+SafeCell	1	nitrogenShallowRootResidu	g N 	g N 	nitrogenShallowRootResidu		nitrogenShallowRootResidu
 SafeCell	1	nitrogenDeepRootResidu	g N 	g N 	nitrogenDeepRootResidu		nitrogenDeepRootResidu
 SafeMacroClimat	1	minTemperature	°	°	Température min	a-Min temperature
 SafeMacroClimat	2	maxTemperature	°	°	Température max	b-Max temperature

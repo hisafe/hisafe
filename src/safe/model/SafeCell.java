@@ -1165,18 +1165,32 @@ public class SafeCell extends SquareCell {
 		
 		return waterStock / this.getArea();
 	}
+	
+	//to export tree deep root residus 
+	public double getNitrogenShallowRootResidu () {
+		double nitrogenRootResidu=0;
+		
+		SafeVoxel[] voxel = this.getVoxels();
+
+			for (int i = 0; i < voxel.length; i++) {
+				if (voxel[i].getZ()*100 <= this.getCrop().sticsSoil.P_profhum) 
+					nitrogenRootResidu += voxel[i].getNitrogenRootResidu();
+			}
+			   
+		return nitrogenRootResidu * 10 / this.getArea();		 //convert g in kg ha-1 
+	}	
 	//to export tree deep root residus 
 	public double getNitrogenDeepRootResidu () {
-		double nitrogenDeepRootResidu=0;
+		double nitrogenRootResidu=0;
 		
 		SafeVoxel[] voxel = this.getVoxels();
 
 			for (int i = 0; i < voxel.length; i++) {
 				if (voxel[i].getZ()*100 > this.getCrop().sticsSoil.P_profhum) 
-					nitrogenDeepRootResidu += voxel[i].getNitrogenRootResidu();
+					nitrogenRootResidu += voxel[i].getNitrogenRootResidu();
 			}
 			   
-		return nitrogenDeepRootResidu * 10 / this.getArea();		 //convert g in kg ha-1 
-		}
+		return nitrogenRootResidu * 10 / this.getArea();		 //convert g in kg ha-1 
+	}
 	
 }
