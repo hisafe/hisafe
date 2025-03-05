@@ -1,0 +1,165 @@
+## MAIZE (MAIS)
+species = maize.plt
+variete = 4
+daystart = 01-01
+dayend = 12-31
+
+
+## SOIL MANAGEMENT
+nbjres = 1
+nbjtrav = 1
+
+## RESIDUE INCORPORATION TABLE
+#MM-DD coderes qres Crespc CsurNres Nminres eaures
+RESIDUEINC	04-22	1	1.00	42.00	60.00	0.00	0.00
+
+## TILLAGE TABLE
+#MM-DD profres proftrav
+TILLAGE	04-22	0.0	25.00
+
+## SOWING OPTIONS
+iplt0 = 04-27
+profsem = 5.00000
+densitesem = 9.50000
+codetradtec = 1
+interrang = 2.00000
+orientrang = 0.00000
+codedecisemis = 2
+nbjmaxapressemis = 30
+nbjseuiltempref = 15
+
+## STAGE FORCING
+codestade = 2
+ilev = 999
+iamf = 999
+ilax = 999
+isen = 999
+ilan = 999
+iflo = 999
+idrp = 999
+imat = 999
+irec = 999
+irecbutoir = 10-27
+
+
+## IRRIGATIONS
+effirr = 1.00000
+codecalirrig = 2
+ratiol = 0.00000
+dosimx = 40.00000
+doseirrigmin = 20.00000
+codedateappH2O = 2
+codlocirrig = 1
+locirrig = 0
+profmes = 120.00000
+nap = 16
+
+## IRRIGATION TABLE
+#MM-DD qte
+IRRIGATION	06-27	20.00
+IRRIGATION	07-04	24.00
+IRRIGATION	07-12	29.00
+IRRIGATION	07-17	29.00
+IRRIGATION	07-19	28.00
+IRRIGATION	07-23	31.00
+IRRIGATION	07-26	21.00
+IRRIGATION	07-30	21.00
+IRRIGATION	08-02	23.00
+IRRIGATION	08-06	18.00
+IRRIGATION	08-09	22.00
+IRRIGATION	08-20	16.00
+IRRIGATION	08-27	16.00
+IRRIGATION	09-06	30.00
+IRRIGATION	09-14	29.00
+IRRIGATION	09-21	20.00
+
+## FERTILIZATIONS
+codecalferti = 2
+ratiolN = 0
+dosimxN = 40
+codetesthumN = 1
+engrais = 2
+concirr = 0.11000
+codedateappN = 2
+codefracappN = 1
+Qtot_N = 100
+codlocferti = 1
+locferti = 0
+napN = 1
+
+## FERTILIZATION TABLE
+#MM-DD qte
+FERTILIZATION	04-22	220.00
+
+## HARVEST OPTIONS
+ressuite = straw+roots
+codceuille = 1
+nbceuille = 1
+cadencerec = 7
+codrecolte = 1
+codeaumin = 2
+h2ograinmin = 0.80000
+h2ograinmax = 0.32000
+sucrerec = 0.25000
+CNgrainrec = 0.02000
+huilerec = 0.25000
+coderecolteassoc = 2
+codedecirecolte = 2
+nbjmaxapresrecolte = 15
+
+## CUTTING INTERVENTIONS
+codefauche = 2
+mscoupemini = 0.00000
+codemodfauche = 1
+hautcoupedefaut = 0.00000
+stadecoupedf = rec
+nbcoupe = 0
+
+## CUTTING TABLE
+#MM-DD	hautcoupe	lairesiduel	msresiduel	anitcoupe
+#CUTTING	06-15	0.10	0.0	0.0	0.00
+
+## OTHER INTERVENTIONS
+codepaillage = 1
+couvermulchplastique = 0.00000
+albedomulchplastique = 0.00000
+codrognage = 1
+largrogne = 0.00000
+hautrogne = 0.00000
+biorognem = 0.00000
+codcalrogne = 1
+julrogne = 0
+margerogne = 0.00000
+codeclaircie = 1
+juleclair = 0
+nbinfloecl = 0.00000
+codeffeuil = 1
+codhauteff = 1
+codcaleffeuil = 1
+laidebeff = 0.00000
+effeuil = 0.00000
+juleffeuil = 0
+laieffeuil = 0.00000
+codetaille = 1
+jultaille = 0
+codepalissage = 1
+hautmaxtec = 0.00000
+largtec = 0.50000
+codabri = 1
+transplastic = 0.70000
+surfouvre1 = 0.00000
+julouvre2 = 0
+surfouvre2 = 0.00000
+julouvre3 = 0
+surfouvre3 = 0.00000
+codeDST = 2
+dachisel = 1.10000
+dalabour = 1.30000
+rugochisel = 0.00500
+rugolabour = 0.05000
+codeDSTtass = 2
+profhumsemoir = 30.00000
+dasemis = 1.60000
+profhumrecolteuse = 30.00000
+darecolte = 1.60000
+codeDSTnbcouche = 2

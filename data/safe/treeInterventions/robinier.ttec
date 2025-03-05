@@ -1,0 +1,96 @@
+## ROBINIER TREE INTERVENTIONS
+
+## TREE PLANTING
+plantingYear = 1
+plantingDay = 01-01
+plantingCohortAge = 0
+plantingAge = 1
+plantingHeight = 0.75
+plantingCrownBaseHeight = 0.375
+plantingCrownRadius = 0.25
+plantingRootShape = 1
+plantingRootRepartition = 3
+plantingRootShapeParam1 = 0.4
+plantingRootShapeParam2 = 0
+plantingRootShapeParam3 = 0
+
+## TREE HARVEST
+#treeHarvestYears = 40
+#treeHarvestDays = 01-01
+
+## TREE PRUNING
+#treePruningYears = 3,4,5
+#treePruningDays = 01-01,01-01,01-01
+#treePruningProp = 0.3,0.3,0.3
+#treePruningMaxHeight = 1,1,1
+#treePruningResiduesIncorporation = 0,0,0
+#treePruningResiduesSpreading = 0,0,0
+
+## TREE ROOT PRUNING
+#treeRootPruningYears = 1
+#treeRootPruningDays = 12-31
+#treeRootPruningDistance = 1.5
+#treeRootPruningDepth = 1
+
+## TREE IRRIGATION
+#treeIrrigationType = 2
+#treeIrrigationYears = 1
+#treeIrrigationMethod = 1
+#treeIrrigationRadius = 0.1
+#treeIrrigationDriporSprinklerX = 0
+#treeIrrigationDriporSprinklerY = 0
+#treeIrrigationWaterStressTrigger = 0
+#treeIrrigationAutomaticDose = 0
+#treeIrrigationDays = 01-10
+#treeIrrigationDose = 20
+
+## TREE FERTILIZATION
+#treeFertilizationType = 0
+#treeFertilizationYears = 0
+#treeFertilizationRadius = 0
+#treeFertilizationNitrogenStressTrigger = 0
+#treeFertilizationAutomaticDose = 0
+#treeFertilizerAutomaticCode = 0
+#treeFertilizationDays = 2,5,10
+#treeFertilizationDose = 10,20,30
+#treeFertilizerCode = 1,1,1
+
+## TREE TOPING 
+#treeToppingYears = 3
+#treeToppingDays = 01-15
+#treeToppingHeight = 3.2
+#treeToppingResiduesIncorporation = 0
+#treeToppingResiduesSpreading = 0
+
+## LEAF AREA DENSITY REDUCTION
+#leafAreaDensityReductionYears = 3,5
+#leafAreaDensityReductionDays = 01-01,01-01
+#leafAreaDensityReductionThreshold = 1,1
+#leafAreaDensityReductionFraction = 1,1
+#leafAreaDensityReductionResiduesIncorporation = 0,0
+#leafAreaDensityReductionResiduesSpreading = 0,0
+
+## TRIMMING CROWN AREA REDUCTION
+#canopyTrimmingYears = 3,5
+#canopyTrimmingDays = 01-01,01-01
+#canopyTrimmingTreeLineTrigger = 1.5,1.5
+#canopyTrimmingTreeLineReductionTarget = 1,1
+#canopyTrimmingInterRowTrigger = 100,100
+#canopyTrimmingInterRowReductionTarget = 100,100
+#canopyTrimmingResiduesIncorporation = 0,0
+#canopyTrimmingResiduesSpreading = 0,0
+
+##FRUIT THINNING (0=none, 1=auto, 2=manual)
+#fruitThinningYears = 0
+#fruitThinningMethod = 0
+#fruitThinningDays = 0
+#fruitThinningResiduesIncorporation = 0
+#fruitThinningResiduesSpreading = 0
+
+##FRUIT HARVEST 
+#fruitHarvestDays = 11-30
+
+
+
+## FROST DAMAGE ON LEAVES
+frostDamageActivation = 0

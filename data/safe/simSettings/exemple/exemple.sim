@@ -1,0 +1,20 @@
+## SIMULATION
+simulationDateStart = 2010-01-01
+simulationDateEnd = 2010-12-31
+saveProjectOption = 1
+#projectFileName = none.prj
+debugMode = 1
+sticsReport = 0
+
+## ZONES DEFINITION
+ZONE	main	1-2,4-7,9-12,14-17,19-22,24-25	maize.tec
+ZONE	inter	3,8,13,18,23	baresoil.tec
+
+## TREES TECHNICAL FILES
+TREETEC	walnut.ttec
+
+## TORIC SYMETRY OPTIONS
+toricXp = 1
+toricXn = 1
+toricYp = 1
+toricYn = 1
