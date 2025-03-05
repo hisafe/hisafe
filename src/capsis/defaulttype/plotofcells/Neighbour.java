@@ -1,0 +1,56 @@
+/** 
+ * Capsis - Computer-Aided Projections of Strategies in Silviculture
+ * 
+ * Copyright (C) 1999-2010 INRA 
+ * 
+ * Authors: F. de Coligny, S. Dufour-Kowalski, 
+ * 
+ * This file is part of Capsis
+ * Capsis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * Capsis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU lesser General Public License
+ * along with Capsis.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+package capsis.defaulttype.plotofcells;
+
+import capsis.defaulttype.ShiftItem;
+
+/**
+ * A neighbour cell of a target cell : another cell with shift for its trees
+ * coordinates.
+ * 
+ * @author F. de Coligny - march 2000
+ */
+public class Neighbour {
+	// ~ public GCell cell;
+	public SquareCell cell; // fc - 10.10.2008
+	public ShiftItem shift;
+
+	/**
+	 * Constructor.
+	 */
+	// ~ public Neighbour (GCell cl, ShiftItem sh) {
+	public Neighbour(SquareCell cl, ShiftItem sh) { // fc - 10.10.2008
+		cell = cl;
+		shift = sh;
+	}
+
+	public SquareCell getCell() {
+		return cell;
+	} // fc - 10.10.2008
+
+	public String toString() {
+		return "[" + cell.getId() + " " + shift + "]";
+	}
+
+}
