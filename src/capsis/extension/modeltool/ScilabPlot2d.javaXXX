@@ -1,0 +1,293 @@
+/* 
+ * Capsis 4 - Computer-Aided Projections of Strategies in Silviculture
+ * 
+ * Copyright (C) 2000-2003  Francois de Coligny
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied 
+ * warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package capsis.extension.modeltool;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Iterator;
+import java.util.Vector;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import jeeb.lib.util.ColumnPanel;
+import jeeb.lib.util.JWidthLabel;
+import jeeb.lib.util.LinePanel;
+import jeeb.lib.util.Log;
+import jeeb.lib.util.Translator;
+import bimodal.model.BimStand;
+import capsis.extension.ModelTool;
+import capsis.kernel.GModel;
+import capsis.kernel.GScene;
+import capsis.kernel.GenericExtensionStarter;
+import capsis.kernel.Step;
+import capsis.commongui.command.tmp.Helper;
+
+/**
+ * A connexion to Scilab.plot2d () for continuous models 'ex: bimodal).
+ *
+ * @author F. de Coligny - august 2002
+ */
+public class ScilabPlot2d extends ModelTool implements ActionListener {
+
+	private JTextField color;
+	private JCheckBox line;
+
+	private JButton plot;
+	private JButton close;
+	private JButton help;
+
+	private Step step;
+	private GModel model;
+	private BimStand refStand;
+
+
+	static {
+		Translator.addBundle("capsis.extension.modeltool.ScilabPlot2d");
+	}
+
+	/**
+	 * Phantom constructor. 
+	 * Only to ask for extension properties (authorName, version...).
+	 */
+	public ScilabPlot2d () {}
+
+	/**
+	 * Official constructor redefinition : chaining with superclass official constructor.
+	 */
+	public ScilabPlot2d (GenericExtensionStarter s) {
+		super (s);
+		
+		try {
+			step = s.getStep ();
+			model = step.getProject ().getModel ();
+			refStand = (BimStand) step.getScene ();
+			
+			setTitle (Translator.swap ("ScilabPlot2d")+" - "+step.getCaption ());
+			
+			createUI ();
+			
+			pack ();	// sets the size
+			setVisible (true);
+			setModal (false);
+			setResizable (true);
+			
+		} catch (Exception exc) {
+			Log.println (Log.ERROR, "ScilabPlot2d.c ()", exc.toString (), exc);
+		}
+		
+	}
+
+	/**
+	 * Extension dynamic compatibility mechanism.
+	 * This matchwith method checks if the extension can deal (i.e. is compatible) with the referent.
+	 */
+	public boolean matchWith (Object referent) {
+		try {
+			if (!(referent instanceof GModel)) {return false;}
+			GModel m = (GModel) referent;
+			
+			GScene s = ((Step) m.getProject ().getRoot ()).getScene ();
+			if (!(s instanceof bimodal.model.BimStand)) {return false;}	// at this moment, restriction t bimodal model
+			
+		} catch (Exception e) {
+			Log.println (Log.ERROR, "ScilabPlot2d.matchWith ()", "Error in matchWith () (returned false)", e);
+			return false;
+		}
+		
+		return true;
+	}
+
+	/** 
+	 * From Extension interface.
+	 */
+	public String getName () {
+		return Translator.swap ("ScilabPlot2d");
+	}
+
+	/**
+	 * From Extension interface.
+	 */
+	public String getVersion () {return VERSION;}
+	public static final String VERSION = "0.9";
+
+	/**
+	 * From Extension interface.
+	 */
+	public String getAuthor () {return "F. de Coligny";}
+
+	/**
+	 * From Extension interface.
+	 */
+	public String getDescription () {return Translator.swap ("ScilabPlot2d.description");}
+
+	private void plotAction () {
+		
+		String c = color.getText ().trim ();
+		if (c.length () != 1) {
+			JOptionPane.showMessageDialog (this, Translator.swap ("ScilabPlot2d.colorUsage"),
+					Translator.swap ("Shared.warning"), JOptionPane.WARNING_MESSAGE );
+			return;
+		}
+		if (!c.equals ("b") && !c.equals ("m") && !c.equals ("n")) {
+			JOptionPane.showMessageDialog (this, Translator.swap ("ScilabPlot2d.colorUsage"),
+					Translator.swap ("Shared.warning"), JOptionPane.WARNING_MESSAGE );
+			return;
+		}
+		
+		
+		// test - Scilab.exec ("plot2d();halt;");
+		
+		// Retrieve Steps from root to this step
+		Vector steps = step.getProject ().getStepsFromRoot (step);
+		int nLin = refStand.getX ().length;	// number of trees (for the moment : constant)
+		
+		double[][] xs = new double[nLin][steps.size ()];
+	//	System.out.println ("ScilabPlot2d...");
+	//	System.out.println ("xs="+Tools.toString (xs));
+		
+		int k = 0;
+		for (Iterator i = steps.iterator (); i.hasNext ();) {
+			Step step = (Step) i.next ();
+			BimStand std = (BimStand) step.getScene ();
+			double[] x = std.getX ();
+			for (int j = 0; j < nLin; j++) {
+				xs[j][k] = x[j];
+			}
+			k++;
+		}
+		
+		double[] x2 = Scilab.compact(xs);
+	//	System.out.println ("x2="+Tools.toString (xs));
+	//	System.out.println ("done (ScilabPlot2d)");
+		
+		String colors = "";
+		String car = "x";
+		for (int i = 0; i < nLin; i++) {
+			colors+=c;	// c : color
+			if (!line.isSelected ()) {colors+=car;}
+			if (i < nLin -1) {
+				colors+=",";
+			}
+		}
+		
+		//~ String colors = c+"*ones(1,"+nLin+")";
+		
+		System.out.println ("colors="+colors);
+		
+		if (line.isSelected ()) {
+			Scilab.plot2dLine (x2, nLin, colors);
+		} else {
+			Scilab.plot2dCluster (x2, nLin, colors);
+		}
+		
+	}
+
+	/** 
+	 * From ActionListener interface.
+	 */
+	public void actionPerformed (ActionEvent evt) {
+		if (evt.getSource ().equals (close)) {
+			/*
+			if (DQuestion.isTrue (Translator.swap ("ScilabPlot2d.confirm"), 
+					Translator.swap ("ScilabPlot2d.confirmClose"))) {
+				dispose ();
+			}*/
+			dispose ();	// no question
+			
+		} else if (evt.getSource ().equals (plot)) {
+			plotAction ();
+			
+		} else if (evt.getSource ().equals (help)) {
+			Helper.helpFor (this);
+		} 
+		
+	}
+
+	/**
+	 * Called on Escape. Redefinition of method in GDialog : ask for user confirmation.
+	 */
+	/*
+	protected void escapePressed () {
+		if (DQuestion.isTrue (Translator.swap ("ScilabPlot2d.confirm"), 
+				Translator.swap ("ScilabPlot2d.confirmClose"))) {
+			dispose ();
+		}
+	}*/
+
+	public Step getStep () {return step;}
+
+	/** 
+	 * User interface definition.
+	 */
+	private void createUI () {
+		
+		// 1. Parameters input
+		ColumnPanel part1 = new ColumnPanel ();
+		
+		LinePanel l1 = new LinePanel ();
+		JLabel lab1 = new JWidthLabel (Translator.swap ("ScilabPlot2d.color")+" :", 100);
+		color = new JTextField (1);
+		color.setText ("b");	// default
+		l1.add (lab1);
+		l1.add (color);
+		l1.addStrut0 ();
+		part1.add (l1);
+		
+		LinePanel l2 = new LinePanel ();
+		line = new JCheckBox (Translator.swap ("ScilabPlot2d.line"));
+		line.setSelected (true);
+		l2.add (line);
+		l2.addGlue ();
+		part1.add (l2);
+		
+		// 2. Control panel
+		JPanel pControl = new JPanel (new FlowLayout (FlowLayout.RIGHT));
+		plot = new JButton (Translator.swap ("ScilabPlot2d.plot"));
+		plot.addActionListener (this);
+		close = new JButton (Translator.swap ("Shared.close"));
+		close.addActionListener (this);
+		help = new JButton (Translator.swap ("Shared.help"));
+		help.addActionListener (this);
+		pControl.add (plot);
+		pControl.add (close);
+		pControl.add (help);
+		
+		// Set close as default (see GDialog)
+		close.setDefaultCapable (true);
+		getRootPane ().setDefaultButton (close);
+		
+		// Layout parts
+		getContentPane ().add (part1, BorderLayout.NORTH);
+		getContentPane ().add (pControl, BorderLayout.SOUTH);
+		
+	}
+	
+}
+
+

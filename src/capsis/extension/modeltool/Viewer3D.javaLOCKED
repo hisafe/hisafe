@@ -1,0 +1,584 @@
+/* 
+ * Capsis 4 - Computer-Aided Projections of Strategies in Silviculture
+ * 
+ * Copyright (C) 2000-2003  Francois de Coligny
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied 
+ * warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package capsis.extension.modeltool;
+
+import com.sun.j3d.utils.behaviors.mouse.*;
+import com.sun.j3d.utils.behaviors.vp.*;
+
+import capsis.kernel.*;
+import capsis.extension.*;
+import capsis.util.*;
+import capsis.util.methodprovider.*;
+import capsis.gui.*;
+import java.net.*;
+import java.io.*;
+import java.util.*;
+import java.awt.*;
+import java.awt.event.*;
+
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
+
+import javax.swing.Timer;
+import javax.swing.*;
+import javax.swing.text.*;
+import javax.swing.event.*;
+
+import com.sun.j3d.utils.universe.*;
+import com.sun.j3d.utils.geometry.*;
+import javax.media.j3d.*;
+import javax.vecmath.*;
+
+/**
+ * A simple 3D viewer for stands.
+ *
+ * @author F. de Coligny - august 2001
+ */
+public class Viewer3D extends ModelTool implements ActionListener {
+//checked for c4.1 - fc - 15.10.2001
+
+	private int reductor = 50;
+	
+	private double x0, y0, z0 = Double.MAX_VALUE;
+	private double x1, y1, z1 = Double.MIN_VALUE;
+
+	private JPanel panel3d;
+	private Color backgroundColor = Color.white;
+	private Background backgroundObject;
+
+	private JButton close;
+	private JButton help;
+	private JButton background;
+
+	private Step step;
+	private GModel model;
+
+	private int numTriangles;	// total number of triangles in the whole scene
+
+
+	static {
+		Translator.addBundle("capsis.extension.modeltool.Viewer3D");
+	}
+
+	/**
+	 * Phantom constructor. 
+	 * Only to ask for extension properties (authorName, version...).
+	 */
+	public Viewer3D () {}
+
+	/**
+	 * Official constructor redefinition : chaining with superclass official constructor.
+	 */
+	public Viewer3D (ExtensionStarter s) {
+		super (s);
+		
+		try {
+			numTriangles = 0;
+			step = s.getStep ();
+			model = step.getScenario ().getModel ();
+			
+			setTitle (Translator.swap ("Viewer3D")+" - "+step.getCaption ());
+			
+			createUI ();
+			
+			pack ();	// sets the size
+			setVisible (true);
+			setModal (false);
+			setResizable (true);
+			
+		} catch (Exception exc) {
+			Log.println (Log.ERROR, "Viewer3D.c ()", exc.toString (), exc);
+		}
+		
+	}
+
+	/**
+	 * Extension dynamic compatibility mechanism.
+	 * This matchwith method checks if the extension can deal (i.e. is compatible) with the referent.
+	 */
+	public boolean matchWith (Object referent) {
+		try {
+			if (!(referent instanceof GModel)) {return false;}
+			GModel m = (GModel) referent;
+			
+			GStand s = ((Step) m.getScenario ().getRoot ()).getStand ();
+			if (!(s instanceof TreeCollection)) {return false;} 
+			
+			TreeCollection tc = (TreeCollection) s;
+			GTree t = tc.getFirstTree ();
+			if (!(t instanceof Spatialized)) {return false;}
+			
+			try {
+				Transform3D t3 = new Transform3D ();
+			} catch (Throwable thr) {
+				Log.println (Log.INFO, "Viewer3D.matchWith (Object)", 
+						"Can not find java3D libraries on this platform, Viewer3D is unusable");
+				return false;
+			}
+			
+		} catch (Exception e) {
+			Log.println (Log.ERROR, "Viewer3D.matchWith ()", "Error in matchWith () (returned false)", e);
+			return false;
+		}
+		
+		return true;
+	}
+
+	/** 
+	 * From Extension interface.
+	 */
+	public String getName () {
+		return Translator.swap ("Viewer3D");
+	}
+
+	/**
+	 * From Extension interface.
+	 */
+	public String getVersion () {return VERSION;}
+	public static final String VERSION = "1.1";
+
+	/**
+	 * From Extension interface.
+	 */
+	public String getAuthor () {return "F. de Coligny";}
+
+	/**
+	 * From Extension interface.
+	 */
+	public String getDescription () {return Translator.swap ("Viewer3D.description");}
+
+	/** 
+	 * From ActionListener interface.
+	 */
+	public void actionPerformed (ActionEvent evt) {
+		if (evt.getSource ().equals (close)) {
+			if (DQuestion.isTrue (Translator.swap ("Viewer3D.confirm"), 
+					Translator.swap ("Viewer3D.confirmClose"))) {
+				dispose ();
+			}
+			
+		} if (evt.getSource ().equals (background)) {
+			Color newColor = JColorChooser.showDialog(
+					this,
+					Translator.swap ("Viewer3D.chooseBackgroundColor"),
+					backgroundColor);
+			if (newColor != null) {
+				backgroundColor = newColor;
+				
+				Color3f color = new Color3f ();
+				color.set (backgroundColor);
+				backgroundObject.setColor (color);
+			}
+			
+		} if (evt.getSource ().equals (help)) {
+			Helper.helpFor (this);
+			
+		} 
+		
+	}
+
+	/**
+	 * Called on Escape. Redefinition of method in GDialog : ask for user confirmation.
+	 */
+	protected void escapePressed () {
+		if (DQuestion.isTrue (Translator.swap ("Viewer3D.confirm"), 
+				Translator.swap ("Viewer3D.confirmClose"))) {
+			dispose ();
+		}
+	}
+
+	public Step getStep () {return step;}
+
+    // 
+	// Create a virtual tree
+	// 
+	private javax.media.j3d.Group createVirtualTree (int crownType, float x, float y, float z, 
+			float dbh, float height, float crownBaseHeight, float crownRadius, 
+			Color3f crownColor, float transparency, float hMax) {
+		
+		float crownHeight = height - crownBaseHeight;
+		float trunkHeight = crownBaseHeight + crownHeight/2;
+		float trunkDiameter = dbh/100;		// cm. -> m.
+		
+		//final int defaultShading = ColoringAttributes.SHADE_GOURAUD;
+		final int defaultShading = ColoringAttributes.FASTEST;
+		
+		// prepare wire frame aspect
+		PolygonAttributes polygon = new PolygonAttributes (PolygonAttributes.POLYGON_LINE, 
+				PolygonAttributes.CULL_BACK, 0);
+		LineAttributes lines = new LineAttributes (1f, LineAttributes.PATTERN_SOLID, true);
+		
+		// Trunk creation
+		
+		Cylinder trunk = new Cylinder (trunkDiameter /2, trunkHeight, Primitive.GENERATE_NORMALS, 5, 1, null);
+		
+		Appearance shapeAppearance = new Appearance ();
+		// Apply a blue color to the trunk
+		shapeAppearance.setColoringAttributes (new ColoringAttributes (0.4f, 0.6f, 1f, defaultShading));
+		// Apply transparency
+		TransparencyAttributes tVal = new TransparencyAttributes (
+				TransparencyAttributes.FASTEST, 
+				transparency);
+		if (transparency != 0.0) {shapeAppearance.setTransparencyAttributes (tVal);}
+		// wire frame aspect
+		if (Check.isTrue ("capsis.viewer3D.wire.frame")) {	// else faces are filled
+			shapeAppearance.setPolygonAttributes (polygon);
+			shapeAppearance.setLineAttributes (lines);	
+		}
+		trunk.setAppearance (shapeAppearance);
+		// Count triangles for trunk
+		numTriangles+=trunk.getNumTriangles ();
+		// Trunk position
+		Transform3D trunkTransformation = new Transform3D ();
+		trunkTransformation.setTranslation (new Vector3d (x, z + trunkHeight/2, -y));
+		TransformGroup trunkTransformationGroup = new TransformGroup (trunkTransformation);
+		
+		// Crown creation
+		Primitive crown = null;
+		if (crownType == SimpleCrownDescription.SPHERIC) {
+			// Normal ellipsoid crown creation (d=1)
+			
+			crown = new Sphere (0.5f, Primitive.GENERATE_NORMALS, 5);	// radius
+			
+		} else if (crownType == SimpleCrownDescription.CONIC) {
+			// Normal conic crown creation	(d=1, h=1)
+			
+			crown = new Cone (0.5f, 1f, Primitive.GENERATE_NORMALS, 5, 1, null);	// radius, height
+			
+		}
+		shapeAppearance = new Appearance ();
+		// Apply a color to the crown
+		shapeAppearance.setColoringAttributes (new ColoringAttributes (crownColor, defaultShading));
+		if (transparency != 0.0) {shapeAppearance.setTransparencyAttributes (tVal);}
+		// wire frame aspect
+		if (Check.isTrue ("capsis.viewer3D.wire.frame")) {	// else faces are filled
+			shapeAppearance.setPolygonAttributes (polygon);
+			shapeAppearance.setLineAttributes (lines);				
+		}
+		crown.setAppearance (shapeAppearance);
+		// Count triangles for crown
+		numTriangles+=crown.getNumTriangles ();
+		// Crown position
+		Transform3D crownTransformation = new Transform3D ();
+		crownTransformation.setTranslation (
+				new Vector3f (x, z+trunkHeight, -y));
+		// Crown size (scaling)
+		Transform3D scale = new Transform3D ();
+		scale.setScale (new Vector3d (crownRadius*2, crownHeight, crownRadius*2));
+		// Multiply the two transformation
+		crownTransformation.mul (scale);
+		TransformGroup crownTransformationGroup = new TransformGroup (crownTransformation);
+		
+		// Create the tree
+		javax.media.j3d.Group tree = new javax.media.j3d.Group ();
+		trunkTransformationGroup.addChild (trunk);
+		crownTransformationGroup.addChild (crown);
+		
+		tree.addChild (trunkTransformationGroup);
+		tree.addChild (crownTransformationGroup);
+		
+		return tree;
+	}
+
+	
+	
+	
+	
+	
+	// 
+	// Create the whole scene
+	// 
+	private BranchGroup createSceneGraph () {
+		
+		BranchGroup root = new BranchGroup ();
+		GStand s = step.getStand ();
+		
+		BranchGroup standScene = new BranchGroup ();
+		
+		// Create the trees
+		TreeCollection tc = (TreeCollection) s;
+		
+		// Get hMax to calculate colors depending on height
+		double hMax = 0.1;	// please, never 0
+		for (Iterator i = tc.getTrees ().iterator (); i.hasNext ();) {
+			GTree t = (GTree) i.next ();
+			double h = t.getHeight ();
+			if (h > hMax) {hMax = h;}
+		}
+		
+		for (Iterator i = tc.getTrees ().iterator (); i.hasNext ();) {
+			GTree t = (GTree) i.next ();
+			Spatialized st = (Spatialized) t;
+			
+			// Init
+			int crownType = SimpleCrownDescription.CONIC;
+			double x = st.getX ();
+			double y = st.getY ();
+			double z = st.getZ ();
+			
+			x0 = Math.min (x0, x);
+			y0 = Math.min (y0, y);
+			z0 = Math.min (z0, z);
+			x1 = Math.max (x1, x);
+			y1 = Math.max (y1, y);
+			z1 = Math.max (z1, z);
+			
+			
+			double dbh = t.getDbh ();		// cm.
+			double height = t.getHeight ();
+			
+			double crownBaseHeight = height/3;
+			double crownRadius = height/6;
+			Color crownColor = Color.green;
+			float transparency = 0.0f;
+			
+			// Try to get tree 3D optional rendering data to draw better representation
+			if (t instanceof SimpleCrownDescription) {
+				SimpleCrownDescription data = (SimpleCrownDescription) t;
+				crownType = data.getCrownType ();
+				crownBaseHeight = data.getCrownBaseHeight ();
+				crownRadius = data.getCrownRadius ();
+				crownColor = data.getCrownColor ();
+				transparency = data.getTransparency ();
+			}
+			
+			// The higher the darker crown color
+			int r = crownColor.getRed ();
+			int g = crownColor.getGreen ();
+			int b = crownColor.getBlue ();
+			// hsb : the lightest : b=100 the darkest : b=50 (up to 0 : black). We modify brightness
+			float[] hsb = Color.RGBtoHSB (r, g, b, null);
+			float bNew = (float) (100-height/hMax*40)/100f;
+			crownColor = new Color (Color.HSBtoRGB (hsb[0], hsb[1], bNew));
+			
+			Color3f color = new Color3f (crownColor);
+			
+			javax.media.j3d.Group virtualTree = createVirtualTree (crownType, 
+					(float) x/reductor, 
+					(float) y/reductor, 
+					(float) z/reductor, 
+					(float) dbh/reductor, 
+					(float) height/reductor, 
+					(float) crownBaseHeight/reductor, 
+					(float) crownRadius/reductor, 
+					color, 
+					transparency, 	// 0.0 (opaque) to 1.0 (transparent)
+					(float) hMax/reductor);
+			standScene.addChild (virtualTree);
+			
+		}
+		
+		GPlot plot = step.getStand ().getPlot ();
+		if (plot != null) {
+			Color3f color = new Color3f (1.0f, 0.0f, 0.0f);
+			BranchGroup plot3d = new BranchGroup ();
+			
+			for (Iterator i = plot.getCells ().iterator (); i.hasNext ();) {
+				GCell cell = (GCell) i.next ();
+				Collection vertices  = cell.getVertices ();	// Collection of Vertex3D
+				plot3d.addChild (getCellShape3D (vertices, color));
+				
+			}
+			standScene.addChild (plot3d);
+		
+		}
+		
+		LineArray xAxis = new LineArray (2, LineArray.COORDINATES | LineArray.COLOR_3);
+		Color3f cellColor = new Color3f (1.0f, 0.0f, 0.0f);
+		xAxis.setCoordinate (0, new Point3f (0.0f, 0.0f, 0.0f));
+		xAxis.setCoordinate (1, new Point3f ((float)1.0f/reductor, 0.0f, 0.0f));
+		
+		xAxis.setColor (0, cellColor);
+		xAxis.setColor (1, cellColor);
+		
+		
+		
+		BranchGroup axisBG = new BranchGroup ();
+		axisBG.addChild (new Shape3D (xAxis));
+		
+		standScene.addChild (axisBG);
+		
+		
+		
+		// Please do not remove this trace 
+		Log.println ("Viewer3D: Number of triangles in the scene: "+numTriangles);
+		
+		// Center the scene
+		Transform3D sceneTransformation = new Transform3D ();
+		sceneTransformation.setTranslation (
+				new Vector3f (-(float) (x0+(x1-x0)/2) /reductor, 
+				-(float) hMax/2 /reductor, 
+				(float) (y0+(y1-y0)/2) /reductor));
+		TransformGroup sceneTransformationGroup = new TransformGroup (sceneTransformation);
+		
+		sceneTransformationGroup.addChild (standScene);
+		
+		root.addChild (sceneTransformationGroup);
+		
+		// Background color
+		BoundingSphere worldBounds = new BoundingSphere (
+				new Point3d (0.0, 0.0, 0.0), 1000.0);	// Center, extent
+		Color3f color = new Color3f ();
+		color.set (backgroundColor);
+		backgroundObject = new Background ();
+		backgroundObject.setColor (color);
+		backgroundObject.setCapability (backgroundObject.ALLOW_COLOR_WRITE);
+		backgroundObject.setApplicationBounds (worldBounds);
+		root.addChild (backgroundObject);
+		
+		// Create Directional light with color and direction. Add it to scene.   
+		//~ DirectionalLight light = 
+			//~ new DirectionalLight (new Color3f (1.f,1.f,1.f),new Vector3f (-1,-1,0));
+		//~ light.setCapability (Light.ALLOW_COLOR_WRITE);
+		//~ light.setInfluencingBounds (worldBounds);
+		//~ root.addChild (light);
+		
+		return root;
+	}
+
+	private Shape3D getCellShape3D (Collection vertices, Color3f color) {	// Collection of Vertex3D
+	
+		int n = vertices.size () * 2;
+		LineArray cell3D = new LineArray (n, LineArray.COORDINATES | LineArray.COLOR_3);
+		int rank = 0;
+		
+		Iterator i = vertices.iterator ();
+		
+		if (i.hasNext ()) {
+			
+			Vertex3D v0 = (Vertex3D) i.next ();
+			
+			cell3D.setCoordinate (rank, new Point3f ((float) v0.x/reductor, 
+					(float) v0.z/reductor, 
+					(float) -v0.y/reductor));	// first point
+			cell3D.setColor (rank, color);
+			
+			rank++;
+			
+			
+			while (i.hasNext ()) {
+			
+				Vertex3D v = (Vertex3D) i.next ();
+				
+				cell3D.setCoordinate (rank, new Point3f ((float) v.x/reductor, 
+						(float) v.z/reductor, 
+						(float) -v.y/reductor));	// intermediate points : twice
+				cell3D.setColor (rank, color);
+				
+				rank++;
+				
+				cell3D.setCoordinate (rank, new Point3f ((float) v.x/reductor, 
+						(float) v.z/reductor, 
+						(float) -v.y/reductor));	// intermediate points : twice
+				cell3D.setColor (rank, color);
+				
+				rank++;
+			}
+			
+			cell3D.setCoordinate (rank, new Point3f ((float) v0.x/reductor, 
+					(float) v0.z/reductor, 
+					(float) -v0.y/reductor));	// close the cell
+			cell3D.setColor (rank, color);
+			
+			rank++;
+		}
+	
+	
+	
+		return new Shape3D (cell3D);
+	}
+
+	private void update () {
+		panel3d.removeAll ();
+		
+		Canvas3D canvas3D = new Canvas3D (null);
+		panel3d.add (canvas3D, BorderLayout.CENTER);
+		
+		BranchGroup scene = createSceneGraph ();
+		
+		scene.compile ();
+		
+		SimpleUniverse u = new SimpleUniverse (canvas3D);
+		
+		ViewingPlatform vp = u.getViewingPlatform();
+		
+		// Get backgroundObject one or two steps
+		vp.setNominalViewingTransform ();
+		
+		// Set mouse actions
+		OrbitBehavior orbit = new OrbitBehavior(canvas3D, OrbitBehavior.REVERSE_ALL);
+		BoundingSphere bounds =
+			new BoundingSphere (new Point3d (), 100.0);
+			//new BoundingSphere (new Point3d ((x1-x0)/2, (z1-z0)/2, -(y1-y0)/2), 1000.0);
+		orbit.setSchedulingBounds(bounds);
+		vp.setViewPlatformBehavior(orbit);
+		
+		u.addBranchGraph (scene);
+		
+		
+		panel3d.validate ();
+	}
+	
+	/** 
+	 * User interface definition.
+	 */
+	private void createUI () {
+		
+		// 1. Panel3d = the virtual universe
+		panel3d = new JPanel (new BorderLayout ());
+		
+		update ();
+		
+		// 2.Lateral panel
+		ColumnPanel pLateral = new ColumnPanel ();
+		background = new JButton (Translator.swap ("Viewer3D.background"));
+		background.addActionListener (this);
+		pLateral.add (background);
+		pLateral.addGlue ();
+		
+		// 3. Control panel
+		JPanel pControl = new JPanel (new FlowLayout (FlowLayout.RIGHT));
+		close = new JButton (Translator.swap ("Shared.close"));
+		close.addActionListener (this);
+		help = new JButton (Translator.swap ("Shared.help"));
+		help.addActionListener (this);
+		pControl.add (close);
+		pControl.add (help);
+		
+		// Set close as default (see GDialog)
+		close.setDefaultCapable (true);
+		getRootPane ().setDefaultButton (close);
+		
+		// Layout parts
+		panel3d.setPreferredSize (new Dimension (300, 300));
+		getContentPane ().add (panel3d, BorderLayout.CENTER);
+		getContentPane ().add (pLateral, BorderLayout.EAST);
+		getContentPane ().add (pControl, BorderLayout.SOUTH);
+		
+	}
+	
+}
+
+
+
+
+
