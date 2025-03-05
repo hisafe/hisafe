@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+
+  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 1st December 2004), see www.w3.org">
+
+  <link href="../../../../style.css" rel="stylesheet" type="text/css">
+
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=us-ascii">
+  <title>Pp3LogWJWWCMExport</title>
+
+
+  <meta name="GENERATOR" content="OpenOffice.org 1.1.0 (Win32)">
+
+  <meta name="AUTHOR" content="C&eacute;line MEREDIEU">
+
+  <meta name="CREATED" content="20040203;14430000">
+
+  <meta name="CHANGED" content="20040203;20410358">
+
+</head>
+
+
+<body>
+
+<table style="text-align: left; width: 100%;" border="0" cellpadding="0" cellspacing="1">
+
+  <tbody>
+
+    <tr>
+
+      <td style="vertical-align: top; width: 80%;">
+      <h1>Exportation de billons avec calcul du bois
+juv&eacute;nile et du carbone</h1>
+
+      </td>
+
+      <td style="vertical-align: top; text-align: right; width: 20%;"><a href="../../../index_fr.html">Aide Capsis</a><br>
+
+      </td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+<h2>Principe</h2>
+
+<p>Exportation des caract&eacute;ristiques de billons
+comportant &eacute;galement les dimensions du bois
+juv&eacute;nile, de la biomasse et du carbone selon un plan de
+billonnage (voir aussi la m&eacute;thode "<a href="./Pp3LogExport_Help_fr.html">Exportation de billons</a>").</p>
+
+<p>Voir aussi "<a href="./Pp3ThinTreeCarbonExport_Help_fr.html">Exportation
+biomasse-carbone des arbres coup&eacute;s</a>" et "<a href="./Pp3StandCarbonWithVolumeExport_Help_fr.html">Exportation
+biomasse-carbone du peuplement sur pied</a>".</p>
+
+<h2>ATTENTION - Limites</h2>
+
+<p>Pour effectuer le calcul des dimensions du bois
+juv&eacute;nile,
+l'&eacute;tape racine du sc&eacute;nario doit avoir un age
+minimum de 15 ans.
+Si ce n'est pas le cas, le fichier d'exportation est vide.
+Utiliser alors uniquement <a href="./Pp3LogExport_Help_fr.html">Pp3LogExport
+(Exportation de billons)</a>.</p>
+
+<h2>Description des colonnes</h2>
+
+<ul>
+
+  <li>
+    <p style="margin-bottom: 0cm;">Id : num&eacute;ro
+de l'arbre dans
+le peuplement pour un &acirc;ge donn&eacute;</p>
+
+  </li>
+
+  <li>
+    <p>Age : Age de l'arbre</p>
+
+  </li>
+
+  <li>
+    <p>DBH : Diam&egrave;tre de l'arbre</p>
+
+  </li>
+
+  <li>
+    <p>HT : Hauteur de l'arbre</p>
+
+  </li>
+
+  <li>
+    <p>NumberOfTrees : Nombre d'arbres dans la classe de
+diam&egrave;tre consid&eacute;r&eacute; pour la surface
+initiale du
+peuplement virtuel ou pour la surface du peuplement r&eacute;el</p>
+
+  </li>
+
+  <li>
+    <p>LogNumber :</p>
+
+    <p>0 : billon compris entre la d&eacute;coupe fin bout de
+l'arbre
+et l'apex</p>
+
+    <p>1 &agrave; n : billons &agrave; longueur
+fix&eacute;e
+num&eacute;rot&eacute;s du bas en haut de l'arbre</p>
+
+    <p>-1 : billon compris entre la d&eacute;coupe du dernier
+billon
+&agrave; longueur fix&eacute;e et la d&eacute;coupe fin
+bout de
+l'arbre</p>
+
+  </li>
+
+  <li>
+    <p>LogLength : Longueur du billon</p>
+
+  </li>
+
+  <li>
+    <p>LargeEndD : Diam&egrave;tre sur &eacute;corce
+&agrave; la base
+du billon</p>
+
+  </li>
+
+  <li>
+    <p>LargeEndDInsideBark : Diam&egrave;tre sous
+&eacute;corce
+&agrave; la base du billon</p>
+
+  </li>
+
+  <li>
+    <p>LargeEndDJuvenileWood : Diam&egrave;tre du bois
+juv&eacute;nile
+&agrave; la base du billon</p>
+
+  </li>
+
+  <li>
+    <p>LargeEndH : Position en hauteur de la base du billon</p>
+
+  </li>
+
+  <li>
+    <p>SmallEndD : Diam&egrave;tre sur &eacute;corce au
+sommet du
+billon</p>
+
+  </li>
+
+  <li>
+    <p>SmallEndDInsideBark : Diam&egrave;tre sous
+&eacute;corce au
+sommet du billon</p>
+
+  </li>
+
+  <li>
+    <p>SmallEndDJuvenileWood : Diam&egrave;tre du bois
+juv&eacute;nile
+au sommet du billon</p>
+
+  </li>
+
+  <li>
+    <p>SmallEndH : Position en hauteur du sommet du billon</p>
+
+  </li>
+
+  <li>
+    <p>WoodVolume : Volume de bois du billon</p>
+
+  </li>
+
+  <li>
+    <p>JuvenileWoodVolume : Volume de bois juv&eacute;nile du
+billon</p>
+
+  </li>
+
+  <li>
+    <p>BarkVolume : Volume d'&eacute;corce du billon</p>
+
+  </li>
+
+  <li>
+    <p>TotalVolume : Volume total du billon</p>
+
+  </li>
+
+  <li>
+    <p>WoodMass : Biomasse de bois du billon</p>
+
+  </li>
+
+  <li>
+    <p>WoodCarbonMass : Masse de carbone de bois du billon</p>
+
+  </li>
+
+</ul>
+
+<br>
+
+<h2>Modules pouvant utiliser cette extension</h2>
+
+<span style="font-weight: bold;">
+Attention liste non exhaustive....</span><br>
+
+<br>
+
+<a href="../../../pp3/gui/Pp3_Contents_fr.html">Acc&egrave;s
+au Module PP3</a><br>
+
+</body>
+</html>
