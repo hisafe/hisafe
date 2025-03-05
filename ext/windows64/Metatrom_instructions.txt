@@ -1,0 +1,8 @@
+Compilation:	gfortran genotype_generator.f90 -o genotype_generator.exe
+Execution:		genotype_generator.exe input
+
+Note: genotype_generator.exe requires the following dynamic libraries:
+- libgfortran-3.dll
+- libgcc_s_dw2-1.dll
+- libquadmath-0.dll
+Use of "Dependency Walker" tool to scan genotype_generator.exe dependencies. Home page: http://www.dependencywalker.com/
