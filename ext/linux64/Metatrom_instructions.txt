@@ -1,0 +1,2 @@
+Compilation:	gfortran genotype_generator.f90 -o genotype_generator
+Execution:		./genotype_generator input
