@@ -1,7 +1,0 @@
-#name	frenchDescription	englishDescription
-SafeTree	Arbres	Trees
-SafeCell	Cellules	Cells
-SafeVoxel	Voxels	Voxels
-SafePlot	Cumuls sur la scène	Plot totals
-SafeLayer	Couches	Layers
-SafeMacroClimat	Entrées climatiques	Climate

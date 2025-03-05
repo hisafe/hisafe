@@ -1,7 +1,0 @@
-Name = Hi-sAFe
-
-Version = 4.0.0
-
-Stics = 8.5
-
-Capsis = 4.2.4

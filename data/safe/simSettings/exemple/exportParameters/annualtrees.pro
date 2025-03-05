@@ -1,5 +1,0 @@
-
-# allSteps	currentStep	frequency	frequencyBegin	frequencyValue	period	periodTo	periodFrom	rootStepToExport
-true	false	false	0	0	false	0	0	false
-# subject	variables	exportAll	ids
-SafeTree	{SafeTree-carbonBranches;SafeTree-carbonCoarseRootSenAnnual;SafeTree-carbonCoarseRoots;SafeTree-carbonFineRootSenAnnual;SafeTree-carbonFineRoots;SafeTree-carbonFoliageMax;SafeTree-carbonLabile;SafeTree-carbonStem;SafeTree-carbonAllocToGrowthAnnual;SafeTree-carbonLeavesSenescenceAnnual;SafeTree-leafAreaMax;SafeTree-nitrogenUptakeAnnual;SafeTree-parInterceptedAnnual;SafeTree-maxRootDistanceOnCropLine;SafeTree-maxRootDistanceOnTreeLine;SafeTree-rootingDepth;SafeTree-totalRootVolume;SafeTree-totalRootVolumePerLayer;SafeTree-dbh;SafeTree-height;SafeTree-interceptedRainAnnual;SafeTree-waterUptakeAnnual;SafeTree-carbonStump;SafeTree-carbonLeavesSenAnnual;SafeTree-budburstDate;SafeTree-leafExpansionEndingDate;SafeTree-leafFallStartingDate;SafeTree-leafFallEndingDate}	true	{}
