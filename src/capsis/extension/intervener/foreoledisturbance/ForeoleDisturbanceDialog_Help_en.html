@@ -1,0 +1,179 @@
+<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+            
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+            
+  <meta http-equiv="CONTENT-TYPE"
+ content="text/html; charset=iso-8859-1">
+            
+  <meta name="GENERATOR"
+ content="Microsoft FrontPage 5.0">
+            
+  <meta name="AUTHOR" content="Francois de Coligny">
+            
+  <meta name="CREATED" content="20020503;16504700">
+            
+  <meta name="CHANGEDBY" content="Francois de Coligny">
+            
+  <meta name="CHANGED" content="20020503;17424000">
+  <title></title>
+</head>
+  <body>
+      
+<H1><img border="0" src="../../../../../logoCapsis.jpg" width="38" height="35"><a name="Dia_FOREOLE"></a>&nbsp;&nbsp;&nbsp; 
+Dialog with FOREOLE</H1>
+<P ALIGN=RIGHT>
+<a title="FOREOLE" href="index_en.html"><IMG SRC="../../../gui/icons/home.gif" NAME="file:///home/coligny/java/capsis4/bin/capsis/lib/spatial/index_fr.html" ALIGN=BOTTOM WIDTH=16 HEIGHT=16 BORDER=0></a></P>
+
+<h2 align="left">Help on the dialog box Tags</h2>
+<UL>
+	<LI><P STYLE="margin-bottom: 6">
+    <a href="#Con_FOREOLE">Structures construction</a></P>
+	<LI><P STYLE="margin-bottom: 6">
+    <a href="#Cal_FOREOLE">Structures computation</a></P>
+	<LI><P STYLE="margin-bottom: 4">
+    <a href="#Res_FOREOLE">Results access</a></P>
+</UL>
+
+<p align="left" style="margin-bottom: 4">NB: When the <a href="index_en.html">FOREOLE 
+model</a> is called from the current step, the structures construction is 
+automatically launched with default parameters. Thus, the dialog box appears on 
+the tag<i> <a href="#Cal_FOREOLE">Structure computation</a></i>. It is possible to 
+reconstruct the structures with new mechanical parameters before to define wind 
+profile and to launch the computation. Moreover, after a calculation, structures 
+have to be reconstructed before to launch a new one...</p>
+
+<p style="margin-top: 4; margin-bottom: 4" align="left"><a name="Con_FOREOLE">
+</a></p>
+
+<h2 align="left">Tag <i>Structures construction</i>&nbsp;&nbsp;&nbsp;
+<a href="#Dia_FOREOLE">
+<img border="0" src="up.gif" width="21" height="16"></a></h2>
+         
+<p style="margin-bottom: 4" align="left">Before the construction of 
+biomechanical structures, adjust parameters to use:</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left">&nbsp;&nbsp;&nbsp; - 
+wood volumic density</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left">&nbsp;&nbsp;&nbsp; - its 
+modulus of elasticity</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left">&nbsp;&nbsp;&nbsp; - 
+ratio between crown mass and stem mass</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left">&nbsp;&nbsp;&nbsp; - 
+drag coefficient used to evaluate wind forces</p>
+         
+<p align="left">These parameters are species dependent... Click on <font color="#FF0000"> <b>Parameters </b></font>button.</p>
+         
+<p align="left" style="margin-bottom: 4">Thus, the <font color="#FF0000"> <b>Creation</b></font> 
+button allows the construction of biomechanical structures to be launched in 
+order to analyse the stand...</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left"><a name="Cal_FOREOLE">
+</a></p>
+
+<h2 align="left">Tag <i>Structures computation</i>&nbsp;&nbsp;&nbsp;
+<a href="#Dia_FOREOLE">
+<img border="0" src="up.gif" width="21" height="16"></a><br>
+</h2>
+         
+<p style="margin-bottom: 4" align="left">Before the calculation, it is possible 
+to adjust wind loading parameters. Click on <font color="#FF0000"> <b>Parameters </b></font>button. 
+The wind speed can be specified (choosing, at stand edge, the corresponding 
+reference height) and the location of the population in a theoretical larger 
+stand can be choose: at stand edge or inside the stand. Parameters associated to 
+wind profile have to be modified with caution...</p>
+         
+<p align="left">Thus, the <font color="#FF0000"> <b>Launch</b></font> 
+button executes the calculation of the mechanical state of each tree submitted 
+to the wind profile above defined. Moreover, this calculation is automatically 
+followed by a damage analysis based on failure criteria at the tree level... </p>
+         
+<p align="left">The <font color="#FF0000"> <b>Export</b></font> 
+button allows trees characteristics to be written in the Capsis LOG. 
+It could take many time...</p>
+         
+<p align="left" style="margin-bottom: 4">For more details on wind profile, 
+method of structures computation and failure criteria (...), consult
+<a href="index_en.html#Ref_FOREOLE">FOREOLE References</a>.</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left"><a name="Res_FOREOLE">
+</a></p>
+
+<h2 align="left">Tag <i>Results access</i>&nbsp;&nbsp;&nbsp;
+<a href="#Dia_FOREOLE">
+<img border="0" src="up.gif" width="21" height="16"></a></h2>
+<p align="left">The <font color="#FF0000"><b>Inspect</b></font> 
+button opens an inspector on the object of highest level in the library <i>
+<a href="../../../lib/biomechanics/index_en.html">Biomechanics</a></i> (instance 
+of <i>MecaProcess</i>), from which access to the collection 
+of&nbsp; trees (instances of <i>MecaTree</i>) is given, then, for example, to 
+their elements (instances of <i>MecaGU</i>, corresponding to Growth Units)...</p>
+  
+<p align="left">The <b><font color="#FF0000">% Damage</font></b> 
+button gives amount of partial wind damage relative to number of trees and to 
+volume of wood in the population...</p>
+  
+<p align="left">The <b><font color="#FF0000">View (2D)</font></b> 
+button opens the
+<a href="../../../lib/biomechanics/MecaDViewer2D_Help_en.html">Cartographic 
+Viewer 2D</a> of <i>
+<a href="../../../lib/biomechanics/index_en.html">Biomechanics</a></i> on the 
+stand...</p>
+  
+<p align="left">The <font color="#FF0000"><b>Points set </b></font>button opens 
+a graph where the tree level data represented in
+<font color="#FF0000"><b>Abscissa</b></font> and <font color="#FF0000"><b>
+Ordinate</b></font> have to selected in the list boxes below. 
+In this graph, each point is associated to one tree and a colour legend indicates 
+the tree state*. Moreover, double-click on a point opens an inspector on 
+corresponding tree (functions 
+relative to mouse are of the same type than those described for the
+<a href="../../../lib/biomechanics/MecaDViewer2D_Help_en.html">Cartographic 
+Viewer 2D</a> and the
+<a href="../../../lib/biomechanics/MecaPTrunkShape_Help_en.html">Tree Viewer</a>)...</p>
+  
+<p align="left">The <font color="#FF0000"><b>Histogram </b></font>button allows 
+the distribution of a tree level characteristics to be represented according to 
+the selection made in the list box below. A colour legend also indicates 
+the tree state* according to the chosen distribution...</p>
+  
+<p align="left" style="margin-top: 4; margin-bottom: 4">&nbsp;</p>
+  
+<p align="left" style="margin-top: 4; margin-bottom: 4">*<i><b>Tree state: </b></i></p>
+  
+<p align="left" style="margin-top: 4; margin-bottom: 4">&nbsp;&nbsp;&nbsp; - No 
+Damage</p>
+  
+<p align="left" style="margin-top: 4; margin-bottom: 4">&nbsp;&nbsp;&nbsp; - 
+Windthrow</p>
+  
+<p align="left" style="margin-top: 4; margin-bottom: 4">&nbsp;&nbsp;&nbsp; - 
+Stem Breakage</p>
+  
+<h2 align="left">&nbsp;</h2>
+         
+<h2 align="left">&nbsp;</h2>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left">&nbsp;</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left">&nbsp;</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left">&nbsp;</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left">&nbsp;</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left">&nbsp;</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left">&nbsp;</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left">&nbsp;</p>
+         
+<p style="margin-top: 4; margin-bottom: 4" align="left">&nbsp;</p>
+         
+</body>
+</html>
