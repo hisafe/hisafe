@@ -1,0 +1,385 @@
+########################################################################
+# Setup file of C-STABILITY.
+#
+# File description:
+# 	template
+# 
+# File editing rules:
+# 	- empty lines and lines starting with "#" are skipped by the program. 
+# 	- simple values are defined with "=" and a blank separator.
+# 	- complex lines starts with a specific flag and all fields are 
+#	separated by a tabulation noted \t in documentation.
+########################################################################
+
+########################################################################
+# Simulation timeline:
+#
+# 	This section should contain:
+#		timeUnit = (string)
+#		initialDate = (integer)
+#		finalDate = (integer) 
+#
+#	Example: 
+#		timeUnit = day
+#		initialDate = 0
+#		finalDate = 300
+########################################################################
+
+timeUnit = day
+initialDate = 0
+finalDate = 4
+
+########################################################################
+# Numerical scheme and methods:
+#
+#	This section should contain:
+#		userTimeStep = (double) in ]0,1[
+#		userPolymerizationStep = (double)
+#		integrationMethod = (string) available options: 
+#			- INTEGRATION_TRAPEZE, 
+#			- INTEGRATION_RECTANGLE_LEFT
+#			- INTEGRATION_RECTANGLE_RIGHT 
+#
+#	Example:
+#		userTimeStep = 0.1
+#		userPolymerizationStep = 0.01
+#		integrationMethod = INTEGRATION_TRAPEZE
+########################################################################
+
+userTimeStep = 0.01
+userPolymerizationStep = 0.01
+integrationMethod = INTEGRATION_TRAPEZE
+
+########################################################################
+# Environment file name (optional):
+#
+#	This file contains environmental variables required for the 
+#	simulation.
+#
+#	Line format:
+#		environmentFileName = filePath (absolute path)
+#
+#	If not used, omit line or:
+#		environmentFileName = NONE
+#
+########################################################################
+
+environmentFileName = /home/coligny/workspace/capsis4/src/capsis/lib/cstability/app/environment_file_template.csv
+
+########################################################################
+# Biochemical classes:
+#
+#	This section should contain at least two biochemical classes.
+#
+#	Line format: 
+#		BIOCHEMICAL_CLASS \t bcName \t polymerization 
+#		- bcName (String) is the name of the biochemical class
+#		- polymerization (Interval) is the interval used to describe 
+# 		  the polymerization of the biochemical class
+#
+#	Example: 
+#		BIOCHEMICAL_CLASS \t cellulose \t [0,2]
+########################################################################
+
+BIOCHEMICAL_CLASS	lipid	[0,2]
+BIOCHEMICAL_CLASS	protein	[0,2]
+BIOCHEMICAL_CLASS	cellulose	[0,2]
+BIOCHEMICAL_CLASS	lignin	[0,2]
+
+########################################################################
+# Substrate pools:
+#
+#	This section should contain at least an accessible pool per 
+#	biochemical class.
+#
+#	Line format:
+#		POOL_ACCESSIBILITY \t bcName \t accessibility
+#		- bcName (String) has to be defined previously
+#		- accessibility (String) is a list of accessibility status 
+# 		  available for the biochemical class. Status are: 
+#			* ACCESSIBLE
+#			* INACCESSIBLE_AGGREGATION
+#		 	* INACCESSIBLE_MINERAL_ASSOCIATION
+#		 	* INACCESSIBLE_MINERAL_ASSOCIATION 
+#
+#	Example: 
+#		POOL_ACCESSIBILITY \t cellulose
+#							...\t [ACCESSIBLE,INACCESSIBLE_AGGREGATION]
+########################################################################
+
+POOL_ACCESSIBILITY	lipid	[ACCESSIBLE,INACCESSIBLE_MINERAL_ASSOCIATION]
+POOL_ACCESSIBILITY	protein	[ACCESSIBLE,INACCESSIBLE_MINERAL_ASSOCIATION]
+POOL_ACCESSIBILITY	cellulose	[ACCESSIBLE,INACCESSIBLE_EMBEDMENT]
+POOL_ACCESSIBILITY	lignin	[ACCESSIBLE,INACCESSIBLE_AGGREGATION]
+
+
+########################################################################
+# Enzyme traits:
+#
+#	This section permits to define the simulation enzymes traits.
+#
+#	Line format:
+#		ENZYME_TRAITS \t enzName \t bcName
+#			... \t depolymerizationRateFunction \t kernelFunction
+#		- enzName (String) is the name of the enzyme
+#		- bcName (String) is the biochemical class associated to the
+#		  enzyme
+#		- depolymerizationDomain (Interval) is the polymerization 
+#		  interval of the biochemical class targeted by the enzyme
+#		- depolymerizationRateFunction (String) is the function 
+# 		  defining the depolymerization rate of the enzyme
+#		- kernelFunction (String) is the function defining the 
+#		  transformation kernel of the enzyme
+# 		- kernelIntegrationMethod (String): STANDARD_KERNEL_INTEGRATION
+#										 or INTEGRAL_KERNEL_INTEGRATION 
+#
+#	Example:
+#		ENZYME_TRAITS \t cellulolysis \t cellulose \t [0,2] 
+#				...\t uniformLinear([0,2];1.8) \t kernelAlpha([0,2];5) 
+#					...\t INTEGRAL_KERNEL_INTEGRATION
+########################################################################
+
+ENZYME_TRAITS	lipidase	lipid	[0,2]	uniformLinearTemperature([0,2];1;1;290)	kernelAlpha([0,2];2.1)	INTEGRAL_KERNEL_INTEGRATION
+#ENZYME_TRAITS	lipidase	lipid	[0,2]	uniformLinear([0,2];1)	kernelAlpha([0,2];2.1)	INTEGRAL_KERNEL_INTEGRATION
+ENZYME_TRAITS	ligninase	lipid	[0,2]	uniformLinear([0,2];1)	kernelAlpha([0,2];2.1)	INTEGRAL_KERNEL_INTEGRATION
+ENZYME_TRAITS	cellulase	cellulose	[0,2]	uniformLinear([0,2];1)	kernelAlpha([0,2];3.2)	INTEGRAL_KERNEL_INTEGRATION
+
+########################################################################
+# Microbe signature:
+#
+#	This section describes the microbes involved in the simulation and 
+# 	their biochemical and polymerization composition.
+#
+#	Line format:
+# 		SIGNATURE \t micName \t bcName \t proportion 
+#									...\t polymerizationFunction
+# 		- micName (String) is the name of the microbial community
+# 		- bcName (String) is the name of the biochemical class 
+# 		  composing the microbes
+# 		- proportion (double in [0,1]) is the proportion of the 
+# 		  components of the considered biochemical class composing the 
+# 		  microbes
+# 		- polymerizationFunction (String) is the function describing 
+#		  the polymerization of biochemical elements considered
+#
+#	Example: 
+#		SIGNATURE \t cellulose_degrader \t microbe_sugar \t 1
+#		  ...\t gaussianTruncatedNormalized(microbe_sugar;1.5;0.1;[0,2])
+########################################################################
+
+SIGNATURE	brown_rot_fungi	lipid	0.12	gaussianTruncatedNormalized(lipid;1;0.4;[0,2])
+SIGNATURE	brown_rot_fungi	protein	0.88	gaussianTruncatedNormalized(protein;1.1;0.2;[0.5,2])
+SIGNATURE	white_rot_fungi	lipid	0.12	gaussianTruncatedNormalized(lipid;1;0.4;[0,2])
+SIGNATURE	white_rot_fungi	protein	0.88	gaussianTruncatedNormalized(protein;1.1;0.2;[0.5,2])
+
+########################################################################
+# Microbe enzyme production (secretome):
+#
+#	This section describes how enzymes are produced by the microbes.
+#
+#	Line format:
+# 		ENZYME_PRODUCTION \t micName \t producedEnzyme 
+# 									...\t productionRateFunction
+#		- micName (String) is the name of the microbial community
+#		- producedEnzyme (String) is the name of the enzymes produces by
+# 		  the microbes
+#		- productionRateFunction (String) is the function describing the 
+# 		  production rate of the enzyme
+#
+#	Example: 
+#		ENZYME_PRODUCTION \t cellulose_degrader 
+#										...\t cellulase \t linear(1.)
+########################################################################
+
+ENZYME_PRODUCTION	brown_rot_fungi	lipidase	linear(0.1)
+ENZYME_PRODUCTION	brown_rot_fungi	cellulase	linear(2.1)
+ENZYME_PRODUCTION	white_rot_fungi	ligninase	linear(2.1)
+
+########################################################################
+# Microbe assimilation:
+#
+#	This section describes how microbes assimilate C from the accessible
+#	substrate pools. Assimilation of each microbe has to be defined.
+#
+#	Line format:
+#		ASSIMILATION \t micName \t bcName \t 
+#			uptakeFluxFunction \t carbonUseEfficiencyFunction
+#		- micName (String) is the name of the microbial community
+#		- bcName (String) is the biochemical class where carbon is taken 
+# 		  up by microbes, 
+#		- uptakeFluxFunction (String) is the function describing the 
+# 		rate of uptake of carbon
+#		- carbonUseEfficiencyFunction (String) is the function 
+# 		  describing the carbon use efficiency of the taken up carbon
+#
+#	Example: 
+# 		ASSIMILATION \t cellulose_degrader \t cellulose
+#						...\t uniformLinear([0,0.4];5.) \t constant(0.4)
+########################################################################
+
+ASSIMILATION	brown_rot_fungi	cellulose	uniformLinear([0,0.4];1)	constant(0.3)
+ASSIMILATION	brown_rot_fungi	lignin	uniformLinear([0,0.4];1)	constant(0.3)
+ASSIMILATION	white_rot_fungi	cellulose	uniformLinear([0,0.4];1)	constant(0.3)
+ASSIMILATION	white_rot_fungi	lignin	uniformLinear([0,0.4];1)	constant(0.3)
+
+########################################################################
+# Microbe mortality:
+#
+#	This section describes the mortality rate of the microbes. The 
+#	mortality of each microbe has to be defined.
+#
+#	Line format:
+#		MORTALITY \t micName \t mortalityFunction
+#		- micName (String) is the name of the microbial community
+#		- mortalityFunction (String) is the function describing the 
+# 		  mortality rate of microbes
+#
+#	Example: 
+#		MORTALITY \t cellulose_degrader \t linear(0.02)
+########################################################################
+
+MORTALITY	brown_rot_fungi	linear(0.1)
+MORTALITY	white_rot_fungi	linear(0.1)
+
+########################################################################
+# Substrate pool transfers (optional):
+#
+#	This section is optional if the simulations contains only ACCESSIBLE
+#	pools. For a same biochemical class, exchange between accessible and
+#	inaccessible pool can occur.
+#
+#	Line format:
+#		POOL_TRANSFER \t bcName \t origin \t arrival \t transferFunction
+# 		- bcName (String) is the biochemical class
+# 		- origin (String) is the accessibility of the origin pool
+# 		- arrival (String) is the accessibility of the arrival pool
+# 		- transferFunction (String) is the function describing the 
+# 		  transfer rate between the pools
+#
+#	Example:
+#		POOL_TRANSFER \t cellulose \t INACCESSIBLE_EMBEDMENT
+#			...\t ACCESSIBLE \t enzymaticLinearTransfer(lignolase;1)
+########################################################################
+
+POOL_TRANSFER	cellulose	INACCESSIBLE_EMBEDMENT	ACCESSIBLE	enzymaticLinearTransfer(ligninase;13)
+
+########################################################################
+# Substrate pools initialization:
+#
+#	This section contain...
+#
+#	Line format:
+#		POOL_INITIALIZATION \t bcName 
+# 							...\t accessibility \t carbonPolymerization
+#		- bcName
+#		- accessibility
+#		- carbonPolymerization
+#	Example: 
+#		POOL_INITIALIZATION \t lipîd \t ACCESSIBLE
+# 	...\t gaussianTruncatedProportionalized(lipid;0.95;1.5;0.1;[0,2])
+########################################################################
+
+POOL_INITIALIZATION	cellulose	INACCESSIBLE_EMBEDMENT	gaussianTruncatedProportionalized(cellulose;95.;1.5;0.1;[0,2])
+POOL_INITIALIZATION	lignin	ACCESSIBLE	gaussianTruncatedProportionalized(lignin;95.;1.5;0.1;[0,2])
+
+########################################################################
+# Substrate pools temporal inputs:
+#
+#	This section should contains the C composition of specified pools.
+#
+#	Line format:
+#		POOL_INPUT \t bcName \t accessibility \t carbonInputFunction
+#		- bcName (String) is the biochemical class
+#		- accessibility (String) is the accessibility of the pool
+# 		- carbonInputFunction (String) is the function describing the 
+# 		amount and polymerization of the carbon input
+#
+#	Example: 
+#		POOL_INPUT \t cellulose \t ACCESSIBLE \t 
+#		...\t constantInput(0.1:
+#			... gaussianTruncatedNormalized(cellulose;1.5;0.1;[0,2]))
+########################################################################
+
+POOL_INPUT	cellulose	ACCESSIBLE	constantInput(0.1:gaussianTruncatedNormalized(cellulose;1.5;0.1;[0,2]))
+
+########################################################################
+# Microbe initial state:
+#
+#	This section contains the initial biomass of each microbe
+#
+#	Line format:
+# 		MICROBE_INITIALIZATION \t micName \t mass
+#		- micName the name of the microbial community considered
+#		- mass (double>0) is the initial amount of carbon composing 
+# 		  microbial community in g 
+#
+#	Example: 
+#		MICROBE_INITIALIZATION \t cellulose_degrader \t 0.05
+########################################################################
+
+MICROBE_INITIALIZATION	brown_rot_fungi	1.0
+MICROBE_INITIALIZATION	white_rot_fungi	1.0
+
+########################################################################
+# Observations:
+# 	 
+#	This section contains the observations needed by the user at the end
+#	of the simulation. If no observations are specified, all observers 
+#	are generated.
+# 
+#	Line formats available:
+#		STATE_OBSERVER \t observableVariable \t datesToObserve
+# 		  - observableVariable is the observed variable (chosen among:
+# 		   "respiration")
+# 		  - datesToObserve can be formated as follow:
+#			* [0,2,5] to observe date 0, 2 and 5
+#			* [1:2:11] to observe date between 1 and 11 with a step 2
+#			* [1:2:14,25,33] which is a combination of the two previous 
+#			  formats	
+#		POOL_OBSERVER \t [bcName, accessibility] 
+# 						...\t observableVariable \t datesToObserve 
+#		  - bcName (String) is the biochemical class considered
+# 		  - accessibility (String) is the accessibility of the pool 
+#			considered, observableVariable is the observed variable 
+#			(chosen among "mass","mass_distribution")
+# 		  - datesToObserve can be formated as above
+#		POOL_TRANSFER_OBSERVER \t [bcName,originPool,arrivalPool] 
+# 		  					...\t observableVariable \t datesToObserve
+# 		  - bcName (String) is the biochemical class considered
+# 		  - originPool (String) is the accessibility of the origin 
+#			pool
+# 		  - arrivalPool (String) is the accessibility of the arrival 
+#			pool
+# 		  - observableVariable is the observed variable (chosen among 
+#			"flux_distribution")
+# 		  - datesToObserve can be formated as above
+#		MICROBE_OBSERVER \t micName 
+#							...\t observableVariable \t datesToObserve
+#		  - micName (String) is the name of the considered microbes
+#		  - observableVariable is the observed variable (chosen among
+#			"mass", "uptake_flux_distribution_map",  "respiration",
+#			"carbon_use_efficiency_distribution_map", "mortality_flux")
+# 		  - datesToObserve can be formated as above
+#		ENZYME_OBSERVER \t enzName 
+#							...\t observableVariable \t datesToObserve
+#		  - enzName is the name of the considered enzymes
+#		  - observableVariable is the observed variable (chosen among 
+#			"depolymerization_rate_distribution, 
+#			"activity_distribution")
+# 		  - datesToObserve can be formated as above 
+#
+#	Examples: 
+#		STATE_OBSERVER \t respiration \t [0,1]
+#		POOL_OBSERVER \t [cellulose,ACCESSIBLE] \t 	mass \t [0,1]
+#		POOL_TRANSFER_OBSERVER 
+#				...\t [cellulose,INACCESSIBLE_EMBEDMENT,ACCESSIBLE]
+#					...\t flux_distribution \t [0,1]
+#		MICROBE_OBSERVER \t cellulose_degrader 
+#				...\t uptake_flux_distribution \t [0,1]
+#		ENZYME_OBSERVER \t cellulolysis
+#				...\t depolymerization_rate_distribution \t [0,1]
+########################################################################
+
+POOL_OBSERVER	[lipid,ACCESSIBLE]	mass	[0,1]
+ENZYME_OBSERVER	lipidase	depolymerization_rate_distribution	[0,1]
+MICROBE_OBSERVER	brown_rot_fungi	uptake_flux_distribution_map	[0,1]
