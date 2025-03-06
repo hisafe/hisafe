@@ -1,0 +1,26 @@
+
+
+##--- Lines below are ignored
+##--- Only options copied to the first line are considered
+## Some possible options:
+
+# To check the GC functioning in the terminal (longer, only to check) e.g.
+-XX:+PrintGC
+
+# Shows the jvm version and continues
+-showversion
+
+# Various alternative Garbage Collectors, choose one only
+-XX:+UseG1GC
+-XX:+UseParallelGC
+-XX:+UseParallelOldGC
+-XX:+UseSerialGC
+-XX:+UseConcMarkSweepGC
+
+# Examples
+# G1 Garbage Collector and print messages in the terminal:
+-XX:+UseG1GC -XX:+PrintGC
+
+# Parallel old Garbage Collector
+-XX:+UseParallelOldGC
+

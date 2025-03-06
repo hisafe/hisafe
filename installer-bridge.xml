@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<installation version="1.0">
+
+	<info>
+		<appname>Capsis</appname>
+		<appversion>4.2.6</appversion>
+		<authors>
+			<author name="Francois de Coligny (INRAE-AMAP)" email="francois.decoligny@inrae.fr"/>
+			<author name="Nicolas Beudez (INRAE-AMAP)" email="nicolas.beudez@inrae.fr"/>
+			<author name="Samuel Dufour-Kowalski (INRAE)" email="samuel.dufour@cirad.fr"/>
+		</authors>
+		<url>http://www.inra.fr/capsis</url>
+		<javaversion>1.8</javaversion>
+	</info>
+	
+	<locale>
+		<langpack iso3="eng"/>
+		<langpack iso3="fra"/>
+	</locale>
+
+	<guiprefs width="650" height="550" resizable="yes">
+		<modifier key="layoutAnchor" value="NORTHWEST"/>
+
+		<modifier key="useHeadingPanel" value="yes"/>
+		<modifier key="headingImageOnLeft" value="no"/>
+		<modifier key="headingLineCount" value="3"/>
+		<modifier key="headingFontSize" value="1.2"/>
+		<modifier key="headingBackgroundColor" value="0x00ffffff"/>
+		<modifier key="headingPanelCounter" value="text"/>
+		<modifier key="headingPanelCounterPos" value="inHeading"/>
+    
+		<modifier key="paragraphYGap" value="15"/>
+	</guiprefs>
+
+	<resources>
+		<res id="LicencePanel.licence" src="License.txt"/>
+		<res id="InfoPanel.info" src="Readme.txt"/>
+		<res src="etc/win_shortcut.xml"  id="shortcutSpec.xml"/>
+		<res src="etc/unix_shortcut.xml"  id="Unix_shortcutSpec.xml"/>
+		<res id="Heading.image" src="etc/logoCapsis.jpg"/>
+		
+		<res id="ProcessPanel.Spec.xml" src="etc/ProcessPanel.Spec.xml"/>
+		
+	</resources>
+	
+	<jar src="jar/eolcorrector.jar" stage="install"/>
+	
+	<panels>
+		<panel classname="HelloPanel"/>
+		<panel classname="InfoPanel"/>
+		<panel classname="LicencePanel"/>
+		<panel classname="TargetPanel"/>
+		<panel classname="PacksPanel"/>
+		<panel classname="InstallPanel"/>
+    
+    
+		<!-- fc-14.2.2017 process after installation -->
+		<panel classname="ProcessPanel"/>
+    
+    
+		<panel classname="ShortcutPanel" />
+		<panel classname="SimpleFinishPanel"/>
+	</panels>
+
+	<native type="izpack" name="ShellLink.dll"/>
+	<native type="izpack" name="ShellLink_x64.dll"/>
+
+
+
+
+
+	<packs>
+
+		<pack name="Base" required="yes">
+			<description>Capsis Kernel</description>
+
+			<file src="revision" targetdir="$INSTALL_PATH"/>
+			<file src="revision.readme" targetdir="$INSTALL_PATH"/>
+
+			<file src="Readme.txt" targetdir="$INSTALL_PATH"/>
+			<file src="License.txt" targetdir="$INSTALL_PATH"/>
+			<file src="capsis.jar" targetdir="$INSTALL_PATH"/>
+      <file src="capsisBridgeServer-all.jar" targetdir="$INSTALL_PATH"/>
+			<file src="src" targetdir="$INSTALL_PATH"/>
+			<file src="class" targetdir="$INSTALL_PATH"/>
+			<file src="etc" targetdir="$INSTALL_PATH"/>
+			<file src="var" targetdir="$INSTALL_PATH"/>
+			<file src="ext" targetdir="$INSTALL_PATH"/>
+			<file src="doc" targetdir="$INSTALL_PATH"/>
+ 
+		</pack>
+	
+		<pack name="Data" required="no">
+			<description>Models sample data for demos</description>
+			<file src="data" targetdir="$INSTALL_PATH"/>
+			<!-- Reccursive adding -->
+		</pack>
+
+	</packs>
+
+</installation>

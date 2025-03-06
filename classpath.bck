@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="capsis/lib/numerics/plot/*|crobas/*|safe/extension/standviewer/safeviewer3d/*|scilab/*" kind="src" path="src"/>
+	<classpathentry excluding="ventoux/*" kind="src" path="test/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="ext/args4j.jar"/>
+	<classpathentry kind="lib" path="ext/flanagan.jar"/>
+	<classpathentry kind="lib" path="ext/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="ext/j3d-core-utils.jar"/>
+	<classpathentry kind="lib" path="ext/j3d-core.jar"/>
+	<classpathentry kind="lib" path="ext/jcommon.jar"/>
+	<classpathentry kind="lib" path="ext/jeeb-sketch.jar"/>
+	<classpathentry kind="lib" path="ext/jeeb-util.jar"/>
+	<classpathentry kind="lib" path="ext/jep-2.4.1.jar"/>
+	<classpathentry kind="lib" path="ext/jfreechart-1.0.13-swt.jar"/>
+	<classpathentry kind="lib" path="ext/jfreechart-1.0.13.jar"/>
+	<classpathentry kind="lib" path="ext/jogl.all.jar"/>
+	<classpathentry kind="lib" path="ext/nativewindow.all.jar"/>
+	<classpathentry kind="lib" path="ext/junit.jar"/>
+	<classpathentry kind="lib" path="ext/kunststoff.jar"/>
+	<classpathentry kind="lib" path="ext/MirStretch.jar"/>
+	<classpathentry kind="lib" path="ext/opencsv-1.8.jar"/>
+	<classpathentry kind="lib" path="ext/phutil.jar"/>
+	<classpathentry kind="lib" path="ext/slimplot.jar" sourcepath="ext/slimplot.jar"/>
+	<classpathentry kind="lib" path="ext/toniclf.jar"/>
+	<classpathentry kind="lib" path="ext/xpp3_min.jar"/>
+	<classpathentry kind="lib" path="ext/jsci-core.jar"/>
+	<classpathentry kind="lib" path="ext/groovy-all-1.7.1.jar"/>
+	<classpathentry kind="lib" path="ext/jdom.jar"/>
+	<classpathentry kind="lib" path="ext/jepp.jar"/>
+	<classpathentry kind="lib" path="ext/commons-math-2.2.jar" sourcepath="ext/commons-math-2.2.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-antlr.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-apache-bcel.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-apache-bsf.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-apache-log4j.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-apache-oro.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-apache-regexp.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-apache-resolver.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-commons-logging.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-commons-net.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-jai.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-javamail.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-jdepend.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-jmf.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-jsch.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-junit.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-launcher.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-netrexx.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-nodeps.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-starteam.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-stylebook.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-swing.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-testutil.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-trax.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant-weblogic.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/ant.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="ext/ant/lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="ext/izpack/standalone-compiler.jar"/>
+	<classpathentry kind="lib" path="ext/hsqldb.jar"/>
+	<classpathentry kind="lib" path="ext/mrnf-foresttools.jar"/>
+	<classpathentry kind="lib" path="ext/repicea-foresttools.jar"/>
+	<classpathentry kind="lib" path="ext/repicea-iotools.jar"/>
+	<classpathentry kind="lib" path="ext/repicea-simulation.jar"/>
+	<classpathentry kind="lib" path="ext/repicea-statistics.jar"/>
+	<classpathentry kind="lib" path="ext/repicea-util.jar"/>
+	<classpathentry kind="lib" path="ext/lerfob-foresttools.jar"/>
+	<classpathentry kind="lib" path="ext/vecmath-1_5_2.jar"/>
+	<classpathentry kind="lib" path="ext/gt-api-2.7.5.jar"/>
+	<classpathentry kind="lib" path="ext/gt-data-2.7.5.jar"/>
+	<classpathentry kind="lib" path="ext/gt-epsg-hsql-2.7.5.jar"/>
+	<classpathentry kind="lib" path="ext/gt-main-2.7.5.jar"/>
+	<classpathentry kind="lib" path="ext/gt-metadata-2.7.5.jar"/>
+	<classpathentry kind="lib" path="ext/gt-opengis-2.7.5.jar"/>
+	<classpathentry kind="lib" path="ext/gt-referencing-2.7.5.jar"/>
+	<classpathentry kind="lib" path="ext/gt-shapefile-2.7.5.jar"/>
+	<classpathentry kind="lib" path="ext/jts-1.11.jar"/>
+	<classpathentry kind="lib" path="ext/commons-math3-3.2.jar" sourcepath="//seapriv/usagers/hacde1/Projet/commons-math3-3.2-src"/>
+	<classpathentry kind="lib" path="ext/xmlpull-1.1.3.1.jar"/>
+	<classpathentry kind="lib" path="ext/xstream-1.4.7.jar"/>
+	<classpathentry kind="output" path="class"/>
+</classpath>

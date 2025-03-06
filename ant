@@ -1,0 +1,4 @@
+#! /bin/sh
+
+DIR=ext/ant/bin
+exec ${DIR}/ant "$@"

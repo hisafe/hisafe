@@ -1,0 +1,48 @@
+<ivy-module version="2.0">
+    <info module="capsis" organisation="capsis"/>
+    <configurations>
+      <conf name="kernel"  description="only provide kernel (no deps)"/>
+      <conf name="jeeb" extends="kernel"  description="only provide jeeb jar"/>
+      <conf name="all" extends="jeeb" description="full capsis"/>
+      <conf name="test" extends="all" visibility="private" 
+	    description="for testing our framework"/>
+      
+      <conf name="geotools"/>
+    </configurations>
+    
+    <publications>
+	  <artifact name="capsis-kernel" type="jar" conf="kernel" ext="jar"/>
+    </publications>
+
+    <dependencies>
+      <dependency org="jeeb" name="jeeb" conf="kernel->lib" rev="latest.integration"/>
+      <dependency org="jeeb" name="jeeb" conf="jeeb->sketch" rev="latest.integration"/>
+
+      <dependency org="junit" name="junit" conf="test->default" rev="4.5"/>
+
+  <!--     <dependency org="commons-math" name="commons-math" conf="all->default"  -->
+<!-- 		  rev="2.0" transitive="false"/> -->
+
+      <dependency org="args4j" name="args4j" conf="all->default" rev="latest.integration" />
+      <dependency org="jcommon" name="jcommon" conf="all->default" rev="latest.integration" />
+
+      <dependency org="java3d" name="vecmath" conf="all->default" rev="1.3.1" /> 
+      <dependency org="java3d" name="j3d-core" conf="all->default" rev="1.3.1" /> 
+      <dependency org="java3d" name="j3d-core-utils" conf="all->default" rev="1.3.1" /> 
+
+      <!-- <dependency org="xstream" name="xstream" conf="all->default" rev="1.3.1" />  -->
+      <dependency org="xpp3" name="xpp3_min" conf="all->default" rev="1.1.4c" /> 
+
+
+
+      <!-- geotools -->
+      <dependency org="org.geotools" name="gt-main" rev="latest.integration" 
+		  conf="geotools->default"/>
+      <dependency org="org.geotools" name="gt-shapefile" rev="latest.integration" 
+		  conf="geotools->default"/>
+      <dependency org="org.geotools" name="gt-epsg-hsql" rev="latest.integration" 
+		  conf="geotools->default"/>
+
+      
+    </dependencies>
+</ivy-module>
