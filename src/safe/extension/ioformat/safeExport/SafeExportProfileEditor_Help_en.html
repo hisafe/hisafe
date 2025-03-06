@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+	<meta http-equiv="CONTENT-TYPE" content="text/html; charset=iso-8859-1">
+	<title>Editeur de profils d'exportation</title>
+</head>
+<body>
+<p><strong>Sorry, this file is not yet translated...</strong></p>
+<h1>Editeur de profils d'exportation</h1>
+<h2>Objectif</h2>
+<p>Permettre l'&eacute;dition de profils d'exportation</p>
+<h2>Description</h2>
+<p>La bo&icirc;te de dialogue est compos&eacute;e de 3 zones, qui sont (de haut 
+  en bas) :</p>
+<ol>
+  <li><strong><em>Nom du fichier-profil </em></strong>: ce nom s'affichera dans 
+    la bo&icirc;te de dialogue &quot;Catalogues des profils d'exportation&quot; 
+    ; Veillez &agrave; utiliser un nom de fichier valide, c'est &agrave; dire 
+    sans caract&egrave;re non autoris&eacute;s tels que *, /, \ ...<br>
+  </li>
+  <li><strong><em>Etendue </em></strong>: cette zone permet de d&eacute;finir 
+    les &eacute;tapes concern&eacute;es par l'exportation ; <strong>Attention</strong> 
+    : lors de l'exportation proprement dite, l'&eacute;tendue effective d&eacute;pent 
+    de l'&eacute;tape &agrave; partir de laquelle la proc&eacute;dure d'exportation 
+    a &eacute;t&eacute; appel&eacute;e.<br>
+  </li>
+  <li><strong><em>Variables</em></strong> : cette zone offre autant d'onglets 
+    que de sujets disponibles pour l'exportation. 
+    <p> Chaque onglet contient au minimum : </p>
+  </li>
+  <ul>
+    <li>une case &agrave; cocher <em><strong>&quot;A exporter&quot;</strong></em> 
+      permettant (entre autres), la s&eacute;lection de variables dans la liste</li>
+    <li>une liste de variables en rapport avec le sujet </li>
+    <li>des boutons de commande permettant de recharger la liste des variables 
+      (telle qu'elle est enregistr&eacute;e dans le fichier profil), de s&eacute;lectionner 
+      toutes les variables, d'en s&eacute;lectionner aucune ou d'inverser la s&eacute;lection.</li>
+  </ul>
+  <p>De plus des informations sp&eacute;cifiques &agrave; certains sujets sont 
+    disponibles, soit :</p>
+  <ul>
+    <li><strong>Onglet &quot;Arbres&quot; </strong>: la case &agrave; cocher &quot;tout&quot; 
+      si elle est coch&eacute;e, permet d'exporter les variables pour tous les 
+      arbres pr&eacute;sents dans le sc&eacute;nario ; si elle n'est pas coch&eacute;e, 
+      la zone de texte situ&eacute;e &agrave; sa droite permet de d&eacute;finir 
+      sous forme de liste (entiers s&eacute;par&eacute;s par des ;) les identifiants 
+      des arbres pour lesquels on veut exporter les variables.</li>
+    <li><strong>Onglet &quot;Cellules&quot; </strong>: la case &agrave; cocher 
+      &quot;tout&quot; qui fonctionne de la m&ecirc;me mani&egrave;re que celle 
+      d&eacute;crite pour l'onglet &quot;Arbres&quot; ; pour la s&eacute;lection 
+      de cellules (si &quot;tout&quot; est d&eacute;coch&eacute;), un bouton de 
+      commande situ&eacute; &agrave; droite de la zone de texte permet de s&eacute;lectionner 
+      graphiquement les identifiants des cellules &agrave; exporter.</li>
+    <li><strong>Onglet &quot;Voxels&quot; </strong>: la case &agrave; cocher &quot;tout&quot; 
+      qui fonctionne de la m&ecirc;me mani&egrave;re que celle d&eacute;crite 
+      pour l'onglet &quot;Cellules&quot;. Dans la zone de texte <em><strong>&quot;profondeurs&quot;</strong></em>, 
+      il est possible de d&eacute;finir une liste de valeurs discr&egrave;tes 
+      ou sous la forme d'intervalles comme le montre l'exemple suivant :</li>
+  </ul>
+  <blockquote> 
+    <p>Exemple de valeur du champ &quot;Profondeur&quot; : <font face="Courier New, Courier, mono"><strong>-3.2 
+      ; 5.0 ; 7.1-7.5 ; 8.25-</strong></font><br>
+      -3.2 s&eacute;lectionne les voxels dont la profondeur est inf&eacute;rieure 
+      ou &eacute;gale &agrave; 3.2 m&egrave;tres<br>
+      5.0 s&eacute;lectionne les voxels dont la profondeur est de 5.0 m&egrave;tres<br>
+      7.1-7.5 s&eacute;lectionne les voxels dont la profondeur est comprise entre 
+      7.1 et 7.5 m&egrave;tres<br>
+      8.25- s&eacute;lectionne les voxels dont la profondeur est sup&eacute;rieure 
+      ou &eacute;gale &agrave; 8.25 m&egrave;tres</p>
+  </blockquote>
+</ol>
+<blockquote>
+  <p>Concernant la s&eacute;lection de variables dans la liste, <strong>veillez 
+    &agrave; maintenir la touche &quot;Control&quot; enfonc&eacute;e</strong> 
+    lors de la s&eacute;lection de variables, cette touche permettant d'&eacute;tendre 
+    ou de r&eacute;duire la s&eacute;lection existante.</p>
+</blockquote>
+</body>
+</html>
