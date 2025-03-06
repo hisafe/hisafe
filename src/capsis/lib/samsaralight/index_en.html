@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-15">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.0  (Linux)">
+	<META NAME="CREATED" CONTENT="20081002;16344300">
+	<META NAME="CHANGED" CONTENT="20081002;18212200">
+</HEAD>
+<BODY LANG="fr-FR" DIR="LTR">
+<P STYLE="margin-bottom: 0cm"><B>The Samsaralight library (class
+prefix SL)</B></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><I>Author</I>: Benoit Courbaud,
+Cemagref</P>
+<P STYLE="margin-bottom: 0cm">Benoit.Courbaud@grenoble.cemagref.fr</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><I>Implementation</I>: Nicolas Don&egrave;s,
+Fran&ccedil;ois de Coligny - october 2008</P>
+<P STYLE="margin-bottom: 0cm"><I>package:</I> capsis.lib.samsaralight</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm">To use this library, a capsis module
+must follow some rules:</P>
+<P STYLE="margin-bottom: 0cm">An individual based, spatialy explicit
+model with square cells and 
+</P>
+<P STYLE="margin-bottom: 0cm">- the stand must be a GTCStand</P>
+<P STYLE="margin-bottom: 0cm">- the trees must be GTree instances
+implementing Spatialized, SLLightableTree and Speciable</P>
+<P STYLE="margin-bottom: 0cm">- the plot must be a RectangularPlot
+implementing SLLightablePlot</P>
+<P STYLE="margin-bottom: 0cm">- the cells must be SquareCell
+instances implementing SLLightableCell</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><B>How to use it</B></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm">1. In the constructor of the Model
+class, 
+</P>
+<P STYLE="margin-bottom: 0cm">slModel = new SLModel ();</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm">2. in model.initialize ()</P>
+<P STYLE="margin-bottom: 0cm">slModel.computeRelativeCellNeighbourhoods
+(initStand, treeMaxHeight, bottomAzimut, cellWidth, maxCrownRadius);</P>
+<P STYLE="margin-bottom: 0cm">		</P>
+<P STYLE="margin-bottom: 0cm">// Initial radiative balance</P>
+<P STYLE="margin-bottom: 0cm">slModel.processLighting (initStand);</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+</BODY>
+</HTML>
