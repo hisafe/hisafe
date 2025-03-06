@@ -1,0 +1,11 @@
+# List of known Capsis apps
+# These apps can be launched with the Capsis standard multi-os starting scripts and the run pilot: their main() method will be launched.
+# E.g. (Windows): capsis -p run QuestKnotViewer
+# E.g. (Linux, Mac): sh capsis.sh -p run QuestKnotViewer
+
+# app short name = app fully qualified className (contains a main() method)
+MemoryMonitor = capsis.extension.generictool.MemoryMonitor
+QuestKnotViewer = capsis.lib.quest.knotviewer.QuestKnotViewer
+QuestRingViewer = capsis.lib.quest.ringviewer.QuestRingViewer
+Phelib = capsis.lib.phelib.Phelib
+DllTest = capsis.lib.phelib.SimpleDllTest

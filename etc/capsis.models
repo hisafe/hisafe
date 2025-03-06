@@ -1,0 +1,157 @@
+# List of available models
+# fc-10.4.2019 = false is for technical models, not proposed to user in GUI
+
+# metatrom.module is a technical module
+gbx.waffle=true
+gbx.walsi=true
+#packagename=true fc-23.4.2024 REMOVED
+#simma=true fc-23.4.2024 REMOVED
+cstab=true
+espace=true
+simq=true
+poplar=true
+fuelmanager=true
+ibasam=true
+
+# fc-23.5.2022 REMOVED phenofit5frozen=true
+
+capsis.lib.metatrom.module=false
+
+safeapex=true
+
+# fc-10.4.2019 not found on my local copy, commented
+#safe2=true
+
+#fc-24.8.2022 REMOVED phenofit5nt=true
+
+ecoaf=true
+salem=true
+luberon2=true
+allostand3d=true
+silmar.silmars=true
+plantabsl=true
+phenofit5=true
+phenofit4=true
+organon=true
+economics=true
+pinuspinaster=true
+standfire=true
+forceps=true
+fompine=true
+castaneaonly=true
+woudyfor=true
+optimist=true
+heterofor=true
+twoe=true
+simcop=true
+simcap=true
+ftchene=true
+fcba.piceaabies=true
+fcba.pseudotsugamenziesii=true
+natura=true
+natura2014=true
+abccedrus=true
+stretch2=true
+simmem=true
+afocelpa=true
+afocelpp=true
+alisier=true
+amapsim=true
+artemis=true
+artemis2014=true
+bidasoa=true
+bimodal=true
+ca1=true
+cytisus=true
+deesses=true
+dynaclim=true
+dynet=true
+eucalypt=true
+lerfob.fagacees=true
+lerfob.abial=true
+fasy=true
+fireparadox=true
+genloader=true
+guppy=true
+gymnos=true
+ifnca=true
+isgm=true
+ivy=true
+uqar.jackpine=true
+karite=true
+kerguelen=true
+laricio=true
+lemoine=true
+loxodonta=true
+luberon=true
+maddmodel=true
+mangrove=true
+matapedia=true
+mediterranea=true
+melies=true
+migration=true
+modispinaster=true
+mountain=true
+mpb=true
+mustard=true
+nrg=true
+nrg2017=true
+nz1=true
+oakpine1=true
+oakpine2=true
+paletuviers=true
+physiodemogenetics= true
+pnn2=true
+pp3=true
+pradiata=true
+presage=true
+prunus=true
+qs=true
+quercus=true
+quergus=true
+regelight=true
+regix=true
+rreshar=true
+runaway=true
+safe=true
+samare=true
+samare2014=true
+samare2018=true
+samsara2=true
+samsara=true
+samsaralightloader=true
+
+# fc-21.12.2010 removed the 'sapin' model, replaced by 'template' 
+# (not in this capsis.models) and 'training' built from 'template'
+# during the capsis training only (not in this capsis.models)
+
+# fc-10.4.2019 = false now means: can be used programmatically but will not be proposed in the capsis graphical user interface
+# if a model is to be temporarily desactivated, used a comment mark
+#sapin=false
+
+# fc-28.11.2016 Selva is not in the Capsis repository
+#selva=false
+
+sexibridge=true
+simsys=true
+simreg=false
+stretch=true
+succes=true
+sydy=true
+sydy2=true
+sylvestris=true
+transpop=true
+transpoprege=true
+ventoug=true
+ventoux=true
+lsfmgm=true
+groovytest=true
+croireplant=true
+idf.castaneatables=true
+mathilde=true
+# not a model but include extensions
+walltree = true
+
+# fc-23.4.2024 quebecmrnf is a particular module in Capsis, can not be loaded directly, model class is abstract
+# commented the line below to remove a warning in capsis.log
+#quebecmrnf = false

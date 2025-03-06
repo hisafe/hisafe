@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<shortcuts>
+
+	<!-- REMOVED fc-13.2.2017 
+	<programGroup defaultName="Science"
+		location="applications"/>	
+ 	-->
+ 
+	<shortcut
+		type="Application"
+		name="Capsis4"
+		description="Capsis4: Computer-Aided Projections for Strategies In Silviculture"
+		
+		iconFile="$INSTALL_PATH/etc/logoCapsis.jpg"
+		iconIndex="0"	
+		
+		workingDirectory="$INSTALL_PATH"
+		target="/bin/sh"
+		commandLine="$INSTALL_PATH/capsis.sh"
+		
+		initialState="normal"
+		programGroup="no"
+		desktop="yes"
+		applications="no"
+		startMenu="yes"
+		startup="no"
+		
+		encoding="UTF-8">
+		
+		<!-- UNUSED fc-13.2.2017 shortcut always created
+		<createForPack name="Base"/>
+		-->
+		
+	</shortcut>
+
+</shortcuts>
+

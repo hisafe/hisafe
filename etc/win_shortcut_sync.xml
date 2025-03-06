@@ -1,0 +1,23 @@
+<shortcuts>
+  <skipIfNotSupported/>
+  <programGroup defaultName="Capsis4"
+                location="applications/startMenu"/>
+  <shortcut
+    name="Capsis4"
+    target="$INSTALL_PATH\capsis.jar"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="Capsis4"
+    iconFile=""
+    iconIndex="0"
+    initialState="normal"
+    programGroup="no"
+    desktop="yes"
+    applications="no"
+    startMenu="yes"
+    startup="no">
+
+    <createForPack name="Base"/>
+  </shortcut>
+</shortcuts>
+

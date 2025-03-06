@@ -1,0 +1,29 @@
+# ForestGales extension for Capsis
+# Valid codes for species, soil, cultivation, drainage...
+#
+
+<species>
+Scots Pine = 1
+Corsican Pine = 2
+Lodgepole Pine = 3
+# to be completed...
+
+<soil>
+Brown Earth = 1
+Intergrade = 2
+# to be completed...
+
+<cultivation>
+Notched Planting = 1
+Complete Ploughing = 2
+# to be completed...
+
+<drainage>
+Average
+Poor drainage
+Good drainage
+None
+
+<general>
+DAMSmin = 5
+DAMSmax = 32

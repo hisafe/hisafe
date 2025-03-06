@@ -1,0 +1,10 @@
+<processing>
+  <logfiledir>$INSTALL_PATH</logfiledir>
+  <job name="setup">
+    <executeclass name="capsis.util.EOLCorrector">
+        <arg>${INSTALL_PATH}</arg>
+    </executeclass>
+  </job>
+  <onFail previous="true" next="false" />
+  <onSuccess previous="false" next="true" />
+</processing>

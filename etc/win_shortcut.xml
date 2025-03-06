@@ -1,0 +1,36 @@
+<shortcuts>
+
+	<skipIfNotSupported/>
+
+	<!-- REMOVED fc-13.2.2017
+	<programGroup defaultName="Capsis4"
+		location="applications/startMenu"/>
+	-->
+
+	<shortcut
+		type="Application"
+		name="Capsis4"
+		description="Capsis4: Computer-Aided Projections for Strategies In Silviculture"
+		
+		iconFile="$INSTALL_PATH\etc\logoCapsis.ico"
+		iconIndex="0"
+		
+		workingDirectory="$INSTALL_PATH"
+		target="$INSTALL_PATH\capsis.bat"
+		commandLine=""
+		
+		initialState="normal"
+		programGroup="no"
+		desktop="yes"
+		applications="no"
+		startMenu="yes"
+		startup="no">
+		
+		<!-- UNUSED fc-13.2.2017 shortcut always created
+		<createForPack name="Base"/>
+		-->
+
+	</shortcut>
+
+</shortcuts>
+

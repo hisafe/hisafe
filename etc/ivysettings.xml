@@ -1,0 +1,22 @@
+<ivysettings>
+
+  <include url="${ivy.default.conf.dir}/ivyconf-local.xml"/>
+  <settings defaultResolver="chain1" />
+
+  <resolvers>
+    <url name="amap">
+      <ivy pattern="http://tilleul/ivyrepo/[organisation]/[module]/[revision]/ivys/ivy.xml" />
+      <artifact pattern="http://tilleul/ivyrepo/[organisation]/[module]/[revision]/jars/[artifact]-[revision].[ext]" />
+      <artifact pattern="http://tilleul/ivyrepo/[organisation]/[module]/[revision]/jars/[artifact].[ext]" />
+    </url>
+
+    <chain name="chain1">
+      <resolver ref="local"/>
+      <resolver ref="amap"/>
+      <ibiblio name="osgeo" root="http://download.osgeo.org/webdav/geotools/" m2compatible="true" />
+      <ibiblio name="java" root="http://download.java.net/maven/2/" m2compatible="true" />
+      <ibiblio name="ibiblio" root="http://www.ibiblio.org/maven2/" m2compatible="true" />
+      <ibiblio name="central" root="http://repo1.maven.org/maven2/" m2compatible="true" />
+    </chain>
+  </resolvers>
+</ivysettings>
