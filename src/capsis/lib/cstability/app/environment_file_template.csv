@@ -1,0 +1,26 @@
+########################################################################
+# Environment file of C-STABILITY.
+#
+# File description:
+# 	template
+# 
+# File editing rules:
+# 	- empty lines and lines starting with "#" are skipped by the program. 
+#
+########################################################################
+
+# timeUnit, free but must be the same than in the setup file
+# date: int, positive, in sequence
+# actualDate: for user reading, free, if not used, = date
+# temperature (Kelvin), pH, relativeHumidity may be NA
+
+#timeUnit	date	actualDate	temperature	pH	relativeHumidity
+day	0	0	287	4.5	73
+day	1	1	288	4.5	73
+day	2	2	289	4.5	73
+day	3	3	290	4.5	73
+day	4	4	291	4.5	73
+
+
+
+
