@@ -1,0 +1,9 @@
+# List of dependencies: package names and .jar files (one per line).
+jeeb-util.jar
+capsis.commongui.util
+capsis.util
+dynaclim.model
+capsis.kernel
+capsis.lib.phenofit
+capsis.gui
+capsis.defaulttype

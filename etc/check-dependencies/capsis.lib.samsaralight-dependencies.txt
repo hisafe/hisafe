@@ -1,0 +1,6 @@
+# List of dependencies: package names and .jar files (one per line).
+capsis.defaulttype
+jeeb-util.jar
+capsis.kernel
+capsis.util
+capsis.commongui.util

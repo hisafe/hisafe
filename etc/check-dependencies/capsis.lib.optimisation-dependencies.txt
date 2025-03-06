@@ -1,0 +1,2 @@
+# List of dependencies: package names and .jar files (one per line).
+commons-math-2.2.jar

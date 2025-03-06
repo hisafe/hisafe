@@ -1,0 +1,14 @@
+# List of dependencies: package names and .jar files (one per line).
+capsis.kernel
+jeeb-util.jar
+jeeb-sketch.jar
+capsis.util
+capsis.defaulttype
+capsis.lib.spatial
+capsis.gui
+capsis.commongui.util
+jogl-all.jar
+capsis.commongui.projectmanager
+capsis.extension
+fuelmanager.sketch
+capsis.extensiontype

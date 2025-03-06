@@ -1,0 +1,24 @@
+# List of dependencies: package names and .jar files (one per line).
+capsis.extension
+capsis.defaulttype
+capsis.kernel
+jeeb-util.jar
+simcop.model
+capsis.lib.forenerchips
+commons-math-2.2.jar
+capsis.util
+vecmath-1_5_2.jar
+simcop.crowndev.original
+jeeb-formats.jar
+jeeb-sketch.jar
+repicea.jar
+simcap.model
+commons-math3-3.6.1.jar
+capsis.commongui
+capsis.extensiontype
+capsis.gui
+simcop.forenerchips
+capsis.app
+capsis.lib.emerge
+jogl-all.jar
+capsis.script

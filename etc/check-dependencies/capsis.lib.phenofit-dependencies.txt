@@ -1,0 +1,6 @@
+# List of dependencies: package names and .jar files (one per line).
+capsis.util
+jeeb-util.jar
+phenofit5.model
+lambert-java-2.1.0.jar
+capsis.kernel

@@ -1,0 +1,17 @@
+# List of dependencies: package names and .jar files (one per line).
+capsis.defaulttype
+capsis.kernel
+nz1.model
+repicea.jar
+jeeb-util.jar
+capsis.extension.treelogger
+commons-math3-3.6.1.jar
+vecmath-1_5_2.jar
+capsis.app
+capsis.commongui.util
+capsis.gui
+jeeb-sketch.jar
+jeeb-formats.jar
+capsis.extension
+capsis.util
+jogl-all.jar

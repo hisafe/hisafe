@@ -1,0 +1,6 @@
+# List of dependencies: package names and .jar files (one per line).
+capsis.defaulttype
+lerfob.abial.model
+jeeb-util.jar
+capsis.util.group
+capsis.kernel

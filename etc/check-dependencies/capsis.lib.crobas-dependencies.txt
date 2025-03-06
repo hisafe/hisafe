@@ -1,0 +1,7 @@
+# List of dependencies: package names and .jar files (one per line).
+flanagan.jar
+capsis.util
+jeeb-util.jar
+uqar.jackpine.model
+capsis.defaulttype
+capsis.kernel

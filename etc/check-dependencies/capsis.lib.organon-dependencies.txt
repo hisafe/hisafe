@@ -1,0 +1,2 @@
+# List of dependencies: package names and .jar files (one per line).
+jna-4.1.0.jar
