@@ -1,6 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-Hi-sAFe <img src="man/Hi-sAFe_Logo_Small.png" align="right" />
+Hi-sAFe <img src="doc/Hi-sAFe_Logo_Small.png" align="right" />
 ==============================================================
 
 Overview
