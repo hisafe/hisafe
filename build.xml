@@ -5,7 +5,7 @@
 
 	<!-- For using the ant-contrib-0.6.jar file stored in ext/ant/lib directory.
 		 See: http://ant-contrib.sourceforge.net/ -->
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
 	<!-- Sets global properties for this build.xml file. 
 	     nb-02.02.2017
@@ -19,10 +19,7 @@
 	<property name="export.dir" value="export" />
 	<property name="capsis.kernel.export.dir" value="capsisKernelExportDir" />
 	<property name="eol.corrector.export.dir" value="eolCorrectorExportDir" />
-	<property name="pet.export.dir" value="petExportDir" />
 	<property name="cstability.export.dir" value="cstabilityExportDir" />
-	<property name="castanea4R.dir" value="castanea4R" />
-	<property name="castanea.jar.dir" value="castaneajar" />
 	<property name="jar.dir" value="jar" />
 	<property name="javadoc.dir" value="doc/javadoc" />
 	<property name="main.src.dir" value="src" />
@@ -36,7 +33,7 @@
 		 choice going forward, see: https://ant.apache.org/manual/Types/regexp.html.
 		 For information, the org.apache.tools.ant.util.regexp.Jdk14RegexpRegexp class is encapsulated in the 
 		 ant/lib/ant-nodeps.jar file (Ant 1.10.3). -->
-	<property name="ant.regexp.regexpimpl" value="org.apache.tools.ant.util.regexp.Jdk14RegexpRegexp"/>
+	<property name="ant.regexp.regexpimpl" value="org.apache.tools.ant.util.regexp.Jdk14RegexpRegexp" />
 
 	<!-- Defines an element (here a path) for the project with an identifier using its 'id' attribute.
 		 This element can be further referenced by specifying the 'refid' attribute on an element 
@@ -194,7 +191,8 @@
 
 		<mkdir dir="${main.build.dir}" />
 
-		<javac srcdir="${main.src.dir}" destdir="${main.build.dir}" nowarn="on" fork="true" debug="on" memoryinitialsize="128m" memorymaximumsize="1024m" encoding="ISO-8859-1">
+		<!-- Added includeantruntime="false" to avoid a message "warning: 'includeantruntime' was not set, defaulting..." fc-6.9.2024 -->
+		<javac srcdir="${main.src.dir}" destdir="${main.build.dir}" nowarn="on" fork="true" debug="on" memoryinitialsize="128m" memorymaximumsize="1024m" encoding="ISO-8859-1" includeantruntime="false">
 
 			<!-- ISO-8859-1 -->
 			<!-- encoding="UTF-8"> -->
@@ -404,21 +402,21 @@
 				<or>
 					<!-- Checks that package.name property has been set. -->
 					<not>
-						<isset property="package.name"/>
+						<isset property="package.name" />
 					</not>
 					<!-- Checks that the number of arguments passed on the command line is equal to 1. See explanations in the 
 							 'freeze' target. -->
 					<resourcecount when="ne" count="1">
 						<difference>
 							<propertyset>
-								<propertyref builtin="commandline"/>
+								<propertyref builtin="commandline" />
 							</propertyset>
 							<union>
 								<propertyset>
-									<propertyref prefix="ant.file"/>
+									<propertyref prefix="ant.file" />
 								</propertyset>
 								<propertyset>
-									<propertyref prefix="ant.project"/>
+									<propertyref prefix="ant.project" />
 								</propertyset>
 							</union>
 						</difference>
@@ -430,16 +428,16 @@
 		<!-- Stops if user has completed empty value for the package.name property. -->
 		<fail message="Error, the value for the package.name property must be non-empty.">
 			<condition>
-				<equals arg1="${package.name}" arg2=""/>
+				<equals arg1="${package.name}" arg2="" />
 			</condition>
 		</fail>
-			
+
 		<!-- Creates package.path property: replaces all the "." of package.name property by "/".-->
 		<loadresource property="package.path">
-			<propertyresource name="package.name"/>
+			<propertyresource name="package.name" />
 			<filterchain>
 				<tokenfilter>
-					<replacestring from="." to="/"/>
+					<replacestring from="." to="/" />
 				</tokenfilter>
 			</filterchain>
 		</loadresource>
@@ -448,43 +446,43 @@
 		<fail message="Error, package ${package.name} does not exist in ${basedir}${file.separator}${main.src.dir}.">
 			<condition>
 				<not>
-					<available file="${main.src.dir}/${package.path}" type="dir"/>
+					<available file="${main.src.dir}/${package.path}" type="dir" />
 				</not>
 			</condition>
 		</fail>
 
 		<!-- Creates dependencies.filename property: name of the file containing the package's dependencies to be tested. -->
-		<property name="dependencies.filename" value="${package.name}-dependencies.txt"/>
+		<property name="dependencies.filename" value="${package.name}-dependencies.txt" />
 
 		<!-- Stops if the file containing the package's dependencies to be tested is missing. -->
 		<fail message="Error, ${dependencies.filename} file does not exist in ${basedir}${file.separator}${check.dependencies.dir}.">
 			<condition>
 				<not>
-					<available file="${check.dependencies.dir}/${dependencies.filename}" type="file"/>
+					<available file="${check.dependencies.dir}/${dependencies.filename}" type="file" />
 				</not>
 			</condition>
 		</fail>
 
 		<!-- Creates directory to store the compiled files generated after compilation of package with name package.name. -->
-		<delete dir="${check.dependencies.dir}/class"/>
-		<mkdir dir="${check.dependencies.dir}/class"/>
+		<delete dir="${check.dependencies.dir}/class" />
+		<mkdir dir="${check.dependencies.dir}/class" />
 
 		<!-- Creates directory to store the compiled files of packages and .jar files listed in dependencies.filename file. 
-		     Those files will be copied from main.build.dir and ext.dir directories. --> 
-		<delete dir="${check.dependencies.dir}/dependencies-class"/>
-		<mkdir dir="${check.dependencies.dir}/dependencies-class"/>
+		     Those files will be copied from main.build.dir and ext.dir directories. -->
+		<delete dir="${check.dependencies.dir}/dependencies-class" />
+		<mkdir dir="${check.dependencies.dir}/dependencies-class" />
 
 		<!-- Creates dependencies.list property by reading the content of the file storing the dependencies to be tested. -->
 		<loadfile property="dependencies.list" srcFile="${check.dependencies.dir}/${dependencies.filename}">
 			<filterchain>
 				<!-- Removes whitespaces from start and end of lines (trim) and empty lines (ignoreblank). -->
-				<tokenfilter>					
-					<trim/>
-					<ignoreblank/>
+				<tokenfilter>
+					<trim />
+					<ignoreblank />
 				</tokenfilter>
 				<!-- Removes commented lines: they begin with #. -->
 				<striplinecomments>
-					<comment value="#"/>
+					<comment value="#" />
 				</striplinecomments>
 			</filterchain>
 		</loadfile>
@@ -493,12 +491,12 @@
 			 dependencies.list property is not set if file with name dependencies.filename is empty after removal of 
 			 whitespaces, empty lines and commented lines (see above).-->
 		<condition property="dependencies.exist">
-			<isset property="dependencies.list"/>
+			<isset property="dependencies.list" />
 		</condition>
 
 		<!-- Loops over the dependencies (if there are). dependency is the name of the loop's parameter. -->
 		<if>
-			<isset property="dependencies.exist"/>
+			<isset property="dependencies.exist" />
 			<then>
 				<for list="${dependencies.list}" param="dependency" delimiter="${line.separator}">
 
@@ -507,12 +505,12 @@
 
 						<!-- Defines some local properties (requires Ant-1.8). Because properties are immutable, it is a way to use a property 
 							 whose value can vary (that is a variable). -->
-						<local name="dependency.name"/>
-						<local name="dependency.path"/>
-						<local name="is.jar.file"/>
+						<local name="dependency.name" />
+						<local name="dependency.path" />
+						<local name="is.jar.file" />
 
 						<!-- Creates the dependency.name property. -->
-						<property name="dependency.name" value="@{dependency}"/>
+						<property name="dependency.name" value="@{dependency}" />
 
 						<!-- Detects if the dependency is a .jar file. Uses regular expressions.
 							 ^ means the beginning of a line.
@@ -521,42 +519,42 @@
 							 \. is the . character.
 							 If the condition is not verified, is.jar.file property is not set. -->
 						<condition property="is.jar.file">
-							<matches string="${dependency.name}" pattern="^.*\.jar$"/>
+							<matches string="${dependency.name}" pattern="^.*\.jar$" />
 						</condition>
 
-						<!-- Creates the dependency.path property. --> 
+						<!-- Creates the dependency.path property. -->
 						<if>
 							<not>
-								<isset property="is.jar.file"/>
+								<isset property="is.jar.file" />
 							</not>
 							<then>
 								<!-- The dependency is a package. Replaces all the "." of dependency.name property by "/". -->
 								<loadresource property="dependency.path">
-									<propertyresource name="dependency.name"/>
+									<propertyresource name="dependency.name" />
 									<filterchain>
 										<tokenfilter>
-											<replacestring from="." to="/"/>
+											<replacestring from="." to="/" />
 										</tokenfilter>
 									</filterchain>
 								</loadresource>
 							</then>
 							<else>
 								<!-- The dependency is a .jar file. Path is equal to name. -->
-								<property name="dependency.path" value="${dependency.name}"/>
+								<property name="dependency.path" value="${dependency.name}" />
 							</else>
 						</if>
 
 						<!-- Fails if the dependency does not correspond to an existing compiled package or an existing .jar file. -->
 						<if>
 							<not>
-								<isset property="is.jar.file"/>
+								<isset property="is.jar.file" />
 							</not>
 							<then>
 								<!-- The dependency is a package. -->
 								<fail message="Error, ${dependency.name} package listed in file ${basedir}${file.separator}${check.dependencies.dir}${file.separator}${dependencies.filename} does not exist in ${basedir}${file.separator}${main.build.dir}.">
 									<condition>
 										<not>
-											<available file="${main.build.dir}/${dependency.path}" type="dir"/>
+											<available file="${main.build.dir}/${dependency.path}" type="dir" />
 										</not>
 									</condition>
 								</fail>
@@ -566,7 +564,7 @@
 								<fail message="Error, ${dependency.name} file listed in file ${basedir}${file.separator}${check.dependencies.dir}${file.separator}${dependencies.filename} does not exist in ${basedir}${file.separator}${ext.dir}.">
 									<condition>
 										<not>
-											<available file="${ext.dir}/${dependency.path}" type="file"/>
+											<available file="${ext.dir}/${dependency.path}" type="file" />
 										</not>
 									</condition>
 								</fail>
@@ -578,18 +576,18 @@
 							 - the .jar file if dependency is a .jar file. -->
 						<if>
 							<not>
-								<isset property="is.jar.file"/>
+								<isset property="is.jar.file" />
 							</not>
 							<then>
 								<!-- The dependency is a package. -->
-								<mkdir dir="${check.dependencies.dir}/dependencies-class/${dependency.path}"/>
+								<mkdir dir="${check.dependencies.dir}/dependencies-class/${dependency.path}" />
 								<copy todir="${check.dependencies.dir}/dependencies-class/${dependency.path}">
-									<fileset dir="${main.build.dir}/${dependency.path}"/>
+									<fileset dir="${main.build.dir}/${dependency.path}" />
 								</copy>
 							</then>
 							<else>
 								<!-- The dependency is a .jar file. -->
-								<copy file="${ext.dir}/${dependency.path}" todir="${check.dependencies.dir}/dependencies-class"/>
+								<copy file="${ext.dir}/${dependency.path}" todir="${check.dependencies.dir}/dependencies-class" />
 							</else>
 						</if>
 
@@ -600,51 +598,52 @@
 		</if>
 
 		<!-- Displays message. -->
-		<echo message="*********************************************************************"/>
+		<echo message="*********************************************************************" />
 		<if>
-			<isset property="dependencies.exist"/>
+			<isset property="dependencies.exist" />
 			<then>
-				<echo message="Compiling package ${package.name} with these dependencies...:"/>
-				<echo message="${dependencies.list}"/>
+				<echo message="Compiling package ${package.name} with these dependencies...:" />
+				<echo message="${dependencies.list}" />
 			</then>
 			<else>
-				<echo message="Compiling package ${package.name} with no dependency."/>
+				<echo message="Compiling package ${package.name} with no dependency." />
 			</else>
 		</if>
-		<echo message="*********************************************************************"/>
+		<echo message="*********************************************************************" />
 
 		<!-- Compiles the package with name package.name using the dependencies (packages + .jar files). -->
-		<javac srcdir="${main.src.dir}/${package.path}" destdir="${check.dependencies.dir}/class" nowarn="on" fork="true" debug="on" memoryinitialsize="128m" memorymaximumsize="1024m" encoding="ISO-8859-1">
+		<!-- Added includeantruntime="false" to avoid a message "warning: 'includeantruntime' was not set, defaulting..." fc-6.9.2024 -->
+		<javac srcdir="${main.src.dir}/${package.path}" destdir="${check.dependencies.dir}/class" nowarn="on" fork="true" debug="on" memoryinitialsize="128m" memorymaximumsize="1024m" encoding="ISO-8859-1" includeantruntime="false">
 
 			<!-- Defines classpath. -->
 			<classpath>
 				<fileset dir="${check.dependencies.dir}/dependencies-class">
 					<include name="*.jar" />
 				</fileset>
-				<path location="${check.dependencies.dir}/dependencies-class"/>
+				<path location="${check.dependencies.dir}/dependencies-class" />
 			</classpath>
 
 		</javac>
 
 		<!-- Deletes directories. -->
-		<delete dir="${check.dependencies.dir}/class"/>
-		<delete dir="${check.dependencies.dir}/dependencies-class"/>
+		<delete dir="${check.dependencies.dir}/class" />
+		<delete dir="${check.dependencies.dir}/dependencies-class" />
 
 		<!-- Displays message if compilation ends successfully. -->
-		<echo message="*********************************************************************"/>
+		<echo message="*********************************************************************" />
 		<if>
-			<isset property="dependencies.exist"/>
+			<isset property="dependencies.exist" />
 			<then>
-				<echo message="Build successful with these dependencies:"/>
-				<echo message="${dependencies.list}"/>
+				<echo message="Build successful with these dependencies:" />
+				<echo message="${dependencies.list}" />
 			</then>
 			<else>
-				<echo message="Build successful with no dependency."/>
+				<echo message="Build successful with no dependency." />
 			</else>
 		</if>
 
 	</target>
-	
+
 
 
 	<!-- COMPILE-ALL -->
@@ -656,8 +655,8 @@
 	<target name="compile-groovy" description="Compiles groovy source files" depends="compile">
 
 		<groovyc srcdir="${main.src.dir}" destdir="${main.build.dir}" fork="false" encoding="UTF-8">
-		<!-- fc-1.4.2022 changed fork to false to fix a bug 'Error running forked groovyc.' -->
-		<!-- <groovyc srcdir="${main.src.dir}" destdir="${main.build.dir}" fork="true" encoding="UTF-8"> -->
+			<!-- fc-1.4.2022 changed fork to false to fix a bug 'Error running forked groovyc.' -->
+			<!-- <groovyc srcdir="${main.src.dir}" destdir="${main.build.dir}" fork="true" encoding="UTF-8"> -->
 
 			<classpath>
 				<path refid="ext.dirs" />
@@ -703,7 +702,9 @@
 		<!-- Builds in the ${test.build.dir} directory the .class files compiled from the .java files 
 			 contained in the ${test.src.dir} directory. nb-01.02.2017
 		-->
-		<javac srcdir="${test.src.dir}" destdir="${test.build.dir}" fork="true" debug="on" nowarn="on" encoding="iso-8859-1">
+		<!-- Added includeantruntime="false" to avoid a message "warning: 'includeantruntime' was not set, defaulting..." fc-6.9.2024 -->
+
+		<javac srcdir="${test.src.dir}" destdir="${test.build.dir}" fork="true" debug="on" nowarn="on" encoding="iso-8859-1" includeantruntime="false">
 			<!-- encoding="UTF-8"> -->
 			<!-- encoding="iso-8859-15"> -->
 			<!-- Not needed. nb-02.02.2017
@@ -848,7 +849,7 @@
 	<!-- RUN-UNIX -->
 	<target name="run-unix" description="Runs the Capsis application without any argument on Linux or MacOS" if="isUnix">
 		<exec executable="/bin/sh">
-			<arg value="capsis.sh"/>
+			<arg value="capsis.sh" />
 		</exec>
 	</target>
 
@@ -864,8 +865,8 @@
 	<!-- RUN-EN-UNIX -->
 	<target name="run-en-unix" description="Runs the Capsis application in english without any other argument on Linux or MacOS" if="isUnix">
 		<exec executable="/bin/sh">
-			<arg value="capsis.sh"/>
-			<arg value="-l en"/>
+			<arg value="capsis.sh" />
+			<arg value="-l en" />
 		</exec>
 	</target>
 
@@ -935,13 +936,6 @@
 		</copy>
 	</target>
 
-	<!-- pet-export fc-12.5.2021 -->
-	<target name="pet-export" description="Copies pet classes in a temporary directory for 'jar' target" depends="compile">
-		<delete dir="${pet.export.dir}" />
-		<copy todir="${pet.export.dir}">
-			<fileset dir="${main.build.dir}" includes="phenofit4/pet/**" />
-		</copy>
-	</target>
 
 	<!-- cstability-export fc+jsm-4.6.2021 -->
 	<target name="cstability-export" description="Copies cstability classes in a temporary directory for 'jar' target" depends="compile">
@@ -949,16 +943,17 @@
 		<copy todir="${cstability.export.dir}">
 			<fileset dir="${main.build.dir}" includes="capsis/lib/cstability/**" />
 		</copy>
-		<copy todir="${cstability.export.dir}/src"> <!-- jsm 28.09.2022 -->
+		<copy todir="${cstability.export.dir}/src">
+			<!-- jsm 28.09.2022 -->
 			<fileset dir="${main.src.dir}" includes="capsis/lib/cstability/**" />
-		</copy> <!-- jsm 28.09.2022 -->
+		</copy>
+		<!-- jsm 28.09.2022 -->
 	</target>
 
 
 	<!-- JAR -->
-	<target name="jar" description="Creates a capsis-kernel.jar file in the 'jar' directory" 
-		depends="clean, capsis-kernel-export, eol-corrector-export, pet-export, cstability-export">
-		
+	<target name="jar" description="Creates a capsis-kernel.jar file in the 'jar' directory" depends="clean, capsis-kernel-export, eol-corrector-export,  cstability-export">
+
 		<mkdir dir="${jar.dir}" />
 
 		<!-- capsis-kernel.jar -->
@@ -969,33 +964,20 @@
 		<jar destfile="${jar.dir}/eolcorrector.jar" basedir="${eol.corrector.export.dir}" includes="capsis/**" />
 		<delete dir="${eol.corrector.export.dir}" />
 
-		<!-- pet.jar fc-12.5.2021 -->
-		<mkdir dir="${jar.dir}/pet" />
-		
-		<jar destfile="${jar.dir}/pet/pet.jar" basedir="${pet.export.dir}" includes="phenofit4/pet/**">
-			<manifest>
-				<attribute name="Main-Class" value="phenofit4.pet.view.CallerGui"/>
-			</manifest>
-		</jar>
-		
-		<copy todir="${jar.dir}/pet">
-			<fileset dir="${pet.export.dir}/phenofit4/pet" includes="*.bat" />
-			<fileset dir="${pet.export.dir}/phenofit4/pet" includes="*.sh" />
-		</copy>
-		
-		<delete dir="${pet.export.dir}" />
+
 
 
 		<!-- cstability.jar fc+jsm-4.6.2021 -->
 		<mkdir dir="${jar.dir}/cstability" />
-		<mkdir dir="${jar.dir}/cstability/src" /> <!-- jsm 28.09.2022 -->
-				
+		<mkdir dir="${jar.dir}/cstability/src" />
+		<!-- jsm 28.09.2022 -->
+
 		<jar destfile="${jar.dir}/cstability/cstability.jar" basedir="${cstability.export.dir}" includes="capsis/lib/cstability/**">
 			<manifest>
-				<attribute name="Main-Class" value="capsis.lib.cstability.app.Cstability"/>
+				<attribute name="Main-Class" value="capsis.lib.cstability.app.Cstability" />
 			</manifest>
 		</jar>
-		
+
 		<copy todir="${jar.dir}/cstability">
 			<fileset dir="${cstability.export.dir}/capsis/lib/cstability/app" includes="*.bat" />
 			<fileset dir="${cstability.export.dir}/capsis/lib/cstability/app" includes="*.sh" />
@@ -1003,46 +985,22 @@
 			<fileset dir="${cstability.export.dir}/capsis/lib/cstability/app" includes="*.pdf" />
 			<fileset dir="${cstability.export.dir}/capsis/lib/cstability/app" includes="*.py" />
 		</copy>
-		
 
-		<copy todir="${jar.dir}/cstability/src"> <!-- jsm 28.09.2022 -->
+
+		<copy todir="${jar.dir}/cstability/src">
+			<!-- jsm 28.09.2022 -->
 			<fileset dir="${cstability.export.dir}/src/capsis/lib/cstability" />
-		</copy> <!-- jsm 28.09.2022 -->
-		
-		<zip destfile="${jar.dir}/cstability.zip"
-		     basedir="${jar.dir}/cstability"/>
-		
+		</copy>
+		<!-- jsm 28.09.2022 -->
+
+		<zip destfile="${jar.dir}/cstability.zip" basedir="${jar.dir}/cstability" />
+
 		<delete dir="${cstability.export.dir}" />
 
 	</target>
 
 
-	<!-- Generate castanea4R for connection with R (for Katalin Csillery, fc-16.11.2015, added the src files) -->
-	<target name="castanea4R" description="Prepares Castenea export for R connection" depends="compile">
 
-		<delete dir="${castanea4R.dir}" />
-
-		<copy todir="${castanea4R.dir}/class">
-			<fileset dir="${main.build.dir}" includes="capsis/**,capsis/lib/castanea/**,castaneaonly/**" />
-			<fileset dir="${main.src.dir}" includes="capsis/**,capsis/lib/castanea/**,castaneaonly/**" />
-			<zipfileset includes="**/*" src="ext/jeeb-util.jar" />
-			<zipfileset includes="**/*" src="ext/jeeb-sketch.jar" />
-			<zipfileset includes="**/*" src="ext/args4j.jar" />
-			<zipfileset includes="**/*" src="ext/xstream-1.4.7.jar" />
-			<zipfileset includes="**/*" src="ext/xmlpull-1.1.3.1.jar" />
-		</copy>
-
-		<copy todir="${castanea4R.dir}/etc">
-			<fileset dir="etc" includes="capsis.models" />
-		</copy>
-
-		<copy todir="${castanea4R.dir}/data">
-			<fileset dir="data/castaneaonly" includes="dvx1-fc.txt" />
-			<fileset dir="data/castaneaonly" includes="CastaneaSpeciesNew2.txt" />
-			<fileset dir="data/castaneaonly/climate" includes="safran8341_dvx1_1960-2011.jclim" />
-		</copy>
-
-	</target>
 
 
 	<!-- EXPORT  -->
@@ -1080,11 +1038,6 @@
 			<fileset dir="data" includes="${modules}" />
 		</copy>
 
-		<!-- fc-19.6.2017 added data/forestGales in installer (required for use of FG) -->
-		<mkdir dir="${export.dir}/data/forestGales" />
-		<copy todir="${export.dir}/data/forestGales">
-			<fileset dir="data/forestGales" includes="*.*" />
-		</copy>
 
 		<copy todir="${export.dir}/ext">
 			<fileset dir="ext">
@@ -1282,17 +1235,17 @@
 		.jar file in the ext.dir directory." depends="-check-freeze-validity">
 
 		<!-- Runs an initial recompilation. -->
-		<antcall target="clean"/>
-		<antcall target="compile"/>
+		<antcall target="clean" />
+		<antcall target="compile" />
 
 		<!-- Generates the source files of the library to freeze from those of the existing library. -->
-		<antcall target="-prepare-library"/>
+		<antcall target="-prepare-library" />
 
 		<!-- Compiles the source files of the library to freeze. -->
-		<antcall target="compile"/>
+		<antcall target="compile" />
 
 		<!-- Freezes the library by creating a .jar file that encapsulates it. -->
-		<antcall target="-do-freeze"/>
+		<antcall target="-do-freeze" />
 
 	</target>
 
@@ -1315,10 +1268,10 @@
 				<or>
 					<!-- Checks that library.name and suffix properties have been set. -->
 					<not>
-						<isset property="library.name"/>
+						<isset property="library.name" />
 					</not>
 					<not>
-						<isset property="suffix"/>
+						<isset property="suffix" />
 					</not>
 					<!-- Checks that the number of arguments passed on the command line is equal to 2. The 'resourcecount' task 
 						 is used as a condition (use of 'when' and 'count' attributes). 
@@ -1346,14 +1299,14 @@
 					<resourcecount when="ne" count="2">
 						<difference>
 							<propertyset>
-								<propertyref builtin="commandline"/>
+								<propertyref builtin="commandline" />
 							</propertyset>
 							<union>
 								<propertyset>
-									<propertyref prefix="ant.file"/>
+									<propertyref prefix="ant.file" />
 								</propertyset>
 								<propertyset>
-									<propertyref prefix="ant.project"/>
+									<propertyref prefix="ant.project" />
 								</propertyset>
 							</union>
 						</difference>
@@ -1366,8 +1319,8 @@
 		<fail message="Error, the values for the library.name and suffix properties must be non-empty.">
 			<condition>
 				<or>
-					<equals arg1="${library.name}" arg2=""/>
-					<equals arg1="${suffix}" arg2=""/>
+					<equals arg1="${library.name}" arg2="" />
+					<equals arg1="${suffix}" arg2="" />
 				</or>
 			</condition>
 		</fail>
@@ -1378,17 +1331,17 @@
 		<fail message="Error, the value of the suffix property must contain only numbers and lowercase letters.">
 			<condition>
 				<not>
-					<matches pattern="^[0-9a-z]+$" string="${suffix}"/>
+					<matches pattern="^[0-9a-z]+$" string="${suffix}" />
 				</not>
 			</condition>
 		</fail>
 
 		<!-- Creates the library.path property: replaces all the "." of 'library.name' property by "/". -->
 		<loadresource property="library.path">
-			<propertyresource name="library.name"/>
+			<propertyresource name="library.name" />
 			<filterchain>
 				<tokenfilter>
-					<replacestring from="." to="/"/>
+					<replacestring from="." to="/" />
 				</tokenfilter>
 			</filterchain>
 		</loadresource>
@@ -1397,30 +1350,30 @@
 		<fail message="Error, the ${library.name} library does not exist in ${basedir}${file.separator}${main.src.dir}.">
 			<condition>
 				<not>
-					<available file="${main.src.dir}/${library.path}" type="dir"/>
+					<available file="${main.src.dir}/${library.path}" type="dir" />
 				</not>
 			</condition>
 		</fail>
 
 		<!-- Creates the new.library.name property. -->
-		<property name="new.library.name" value="${library.name}${suffix}"/>
+		<property name="new.library.name" value="${library.name}${suffix}" />
 
 		<!-- Creates the new.library.path property: replaces all the "." of new.library.name property by "/". -->
 		<loadresource property="new.library.path">
-			<propertyresource name="new.library.name"/>
+			<propertyresource name="new.library.name" />
 			<filterchain>
 				<tokenfilter>
-					<replacestring from="." to="/"/>
+					<replacestring from="." to="/" />
 				</tokenfilter>
 			</filterchain>
 		</loadresource>
 
 		<!-- Creates the jar.name property: replaces all the "." of new.library.name property by "-". -->
 		<loadresource property="jar.name">
-			<propertyresource name="new.library.name"/>
+			<propertyresource name="new.library.name" />
 			<filterchain>
 				<tokenfilter>
-					<replacestring from="." to="-"/>
+					<replacestring from="." to="-" />
 				</tokenfilter>
 			</filterchain>
 		</loadresource>
@@ -1431,19 +1384,19 @@
 			 the main.src.dir directory. -->
 		<fail message="Error, the ${suffix} suffix cannot be used to create ${basedir}${file.separator}${ext.dir}${file.separator}${jar.name}.jar ${line.separator}because the ${basedir}${file.separator}${main.src.dir}/${new.library.path} module already exists.">
 			<condition>
-				<available file="${main.src.dir}/${new.library.path}" type="dir"/>
+				<available file="${main.src.dir}/${new.library.path}" type="dir" />
 			</condition>
 		</fail>
 
 		<!-- Stops if the .jar file already exists in ext.dir. -->
 		<fail message="Error, ${basedir}${file.separator}${ext.dir}${file.separator}${jar.name}.jar will not be created, it already exists.">
 			<condition>
-				<available file="${ext.dir}/${jar.name}.jar" type="file"/>
+				<available file="${ext.dir}/${jar.name}.jar" type="file" />
 			</condition>
 		</fail>
 
 		<!-- Displays messsage if the checking process succeeded. -->
-		<echo message="Done."/>
+		<echo message="Done." />
 
 	</target>
 
@@ -1457,15 +1410,15 @@
 
 		<!-- Creates in main.src.dir a directory for the library to freeze. Previously deletes it if it already exists. Copies 
 			 in it the directories and source files of the library. -->
-		<delete dir="${main.src.dir}/${new.library.path}"/>
+		<delete dir="${main.src.dir}/${new.library.path}" />
 		<copy todir="${main.src.dir}/${new.library.path}">
-			<fileset dir="${main.src.dir}/${library.path}"/>
+			<fileset dir="${main.src.dir}/${library.path}" />
 		</copy>
 
 		<!-- Replaces in each file of new.library.path the library.name string by the new.library.name string:
 				- mainly for the 'package' and 'import' instructions of .java files;
 				- mays occur for other files (.properties for example). -->
-		<replace dir="${main.src.dir}/${new.library.path}" token="${library.name}" value="${new.library.name}"/>
+		<replace dir="${main.src.dir}/${new.library.path}" token="${library.name}" value="${new.library.name}" />
 
 		<!-- Adds the "jar.name-" string at the beginning of each key of the translation files (.properties files) of 
 			 the new library in order to distinguish them from those of the initial library (if not conflicts happen 
@@ -1476,23 +1429,23 @@
 			 byline: process the file(s) one line at a time, executing the replacement on one line at a time.
 		-->
 		<!-- Defines the prefix to add and selects the .properties files. -->
-		<property name="translation.files.prefix" value="${jar.name}-"/>
-		<fileset id="properties.files" dir="${main.src.dir}/${new.library.path}" includes="**/*.properties"/>
+		<property name="translation.files.prefix" value="${jar.name}-" />
+		<fileset id="properties.files" dir="${main.src.dir}/${new.library.path}" includes="**/*.properties" />
 		<!-- Step 1: adds the prefix at the beginning of each line of the .properties files. A non-empty line can eventually 
 					 begin with one or more whitespace characters that are deleted: \s designs a whitespace character (space 
 					 character, tab character, carriage return character,...), * means the preceding character repeated zero 
 					 or more times. -->
 		<replaceregexp match="^\s*" replace="${translation.files.prefix}" byline="true">
-			<fileset refid="properties.files"/>
+			<fileset refid="properties.files" />
 		</replaceregexp>
 		<!-- Step 2: manages the initial white lines (they can be empty or begin with whitespace characters). -->
 		<replaceregexp match="^${translation.files.prefix}\s*$" replace="" byline="true">
-			<fileset refid="properties.files"/>
+			<fileset refid="properties.files" />
 		</replaceregexp>
 		<!-- Step 3: manages the initial lines of commentaries (they begin with the # character that can eventually be 
 			 preceding of whitespace characters). -->
 		<replaceregexp match="^${translation.files.prefix}\s*#" replace="#" byline="true">
-			<fileset refid="properties.files"/>
+			<fileset refid="properties.files" />
 		</replaceregexp>
 
 		<!-- Adapts the Translator.swap() calls in .java files to the prefix added in the translation .properties files. Uses 
@@ -1501,7 +1454,7 @@
 			 g: global replacement. Replace all occurrences found. If not used, the replacement is made only for the first occurence 
 			 found on the current line. -->
 		<replaceregexp match='Translator\.swap\s*\(\s*"' replace='Translator.swap("${translation.files.prefix}' byline="true" flags="g">
-			<fileset dir="${main.src.dir}/${new.library.path}"/>
+			<fileset dir="${main.src.dir}/${new.library.path}" />
 		</replaceregexp>
 
 	</target>
@@ -1519,20 +1472,20 @@
 
 		<!-- Defines a temporary directory. Deletes firstly this directory if it exists. Copies in it all files (.java, .properties, 
 			 .class) from the new library. -->
-		<property name="freeze.dir" value="freezeDir"/>
-		<delete dir="${freeze.dir}"/>
+		<property name="freeze.dir" value="freezeDir" />
+		<delete dir="${freeze.dir}" />
 		<copy todir="${freeze.dir}">
-			<fileset dir="${main.src.dir}" includes="${new.library.path}/**"/>
-			<fileset dir="${main.build.dir}/" includes="${new.library.path}/**"/>
+			<fileset dir="${main.src.dir}" includes="${new.library.path}/**" />
+			<fileset dir="${main.build.dir}/" includes="${new.library.path}/**" />
 		</copy>
 
 		<!-- Creates the .jar file containing all files (.java, .properties, .class) from the new library. -->
-		<jar destfile="${ext.dir}/${jar.name}.jar" basedir="${freeze.dir}"/>
+		<jar destfile="${ext.dir}/${jar.name}.jar" basedir="${freeze.dir}" />
 
 		<!-- Deletes temporary directories. -->
-		<delete dir="${main.src.dir}/${new.library.path}"/>
-		<delete dir="${main.build.dir}/${new.library.path}"/>
-		<delete dir="${freeze.dir}"/>
+		<delete dir="${main.src.dir}/${new.library.path}" />
+		<delete dir="${main.build.dir}/${new.library.path}" />
+		<delete dir="${freeze.dir}" />
 
 	</target>
 
@@ -1556,14 +1509,14 @@
 	<target name="redirect" description="Redirects a module to a library." depends="-check-redirection-validity">
 
 		<!-- Runs an initial recompilation. -->
-		<antcall target="clean"/>
-		<antcall target="compile"/>
+		<antcall target="clean" />
+		<antcall target="compile" />
 
 		<!-- Launches the effective redirection of the module to the library. -->
-		<antcall target="-do-redirection"/>
+		<antcall target="-do-redirection" />
 
 		<!-- Compiles the modified source files of the module. -->
-		<antcall target="compile"/>
+		<antcall target="compile" />
 
 	</target>
 
@@ -1581,27 +1534,27 @@
 				<or>
 					<!-- Checks that module.name, library.name and suffix properties have been set. -->
 					<not>
-						<isset property="module.name"/>
+						<isset property="module.name" />
 					</not>
 					<not>
-						<isset property="library.name"/>
+						<isset property="library.name" />
 					</not>
 					<not>
-						<isset property="suffix"/>
+						<isset property="suffix" />
 					</not>
 					<!-- Checks that the number of arguments passed on the command line is equal to 3. See explanations in the 
 							 'freeze' target. -->
 					<resourcecount when="ne" count="3">
 						<difference>
 							<propertyset>
-								<propertyref builtin="commandline"/>
+								<propertyref builtin="commandline" />
 							</propertyset>
 							<union>
 								<propertyset>
-									<propertyref prefix="ant.file"/>
+									<propertyref prefix="ant.file" />
 								</propertyset>
 								<propertyset>
-									<propertyref prefix="ant.project"/>
+									<propertyref prefix="ant.project" />
 								</propertyset>
 							</union>
 						</difference>
@@ -1614,9 +1567,9 @@
 		<fail message="Error, the values for the module.name, library.name and suffix properties must be non-empty.">
 			<condition>
 				<or>
-					<equals arg1="${module.name}" arg2=""/>
-					<equals arg1="${library.name}" arg2=""/>
-					<equals arg1="${suffix}" arg2=""/>
+					<equals arg1="${module.name}" arg2="" />
+					<equals arg1="${library.name}" arg2="" />
+					<equals arg1="${suffix}" arg2="" />
 				</or>
 			</condition>
 		</fail>
@@ -1625,7 +1578,7 @@
 		<fail message="Error, module ${module.name} does not exist in ${basedir}${file.separator}${main.src.dir}.">
 			<condition>
 				<not>
-					<available file="${main.src.dir}/${module.name}" type="dir"/>
+					<available file="${main.src.dir}/${module.name}" type="dir" />
 				</not>
 			</condition>
 		</fail>
@@ -1634,25 +1587,25 @@
 				 - the library's name if suffix is equal to NONE
 				 - the library's name concatenated with the suffix otherwise. -->
 		<condition property="new.library.name" value="${library.name}" else="${library.name}${suffix}">
-			<equals arg1="${suffix}" arg2="NONE"/>
+			<equals arg1="${suffix}" arg2="NONE" />
 		</condition>
 
 		<!-- Creates library.path property: replaces all the "." of library.name property by "/". -->
 		<loadresource property="library.path">
-			<propertyresource name="library.name"/>
+			<propertyresource name="library.name" />
 			<filterchain>
 				<tokenfilter>
-					<replacestring from="." to="/"/>
+					<replacestring from="." to="/" />
 				</tokenfilter>
 			</filterchain>
 		</loadresource>
 
 		<!-- Creates jar.name property: replaces all the "." of new.library.name property by "-". -->
 		<loadresource property="jar.name">
-			<propertyresource name="new.library.name"/>
+			<propertyresource name="new.library.name" />
 			<filterchain>
 				<tokenfilter>
-					<replacestring from="." to="-"/>
+					<replacestring from="." to="-" />
 				</tokenfilter>
 			</filterchain>
 		</loadresource>
@@ -1662,10 +1615,10 @@
 			<condition>
 				<and>
 					<not>
-						<equals arg1="${suffix}" arg2="NONE"/>
+						<equals arg1="${suffix}" arg2="NONE" />
 					</not>
 					<not>
-						<available file="${ext.dir}/${jar.name}.jar" type="file"/>
+						<available file="${ext.dir}/${jar.name}.jar" type="file" />
 					</not>
 				</and>
 			</condition>
@@ -1675,9 +1628,9 @@
 		<fail message="Error, the ${library.name} library does not exist in ${basedir}${file.separator}${main.src.dir}.">
 			<condition>
 				<and>
-					<equals arg1="${suffix}" arg2="NONE"/>
+					<equals arg1="${suffix}" arg2="NONE" />
 					<not>
-						<available file="${main.src.dir}/${library.path}" type="dir"/>
+						<available file="${main.src.dir}/${library.path}" type="dir" />
 					</not>
 				</and>
 			</condition>
@@ -1687,17 +1640,17 @@
 				 It means that at least one source file of the module contains the concatenated "new.library.name"+"." string 
 				 (example: a source file of the module can contain the following instruction: import capsis.lib.castanea2018.FmSpecies;). -->
 		<fileset id="redirected.files" dir="${main.src.dir}/${module.name}">
-			<contains text="${new.library.name}."/>
+			<contains text="${new.library.name}." />
 		</fileset>
 		<!-- Case suffix different of NONE. -->
 		<fail message="Error, the ${basedir}${file.separator}${main.src.dir}${file.separator}${module.name} module is already directed ${line.separator}to the ${new.library.name} library (encapsulated in ${basedir}${file.separator}${ext.dir}${file.separator}${jar.name}.jar).">
 			<condition>
 				<and>
 					<not>
-						<equals arg1="${suffix}" arg2="NONE"/>
+						<equals arg1="${suffix}" arg2="NONE" />
 					</not>
 					<!-- Note: "greater" means strictly greater. -->
-					<resourcecount refid="redirected.files" when="greater" count="0"/>
+					<resourcecount refid="redirected.files" when="greater" count="0" />
 				</and>
 			</condition>
 		</fail>
@@ -1705,15 +1658,15 @@
 		<fail message="Error, the ${basedir}${file.separator}${main.src.dir}${file.separator}${module.name} module is already directed ${line.separator}to the ${new.library.name} library (location: ${basedir}${file.separator}${main.src.dir}${file.separator}${library.path}).">
 			<condition>
 				<and>
-					<equals arg1="${suffix}" arg2="NONE"/>
+					<equals arg1="${suffix}" arg2="NONE" />
 					<!-- Note: "greater" means strictly greater. -->
-					<resourcecount refid="redirected.files" when="greater" count="0"/>
+					<resourcecount refid="redirected.files" when="greater" count="0" />
 				</and>
 			</condition>
 		</fail>
 
 		<!-- Displays messsage if the checking process succeeded. -->
-		<echo message="Done."/>
+		<echo message="Done." />
 
 	</target>
 
@@ -1728,10 +1681,10 @@
 		<!-- Creates regex.library.name property: replaces all the "." of library.name property by "\.". Indeed the "." 
 			 has a special signification in regular expressions (it designs one character and only one). -->
 		<loadresource property="regex.library.name">
-			<propertyresource name="library.name"/>
+			<propertyresource name="library.name" />
 			<filterchain>
 				<tokenfilter>
-					<replacestring from="." to="\."/>
+					<replacestring from="." to="\." />
 				</tokenfilter>
 			</filterchain>
 		</loadresource>
@@ -1746,11 +1699,11 @@
 			 g: global replacement. Replace all occurrences found. If not used, the replacement is made only for the first occurence 
 			 found on the current line. -->
 		<replaceregexp match="${regex.library.name}[0-9a-z]*" replace="${new.library.name}" byline="true" flags="g">
-			<fileset dir="${main.src.dir}/${module.name}"/>
+			<fileset dir="${main.src.dir}/${module.name}" />
 		</replaceregexp>
 
 		<!-- Displays message. -->
-		<echo message="Done."/>
+		<echo message="Done." />
 
 	</target>
 
@@ -1769,21 +1722,20 @@
 		 - module name: Training2 (default value generated from package name)
 		 - prefix: Tra2
 	-->
-	<target name="duplicate-module" description="Duplicates a module by using new names: new package name, new module name and new prefix." 
-		depends="-check-duplication-validity">
+	<target name="duplicate-module" description="Duplicates a module by using new names: new package name, new module name and new prefix." depends="-check-duplication-validity">
 
 		<!-- Runs an initial recompilation. -->
-		<antcall target="clean"/>
-		<antcall target="compile"/>
+		<antcall target="clean" />
+		<antcall target="compile" />
 
 		<!-- Launches the effective duplication of the module. -->
-		<antcall target="-do-duplication"/>
+		<antcall target="-do-duplication" />
 
 		<!-- Compiles the source files of the new duplicated module. -->
-		<antcall target="compile"/>
+		<antcall target="compile" />
 
 		<!-- Adds in etc/extension.list file the extensions of the new duplicated module. -->
-		<antcall target="generate-extension-list"/>
+		<antcall target="generate-extension-list" />
 
 	</target>
 
@@ -1797,13 +1749,13 @@
 	<target name="-check-duplication-validity">
 
 		<!-- Defines some properties. -->
-		<property name="retrieve.module.characteristics.working.dir" value="retrieveModuleCharacteristicsWorkingDir"/>
-		<property name="module.name.file" value="moduleName.txt"/>
-		<property name="module.prefix.file" value="modulePrefix.txt"/>
+		<property name="retrieve.module.characteristics.working.dir" value="retrieveModuleCharacteristicsWorkingDir" />
+		<property name="module.name.file" value="moduleName.txt" />
+		<property name="module.prefix.file" value="modulePrefix.txt" />
 
 		<!-- Deletes working directory if it exists and creates a new empty one. -->
-		<delete dir="${retrieve.module.characteristics.working.dir}"/>
-		<mkdir dir="${retrieve.module.characteristics.working.dir}"/>
+		<delete dir="${retrieve.module.characteristics.working.dir}" />
+		<mkdir dir="${retrieve.module.characteristics.working.dir}" />
 
 		<!-- Stops if user has completed wrong properties names or a number of properties different of 3. -->
 		<fail message="Error, the correct syntax is: (sh) ant duplicate-module -Dpackage.name=packagename -Dnew.package.name=newpackagename -Dnew.prefix=Newprefix">
@@ -1811,27 +1763,27 @@
 				<or>
 					<!-- Checks that package.name, new.package.name and new.prefix properties have been set. -->
 					<not>
-						<isset property="package.name"/>
+						<isset property="package.name" />
 					</not>
 					<not>
-						<isset property="new.package.name"/>
+						<isset property="new.package.name" />
 					</not>
 					<not>
-						<isset property="new.prefix"/>
+						<isset property="new.prefix" />
 					</not>
 					<!-- Checks that the number of arguments passed on the command line is equal to 3. See explanations in the commentaries of  
 						 the '-check-freeze-validity' target. -->
 					<resourcecount when="ne" count="3">
 						<difference>
 							<propertyset>
-								<propertyref builtin="commandline"/>
+								<propertyref builtin="commandline" />
 							</propertyset>
 							<union>
 								<propertyset>
-									<propertyref prefix="ant.file"/>
+									<propertyref prefix="ant.file" />
 								</propertyset>
 								<propertyset>
-									<propertyref prefix="ant.project"/>
+									<propertyref prefix="ant.project" />
 								</propertyset>
 							</union>
 						</difference>
@@ -1844,9 +1796,9 @@
 		<fail message="Error, the values for the package.name, new.package.name and new.prefix properties must be non-empty.">
 			<condition>
 				<or>
-					<equals arg1="${package.name}" arg2=""/>
-					<equals arg1="${new.package.name}" arg2=""/>
-					<equals arg1="${new.prefix}" arg2=""/>
+					<equals arg1="${package.name}" arg2="" />
+					<equals arg1="${new.package.name}" arg2="" />
+					<equals arg1="${new.prefix}" arg2="" />
 				</or>
 			</condition>
 		</fail>
@@ -1855,7 +1807,7 @@
 		<fail message="Error, package ${package.name} does not exist in ${basedir}${file.separator}${main.src.dir}.">
 			<condition>
 				<not>
-					<available file="${main.src.dir}/${package.name}" type="dir"/>
+					<available file="${main.src.dir}/${package.name}" type="dir" />
 				</not>
 			</condition>
 		</fail>
@@ -1871,7 +1823,7 @@
 		<fail message="Error, the value of the new.package.name property must contain only lowercase letters and numbers.">
 			<condition>
 				<not>
-					<matches pattern="^[a-z0-9]+$" string="${new.package.name}"/>
+					<matches pattern="^[a-z0-9]+$" string="${new.package.name}" />
 				</not>
 			</condition>
 		</fail>
@@ -1879,21 +1831,21 @@
 		<!-- Stops if the name of the new package is the same as the name of the initial package. -->
 		<fail message="Error, the name of the new package must be different from the name of the initial package.">
 			<condition>
-				<equals arg1="${new.package.name}" arg2="${package.name}"/>
+				<equals arg1="${new.package.name}" arg2="${package.name}" />
 			</condition>
 		</fail>
 
 		<!-- Stops if the name of the new package corresponds to an existing package. -->
 		<fail message="Error, ${new.package.name} package already exists in ${basedir}${file.separator}${main.src.dir}.">
 			<condition>
-				<available file="${main.src.dir}/${new.package.name}" type="dir"/>
+				<available file="${main.src.dir}/${new.package.name}" type="dir" />
 			</condition>
 		</fail>
 
 		<!-- Stops if the name of the new package corresponds to an existing data directory. -->
 		<fail message="Error, ${new.package.name} data directory already exists in ${basedir}${file.separator}${data.dir}.">
 			<condition>
-				<available file="${data.dir}/${new.package.name}" type="dir"/>
+				<available file="${data.dir}/${new.package.name}" type="dir" />
 			</condition>
 		</fail>
 
@@ -1901,7 +1853,7 @@
 		<fail message="Error, the value of the new.prefix property must contain only letters and numbers.">
 			<condition>
 				<not>
-					<matches pattern="^[a-zA-Z0-9]+$" string="${new.prefix}"/>
+					<matches pattern="^[a-zA-Z0-9]+$" string="${new.prefix}" />
 				</not>
 			</condition>
 		</fail>
@@ -1910,7 +1862,7 @@
 		<fail message="Error, the value of the new.prefix property must begin with an uppercase letter.">
 			<condition>
 				<not>
-					<matches pattern="^[A-Z]" string="${new.prefix}"/>
+					<matches pattern="^[A-Z]" string="${new.prefix}" />
 				</not>
 			</condition>
 		</fail>
@@ -1922,7 +1874,7 @@
 		<fail message="Error, ${basedir}${file.separator}${main.src.dir}${file.separator}${package.name} does not contain any idcard.properties file.">
 			<condition>
 				<not>
-					<available file="${main.src.dir}/${package.name}/idcard.properties" type="file"/>
+					<available file="${main.src.dir}/${package.name}/idcard.properties" type="file" />
 				</not>
 			</condition>
 		</fail>
@@ -1936,7 +1888,7 @@
 		<loadfile property="module.name.line" srcFile="${main.src.dir}/${package.name}/idcard.properties">
 			<filterchain>
 				<linecontainsregexp>
-					<regexp pattern="^Name\s*=\s*"/>
+					<regexp pattern="^Name\s*=\s*" />
 				</linecontainsregexp>
 			</filterchain>
 		</loadfile>
@@ -1945,7 +1897,7 @@
 		<fail message='Error, ${basedir}${file.separator}${main.src.dir}${file.separator}${package.name}${file.separator}idcard.properties file does not contain ${line.separator}any entry starting with "Name = ".'>
 			<condition>
 				<not>
-					<isset property="module.name.line"/>
+					<isset property="module.name.line" />
 				</not>
 			</condition>
 		</fail>
@@ -1956,7 +1908,7 @@
 		<loadfile property="module.prefix.line" srcFile="${main.src.dir}/${package.name}/idcard.properties">
 			<filterchain>
 				<linecontainsregexp>
-					<regexp pattern="^Prefix\s*=\s*"/>
+					<regexp pattern="^Prefix\s*=\s*" />
 				</linecontainsregexp>
 			</filterchain>
 		</loadfile>
@@ -1965,26 +1917,26 @@
 		<fail message='Error, ${basedir}${file.separator}${main.src.dir}${file.separator}${package.name}${file.separator}idcard.properties file does not contain ${line.separator}any entry starting with "Prefix = ".'>
 			<condition>
 				<not>
-					<isset property="module.prefix.line"/>
+					<isset property="module.prefix.line" />
 				</not>
 			</condition>
 		</fail>
 
 		<!-- Creates two files containing the module's name and the module's prefix entries from the idcard.properties file. -->
-		<echo message="${module.name.line}" file="${retrieve.module.characteristics.working.dir}/${module.name.file}"/>
-		<echo message="${module.prefix.line}" file="${retrieve.module.characteristics.working.dir}/${module.prefix.file}"/>
+		<echo message="${module.name.line}" file="${retrieve.module.characteristics.working.dir}/${module.name.file}" />
+		<echo message="${module.prefix.line}" file="${retrieve.module.characteristics.working.dir}/${module.prefix.file}" />
 
 		<!-- Extracts the module's name and prefix and writes them in the previous files (overwrites files). () captures the matched 
 			 subexpression and assigns it the number 1, represented by \1 in the 'replace' attribute. -->
-		<replaceregexp match="^Name\s*=\s*(.*)$" replace="\1" file="${retrieve.module.characteristics.working.dir}/${module.name.file}"/>
-		<replaceregexp match="^Prefix\s*=\s*(.*)$" replace="\1" file="${retrieve.module.characteristics.working.dir}/${module.prefix.file}"/>
+		<replaceregexp match="^Name\s*=\s*(.*)$" replace="\1" file="${retrieve.module.characteristics.working.dir}/${module.name.file}" />
+		<replaceregexp match="^Prefix\s*=\s*(.*)$" replace="\1" file="${retrieve.module.characteristics.working.dir}/${module.prefix.file}" />
 
 		<!-- Stops if the Name or Prefix entries in idcard.properties file are empty. -->
 		<fail message="Error, the values for the Name and Prefix entries in ${basedir}${file.separator}${main.src.dir}${file.separator}${package.name}${file.separator}idcard.properties ${line.separator}file must be non-empty.">
 			<condition>
 				<or>
-					<length file="${retrieve.module.characteristics.working.dir}/${module.name.file}" when="equal" length="0"/>
-					<length file="${retrieve.module.characteristics.working.dir}/${module.prefix.file}" when="equal" length="0"/>
+					<length file="${retrieve.module.characteristics.working.dir}/${module.name.file}" when="equal" length="0" />
+					<length file="${retrieve.module.characteristics.working.dir}/${module.prefix.file}" when="equal" length="0" />
 				</or>
 			</condition>
 		</fail>
@@ -1993,21 +1945,21 @@
 		<loadfile property="module.name" srcFile="${retrieve.module.characteristics.working.dir}/${module.name.file}">
 			<filterchain>
 				<!-- Removes the \r and \n characters (end of the line). -->
-				<striplinebreaks/>
+				<striplinebreaks />
 				<!-- Removes whitespaces from start and end of the module's name if there are any. Whitespaces from start have not been 
 					 stored in module.name.file (see above), but whitespaces from end can exist. -->
 				<tokenfilter>
-					<trim/>
+					<trim />
 				</tokenfilter>
 			</filterchain>
 		</loadfile>
 		<loadfile property="module.prefix" srcFile="${retrieve.module.characteristics.working.dir}/${module.prefix.file}">
 			<filterchain>
 				<!-- Removes the \r and \n characters (end of the line). -->
-				<striplinebreaks/>
+				<striplinebreaks />
 				<!-- Removes whitespaces from start and end of the module's name if there are any. -->
 				<tokenfilter>
-					<trim/>
+					<trim />
 				</tokenfilter>
 			</filterchain>
 		</loadfile>
@@ -2015,15 +1967,15 @@
 		<!-- Stops if the prefix of the new module is the same as the prefix of the initial module. -->
 		<fail message="Error, the prefix of the new module (module to create) must be different from the prefix ${line.separator}of the initial module (module to duplicate).">
 			<condition>
-				<equals arg1="${new.prefix}" arg2="${module.prefix}"/>
+				<equals arg1="${new.prefix}" arg2="${module.prefix}" />
 			</condition>
 		</fail>
 
 		<!-- Deletes working directory. -->
-		<delete dir="${retrieve.module.characteristics.working.dir}"/>
+		<delete dir="${retrieve.module.characteristics.working.dir}" />
 
 		<!-- Displays messsage if the checking process succeeded. -->
-		<echo message="Done."/>
+		<echo message="Done." />
 
 	</target>
 
@@ -2041,10 +1993,10 @@
 			 unix family: all Unix(-like) operating systems, including Linux and Mac OS X / macOS;
 			 windows family: for all versions of Microsoft Windows. -->
 		<condition property="isUnix">
-			<os family="unix"/>
+			<os family="unix" />
 		</condition>
 		<condition property="isWindows">
-			<os family="windows"/>
+			<os family="windows" />
 		</condition>
 
 		<!-- Checks that OS is of familiy Unix or Windows. Stops otherwise. -->
@@ -2052,10 +2004,10 @@
 			<condition>
 				<and>
 					<not>
-						<isset property="isUnix"/>
+						<isset property="isUnix" />
 					</not>
 					<not>
-						<isset property="isWindows"/>
+						<isset property="isWindows" />
 					</not>
 				</and>
 			</condition>
@@ -2066,23 +2018,23 @@
 			 On Unix-like OS: file separator is "/" represented in regular expressions by "/".
 			 On Windows OS: file separator is "\" represented in regular expressions by "\\". -->
 		<if>
-			<isset property="isUnix"/>
+			<isset property="isUnix" />
 			<then>
 				<!-- OS is Unix-like. -->
-				<property name="file.separator.in.regexp" value="/"/>
+				<property name="file.separator.in.regexp" value="/" />
 			</then>
 			<else>
 				<!-- OS is Windows. -->
-				<property name="file.separator.in.regexp" value="\\"/>
+				<property name="file.separator.in.regexp" value="\\" />
 			</else>
 		</if>
 
 		<!-- Defines property. -->
-		<property name="duplicate.module.working.dir" value="duplicateModuleWorkingDir"/>
+		<property name="duplicate.module.working.dir" value="duplicateModuleWorkingDir" />
 
 		<!-- Deletes working directory if it exists and creates a new empty one. -->
-		<delete dir="${duplicate.module.working.dir}"/>
-		<mkdir dir="${duplicate.module.working.dir}"/>
+		<delete dir="${duplicate.module.working.dir}" />
+		<mkdir dir="${duplicate.module.working.dir}" />
 
 		<!-- Defines the package.name.with.uppercase.first.letter property which stores the package's name of the initial module 
 			 whose first letter is changed in an uppercase letter. The corresponding string will below be searched when renaming 
@@ -2103,7 +2055,7 @@
 		</groovy>
 
 		<!-- Defines the default value of the new module's name: the new package's name starting with an uppercase letter. -->
-		<property name="new.module.name" value="${new.package.name.with.uppercase.first.letter}"/>
+		<property name="new.module.name" value="${new.package.name.with.uppercase.first.letter}" />
 
 		<!-- Defines the value of the prefix used by local variables in initial module's source files. It is the initial module prefix 
 			 with lowercase letters. Example: "tra" in traModel from the following instruction: "TraModel traModel;" -->
@@ -2122,20 +2074,20 @@
 		</groovy>
 
 		<!-- Displays characteristics of the module to duplicate and the module to create. -->
-		<echo message="Characteristics of initial module (module to duplicate) and new module (module to create):"/>
-		<echo message="   Initial module, package:               ${package.name}"/>
-		<echo message="                   name:                  ${module.name}"/>
-		<echo message="                   prefix:                ${module.prefix}"/>
-		<echo message="                   local variable prefix: ${local.variable.prefix}"/>
-		<echo message="   New module,     package:               ${new.package.name}"/>
-		<echo message="                   name:                  ${new.module.name} (default value)"/>
-		<echo message="                   prefix:                ${new.prefix}"/>
-		<echo message="                   local variable prefix: ${new.local.variable.prefix}"/>
+		<echo message="Characteristics of initial module (module to duplicate) and new module (module to create):" />
+		<echo message="   Initial module, package:               ${package.name}" />
+		<echo message="                   name:                  ${module.name}" />
+		<echo message="                   prefix:                ${module.prefix}" />
+		<echo message="                   local variable prefix: ${local.variable.prefix}" />
+		<echo message="   New module,     package:               ${new.package.name}" />
+		<echo message="                   name:                  ${new.module.name} (default value)" />
+		<echo message="                   prefix:                ${new.prefix}" />
+		<echo message="                   local variable prefix: ${new.local.variable.prefix}" />
 
 		<!-- Creates in main.src.dir a directory for the new module (directory corresponding to the package of the new module). Copies 
 			 in it all directories and source files of the initial module. -->
 		<copy todir="${main.src.dir}/${new.package.name}">
-			<fileset dir="${main.src.dir}/${package.name}"/>
+			<fileset dir="${main.src.dir}/${package.name}" />
 		</copy>
 
 		<!-- TODO: begin modification, to be deleted. -->
@@ -2153,7 +2105,7 @@
 		<move file="${main.src.dir}/${new.package.name}" tofile="${main.src.dir}/${new.package.name}">
 
 			<!-- Selects all subdirectories from new.package.name directory. -->
-			<dirset dir="${main.src.dir}/${new.package.name}"/>
+			<dirset dir="${main.src.dir}/${new.package.name}" />
 
 			<!-- TODO: begin modification, to be deleted. -->
 			<!--
@@ -2168,7 +2120,7 @@
 
 			<!-- Replaces all occurrences of package.name by new.package.name. -->
 			<filtermapper>
-				<replacestring from="${package.name}" to="${new.package.name}"/>
+				<replacestring from="${package.name}" to="${new.package.name}" />
 			</filtermapper>
 
 		</move>
@@ -2189,7 +2141,7 @@
 
 			<!-- Selects all files of subdirectories: only files are renamed, not directories. -->
 			<fileset dir="${main.src.dir}/${new.package.name}">
-				<type type="file"/>
+				<type type="file" />
 			</fileset>
 
 			<!-- Uses a regular expression to rename the files that contain the prefix string. This string is searched after a potential 
@@ -2213,7 +2165,7 @@
 				 	- [A-Z0-9_\.].* means word beginning with an uppercase letter, a number, a "_" (underscore) or a "." (point represented by \.), 
 				 	  followed by any character, zero or more times. Example: "Model.java" in TraModel.java file or ".txt" in Tra.txt file.
 				 	- empty means no character, it is the case of filenames composed only by the module.prefix. Example: Tra file. -->
-			<mapper type="regexp" from="^(.*${file.separator.in.regexp})?(.*?)${module.prefix}(([A-Z0-9_\.].*)|())$" to="\1\2${new.prefix}\3"/>
+			<mapper type="regexp" from="^(.*${file.separator.in.regexp})?(.*?)${module.prefix}(([A-Z0-9_\.].*)|())$" to="\1\2${new.prefix}\3" />
 
 		</move>
 
@@ -2249,7 +2201,7 @@
 			<path>
 				<!-- Only files have to be renamed, not directories. -->
 				<fileset dir="${main.src.dir}/${new.package.name}">
-					<type type="file"/>
+					<type type="file" />
 				</fileset>
 			</path>
 
@@ -2264,30 +2216,30 @@
 					 - file.relative.path: the path of the file relatively to the main.src.dir/new.package.name directory.
 					 - file.base.name.with.extension: the base name of the file including its extension. Example: TraModel.java file.
 					 - file.base.name.without.extension: the base name of the file without its extension. Example: TraModel from TraModel.java file. -->
-				<local name="file.absolute.path"/>
-				<local name="file.relative.path"/>
-				<local name="file.base.name.with.extension"/>
-				<local name="file.base.name.without.extension"/>
+				<local name="file.absolute.path" />
+				<local name="file.relative.path" />
+				<local name="file.base.name.with.extension" />
+				<local name="file.base.name.without.extension" />
 
 				<!-- Defines the value of the file.absolute.path property. -->
-				<property name="file.absolute.path" value="@{file.path}"/>
+				<property name="file.absolute.path" value="@{file.path}" />
 
 				<!-- Builds the file.relative.path property. -->
 				<loadresource property="file.relative.path">
-					<propertyresource name="file.absolute.path"/>
+					<propertyresource name="file.absolute.path" />
 					<filterchain>
 						<tokenfilter>
-							<replaceregex pattern="^.*${main.src.dir}${file.separator.in.regexp}${new.package.name}${file.separator.in.regexp}(.*)$" replace="\1"/>
+							<replaceregex pattern="^.*${main.src.dir}${file.separator.in.regexp}${new.package.name}${file.separator.in.regexp}(.*)$" replace="\1" />
 						</tokenfilter>
 					</filterchain>
 				</loadresource>
 
 				<!-- Builds the file.base.name.with.extension property. -->
-				<basename property="file.base.name.with.extension" file="${file.absolute.path}"/>
+				<basename property="file.base.name.with.extension" file="${file.absolute.path}" />
 
 				<!-- Builds the file.base.name.without.extension property. -->
 				<loadresource property="file.base.name.without.extension">
-					<propertyresource name="file.base.name.with.extension"/>
+					<propertyresource name="file.base.name.with.extension" />
 					<filterchain>
 						<tokenfilter>
 							<!-- Use of a reluctant quantifier (.*?) instead of a greedy quantifier (.*) in order the string is read 
@@ -2295,7 +2247,7 @@
 								 greedy quantifier .* instead) matches the \. pattern (case of files having more than one extension, 
 								 example: filename.txt.properties). The case of file without any extension is taken into account by the 
 								 last ? (means 0 or 1 time). -->
-							<replaceregex pattern="^(.*?)(\..*)?$" replace="\1"/>
+							<replaceregex pattern="^(.*?)(\..*)?$" replace="\1" />
 						</tokenfilter>
 					</filterchain>
 				</loadresource>
@@ -2312,17 +2264,17 @@
 							 character, zero or more times. Example: "Model" in "TraModel" base name without extension.
 					 		 () means no character. Example: "Tra" base name without extension.
 							 X|Y means either X or Y. -->
-						<matches string="${file.base.name.without.extension}" pattern="^.*${new.prefix}(([A-Z0-9_].*)|())$"/>
+						<matches string="${file.base.name.without.extension}" pattern="^.*${new.prefix}(([A-Z0-9_].*)|())$" />
 					</not>
 					<then>
 						<move todir="${main.src.dir}/${new.package.name}">
 							<!-- This files set contains only one item: the current file. -->
 							<fileset dir="${main.src.dir}/${new.package.name}">
-								<include name="${file.relative.path}"/>
+								<include name="${file.relative.path}" />
 							</fileset>
 							<!-- Replaces package.name.with.uppercase.first.letter string by new.package.name.with.uppercase.first.letter string. 
 								 Only the last occurrence of package.name.with.uppercase.first.letter is replaced. -->
-							<mapper type="regexp" from="^(.*)${package.name.with.uppercase.first.letter}(.*)$" to="\1${new.package.name.with.uppercase.first.letter}\2"/>
+							<mapper type="regexp" from="^(.*)${package.name.with.uppercase.first.letter}(.*)$" to="\1${new.package.name.with.uppercase.first.letter}\2" />
 						</move>
 					</then>
 				</if>
@@ -2341,7 +2293,7 @@
 			 	<pathconvert pathsep="${line.separator}" property="package.base.names" refid="package.file.paths"/>
 			 	<echo message="${package.base.names}${line.separator}" file="${duplicate.module.working.dir}/packageBaseNames.txt"/>
 			 -->
-		<fileset id="package.file.paths" dir="${main.src.dir}/${package.name}"/>
+		<fileset id="package.file.paths" dir="${main.src.dir}/${package.name}" />
 
 		<!-- Extracts the base names (without extension) of the previous file paths.
 			 .*${file.separator.in.regexp} mathches the last / (Unix-like) or \ (Windows). ? means 0 or 1 time taking into account files 
@@ -2353,23 +2305,23 @@
 			 The base names are joined together separated by a line.separator and the resulting list is placed into the package.base.names 
 			 property. -->
 		<pathconvert pathsep="${line.separator}" property="package.base.names" refid="package.file.paths">
-			<mapper type="regexp" from="^(.*${file.separator.in.regexp})?(.*?)(\..*)?$" to="\2"/>
+			<mapper type="regexp" from="^(.*${file.separator.in.regexp})?(.*?)(\..*)?$" to="\2" />
 		</pathconvert>
 
 		<!-- Writes the list of base names (without extension) in a file. A line.separator is added after the last base name: needed for 
 			 a proper functioning when using the <sortfilter> task below. -->
-		<echo message="${package.base.names}${line.separator}" file="${duplicate.module.working.dir}/packageBaseNames.txt"/>
+		<echo message="${package.base.names}${line.separator}" file="${duplicate.module.working.dir}/packageBaseNames.txt" />
 
 		<!-- Deletes in previous file the "_fr" and "_en" strings at the end of the concerned entries (come from translation files). -->
-		<replace file="${duplicate.module.working.dir}/packageBaseNames.txt" token="_fr" value=""/>
-		<replace file="${duplicate.module.working.dir}/packageBaseNames.txt" token="_en" value=""/>
+		<replace file="${duplicate.module.working.dir}/packageBaseNames.txt" token="_fr" value="" />
+		<replace file="${duplicate.module.working.dir}/packageBaseNames.txt" token="_en" value="" />
 
 		<!-- Creates a new file without the duplicated entries of previous file. Needs before to order the entries of initial file. -->
 		<copy file="${duplicate.module.working.dir}/packageBaseNames.txt" tofile="${duplicate.module.working.dir}/packageBaseNamesWithoutDuplicate.txt">
 			<filterchain>
-				<sortfilter/>
+				<sortfilter />
 				<!-- Needs Ant 1.8.0 at least. -->
-				<uniqfilter/>
+				<uniqfilter />
 			</filterchain>
 		</copy>
 
@@ -2381,13 +2333,13 @@
 		<copy file="${duplicate.module.working.dir}/packageBaseNamesWithoutDuplicate.txt" tofile="${duplicate.module.working.dir}/baseNamesToReplace.txt">
 			<filterchain>
 				<linecontainsregexp>
-					<regexp pattern="^.*?(${module.prefix}|${package.name.with.uppercase.first.letter})(([A-Z0-9_].*)|${line.separator})$"/>
+					<regexp pattern="^.*?(${module.prefix}|${package.name.with.uppercase.first.letter})(([A-Z0-9_].*)|${line.separator})$" />
 				</linecontainsregexp>
 			</filterchain>
 		</copy>
 
 		<!-- Stores in the base.names.to.replace property the content of the baseNamesToReplace.txt file. -->
-		<loadfile property="base.names.to.replace" srcFile="${duplicate.module.working.dir}/baseNamesToReplace.txt"/>
+		<loadfile property="base.names.to.replace" srcFile="${duplicate.module.working.dir}/baseNamesToReplace.txt" />
 
 		<!-- Replaces in each file of new.package.name directory the terms stored in the base.names.to.replace property (those of the 
 			 baseNamesToReplace.txt file). These terms are: 
@@ -2404,14 +2356,14 @@
 				<!-- Defines some local properties (that is variables, not immutable).
 					 Note: it is needed to define the base.name.to.replace variable because the base.name parameter can not be used with 
 					 the propertyresource task when building the base.name.to.use property (see below). -->
-				<local name="base.name.to.replace"/>
-				<local name="base.name.to.use"/>
-				<local name="local.variable.to.replace"/>
-				<local name="local.variable.to.use"/>
-				<local name="local.variable.must.be.replaced"/>
+				<local name="base.name.to.replace" />
+				<local name="base.name.to.use" />
+				<local name="local.variable.to.replace" />
+				<local name="local.variable.to.use" />
+				<local name="local.variable.must.be.replaced" />
 
 				<!-- Defines the value of the base.name.to.replace property. -->
-				<property name="base.name.to.replace" value="@{base.name}"/>
+				<property name="base.name.to.replace" value="@{base.name}" />
 
 				<!-- Defines the base.name.to.use property: replaces
 					 	- the module.prefix string by the new.prefix string
@@ -2425,32 +2377,32 @@
 					    - SVTrainingTraining replaced by SVTraining2Training
 					 if those base names would exist. -->
 				<if>
-					<matches pattern="^(.*?)${module.prefix}(([A-Z0-9_].*)|())$" string="${base.name.to.replace}"/>
+					<matches pattern="^(.*?)${module.prefix}(([A-Z0-9_].*)|())$" string="${base.name.to.replace}" />
 					<then>
 						<loadresource property="base.name.to.use">
-							<propertyresource name="base.name.to.replace"/>
+							<propertyresource name="base.name.to.replace" />
 							<filterchain>
 								<tokenfilter>
-									<replaceregex pattern="^(.*?)${module.prefix}(([A-Z0-9_].*)|())$" replace="\1${new.prefix}\2"/>
+									<replaceregex pattern="^(.*?)${module.prefix}(([A-Z0-9_].*)|())$" replace="\1${new.prefix}\2" />
 								</tokenfilter>
 							</filterchain>
 						</loadresource>
 					</then>
 					<elseif>
-						<matches pattern="^(.*?)${package.name.with.uppercase.first.letter}(([A-Z0-9_].*)|())$" string="${base.name.to.replace}"/>
+						<matches pattern="^(.*?)${package.name.with.uppercase.first.letter}(([A-Z0-9_].*)|())$" string="${base.name.to.replace}" />
 						<then>
 							<loadresource property="base.name.to.use">
-								<propertyresource name="base.name.to.replace"/>
+								<propertyresource name="base.name.to.replace" />
 								<filterchain>
 									<tokenfilter>
-										<replaceregex pattern="^(.*?)${package.name.with.uppercase.first.letter}(([A-Z0-9_].*)|())$" replace="\1${new.package.name.with.uppercase.first.letter}\2"/>
+										<replaceregex pattern="^(.*?)${package.name.with.uppercase.first.letter}(([A-Z0-9_].*)|())$" replace="\1${new.package.name.with.uppercase.first.letter}\2" />
 									</tokenfilter>
 								</filterchain>
 							</loadresource>
 						</then>
 					</elseif>
 					<else>
-						<fail message="Error, impossible to replace ${base.name.to.replace} string in files from ${basedir}${file.separator}${main.src.dir}${file.separator}${new.package.name} directory."/>
+						<fail message="Error, impossible to replace ${base.name.to.replace} string in files from ${basedir}${file.separator}${main.src.dir}${file.separator}${new.package.name} directory." />
 					</else>
 				</if>
 
@@ -2458,10 +2410,10 @@
 					 in the base.name.to.replace property. Done only if the module.prefix string appears at the beginning of the 
 					 base.name.to.replace property. -->
 				<loadresource property="local.variable.to.replace">
-					<propertyresource name="base.name.to.replace"/>
+					<propertyresource name="base.name.to.replace" />
 					<filterchain>
 						<tokenfilter>
-							<replaceregex pattern="^${module.prefix}" replace="${local.variable.prefix}"/>
+							<replaceregex pattern="^${module.prefix}" replace="${local.variable.prefix}" />
 						</tokenfilter>
 					</filterchain>
 				</loadresource>
@@ -2470,10 +2422,10 @@
 					 string in the local.variable.to.replace property. Done only if the local.variable.prefix appears at the beginning of 
 					 the local.variable.to.replace property. -->
 				<loadresource property="local.variable.to.use">
-					<propertyresource name="local.variable.to.replace"/>
+					<propertyresource name="local.variable.to.replace" />
 					<filterchain>
 						<tokenfilter>
-							<replaceregex pattern="^${local.variable.prefix}" replace="${new.local.variable.prefix}"/>
+							<replaceregex pattern="^${local.variable.prefix}" replace="${new.local.variable.prefix}" />
 						</tokenfilter>
 					</filterchain>
 				</loadresource>
@@ -2490,24 +2442,24 @@
 					 - replace: the substitution pattern to place in the file in place of the regular expression.
 					 - g: global replacement. Replace all occurrences found. If not used, the replacement is made only for the first occurence 
 				 	   found in the file. -->
-				<echo message="Term to replace (base name):      ${base.name.to.replace}, term to use: ${base.name.to.use}"/>
+				<echo message="Term to replace (base name):      ${base.name.to.replace}, term to use: ${base.name.to.use}" />
 				<!-- The base.name.to.replace string is replaced by the base.name.to.use string when it is not followed by a lowercase letter, 
 					 an uppercase letter, a number or an underscore: it means when base.name.to.replace is not part of a word. -->
 				<replaceregexp match="${base.name.to.replace}([^a-zA-Z0-9_])" replace="${base.name.to.use}\1" flags="g">
-					<fileset dir="${main.src.dir}/${new.package.name}"/>
+					<fileset dir="${main.src.dir}/${new.package.name}" />
 				</replaceregexp>
 				<condition property="local.variable.must.be.replaced">
-					<matches pattern="^${local.variable.prefix}" string="${local.variable.to.replace}"/>
+					<matches pattern="^${local.variable.prefix}" string="${local.variable.to.replace}" />
 				</condition>
 				<if>
-					<isset property="local.variable.must.be.replaced"/>
+					<isset property="local.variable.must.be.replaced" />
 					<then>
-						<echo message="Term to replace (local variable): ${local.variable.to.replace}, term to use: ${local.variable.to.use}"/>
+						<echo message="Term to replace (local variable): ${local.variable.to.replace}, term to use: ${local.variable.to.use}" />
 						<!-- The local.variable.to.replace string is replaced by the local.variable.to.use string when it is not followed by a 
 							 lowercase letter, an uppercase letter, a number or an underscore: it means when local.variable.to.replace is not 
 							 part of a word. -->
 						<replaceregexp match="${local.variable.to.replace}([^a-zA-Z0-9_])" replace="${local.variable.to.use}\1" flags="g">
-							<fileset dir="${main.src.dir}/${new.package.name}"/>
+							<fileset dir="${main.src.dir}/${new.package.name}" />
 						</replaceregexp>
 					</then>
 				</if>
@@ -2540,52 +2492,52 @@
 			<path>
 				<!-- Selects all subdirectories paths of initial module whose name contains the package.name string. -->
 				<dirset id="package.subdirectories.paths.to.replace.fileset" dir="${main.src.dir}/${package.name}">
-					<filename regex="${package.name}"/>
+					<filename regex="${package.name}" />
 				</dirset>
 			</path>
 
 			<!-- Sequential execution of iterations. -->
 			<sequential>
-				<local name="directory.absolute.path"/>
-				<local name="directory.relative.path"/>
-				<local name="package.relative.path.to.replace"/>
-				<local name="package.relative.path.to.use"/>
+				<local name="directory.absolute.path" />
+				<local name="directory.relative.path" />
+				<local name="package.relative.path.to.replace" />
+				<local name="package.relative.path.to.use" />
 
 				<!-- Defines the value of the directory.absolute.path property. -->
-				<property name="directory.absolute.path" value="@{dir.path}"/>
+				<property name="directory.absolute.path" value="@{dir.path}" />
 
 				<!-- Builds the directory.relative.path property. -->
 				<loadresource property="directory.relative.path">
-					<propertyresource name="directory.absolute.path"/>
+					<propertyresource name="directory.absolute.path" />
 					<filterchain>
 						<tokenfilter>
-							<replacestring from="${basedir}${file.separator}${main.src.dir}${file.separator}${package.name}${file.separator}" to=""/>
+							<replacestring from="${basedir}${file.separator}${main.src.dir}${file.separator}${package.name}${file.separator}" to="" />
 						</tokenfilter>
 					</filterchain>
 				</loadresource>
 
 				<!-- Builds the package.relative.path.to.replace property. -->
 				<loadresource property="package.relative.path.to.replace">
-					<propertyresource name="directory.relative.path"/>
+					<propertyresource name="directory.relative.path" />
 					<filterchain>
 						<tokenfilter>
-							<replacestring from="${file.separator}" to="."/>
+							<replacestring from="${file.separator}" to="." />
 						</tokenfilter>
 					</filterchain>
 				</loadresource>
 
 				<!-- Builds the package.relative.path.to.use property. -->
 				<loadresource property="package.relative.path.to.use">
-					<propertyresource name="package.relative.path.to.replace"/>
+					<propertyresource name="package.relative.path.to.replace" />
 					<filterchain>
 						<tokenfilter>
-							<replacestring from="${package.name}" to="${new.package.name}"/>
+							<replacestring from="${package.name}" to="${new.package.name}" />
 						</tokenfilter>
 					</filterchain>
 				</loadresource>
 
-				<echo message="Term to replace (package hierarchy): ${package.relative.path.to.replace}, term to use: ${package.relative.path.to.use}"/>
-				<replace dir="${main.src.dir}/${new.package.name}" token=".${package.relative.path.to.replace}" value=".${package.relative.path.to.use}"/>
+				<echo message="Term to replace (package hierarchy): ${package.relative.path.to.replace}, term to use: ${package.relative.path.to.use}" />
+				<replace dir="${main.src.dir}/${new.package.name}" token=".${package.relative.path.to.replace}" value=".${package.relative.path.to.use}" />
 
 			</sequential>
 
@@ -2598,23 +2550,23 @@
 			   string (example: "training." replaced by "training2." that can appear in "import training.model;" instruction for example);
 			 - replaces in the idcard.properties file of the new.package.name directory the "Package = package.name" string by the 
 			   "Package = new.package.name" string. -->
-		<echo message="Term to replace (package name): ${package.name}, term to use: ${new.package.name}"/>
+		<echo message="Term to replace (package name): ${package.name}, term to use: ${new.package.name}" />
 		<!-- g flag in replaceregexp task: global replacement. Replace all occurrences found. If not used, the replacement is made only for 
 			 the first occurrence found in the file. Here the g flag is not needed because the "package name.of.the.package" string should 
 			 only appear in the package instruction of .java file (case it appears also in commentaries for example). -->
 		<replaceregexp match="(package\s+)${package.name}" replace="\1${new.package.name}" flags="g">
-			<fileset dir="${main.src.dir}/${new.package.name}" includes="**/*.java"/>
+			<fileset dir="${main.src.dir}/${new.package.name}" includes="**/*.java" />
 		</replaceregexp>
-		<replace dir="${main.src.dir}/${new.package.name}" token="${package.name}." value="${new.package.name}."/>
+		<replace dir="${main.src.dir}/${new.package.name}" token="${package.name}." value="${new.package.name}." />
 		<!--  The g flag is not needed because there is only one occurrence of "Package = package.name" string in idcard.properties file. -->
-		<replaceregexp file="${main.src.dir}/${new.package.name}/idcard.properties" match="(Package\s*=\s*)${package.name}" replace="\1${new.package.name}"/>
+		<replaceregexp file="${main.src.dir}/${new.package.name}/idcard.properties" match="(Package\s*=\s*)${package.name}" replace="\1${new.package.name}" />
 
 		<!-- Replaces in each file of new.package.name directory the module.name string by the new.module.name string. 
 			 [^a-zA-Z0-9_] means any character different from a word character. It allows to exclude from renaming all module's name occurrences 
 			 that are the same than the package name with first uppercase letter (example: the SVHeterofor pattern in the SVHeterofor.java file). -->
-		<echo message="Term to replace (module name): ${module.name}, term to use: ${new.module.name}"/>
+		<echo message="Term to replace (module name): ${module.name}, term to use: ${new.module.name}" />
 		<replaceregexp match="([^a-zA-Z0-9_])${module.name}([^a-zA-Z0-9_])" replace="\1${new.module.name}\2" flags="g">
-			<fileset dir="${main.src.dir}/${new.package.name}"/>
+			<fileset dir="${main.src.dir}/${new.package.name}" />
 		</replaceregexp>
 
 		<!-- In the case the name of the initial module is different from its package name with uppercase first letter, then does an additional renaming. 
@@ -2625,44 +2577,44 @@
 			 string appears in "Pp3 viewer - distribution". -->
 		<if>
 			<not>
-				<equals arg1="${module.name}" arg2="package.name.with.uppercase.first.letter"/>
+				<equals arg1="${module.name}" arg2="package.name.with.uppercase.first.letter" />
 			</not>
 			<then>
-				<echo message="Term to replace (package name with uppercase first letter): ${package.name.with.uppercase.first.letter}, term to use: ${new.package.name.with.uppercase.first.letter}"/>
+				<echo message="Term to replace (package name with uppercase first letter): ${package.name.with.uppercase.first.letter}, term to use: ${new.package.name.with.uppercase.first.letter}" />
 				<replaceregexp match="([^a-zA-Z0-9_])${package.name.with.uppercase.first.letter}([^a-zA-Z0-9_])" replace="\1${new.package.name.with.uppercase.first.letter}\2" flags="g">
 					<!-- idcard.properties is excluded because of the following case: 
 						 pp3 module (package's name: pp3, module's name: PP3, prefix: Pp3) duplicated in pp4 module (package's name: pp4, module's name: Pp4, 
 						 prefix: PP4)
 						 If renaming is done in idcard.properties file, the "Prefix = Pp3" entry is renamed in "Prefix = Pp4". So that below, the "Prefix = Pp3" 
 						 entry is not found when trying to rename it in "Prefix = PP4". -->
-					<fileset dir="${main.src.dir}/${new.package.name}" excludes="idcard.properties"/>
+					<fileset dir="${main.src.dir}/${new.package.name}" excludes="idcard.properties" />
 				</replaceregexp>
 			</then>
 		</if>
 
 		<!-- Replaces in the idcard.properties file of the new.package.name directory the "Prefix = module.prefix" string by the "Prefix = new.prefix" string. -->
-		<echo message="Term to replace (prefix line in idcard.properties): ${module.prefix}, term to use: ${new.prefix}"/>
+		<echo message="Term to replace (prefix line in idcard.properties): ${module.prefix}, term to use: ${new.prefix}" />
 		<!--  The g flag is not needed because there is only one occurrence of "Prefixe = module.prefix" string in idcard.properties file. -->
-		<replaceregexp file="${main.src.dir}/${new.package.name}/idcard.properties" match="(Prefix\s*=\s*)${module.prefix}" replace="\1${new.prefix}"/>
+		<replaceregexp file="${main.src.dir}/${new.package.name}/idcard.properties" match="(Prefix\s*=\s*)${module.prefix}" replace="\1${new.prefix}" />
 
 		<!-- Creates an empty directory with name new.package.name in data.dir. -->
-		<mkdir dir="${data.dir}/${new.package.name}"/>
+		<mkdir dir="${data.dir}/${new.package.name}" />
 
 		<!-- Adds an entry for the new module in etc/capsis.models file. -->
 		<groovy>
 			<!-- Needed because AddEntryInCapsisModelsFile.groovy file is stored in main.src.dir. -->
 			<classpath>
-				<pathelement location="${main.src.dir}"/>
+				<pathelement location="${main.src.dir}" />
 			</classpath>
 			def addEntry = new AddEntryInCapsisModelsFile(packagename: project.getProperty("new.package.name"))
 			addEntry.run()
 		</groovy>
 
 		<!-- Deletes working directory. -->
-		<delete dir="${duplicate.module.working.dir}"/>
+		<delete dir="${duplicate.module.working.dir}" />
 
 		<!-- Displays message. -->
-		<echo message="Done."/>
+		<echo message="Done." />
 
 	</target>
 
@@ -2674,15 +2626,15 @@
 		<!-- Use of the os task with the family attribute in order to determine the current operating system.
 			 unix family: all Unix(-like) operating systems, including Linux and Mac OS X / macOS;
 			 windows family: for all versions of Microsoft Windows. -->
-		<echo message="Generating etc/extension.list file..."/>
+		<echo message="Generating etc/extension.list file..." />
 		<condition property="isUnix">
-			<os family="unix"/>
+			<os family="unix" />
 		</condition>
 		<condition property="isWindows">
-			<os family="windows"/>
+			<os family="windows" />
 		</condition>
 		<if>
-			<isset property="isUnix"/>
+			<isset property="isUnix" />
 			<then>
 				<!-- TODO: test use of /bin/sh on MacOS, perhaps use /usr/bin/env instead.
 				<exec executable="/usr/bin/env">
@@ -2692,21 +2644,21 @@
 				</exec>
 				-->
 				<exec executable="/bin/sh">
-					<arg value="capsis.sh"/>
-					<arg value="-se"/>
+					<arg value="capsis.sh" />
+					<arg value="-se" />
 				</exec>
 			</then>
 			<elseif>
-				<isset property="isWindows"/>
+				<isset property="isWindows" />
 				<then>
 					<exec executable="cmd">
-						<arg value="capsis"/>
-						<arg value="-se"/>
+						<arg value="capsis" />
+						<arg value="-se" />
 					</exec>
 				</then>
 			</elseif>
 			<else>
-				<fail message="Error: OS is different from Unix-like or Windows. Aborted."/>
+				<fail message="Error: OS is different from Unix-like or Windows. Aborted." />
 			</else>
 		</if>
 
