@@ -18,6 +18,10 @@ If you are new to Hi-sAFe, the best way to start is with the two foundational pu
 
 -   Wolz KJ, Dupraz C, Lecomte I, et al. (2019) Integrating dynamic tree-crop interactions with the 3D Hi-sAFe agroforestry model: II. Calibration and validation for hybrid walnut
 
+Licence
+-------
+Hi-sAFe and CAPSIS are under GNU GENERAL PUBLIC LICENSE
+
 Installation
 ------------
 
