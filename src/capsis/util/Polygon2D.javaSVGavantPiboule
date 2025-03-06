@@ -1,0 +1,223 @@
+/* 
+ * Capsis 4 - Computer-Aided Projections of Strategies in Silviculture
+ * 
+ * Copyright (C) 2000-2003  Francois de Coligny
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied 
+ * warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package capsis.util;
+
+import java.util.*;
+import java.io.*;
+import java.awt.*;
+import java.awt.geom.*;
+
+/**
+ * A 2D polygon : each vertex is a Vertex2D instance.
+ * 
+ * @author F. de Coligny - march 2001
+ */
+public class Polygon2D implements Serializable {
+
+	private Collection vertices;		// contains Vertex2D instances
+
+	/** 
+	 * Vertices is a Collection of Vertex2D instances.
+	 */
+	public Polygon2D (Collection vertices) throws Exception {
+		if (vertices.size () < 3) {throw new Exception ("Can not build a Polygon2D with less than 3 vertices."
+				+" Vertices="+vertices);}
+		if (!(vertices.iterator ().next () instanceof Vertex2D)) {
+				throw new Exception ("Polygon2D vertices must be of type Vertex2D.");}
+		this.vertices = vertices;
+	}
+
+	/** 
+	 * Return the origin (Vertex2D) for polygons in Capsis : most left (first) bottom (if several) vertex.
+	 */
+	public Vertex2D getOrigin () {
+		Vertex2D r2 = new Vertex2D (Double.MAX_VALUE, Double.MAX_VALUE);
+		for (Iterator i = vertices.iterator (); i.hasNext ();) {
+			Vertex2D v2 = (Vertex2D) i.next ();
+			if ((v2.x < r2.x) || (v2.x == r2.x && v2.y < r2.y)) {r2 = v2;}
+		}
+		return r2;
+	}
+	
+	/** 
+	 * Return the geometrical center of the polygon. Thanks to Ph. Borianne.
+	 */
+	public Vertex2D getGeometricalCenter () {
+		double xc = 0d;
+		double yc = 0d;
+		for (Iterator i = vertices.iterator (); i.hasNext ();) {
+			Vertex2D v2 = (Vertex2D) i.next ();
+			xc += v2.x;
+			yc += v2.y;
+		}
+		xc /= vertices.size ();
+		yc /= vertices.size ();
+		return new Vertex2D (xc, yc);
+	}
+	
+	/** 
+	 * Computes the polygon area in m2. 
+	 * Author L. Saint-André, Ph. Dreyfus, F. de Coligny.
+	 */
+	public double getArea () {
+		
+		// To disable trace in console, change next line (false)
+		//
+		boolean trace = false;
+		
+		// 1. Change data structure (fc)
+		//
+		int N = vertices.size () + 1;		// maybe we need one index more to add 1st vertex at the end
+		int n = 0;
+		double[] x = new double[N];
+		double[] y = new double[N];
+		
+		Vertex2D v1 = null;		// vertex one
+		Vertex2D v2 = null;		// current vertex
+		int i = 0;
+		for (Iterator j = vertices.iterator (); j.hasNext ();) {
+			v2 = (Vertex2D) j.next ();
+			if (v1 == null) {v1 = v2;}		// memo first one
+			x[i] = v2.x;
+			y[i] = v2.y;
+			i++;
+		}	// on exit, v2 is last vertex
+		
+		// 2. If not already done, add first vertex at the end
+		//
+		if (v2.x == v1.x && v2.y == v1.y) {
+			n = N - 1;		// we do not need to do it
+		} else {
+			n = N;
+			x[i] = v1.x;	// add 1st vertex at the end
+			y[i] = v1.y;
+		}
+		
+		if (trace) {
+			System.out.println ("Polygon2D.getArea ()------");
+			System.out.println ("x="+Tools.toString (x)+" n="+n+" (N="+N+")");
+			System.out.println ("y="+Tools.toString (y));
+		}
+		
+		// 3. Compute area (lsa)
+		//
+		double area = 0d;
+		if (n < 4) {	// fc - at least a triangle is needed : 3 + 1st repeated at the end = 4
+			return 0d;
+			
+		} else {
+			for (int k = 0; k < n-1; k++) {		// fc
+				area += (x[k] * y[k+1]) - (x[k+1] * y[k]);
+			}
+			area = Math.abs (area / 2d);
+			
+			if (trace) {
+				System.out.println ("area="+area);
+			}
+			
+			return area;
+		}
+	}
+
+	/** 
+	 * Return the origin (Vertex3D) for polygons in Capsis : most left (first) bottom (if several) vertex.
+	 */
+	public Vertex3D get3DOrigin () {return (Vertex3D.convert (getOrigin ()));}
+	
+	/**
+	 * Return the vertices Collection (Vertex2D instances).
+	 */
+	public Collection getVertices () {return vertices;}
+	
+	/**
+	 * Return the vertices Collection (Vertex3D instances).
+	 */
+	public Collection get3DVertices () {
+		Collection v3s = new Vector ();
+		for (Iterator i = vertices.iterator (); i.hasNext ();) {
+			Vertex2D v2 = (Vertex2D) i.next ();
+			Vertex3D v3 = new Vertex3D (v2.x, v2.y, 0d);
+			v3s.add (v3);
+		}
+		return v3s;
+	}
+	
+	/** 
+	 * Shape of the Polygon2D.
+	 */
+	public Shape getShape () {return getGeneralPath ();}
+	
+	/**
+	 * Instance method to compute general path (Shape) of this polygon 2D.
+	 */
+	public GeneralPath getGeneralPath () {
+		int n = vertices.size ();
+		
+		double[] xs = new double[n];
+		double[] ys = new double[n];
+
+		int j = 0;
+		for (Iterator i = vertices.iterator (); i.hasNext ();) {
+			//Vertex3D v3 = (Vertex3D) i.next ();
+			Vertex2D v3 = (Vertex2D) i.next ();	// Vertex2D sufficient (fc - 14.3.2002)
+			xs[j] = v3.x;		
+			ys[j] = v3.y;
+			j++;
+		}
+		GeneralPath gp = Polygon2D.getGeneralPath (xs, ys, n);	// fc - 23.11.2001 (changed from Tools.getPolygon2D ())
+		return gp;
+	}
+	
+	/**
+	 * Static method to compute general path (Shape) of a polygon 2D.
+	 */
+	public static GeneralPath getGeneralPath (double[] xPoints, double [] yPoints, int nPoints) {
+		GeneralPath gp = new GeneralPath ();
+		gp.moveTo ((float) xPoints[0], (float) yPoints[0]);		// first point
+		
+		for (int i = 1; i < nPoints; i++) {
+			gp.lineTo ((float) xPoints[i], (float) yPoints[i]);	// lines
+		}
+		
+		gp.closePath ();
+		
+		return gp;
+	}
+	
+	/**
+	 * This method was deprecated, use getGeneralPath (...) instead.
+	 */
+	public static GeneralPath getPolygon2D (double[] xPoints, double [] yPoints, int nPoints) {	// Do no use
+			return getGeneralPath (xPoints, yPoints, nPoints);}		// Do no use
+			
+	/**
+	 * The points must be instaneof Spatialized.
+	 */
+	public static Polygon2D getConvexHull (Collection points) {
+		
+		
+		return null;
+	}
+			
+
+
+}
