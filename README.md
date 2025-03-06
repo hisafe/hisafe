@@ -38,10 +38,6 @@ A suite of tools for building, running, and analyzing Hi-sAFe simulations is als
 devtools::install_github("kevinwolz/hisafer")
 ```
 
-Usage
------
-
-Hi-sAFe is avaialable for public use free of charge. Any use Hi-sAFe should always cite the two foundational papers shown above.
 
 Documentation
 -------------
