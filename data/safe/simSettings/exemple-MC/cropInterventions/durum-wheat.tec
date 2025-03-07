@@ -1,0 +1,151 @@
+##DURUM WHEAT ALLUR(BLE DUR)
+species = durum-wheat.plt
+variete = 1
+daystart = 08-31
+dayend = 08-30
+
+## SOIL MANAGEMENT
+nbjres = 1
+nbjtrav = 1
+
+## RESIDUE INCORPORATION TABLE
+#MM-DD coderes qres Crespc CsurNres Nminres eaures
+RESIDUEINC	10-20	1	1.00	42.00	15.00	0.00	0.00 
+
+## TILLAGE TABLE
+#MM-DD profres proftrav
+TILLAGE	10-20	30.00	30.00 
+
+## SOWING OPTIONS
+iplt0 = 10-27
+profsem = 3.00000
+densitesem = 268.00000
+codetradtec = 2
+interrang = 0.00000
+orientrang = 0.00000
+
+## STAGE FORCING
+codedecisemis = 2
+nbjmaxapressemis = 30
+nbjseuiltempref = 15
+codestade = 2
+ilev = 999
+iamf = 999
+ilax = 999
+isen = 999
+ilan = 999
+iflo = 999
+idrp = 999
+imat = 999
+irec = 999
+irecbutoir = 999
+
+## IRRIGATIONS
+effirr = 1.00000
+codecalirrig = 2
+ratiol = 0.00000
+dosimx = 40.00000
+doseirrigmin = 20.00000
+codedateappH2O = 2
+codlocirrig = 1
+locirrig = 0
+profmes = 120.00000
+nap = 0
+
+## IRRIGATION TABLE
+#MM-DD qte
+#IRRIGATION	04-19	15.00
+
+## FERTILIZATIONS
+codecalferti = 2
+ratiolN = 0
+dosimxN = 40
+codetesthumN = 1
+engrais = 2
+concirr = 0.00000
+codedateappN = 2
+codefracappN = 1
+Qtot_N = 100
+codlocferti = 1
+locferti = 0
+napN = 4
+
+## FERTILIZATION TABLE
+#MM-DD qte
+FERTILIZATION	02-01	20.00
+FERTILIZATION	02-27	86.00
+FERTILIZATION	04-04	55.00
+FERTILIZATION	04-21	35.00
+
+## HARVEST OPTIONS
+ressuite = straw+roots
+codceuille = 1
+nbceuille = 1
+cadencerec = 7
+codrecolte = 2
+codeaumin = 2
+h2ograinmin = 0.60000
+h2ograinmax = 0.16000
+sucrerec = 0.25000
+CNgrainrec = 0.06000
+huilerec = 0.07000
+coderecolteassoc = 2
+codedecirecolte = 2
+nbjmaxapresrecolte = 15
+
+## CUTTING INTERVENTIONS
+codefauche = 2
+mscoupemini = 0.00000
+codemodfauche = 1
+hautcoupedefaut = 0.00000
+stadecoupedf = rec
+nbcoupe = 0
+
+## CUTTING TABLE
+#MM-DD	hautcoupe	lairesiduel	msresiduel	anitcoupe
+#CUTTING	06-15	0.10	0.0	0.0	0.00
+
+## OTHER INTERVENTIONS
+codepaillage = 1
+couvermulchplastique = 0.00000
+albedomulchplastique = 0.00000
+codrognage = 1
+largrogne = 0.55000
+hautrogne = 1.40000
+biorognem = 0.20000
+codcalrogne = 1
+julrogne = 0
+margerogne = 0.20000
+codeclaircie = 1
+juleclair = 0
+nbinfloecl = 2.50000
+codeffeuil = 1
+codhauteff = 2
+codcaleffeuil = 2
+laidebeff = 0.90000
+effeuil = 0.50000
+juleffeuil = 0
+laieffeuil = 0.50000
+codetaille = 1
+jultaille = 0
+codepalissage = 1
+hautmaxtec = 0.70000
+largtec = 0.50000
+codabri = 1
+transplastic = 0.70000
+surfouvre1 = 0.10000
+julouvre2 = 0
+surfouvre2 = 0.50000
+julouvre3 = 0
+surfouvre3 = 0.70000
+codeDST = 2
+dachisel = 1.10000
+dalabour = 1.30000
+rugochisel = 0.00500
+rugolabour = 0.05000
+codeDSTtass = 2
+profhumsemoir = 30.00000
+dasemis = 1.60000
+profhumrecolteuse = 30.00000
+darecolte = 1.60000
+codeDSTnbcouche = 2
