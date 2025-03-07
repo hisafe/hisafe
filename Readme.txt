@@ -1,33 +1,41 @@
-Capsis
+Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
 
--> Computer-Aided Projection for Strategies in Silviculture
--> Croissance d'Arbres en Peuplement avec Simulation d'Itinéraires Sylvicoles
+ Copyright (C) 2000-2025 INRAE 
 
-Capsis is a free generic computer platform to simulate forests / plantations 
-growth / dynamics and silvicultural treatments for decision making in forest 
-management, forestry research and for educational purposes.
+ Authors  
+ * C.DUPRAZ       	- INRAE Montpellier France
+ * M.GOSME       	- INRAE Montpellier France
+ * G.TALBOT       	- INRAE Montpellier France
+ * B.COURBAUD      	- INRAE Montpellier France
+ * H.SINOQUET		- INRAE Montpellier France
+ * N.DONES			- INRAE Montpellier France
+ * N.BARBAULT 		- INRAE Montpellier France 
+ * I.LECOMTE       	- INRAE Montpellier France
+ * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
+ * R.MULIA       	- ICRAF Bogor Indonisia
+ * D.HARJA			- ICRAF Bogor Indonisia
 
-This software is fully functional but may contain only few models: models with 
-a free licence for the web demo version, or models selected by the modeller
-who gave you the installer. If you are a scientist interested in integrating 
-your own model in Capsis and thus have access to all the integrated models 
-according to the Capsis Charter, please have a look at the documentation 
-pages on the Capsis web site and then contact coligny@cirad.fr to join 
-the project.
-
-Capsis runs on Java platforms and is tested under Windows, Linux and Mac.
-
-Check the Capsis web site https://www.inrae.fr/capsis where you will find more 
-information and the Capsis Charter which must be accepted by all users. 
-
-See also the Installation Guide and the Capsis Tutorial.
-
-Capsis is being developed at the AMAP research unity (Cirad, CNRS, INRAE, IRD, 
-Université Montpellier 2 - botAnique et Modélisation de l'Architecture 
-des Plantes et des végétations) in Montpellier, France.
-
-https://www.inrae.fr/capsis
-https://capsis.cirad.fr
+ Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
+ 
+ You are free to:
+ 		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
+ 		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
+ 		The licensor cannot revoke these freedoms as long as you follow the license terms.
+  
+  Under the following terms:
+  		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+                		  You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+                
+  		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+                
+  Notices:
+  		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
+       by an applicable exception or limitation .
+ 		No warranties are given. The license may not give you all of the permissions necessary for your intended use. 
+ 		For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.  
+ 
+  For more details see <https://creativecommons.org/licenses/by/4.0/>.
+ 
 
 
 
