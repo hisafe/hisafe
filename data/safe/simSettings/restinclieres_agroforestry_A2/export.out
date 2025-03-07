@@ -1,0 +1,751 @@
+#========================================================================						
+#  EXPORT FILE DEFINITION 						
+#						
+#  1) Select profiles and frequencies   						
+#     write # in front of those you don't want to export						
+# 						
+#  2) Select the variables for each profil 						
+#     write 0 in the last column of those you don't want to export						
+#						
+#=========================================================================						
+#========================================================================						
+#  PART 1 : Profile definition						
+#=========================================================================						
+#Profile	Object	Frequency				
+ProfileDef	climate	SafeMacroClimat	1			
+ProfileDef	plot	SafePlot	1			
+ProfileDef	zones	SafeCropZone	1			
+ProfileDef	cells	SafeCell	1	1;46		
+ProfileDef	trees	SafeTree	1			
+ProfileDef	monthCells	SafeCell	30			
+ProfileDef	annualPlot	SafePlot	365			
+ProfileDef	annualCells	SafeCell	365			
+ProfileDef	annualTrees	SafeTree	365			
+#ProfileDef	voxels	SafeVoxel	1			
+#ProfileDef	voxelsDetail	SafeVoxel	1			
+#ProfileDef	voxelsOptim	SafeVoxel	1			
+#ProfileDef	voxels3D	SafeVoxel	1			
+#SELECTION of CELLS or DEPTHS 						
+#Export	Object	Frequency	Ids	Depth		
+#ProfileDef	cell	SafeCell	1	01-mars		
+#ProfileDef	voxel	SafeVoxel	1	"1;10;30"	"1-10;20-30"	
+#========================================================================						
+#  PART 2 : Variable selection						
+#=========================================================================						
+#Profile	Object	Variable	Unit	Description	Order	Export
+annualCells	SafeCell	cropSpeciesName	-	Crop species name	1	1
+annualCells	SafeCell	yieldMax	t.ha-1	Maximum value of harvested yield (grain and hay) for the year	1	1
+annualCells	SafeCell	heightMax	 m	Maximum crop height for the year	2	1
+annualCells	SafeCell	biomassMax	 t.ha-1	Maximum crop biomass for the year	3	1
+annualCells	SafeCell	laiMax	m2 leaf m-2 soil	Maximum crop LAI for the year	4	1
+annualCells	SafeCell	eaiMax	m2 leaf m-2 soil	Maximum crop EAI for the year	5	1
+annualCells	SafeCell	rootsDepthMax	m	Maximum crop roots depth for the year	6	1
+annualCells	SafeCell	cropMaxTemperature	°C	Crop max temperature	7	1
+annualCells	SafeCell	cropMinTemperature	°C	Crop min temperature	8	1
+annualCells	SafeCell	annualSoilEvaporation	mm	annual evaporation	9	1
+annualCells	SafeCell	annualCapillaryRise	mm	annual capillary rise	10	1
+annualCells	SafeCell	annualDrainageBottom	mm	annual drainage bottom	11	1
+annualCells	SafeCell	annualDrainageArtificial	mm	annual drainage artificial	12	1
+annualCells	SafeCell	annualIrrigation	mm	annual irrigations	13	1
+annualCells	SafeCell	annualRunOff	mm	annual run off	14	1
+annualCells	SafeCell	annualSurfaceRunOff	mm	annual surface run off	15	1
+annualCells	SafeCell	annualWaterDemand	liters	annual water demad	16	1
+annualCells	SafeCell	annualWaterUptake	liters	annual water uptake	17	1
+annualCells	SafeCell	annualWaterUptakeByTrees	liters	annual water uptake by trees	18	1
+annualCells	SafeCell	annualNitrogenDemand	kg N ha-1	annual nitrogen demad	19	1
+annualCells	SafeCell	annualNitrogenUptake	kg N ha-1	annual nitrogen extract	20	1
+annualCells	SafeCell	annualNitrogenUptakeByTrees	kg N ha-1	annual nitrogen extract by trees	21	1
+annualCells	SafeCell	annualNitrogenLeachingBottom	kg N ha-1	annual nitrogen leached at the base of the soil profile	22	1
+annualCells	SafeCell	annualNitrogenLeachingWaterTable	kg N ha-1	annual nitrogen leached from water table	23	1
+annualCells	SafeCell	annualParIncident	moles PAR m-2	Annual Par Incident	24	1
+annualCells	SafeCell	annualParIntercepted	moles PAR m-2	Annual Par Intercepted	25	1
+monthCells	SafeCell	monthYield	t.ha-1	month Crop yield	1	1
+monthCells	SafeCell	monthLai	m2.m-2	month Lai	2	1
+monthCells	SafeCell	monthEai	m2.m-2	month Eai	3	1
+monthCells	SafeCell	monthBiomass	t ha-1	month Crop biomass	4	1
+monthCells	SafeCell	monthDirectPar	moles PAR m-2	Mean monthly direct PAR in the sky	5	1
+monthCells	SafeCell	monthDiffusePar	moles PAR m-2	Mean monthly diffuse PAR in the sky	6	1
+monthCells	SafeCell	monthDirectParIntercepted	moles PAR m-2	Mean monthly direct PAR intercepted by the crop	7	1
+monthCells	SafeCell	monthDiffuseParIntercepted	moles PAR m-2	Mean monthly diffuse PAR intercepted by the crop	8	1
+monthCells	SafeCell	monthDirectParIncident	moles PAR m-2	Mean monthly direct PAR incident on the crop	9	1
+monthCells	SafeCell	monthDiffuseParIncident	moles PAR m-2	Mean monthly diffuse PAR incident on the crop	10	1
+monthCells	SafeCell	monthRelativeDirectParIncident	%	Mean monthly relative direct PAR incident on the crop	11	1
+monthCells	SafeCell	monthRelativeDiffuseParIncident	%	Mean monthly relative diffuse PAR incident on the crop	12	1
+monthCells	SafeCell	monthRelativeTotalParIncident	%	Mean monthly relative total PAR incident on the crop	13	1
+monthCells	SafeCell	monthVisibleSky	%	Mean monthly percetage of sky that is unobstructed from the view of the crop	14	1
+cells	SafeCell	cropSpeciesName	-	Crop species name	1	1
+cells	SafeCell	cropAge	years	Age of crop since sowing	3	1
+cells	SafeCell	phenologicStageVegetative	-	Crop phenologic stage reproductive 1=snu 2=plt 3=dor 4=ger 5=lev 6=amf 7=lax 8=sen 9=lan 10=rec	5	1
+cells	SafeCell	phenologicStageReproductive	-	Crop phenologic stage vegetative 1=snu 2=flo 3=drp 4=nou 5=des 6=mat 7=rec	4	1
+cells	SafeCell	yield	t ha-1	Harvested biomass of grain and hay	6	1
+cells	SafeCell	biomass	t ha-1	Total crop biomass, including grain/fruit biomass	7	1
+cells	SafeCell	grainBiomass	t ha-1	Crop grain yield at 0% moisture (converted from g m-2 in STICS output to t ha-1 within Hi-sAFe by dividing it by 100)	8	1
+cells	SafeCell	tuberBiomass	t ha-1	matuber	8	1
+cells	SafeCell	fruitBiomass	t ha-1	matfruit	8	1
+cells	SafeCell	grainNumber	-	Grain number	9	1
+cells	SafeCell	grainWeight	g	Weight of one grain (at 0% water content) 	10	1
+cells	SafeCell	grainGrowthRate	t ha-1	Growth rate of the grains	11	1
+cells	SafeCell	nitrogenGrain	kg ha-1	Amount of nitrogen in harvested organs (grains / fruits)	12	1
+cells	SafeCell	biomassIncrement	t ha-1	Growth rate of the plant 	13	1
+cells	SafeCell	height	m	Height of crop canopy	14	1
+cells	SafeCell	densite	plants.m-2	Plant density	15	1
+cells	SafeCell	rootsDepth	m	Maximum crop roots depth 	16	1
+cells	SafeCell	lai	m2 leaf m-2 soil	Leaf area index	17	1
+cells	SafeCell	eai	m2 leaf m-2 soil	Equivalent leaf area index of the envelopes of reproductive organs	18	1
+cells	SafeCell	sla	cm2.g-1	Crop specific leaf area	19	1
+cells	SafeCell	treeFineRootsLength	m	Total fine roots length of all trees in this cell	20	1
+cells	SafeCell	treeCarbonCoarseRoots	kg C	Total coarse roots carbon of all trees in this cell	21	1
+cells	SafeCell	cropTemperature	degreesC	Crop leaf temperature	22	1
+cells	SafeCell	soilSurfaceTemperature	degreesC	Temperature of top soil horizon (layer)	23	1
+cells	SafeCell	etpCalculated	mm	Potential evapotranspiration (calculated via Penman method)	24	1
+cells	SafeCell	hisafeWaterStress	0-1	Index of stomatic water stress 	25	1
+cells	SafeCell	hisafeTurfac	0-1	Index of turgescence water stress	26	1
+cells	SafeCell	hisafeSenfac	0-1	Index of senescence water stress	27	1
+cells	SafeCell	sticsWaterStomatalStress	0-1	Index of stomatal water stress  (1 = no stress)	28	0
+cells	SafeCell	sticsWaterSenescenceStress	0-1	Index of senescence water stress  (1 = no stress)	29	0
+cells	SafeCell	sticsWaterTurgescenceStress	0-1	Index of turgescence water stress (1 = no stress)	30	0
+cells	SafeCell	hisafeNitrogenStress	0-1	Nitrogen stress of the crop (calculated by Hisafe as uptake/demand) (1 = no stress)	32	1
+cells	SafeCell	nitrogenNutritionIndex	0-1	Nitrogen nutrition index (satisfaction of nitrogen needs )	33	1
+cells	SafeCell	sticsNitrogenBiomassStress	0-1	Index of nitrogen stress active on growth (LUE) in biomass (1 = no stress)	34	1
+cells	SafeCell	sticsNitrogenLaiStress	0-1	Index of nitrogen stress active on leaf growth (1 = no stress)	35	1
+cells	SafeCell	sticsNitrogenSenescenceStress	0-1	Index of nitrogen stress active on senescence (1 = no stress)	36	1
+cells	SafeCell	tempStressLue	0-1	Temperature-related EPSIBMAX reduction factor 	37	1
+cells	SafeCell	tempStressGrainFilling	0-1	tempStressGrainFilling	38	1
+cells	SafeCell	frostStressPlantDensity	0-1	Index of stress on plant density during the plantlet stage (1 = no stress)	39	1
+cells	SafeCell	frostStressFoliage	0-1	Index of stress on foliage during the juvenile (1 = no stress)	40	1
+cells	SafeCell	frostStressReprod	0-1	Index of stress on flowers and fruits (1 = no stress)	41	1
+cells	SafeCell	visibleSky	%	Percetage of sky that is unobstructed from the view of the crop	42	1
+cells	SafeCell	totalParIncident	moles PAR m-2	Radiation daily direct+diffuse incident PAR	43	1
+cells	SafeCell	diffuseParIncident	moles PAR m-2	Diffuse PAR incident on the crop	44	1
+cells	SafeCell	directParIncident	moles PAR m-2	Direct PAR incident on the crop	45	1
+cells	SafeCell	totalParIntercepted	moles PAR m-2	Radiation daily direct+diffuse intercepted PAR	46	1
+cells	SafeCell	diffuseParIntercepted	moles PAR m-2	Diffuse PAR intercepted by the crop	48	1
+cells	SafeCell	directParIntercepted	moles PAR m-2	Diffuse PAR intercepted by the crop	49	1
+cells	SafeCell	relativeTotalParIncident	%	Percentage of above-tree-canopy total PAR that is incident on the crop	50	1
+cells	SafeCell	relativeDiffuseParIncident	%	Percentage of above-tree-canopy diffuse PAR that is incident on the crop	51	1
+cells	SafeCell	relativeDirectParIncident	%	Percentage of above-tree-canopy direct PAR that is incident on the crop	52	1
+cells	SafeCell	relativeGlobalRadIncident	%	Percentage of above-tree-canopy global radiation that is incident on the crop	53	1
+cells	SafeCell	actualWaterPotential	cm	Crop water potential	31	1
+cells	SafeCell	waterDemand	mm	Water demand of the crop (maximum transpiration flux)	54	1
+cells	SafeCell	waterDemandReduced	mm	Crop water demand reduced	55	1
+cells	SafeCell	waterUptakeByCrop	mm	Water uptake by the crop	56	1
+cells	SafeCell	waterUptakeByTrees	mm	Water uptake by trees	57	1
+cells	SafeCell	waterUptakePotential	cm	Water uptake potential	58	1
+cells	SafeCell	soilEvaporation	mm	Water evaporated from soil	59	1
+cells	SafeCell	mulchEvaporation	mm	Water evaporated from rain that was intercepted by mulch on the soil surface	60	1
+cells	SafeCell	waterUptakeInSaturationByTrees	mm	Water uptake by trees from saturated voxels	61	1
+cells	SafeCell	waterUptakeInSaturationByCrop	mm	Water uptake by crop from saturated voxels	62	1
+cells	SafeCell	rainInterceptedByTrees	mm	Rain intercepted by tree canopies.	63	1
+cells	SafeCell	rainInterceptedByCrop	mm	Rain intercepted by crop canopy	64	1
+cells	SafeCell	rainTransmittedByTrees	mm	Rain transmitted (not intercepted) through tree canopies. Does not include stemflow.	65	1
+cells	SafeCell	rainTransmittedByCrop	mm	Rain transmitted (not intercepted) through crop canopy. Des not include stemflow.	66	1
+cells	SafeCell	stemFlowByTrees	mm	Flow of rain down tree stems (onto the cells where the trees are rooted)	67	1
+cells	SafeCell	stemFlowByCrop	mm	Flow of rain down crop stems (onto the cell where the crop is rooted)	68	1
+cells	SafeCell	waterAddedByWaterTable	mm	Water input to soil from rising water table (when a voxel becomes saturated, the water table adds water to a voxel in the amount of (fieldCapacity - waterContent)	69	1
+cells	SafeCell	waterTakenByDesaturation	mm	Water taken by water table to desaturated voxels	70	1
+cells	SafeCell	irrigation	mm	Water from irrigation	71	1
+cells	SafeCell	capillaryRise	mm	Capillary uptake in the base of the soil profile	72	1
+cells	SafeCell	runOff	mm	"The ""surface"" run-off associated with soil surface conditions plus the ""overflow"" runoff associated with saturation of the top soil layer and lack of infiltribility"	73	1
+cells	SafeCell	drainageBottom	mm	Water drained at the bottom of the soil profile	74	1
+cells	SafeCell	drainageArtificial	mm	Water drained into artificial drains	75	1
+cells	SafeCell	surfaceRunOff	mm	"The ""surface"" run-off associated with soil surface conditions (and not associated with saturation of the top soil layer and lack of infiltribility)"	76	1
+cells	SafeCell	carbonMulch	kgC.ha-1	Total C in mulch at soil surface	77	1
+cells	SafeCell	carbonMulchTreeFoliage	kgC.ha-1	Total C in mulch from tree foliage at soil surface	78	1
+cells	SafeCell	mulchWaterStock	mm	Water stock in the mulch	79	1
+cells	SafeCell	mulchCoverRatio	ratio	Proportion of soil surface covered by mulch	80	1
+cells	SafeCell	mulchBiomass	t.ha-1	Biomass of ALL mulch (accumulated litter from tree foliage, crops, and exogenous material) on the soil surface	81	1
+cells	SafeCell	carbonResidus	kgC.ha-1	carbonResidus	82	1
+cells	SafeCell	cropCarbonLeafLitter	kgC.ha-1	Carbon input to soil from crop aerial litter	83	1
+cells	SafeCell	cropCarbonRootsLitter	kgC.ha-1	Carbon input to soil from crop roots litter	84	1
+cells	SafeCell	totalCarbonHumusStock	kgC.ha-1	Total amount of carbon (active + inactive) in the soil humus pool 	85	1
+cells	SafeCell	treeCarbonLeafLitter	kg C ha-1	Carbon input to soil from leaf litter	86	1
+cells	SafeCell	treeCarbonFineRootsLitter	kg C ha-1	Carbon input to soil from fine roots above profhum	87	1
+cells	SafeCell	treeCarbonCoarseRootsLitter	kg C ha-1	Carbon input to soil from coarse roots above profhum	88	1
+cells	SafeCell	treeCarbonFineRootsDeepLitter	kg C ha-1	Carbon input to soil from fine roots below profhum	89	1
+cells	SafeCell	treeCarbonCoarseRootsDeepLitter	kg C ha-1	Carbon input to soil from coarse roots below profhum	90	1
+cells	SafeCell	activeCarbonHumusStock	kg C ha-1	Amount of active carbon in the soil humus pool 	91	1
+cells	SafeCell	inactiveCarbonHumusStock	kg C ha-1	Amount of inactive carbon in the soil humus pool 	92	1
+cells	SafeCell	carbonMicrobes	kgC.ha-1	Amount of C in the microbial biomass decomposing organic residues mixed with soil 	93	1
+cells	SafeCell	carbonMicrobesMulch	kgC.ha-1	Amount of C in the microbial biomass decomposing organic residues at soil surface	94	1
+cells	SafeCell	nitrogenDemand	kgN.ha-1	Nitrogen demand of the crop	95	1
+cells	SafeCell	nitrogenUptakeByCrop	kgN.ha-1	Nitrogen uptake by the crop	96	1
+cells	SafeCell	nitrogenUptakeByTrees	kgN.ha-1	Nitrogen uptake by trees	97	1
+cells	SafeCell	nitrogenUptakeInSaturationByTrees	kg N ha-1	Nitrogen uptake by trees from saturated voxels	98	1
+cells	SafeCell	nitrogenUptakeInSaturationByCrop	kg N ha-1	Nitrogen uptake by crop from saturated voxels	99	1
+cells	SafeCell	nitrogenRain	kg N ha-1	Mineral nitrogen input to soil from rainfall 	100	1
+cells	SafeCell	nitrogenRunOff	kg N ha-1	Mean of mineral nitrogen in soil run off 	101	1
+cells	SafeCell	nitrogenFertilisationMineral	kg N ha-1	Mineral nitrogen applied to soil from mineral fertilizers and mineral fraction of organic fertilisers	102	1
+cells	SafeCell	nitrogenFertilisationOrganic	kg N ha-1	Organic nitrogen applied to soil from organic fertilisers	103	1
+cells	SafeCell	nitrogenIrrigation	kg N ha-1	Nitrogen input to soil from irrigation water	104	1
+cells	SafeCell	nitrogenFixation	kg N ha-1	Nitrogen input to soil from symbiotic fixation by crop nodules	105	1
+cells	SafeCell	nitrogenVolatilisation	kg N ha-1	Nitrogen lost via volatilisation of mineral fertiliser inputs	106	1
+cells	SafeCell	nitrogenVolatilisationOrganic	kg N ha-1	Nitrogen lost via volatilisation of organic fertiliser inputs	107	1
+cells	SafeCell	nitrogenDenitrification	kg N ha-1	Nitrogen lost via denitrification of fertiliser or within soil (if denitrification option is activated)	108	1
+cells	SafeCell	nitrogenMulch	kg N ha-1	Total N in mulch at soil surface	109	1
+cells	SafeCell	totalNitrogenHumusStock	kg N ha-1	Total amount of nitrogen (active + inactive) in the soil humus pool 	110	1
+cells	SafeCell	activeNitrogenHumusStock	kg N ha-1	Amount of active nitrogen in the soil humus pool 	111	1
+cells	SafeCell	inactiveNitrogenHumusStock	kg N ha-1	Amount of inactive nitrogen in the soil humus pool 	112	1
+cells	SafeCell	nitrogenHumusMineralisation	kg N ha-1	Mineral N input to soil derived from humus mineralisation	113	1
+cells	SafeCell	nitrogenResiduMineralisation	kg N ha-1	Mineral N input to soil derived from mineralisation of all organic residues	114	1
+cells	SafeCell	nitrogenImmobilisation	kg N ha-1	Nitrogen from fertilizer that is immobilized by soil bacteria	115	1
+cells	SafeCell	cropNitrogenLeafLitter	kgN.ha-1	Nitrogen input to soil from crop aerial litter	116	1
+cells	SafeCell	cropNitrogenRootsLitter	kgN.ha-1	Nitrogen input to soil from crop roots litter	117	1
+cells	SafeCell	nitrogenMicrobes	kg N ha-1	Amount of N remaining in the biomass decaying organic residues	118	1
+cells	SafeCell	nitrogenMicrobesMulch	kg N ha-1	amount of N in microbial biomass decomposing mulch	119	1
+cells	SafeCell	nitrogenLeachingBottom	kg N ha-1	NO3-N leached at the bottom of the soil profile	120	1
+cells	SafeCell	nitrogenLeachingArtificial	kg N ha-1	N-NO3 leached into artificial drains	121	1
+cells	SafeCell	nitrogenLeachingWaterTable	kg N ha-1	Nitrogen leached into the water table	122	1
+cells	SafeCell	mineralNitrogenStock	kg N ha-1	Soil mineral nitrogen stock (NH4 stock + NO3 stock)	123	1
+cells	SafeCell	nitrogenResidus	kgN.ha-1	Nitrogen pool in all soil organic residues	124	1
+cells	SafeCell	treeNitrogenLeafLitter	kgN.ha-1	Nitrogen input to soil from leaf litter	125	1
+cells	SafeCell	treeNitrogenFineRootsLitter	kgN.ha-1	Nitrogen input to soil from fine roots above humification depth (profhum)	126	1
+cells	SafeCell	treeNitrogenCoarseRootsLitter	kgN.ha-1	Nitrogen input to soil from coarse roots above humification depth (profhum)	127	1
+cells	SafeCell	treeNitrogenFineRootsDeepLitter	kgN.ha-1	Nitrogen input to soil from fine roots below humification depth (profhum)	128	1
+cells	SafeCell	treeNitrogenCoarseRootsDeepLitter	kgN.ha-1	Nitrogen input to soil from coarse roots below humification depth (profhum)	129	1
+cells	SafeCell	nitrogenAddedByWaterTable	kgN.ha-1	Nitrogen input to the soil from the water table	130	1
+cells	SafeCell	nitrogenLossNitrification	kgN.ha-1	cumulated N2O emission	131	1
+cells	SafeCell	nitrogenShallowRootsResidu	kgN.ha-1	Tree shallow root (above P_profhum) nitrogen residus 	132	1
+cells	SafeCell	nitrogenDeepRootsResidu	kgN.ha-1	Tree deep root (under P_profhum) nitrogen residus 	133	1
+cells	SafeCell	nitrogenHarvested	t.ha-1	Total of exported nitrogen	134	1
+cells	SafeCell	biomassHarvested	t ha-1	Total of exported carbon	135	1
+cells	SafeCell	meanHisafeWaterStressVegetative	-	Mean of hisafe water stress between vegetative stages	136	1
+cells	SafeCell	meanHisafeWaterStressReproductive	-	Mean of hisafe water stress between reprodutive stages	137	1
+cells	SafeCell	meanHisafeNitrogenStressVegetative	-	Mean of hisafe nitrogen stress between vegetative stages	138	1
+cells	SafeCell	meanHisafeNitrogenStressReproductive	-	Mean of hisafe nitrogen stress between reprodutive stages	139	1
+cells	SafeCell	lueDay	kg MS/mole PAR	Daily Light Use Efficiency (daily gain of Biomass per daily unit radiation intercepted)	140	0
+cells	SafeCell	lueInt	kg MS/mole PAR	Integrated Light Use Efficiency (Total biomass per total radiation intercepted since germination)	141	0
+cells	SafeCell	wueDay	g MS liter-1	Daily Water use Efficiency (daily gain of biomass per daily unit water transpired)	142	0
+cells	SafeCell	wueInt	g MS liter-1	Integrated Water Use Efficiency (Total Biomass per Total Water transpired since germination)	143	0
+cells	SafeCell	tetstomate	% vol	Threshold of soil water content, below which swfac is induced (and limits transpiration and photosynthesis)	144	1
+cells	SafeCell	teturg	% vol	Threshold of soil water content, below which turfac is induced (and limiting the surface area growth of leaves)	145	1
+cells	SafeCell	coeflev	-	Multiplier coefficient of the crop development	153	0
+cells	SafeCell	fruitBiomass	t ha-1	Total fruit biomass	153	1
+cells	SafeCell	isTreeAbove	-	isTreeAbove	25	1
+cells	SafeCell	nbrTreeAbove	-	nbrTreeAbove	25	1
+cells	SafeCell	treeCarbonFoliageLitter	kg C ha-1	treeCarbonFoliageLitter	25	1
+cells	SafeCell	treeCarbonBranchesLitter	kg C ha-1	treeCarbonBranchesLitter	25	1
+cells	SafeCell	treeCarbonFruitLitter	kg C ha-1	treeCarbonFruitLitter	25	1
+cells	SafeCell	treeNitrogenFoliageLitter	kg N ha-1	treeNitrogenFoliageLitter	25	1
+cells	SafeCell	treeNitrogenBranchesLitter	kg N ha-1	treeNitrogenBranchesLitter	25	1
+cells	SafeCell	treeNitrogenFruitLitter	kg N ha-1	treeNitrogenFruitLitter	25	1
+climate	SafeMacroClimat	minTemperature	°	Minimum temperature of the air	1	1
+climate	SafeMacroClimat	maxTemperature	°	Maximum temperature of the air	2	1
+climate	SafeMacroClimat	minRelativeHumidity	°	Minimum relative humidity of the air	3	1
+climate	SafeMacroClimat	maxRelativeHumidity	°	Maximum relative humidity of the air	4	1
+climate	SafeMacroClimat	precipitation	mm	Precipitation from input wth file	5	1
+climate	SafeMacroClimat	rain	mm	Precipitation minus any calculated to fall as snow	6	1
+climate	SafeMacroClimat	snow	mm	Precipitation calculated to fall as snow	7	1
+climate	SafeMacroClimat	meltedSnow	mm	Snow stocked on ground that melts	8	1
+climate	SafeMacroClimat	stockedSnow	mm	Snow stocked on the ground	9	1
+climate	SafeMacroClimat	rainCapacityinSnow	mm	Rain stock capacity within snow on the ground	10	1
+climate	SafeMacroClimat	rainCapturedBySnow	mm	Rain stocked within snow on the ground (i.e. rain that has fallen onto and been capture by preexisting snow)	11	1
+climate	SafeMacroClimat	waterEnteringSoil	mm	water Entering the Soil	12	1
+climate	SafeMacroClimat	etpPenman	mm	Potential evapotranspiration (calculated via Penman method)	13	1
+climate	SafeMacroClimat	globalPar	Moles m-2	Global PAR radiation	14	1
+climate	SafeMacroClimat	globalRadiation	MJ m-2	Global radiation	15	1
+climate	SafeMacroClimat	diffusePar	Moles m-2	Diffuse PAR radiation	16	1
+climate	SafeMacroClimat	directPar	Moles m-2	Direct PAR radiation	17	1
+climate	SafeMacroClimat	extraTerrestrialRadiation	MJ m-2	Extraterrestrial radiation	18	1
+climate	SafeMacroClimat	infraRedRadiation	W m-2	Infra-red radiation	19	1
+climate	SafeMacroClimat	sunDeclination	radian	Sun declination	20	1
+climate	SafeMacroClimat	dayLength	h	Day lenght	21	1
+climate	SafeMacroClimat	airVapourPressure	mbar	Air vapour pressure	24	1
+climate	SafeMacroClimat	waterTableDepth	m	Depth of water table below soil surface (negative values are in the downward direction)	25	1
+climate	SafeMacroClimat	windSpeed	m s-1	Wind speed	26	1
+annualPlot	SafePlot	annualParIncident	Moles PAR m-2	Annual cumulation of PAR incident on the plot	1	1
+annualPlot	SafePlot	annualParInterceptedByTrees	Moles PAR m-2	Annual cumulation of  PAR Intercepted by trees  on the plot	2	1
+annualPlot	SafePlot	annualParInterceptedByCrops	Moles PAR m-2	Annual cumulation of PAR Intercepted by crops  on the plot	3	1
+annualPlot	SafePlot	annualWaterAddedByWaterTable	liters	Annual cumulation of water added by waterTable  on the plot	4	1
+annualPlot	SafePlot	annualRainTransmittedByTrees	liters	Annual cumulation of rain transmitted by trees  on the plot	5	1
+annualPlot	SafePlot	annualRainTransmittedByCrops	liters	Annual cumulation of rain transmitted by crops  on the plot	6	1
+annualPlot	SafePlot	annualIrrigation	liters	Annual cumulation of  Irrigation  on the plot	7	1
+annualPlot	SafePlot	annualWaterUptakeByTrees	liters	Annual cumulation of water uptake by trees  on the plot	8	1
+annualPlot	SafePlot	annualWaterUptakeByCrops	liters	Annual cumulation of annual water uptake by crops  on the plot	9	1
+annualPlot	SafePlot	annualEvaporation	liters	Annual cumulation of  soil evaporation  on the plot	10	1
+annualPlot	SafePlot	annualSurfaceRunOff	liters	Annual cumulation of surface RunOff  on the plot	11	1
+annualPlot	SafePlot	annualDrainageBottom	liters	Annual cumulation of  drainage bottom  on the plot	12	1
+annualPlot	SafePlot	annualDrainageArtificial	liters	Annual cumulation of drainage artificial  on the plot	13	1
+annualPlot	SafePlot	annualRainInterceptedByTrees	liters	Annual cumulation of intercepted rain by trees on the plot	14	1
+annualPlot	SafePlot	annualRainInterceptedByCrops	liters	Annual cumulation of intercepted rain by crops on the plot	15	1
+annualPlot	SafePlot	annualFertilisationMineral	kg N ha-1	Annual cumulation of mineral ferlizations  on the plot	16	1
+annualPlot	SafePlot	annualFertilisationOrganic	kg N ha-1	Annual cumulation of organic ferlizations  on the plot	17	1
+annualPlot	SafePlot	annualNitrogenRain	kg N ha-1	Annual cumulation of nitrogen from rain  on the plot	18	1
+annualPlot	SafePlot	annualNitrogenIrrigation	kg N ha-1	Annual cumulation of nitrogen from irrigation  on the plot	19	1
+annualPlot	SafePlot	annualNitrogenUptakeByTrees	kg N 	Annual cumulation of nitrogen uptake by trees  on the plot	20	1
+annualPlot	SafePlot	annualNitrogenUptakeByCrops	kg N 	Annual cumulation of nitrogen uptake by crops  on the plot	21	1
+annualPlot	SafePlot	annualNitrogenRunOff	kg N ha-1	Annual cumulation of nitrogen RunOff  on the plot	22	1
+annualPlot	SafePlot	annualNitrogenLeachingBottom	kg N ha-1	Annual cumulation of nitrogen Leaching Bottom  on the plot	23	1
+annualPlot	SafePlot	annualNitrogenLeachingWaterTable	kg N ha-1	Annual cumulation of nitrogen Leaching to WaterTable  on the plot	24	1
+annualPlot	SafePlot	annualWaterUptakeInSaturationByTrees	kg N ha-1	Annual cumulation of water uptake by trees  on saturated voxels of the plot	25	1
+annualPlot	SafePlot	annualWaterUptakeInSaturationByCrops	kg N ha-1	Annual cumulation of water uptake by crops  on saturated voxels of the plot	26	1
+plot	SafePlot	totalCropBiomass	t ha-1	Total biomass of the plot	1	1
+plot	SafePlot	meanCropBiomass	t ha-1	Mean biomass of the plot	2	1
+plot	SafePlot	totalCropYield	t ha-1	Total yield of the plot	3	1
+plot	SafePlot	meanCropYield	t ha-1	Mean yield of the plot	4	1
+plot	SafePlot	totalCropLai	m2 leaf m-2 soil	Total LAI of the plot	5	1
+plot	SafePlot	meanCropLai	m2 leaf m-2 soil	Mean LAI of the plot	6	1
+plot	SafePlot	totalCropEai	m2 leaf m-2 soil	Total EAI of the plot	7	1
+plot	SafePlot	meanCropEai	m2 leaf m-2 soil	Mean EAI of the plot	8	1
+plot	SafePlot	totalCropHeight	m	Mean canopy height in the plot	9	1
+plot	SafePlot	meanCropHeight	m	Mean canopy height in the plot	10	1
+plot	SafePlot	meanCropGrainNumber	nbr m-2	Mean of number of grains in the plot	11	1
+plot	SafePlot	meanCropGrainWeight	g	Mean of grain weight in the plot	12	1
+plot	SafePlot	meanCropPlantDensity	plants m-2	Mean of sowing density of the plot	13	1
+plot	SafePlot	meanCropSla	cm2 g-1	Mean of  Specific surface area of the plot	14	1
+plot	SafePlot	meanCropTemperature	degreesC	Mean crop surface temperature of the plot	15	1
+plot	SafePlot	meanSoilSurfaceTemperature	degreesC	Mean soil surface temperature of the plot	16	1
+plot	SafePlot	meanCropRootsDepth	m	Mean depth reached by roots system in the plot	17	1
+plot	SafePlot	meanCropRootsLenght	m	Mean Crop roots lenght of the plot	18	1
+plot	SafePlot	meanCropQngrain	kg N ha-1	Mean of nitrogen in harvested organs (grains / fruits) on the plot	19	1
+plot	SafePlot	meanCropQnplante	kg N ha-1	Mean of nitrogen taken up by the plant on the plot	20	1
+plot	SafePlot	meanCropCngrain	%	Mean of Nitrogen concentration of grains on the plot	21	1
+plot	SafePlot	meanCropCnplante	%	Mean of Nitrogen concentration of entire plant on the plot	22	1
+plot	SafePlot	totalParIncident	moles.m-2	Total PAR Incident on the plot	23	1
+plot	SafePlot	meanParIncident	moles.m-2	Mean PAR Incident on the plot	24	1
+plot	SafePlot	totalParInterceptedByCrops	moles PAR m-2	Total PAR Intercepted By Crops on the plot	25	1
+plot	SafePlot	totalParInterceptedByTrees	moles PAR m-2	Total PAR Intercepted By trees on the plot	26	1
+plot	SafePlot	meanCropHisafeWaterStress	-	mainCropHisafeWaterStress	27	1
+plot	SafePlot	meanCropHisafeNitrogenStress	-	mainCropHisafeNitrogenStress	28	1
+plot	SafePlot	meanCropNitrogenLaiStress	0-1	Mean Index of nitrogen stress active on leaf growth	29	1
+plot	SafePlot	meanCropNitrogenBiomassStress	0-1	Mean of Index of nitrogen stress active on growth in biomass	30	1
+plot	SafePlot	meanCropNitrogenSenescenceStress	0-1	Mean Index of nitrogen stress active on leaf death	31	1
+plot	SafePlot	waterTableDepth	m	Water table depth in the plot	32	1
+plot	SafePlot	totalWaterStock	liters	Total water stock in the plot 	33	1
+plot	SafePlot	totalWaterUptakeByCrops	liters	Total of water uptake by the crops in the plot	34	1
+plot	SafePlot	totalWaterUptakeByTrees	liters	Total of water uptake by the trees in the plot	35	1
+plot	SafePlot	totalWaterUptakeInSaturationByCrops	liters	Total of water uptake by the crops in saturated voxels of the plot	36	1
+plot	SafePlot	totalWaterUptakeInSaturationByTrees	liters	Total of water uptake by the trees in saturated voxels of the plot	37	1
+plot	SafePlot	totalSoilEvaporation	liters	Total of soil evaporation in the plot	38	1
+plot	SafePlot	totalIrrigation	liters	Total of irrigation in the plot	39	1
+plot	SafePlot	totalRainTransmittedByCrops	liters	Total of rain transmitted by the crops in the plot	40	1
+plot	SafePlot	totalRainTransmittedByTrees	liters	Total of rain transmitted by the trees in the plot	41	1
+plot	SafePlot	totalRainInterceptedByCrops	liters	Total of rain intercepted by the crops in the plot	42	1
+plot	SafePlot	totalRainInterceptedByTrees	liters	Total of rain intercepted by the trees in the plot	43	1
+plot	SafePlot	totalCropsWaterDemand	liters	Total of crops water demand in the plot	44	1
+plot	SafePlot	totalCropsWaterDemandReduced	liters	Total of crops water demand reduiced in the plot	45	1
+plot	SafePlot	totalSurfaceRunOff	liters	Total of surface runOff in the plot	46	1
+plot	SafePlot	totalDrainageBottom	liters	Total of bottom drainage in the plot	47	1
+plot	SafePlot	totalDrainageArtificial	liters	Total of artificial drainage in the plot	48	1
+plot	SafePlot	totalWaterAddedByWaterTable	liters	Total  of water provided by waterTable in the plot	49	1
+plot	SafePlot	totalWaterToDesaturation	liters	Total  of water taken by waterTable in the plot	50	1
+plot	SafePlot	totalCropsNitrogenDemand	kg N ha-1	Total of crops nitrogen demand in the plot	51	1
+plot	SafePlot	totalNitrogenUptakeByCrops	kg N	Total of crops nitrogen uptake in the plot	52	1
+plot	SafePlot	totalNitrogenUptakeByTrees	kg N	Total of trees nitrogen uptake in the plot	53	1
+plot	SafePlot	totalNitrogenUptakeInSaturationByCrops	kg N	Total of nitrogen uptake by the crops in saturated voxels of the plot	54	1
+plot	SafePlot	totalNitrogenUptakeInSaturationByTrees	kg N	Total of nitrogen uptake by the trees in saturated voxels of the plot	55	1
+plot	SafePlot	totalNitrogenFertilisationMineral	kg N ha-1	Total of nitrogen from mineral fertilisation in the plot	56	1
+plot	SafePlot	totalNitrogenFertilisationOrganic	kg N ha-1	Total of nitrogen from organic fertilisation in the plot	57	1
+plot	SafePlot	totalNitrogenIrrigation	kg N ha-1	Total of nitrogen from irrigation in the plot	58	1
+plot	SafePlot	totalNitrogenRain	kg N ha-1	Total of nitrogen from precipitations in the plot	59	1
+plot	SafePlot	totalNitrogenRunOff	kg N ha-1	Total of nitrogen from runoff  in the plot	60	1
+plot	SafePlot	totalNitrogenFixation	kg N ha-1	Total of nitrogen from crop fixation in the plot	61	1
+plot	SafePlot	totalNitrogenHumusMineralisation	kg N ha-1	Total of nitrogen from humus mineralisation in the plot	62	1
+plot	SafePlot	totalNitrogenResiduMineralisation	kg N ha-1	Total of nitrogen from residus mineralisation in the plot	63	1
+plot	SafePlot	totalNitrogenDenitrification	kg N ha-1	Total of nitrogen from denitrification in the plot	64	1
+plot	SafePlot	totalNitrogenLeachingBottom	kg N ha-1	Total of nitrogen from bottom leaching in the plot	65	1
+plot	SafePlot	totalNitrogenLeachingWaterTable	kg N ha-1	Total of nitrogen from wate table leaching in the plot	66	1
+plot	SafePlot	totalNitrogenAddedByWaterTable	kg N ha-1	Total of nitrogen added by water table in the plot	67	1
+plot	SafePlot	totalNitrogenImmobilisation	kg N ha-1	Total of nitrogen immobilisation in the plot	68	1
+plot	SafePlot	totalNitrogenVolatilisation	kg N ha-1	Total of nitrogen volatilisation in the plot	69	1
+plot	SafePlot	totalNitrogenVolatilisationOrganic	kg N ha-1	Total of nitrogen organc volatilisation in the plot	70	1
+plot	SafePlot	totalBiomassRestitution	t ha-1	Total of biomass restitution in the plot	71	1
+plot	SafePlot	totalCarbonResidus	kgC.ha-1	Total of carbon residus in the plot	72	1
+plot	SafePlot	totalNitrogenResidus	kgN.ha-1	Total of nitrogen residus in the plot	73	1
+plot	SafePlot	totalTreeCarbonLeafLitter	kg C ha-1	Total of carbon from trees leaves litter in the plot	74	1
+plot	SafePlot	totalTreeCarbonBranchesLitter	kg C ha-1	Total of carbon from trees branches litter in the plot	75	1
+plot	SafePlot	totalTreeCarbonFruitLitter	kg C ha-1	Total of carbon from trees fruits litter in the plot	76	1
+plot	SafePlot	totalTreeCarbonFineRootsLitter	kg C ha-1	Total of carbon from trees fine roots litter in the plot	77	1
+plot	SafePlot	totalTreeCarbonCoarseRootsLitter	kg C ha-1	Total of carbon from trees coarse roots litter in the plot	78	1
+plot	SafePlot	totalTreeCarbonFineRootsDeepLitter	kg C ha-1	Total of carbon from trees deep fine root litter in the plot	79	1
+plot	SafePlot	totalTreeCarbonCoarseRootsDeepLitter	kg C ha-1	Total of carbon from trees deep coarse root litter in the plot	80	1
+plot	SafePlot	totalTreeNitrogenBranchesLitter	kg N ha-1	Total of nitrogen from trees branches litter in the plot	81	1
+plot	SafePlot	totalTreeNitrogenFruitLitter	kg N ha-1	Total of nitrogen from trees fruits litter in the plot	82	1
+plot	SafePlot	totalTreeNitrogenLeafLitter	kg N ha-1	Total of nitrogen from trees leaves litter in the plot	83	1
+plot	SafePlot	totalTreeNitrogenFineRootsLitter	kg N ha-1	Total of nitrogen from trees fine roots litter in the plot	84	1
+plot	SafePlot	totalTreeNitrogenCoarseRootsLitter	kg N ha-1	Total of nitrogen from trees  coarse roots litter in the plot	85	1
+plot	SafePlot	totalTreeNitrogenFineRootsDeepLitter	kg N ha-1	Total of nitrogen from trees deep fine root litter in the plot	86	1
+plot	SafePlot	totalTreeNitrogenCoarseRootsDeepLitter	kg N ha-1	Total of nitrogen from trees deep coarse root litter in the plot	87	1
+plot	SafePlot	totalCarbonHumusStock	kg C ha-1	Total amount of carbon (active + inactive) in the soil humus pool of the plot	88	1
+plot	SafePlot	totalActiveCarbonHumusStock	kg C ha-1	Total of active carbon in the soil humus pool of the plot	89	1
+plot	SafePlot	totalInactiveCarbonHumusStock	kg C ha-1	Total of inactive carbon in the soil humus pool of the plot	90	1
+plot	SafePlot	totalNitrogenHumusStock	kg N ha-1	Total  of nitrogen (active + inactive) in the soil humus pool of the plot	91	1
+plot	SafePlot	totalActiveNitrogenHumusStock	kg N ha-1	Total of active nitrogen in the soil humus pool of the plot	92	1
+plot	SafePlot	totalInactiveNitrogenHumusStock	kg N ha-1	Total of inactive nitrogen in the soil humus pool of the plot	93	1
+annualTrees	SafeTree	age	years	Age of tree since planting	1	1
+annualTrees	SafeTree	dbh	cm	Tree diameter at breast height	2	1
+annualTrees	SafeTree	height	m	tree height	3	1
+annualTrees	SafeTree	leafAreaMax	m2	laiAboveCells	5	1
+annualTrees	SafeTree	crownBaseHeight	m	Tree crown base height (i.e. pruned height, bole height)	6	1
+annualTrees	SafeTree	crownRadiusInterRow	m	Tree inter-row crown radius (crown radius in the X direction)	7	1
+annualTrees	SafeTree	crownRadiusTreeLine	m	Tree crown radius parallel to the tree line (crown radius in the Y direction)	8	1
+annualTrees	SafeTree	crownRadiusVertical	m	Tree crown vertical radius	9	1
+annualTrees	SafeTree	crownVolume	m3	Tree crown volume	10	1
+annualTrees	SafeTree	branchVolume	m3	Tree branches volume	10	1
+annualTrees	SafeTree	stemVolume	m3	Tree stem volume	11	1
+annualTrees	SafeTree	stemYield	kg	Tree stem biomass	12	1
+annualTrees	SafeTree	budburstDate	-	Date of budburst	1	1
+annualTrees	SafeTree	leafExpansionEndingDate	-	Date of leaf Expansion End	2	1
+annualTrees	SafeTree	leafFallStartingDate	-	Date of leaf Fall Start	3	1
+annualTrees	SafeTree	leafFallEndingDate	-	Date of leaf Fall End	4	1
+annualTrees	SafeTree	carbonFoliageMax	kg	Carbon foliage pool max	6	1
+annualTrees	SafeTree	carbonBranches	kg C	Carbon pool in tree branches	74	1
+annualTrees	SafeTree	carbonStem	kg C	Carbon pool in tree stem	75	1
+annualTrees	SafeTree	carbonStump	kg C	Carbon pool in tree stump	76	1
+annualTrees	SafeTree	carbonCoarseRoots	kg C	Carbon pool in tree coarse roots	77	1
+annualTrees	SafeTree	carbonFineRoots	kg C	Carbon pool in tree fine roots	78	1
+annualTrees	SafeTree	carbonLabile	kg C	Carbon in tree labile pool	79	1
+annualTrees	SafeTree	carbonFruit	kg C	Carbon in tree fruit pool	79	1
+annualTrees	SafeTree	waterUptakeAnnual	liters	Water uptake annual	7	1
+annualTrees	SafeTree	nitrogenUptakeAnnual	kg N	Nitrogen uptake annual	8	1
+annualTrees	SafeTree	parInterceptedAnnual	Moles	PAR intercepted annual	9	1
+annualTrees	SafeTree	interceptedRainAnnual	liters	Water intercepted rain annual	10	1
+annualTrees	SafeTree	carbonAllocToGrowthAnnual	kg c	CarbonAllocToGrowth annual	11	1
+annualTrees	SafeTree	carbonFoliageSenAnnual	kg	carbonFoliageSenescence annual	12	1
+annualTrees	SafeTree	carbonFineRootsSenAnnual	kg C	Carbon fine roots annual senescent	13	1
+annualTrees	SafeTree	carbonCoarseRootsSenAnnual	kg C	Carbon coarse  roots annual senescent	14	1
+annualTrees	SafeTree	carbonFineRootsSenAnoxiaAnnual	kg C	Carbon fine roots annual senescent by anoxia	15	1
+annualTrees	SafeTree	carbonCoarseRootsSenAnoxiaAnnual	kg C	Carbon coarse  roots annual senescent by anoxia	16	1
+trees	SafeTree	name	-	Tree species name	1	1
+trees	SafeTree	age	years	Age of tree since planting	1	1
+trees	SafeTree	dbh	cm	Tree diameter at breast height	2	1
+trees	SafeTree	height	m	tree height	3	1
+trees	SafeTree	totalLeafArea	m2	Tree total leaf area	4	1
+trees	SafeTree	leafArea	m2	Tree leaf area	4	1
+trees	SafeTree	leafAreaDensity	m2 m-3	Tree leaf area density	4	1
+trees	SafeTree	leafLue	g C MJ-1	Tree leaf lue	4	1
+trees	SafeTree	lai	m2 leaf m-2 soil	Tree leaf area index	5	1
+trees	SafeTree	crownBaseHeight	m	Tree crown base height (i.e. pruned height, bole height)	6	1
+trees	SafeTree	crownRadiusInterRow	m	Tree inter-row crown radius (crown radius in the X direction)	7	1
+trees	SafeTree	crownRadiusTreeLine	m	Tree crown radius parallel to the tree line (crown radius in the Y direction)	8	1
+trees	SafeTree	crownRadiusVertical	m	Tree crown vertical radius	9	1
+trees	SafeTree	crownVolume	m3	Tree crown volume	10	1
+trees	SafeTree	branchVolume	m3	Tree branches volume	10	1
+trees	SafeTree	stemVolume	m3	Tree stem volume	11	1
+trees	SafeTree	stemYield	kg	Tree stem biomass	12	1
+trees	SafeTree	phenologicalStage	0-4	Tree phenological stage	13	1
+trees	SafeTree	fruitPhenologicalStage	0-4	Tree fruit phenological stage	13	1
+trees	SafeTree	rootingDepth	m	Tree maximum rooting depth	14	1
+trees	SafeTree	maxRootDistanceOnTreeLine	m	Tree maximum root extension parallel to tree line (in the Y direction)	15	1
+trees	SafeTree	maxRootDistanceOnCropLine	m	Tree maximum inter-row root extension (in the X direction)	16	1
+trees	SafeTree	totalRootLength	m	Total tree fine root length	17	1
+trees	SafeTree	targetLfrRatio	kg C kg C-1	Target leaf to fine roots ratio (carbonFoliage / (carbonFoliage + carbonFineRoots))	18	1
+trees	SafeTree	lfrRatio	kg kg-1	Tree leaf to fine root ratio (carbonFoliage / (carbonFoliage / carbonFineRoots))	19	1
+trees	SafeTree	rootShootRatio	ratio	Ratio of belowground tree carbon to aboveground tree carbon	20	1
+trees	SafeTree	lueStress	-	Index of the collective (water and nitrogen) stress effect on LUE	22	1
+trees	SafeTree	lueWaterStress	-	Index of water stress effect on LUE	22	1
+trees	SafeTree	lueNitrogenStress	-	Index of nitrogen  stress effect on LUE	22	1
+trees	SafeTree	lueTemperatureStress	-	Index of temperature stress effect on LUE	22	1
+trees	SafeTree	waterStress	0-1	Tree water stress (calculated as uptake/demand) (1 = no stress)	23	1
+trees	SafeTree	nitrogenStress	0-1	Tree nitrogen stress, calculated as: total tree nitrogen content / optimal tree nitrogen content (max(min((totalN/totalOptiN), 1), 0)) (1 = no stress)	24	1
+trees	SafeTree	totalParIntercepted	Moles	Radiation daily direct+diffuse intercepted PAR	25	1
+trees	SafeTree	diffuseParIntercepted	Moles	Diffuse PAR intercepted by tree	26	1
+trees	SafeTree	directParIntercepted	Moles	Direct PAR intercepted by tree	27	1
+trees	SafeTree	globalRadIntercepted	MJ	Global radiation intercepted by tree	28	1
+trees	SafeTree	lightCompetitionIndex	ratio	Index of light competition between trees relative to a single isolated tree	29	1
+trees	SafeTree	nbrDaysInShade	days	Number of days in the shade of another tree	29	1
+trees	SafeTree	captureFactorForDiffusePar	m2	Capture factor for diffuse PAR in light interception module	30	1
+trees	SafeTree	captureFactorForDirectPar	m2	Capture factor for direct PAR in light interception module	31	1
+trees	SafeTree	captureFactorForDirectNir	m2	Capture factor for direct NIR in light interception module	32	1
+trees	SafeTree	captureFactorForDiffuseNir	m2	Capture factor for diffuse NIR in light interception module	33	1
+trees	SafeTree	actualWaterPotential	cm	Tree water potential with reduced uptake	34	1
+trees	SafeTree	waterDemand	liters	Tree water demand	35	1
+trees	SafeTree	waterDemandReduced	liters	Reduced water demand for Rachmat water extraction module	36	1
+trees	SafeTree	waterUptake	liters	Tree water uptake	37	1
+trees	SafeTree	waterUptakeInSaturation	liters	Tree water uptake from saturated voxels	38	1
+trees	SafeTree	waterUptakePotential	-	treeWaterUptakePotential	39	1
+trees	SafeTree	treeLeafTranspirationRate	%	treeLeafTranspirationRate	40	1
+trees	SafeTree	stemflow	liters	Stemflow	41	1
+trees	SafeTree	interceptedRain	liters	Rain intercepted by tree canopy	42	1
+trees	SafeTree	storedRain	liters	Rain intercepted by tree canopy that is stored until the next day	43	1
+trees	SafeTree	evaporatedRain	liters	Rain intercepted by the tree canopy that is then evaporated off	44	1
+trees	SafeTree	rootedVolume	m3 of soil	Total volume of voxels containing tree roots	45	1
+trees	SafeTree	nitrogenDemandBeforeFixation	kg N	Tree nitrogen demand before fixation	47	1
+trees	SafeTree	nitrogenDemandAfterFixation	kg N	Tree nitrogen demand after fixation	47	1
+trees	SafeTree	nitrogenUptake	kg N	Tree nitrogen uptake	48	1
+trees	SafeTree	nitrogenUptakeInSaturation	kg N	Tree nitrogen uptake from saturated voxels	49	1
+trees	SafeTree	nitrogenSatisfaction	ratio	Tree nitrogen satisfaction, calculated as: min((totalN/(totalOptiN*targetNCoefficient)), 1)	50	1
+trees	SafeTree	nitrogenSaturation	ratio	Tree nitrogen saturation, calculated as: min((totalN-(totalOptiN * targetNCoefficient))/(totalOptiN * targetNCoefficient * (luxuryNCoefficient-1)), 1)	51	1
+trees	SafeTree	nitrogenStem	kg N	Nitrogen pool in tree stem	52	1
+trees	SafeTree	nitrogenStump	kg N	Nitrogen pool in tree stump	53	1
+trees	SafeTree	nitrogenFoliage	kg N	Nitrogen pool in tree foliage	54	1
+trees	SafeTree	nitrogenBranches	kg N	Nitrogen pool in tree branches	55	1
+trees	SafeTree	nitrogenCoarseRoots	kg N	Nitrogen pool in tree coarse roots	56	1
+trees	SafeTree	nitrogenFineRoots	kg N	Nitrogen pool in tree fine roots	57	1
+trees	SafeTree	nitrogenLabile	kg N	Nitrogen in tree labile pool	58	1
+trees	SafeTree	nitrogenFruit	kg N	Nitrogen in tree fruit pool	58	1
+trees	SafeTree	totalNitrogenFoliageSen	kg N	Nitrogen senesced in tree foliage	59	1
+trees	SafeTree	nitrogenCoarseRootsSen	kg N	Nitrogen senesced in tree coarse roots (includes roots above and below the humification depth)	60	1
+trees	SafeTree	nitrogenCoarseRootsSenAnoxia	kg N	Nitrogen senesced in tree coarse roots caused by anoxia (includes roots above and below the humification depth)	61	1
+trees	SafeTree	nitrogenFineRootsSen	kg N	Nitrogen senesced in tree fine roots (includes roots above and below the humification depth)	62	1
+trees	SafeTree	nitrogenFineRootsSenAnoxia	kg N	Nitrogen senesced in tree fine roots caused by anoxia (includes roots above and below the humification depth)	63	1
+trees	SafeTree	nitrogenBranchesExported	kg N	Nitrogen exported (removed from scene) in branches. Occurs during any tree thinning or branch pruning.	64	1
+trees	SafeTree	nitrogenFoliageExported	kg N	Nitrogen exported (removed from scene) in foliage. Occurs during tree thinning or branch pruning when leaves are present.	65	1
+trees	SafeTree	nitrogenStemExported	kg N	Nitrogen exported (removed from scene) in stem. Occurs during any tree thinning.	66	1
+trees	SafeTree	nitrogenFruitExported	kg N	Nitrogen exported (removed from scene) in fruit.	66	1
+trees	SafeTree	totalNitrogenBranchesDeadOnTree	kg N	Nitrogen branches dead on tree.	66	1
+trees	SafeTree	totalOptiN	kg N	Optimum level of (structural) nitrogen for whole tree (i.e. sum of optimal nitrogen level in all non-labile pools)	67	1
+trees	SafeTree	totalN	kg N	Total nitrogen for whole tree	67	1
+trees	SafeTree	nitrogenSinkStrength	-	Tree nitrogen sink strength, calculated as nitrogenDemand / totalFineRootLength	68	1
+trees	SafeTree	carbonAllocToGrowth	kg C tree-1	Assimilated carbon that is allocated to growth (i.e. not to carbonLabile)	69	1
+trees	SafeTree	totalCarbonIncrement	kg c	Carbon assimilated by the tree	70	1
+trees	SafeTree	carbonAboveGroundEff	kg kg -1	"Tree aboveground carbon ""efficiency"" calculated as: carbonFoliage/(carbonFoliage+carbonStem+carbonBranches)"	71	1
+trees	SafeTree	carbonBelowGroundEff	-	below ground carbon efficiency	72	1
+trees	SafeTree	totalCarbonFoliage	kg C	Carbon pool in tree foliage	73	1
+trees	SafeTree	carbonBranches	kg C	Carbon pool in tree branches	74	1
+trees	SafeTree	carbonStem	kg C	Carbon pool in tree stem	75	1
+trees	SafeTree	carbonStump	kg C	Carbon pool in tree stump	76	1
+trees	SafeTree	carbonCoarseRoots	kg C	Carbon pool in tree coarse roots	77	1
+trees	SafeTree	carbonFineRoots	kg C	Carbon pool in tree fine roots	78	1
+trees	SafeTree	carbonLabile	kg C	Carbon in tree labile pool	79	1
+trees	SafeTree	carbonFruit	kg C	Carbon in tree fruit pool	79	1
+trees	SafeTree	carbonFoliageIncrement	kg C	Carbon foliage daily allocated	80	1
+trees	SafeTree	carbonLabileIncrement	kg C	Carbon labile daily allocated	81	1
+trees	SafeTree	carbonBranchesIncrement	kg C	Carbon branch daily allocated	81	1
+trees	SafeTree	carbonStemIncrement	kg C	Carbon stem daily allocated	82	1
+trees	SafeTree	carbonStumpIncrement	kg C	Carbon stump daily allocated	83	1
+trees	SafeTree	carbonCoarseRootsIncrement	kg C	Carbon coarse roots daily allocated	84	1
+trees	SafeTree	carbonFineRootsIncrement	kg C	Carbon fine roots daily allocated	85	1
+trees	SafeTree	carbonFruitIncrement	kg C	Carbon fruit daily allocated	85	1
+trees	SafeTree	carbonFoliageSen	kg C	Carbon senesced in total tree foliage	90	1
+trees	SafeTree	carbonBranchesSen	kg C	Carbon senesced in tree branches	90	1
+trees	SafeTree	carbonFineRootsSen	kg C	Carbon senesced in tree fine roots (includes roots above and below the humification depth)	86	1
+trees	SafeTree	carbonFineRootsSenAnoxia	kg C	Carbon senesced in tree fine roots caused by anoxia (includes roots above and below the humification depth)	87	1
+trees	SafeTree	carbonCoarseRootsSen	kg C	Carbon senesced in tree coarse roots (includes roots above and below the humification depth)	88	1
+trees	SafeTree	carbonCoarseRootsSenAnoxia	kg C	Carbon senesced in tree coarse roots caused by anoxia (includes roots above and below the humification depth)	89	1
+trees	SafeTree	carbonBranchesExported	kg C	Carbon exported (removed from scene) in branches. Occurs during any tree thinning or branch pruning.	91	1
+trees	SafeTree	carbonFoliageExported	kg C	Carbon exported (removed from scene) in foliage. Occurs during tree thinning or branch pruning when leaves are present.	92	1
+trees	SafeTree	carbonStemExported	kg C	Carbon exported (removed from scene) in stem. Occurs during any tree thinning.	93	1
+trees	SafeTree	carbonFruitExported	kg C	Carbon exported (removed from scene) in fruit.	93	1
+trees	SafeTree	totalCarbonBranchesDeadOnTree 	kg C	Carbon branches dead on tree.	93	1
+trees	SafeTree	nCFoliage	kg N kg C -1	N/C ratio of tree foliage pool	94	1
+trees	SafeTree	nCBranches	kg N kg C -1	N/C ratio of tree branch pool	95	1
+trees	SafeTree	nCStem	kg N kg C -1	N/C ratio of tree stem pool	96	1
+trees	SafeTree	nCStump	kg N kg C -1	N/C ratio of tree stump pool	97	1
+trees	SafeTree	nCCoarseRoots	kg N kg C -1	N/C ratio of tree coarse root pool	98	1
+trees	SafeTree	nCFineRoots	kg N kg C -1	N/C ratio of tree fine root pool	99	1
+trees	SafeTree	nCFruit	kg N kg C -1	N/C ratio of tree fruit pool	100	1
+trees	SafeTree	nCLabile	kg N kg C -1	N/C ratio of tree labile pool	100	1
+trees	SafeTree	aboveGroundCFraction	ratio	Fraction of woody C located within stem and branches. Woody compartments include stem, branches, stump, and coarse roots. 	101	1
+trees	SafeTree	aboveGroundAllocFrac	ratio	Carbon above ground allocation fraction	100	1
+trees	SafeTree	belowGroundAllocFrac	ratio	Carbon below ground allocation fraction	100	1
+trees	SafeTree	carbonCoarseRootsTarget	kg C	carbonCoarseRootsTarget	100	1
+trees	SafeTree	carbonCoarseRootsImbalance	kg C	carbonCoarseRootsImbalance	100	1
+trees	SafeTree	budburstAccumulatedTemperature	-	budburstAccumulatedTemperature	125	1
+trees	SafeTree	budburstAccumulatedColdTemperature	-	budburstAccumulatedColdTemperature	125	1
+trees	SafeTree	heatAccumulatedTemperature	-	heatAccumulatedTemperature	126	1
+trees	SafeTree	budburstDate	-	budburstDate	127	1
+trees	SafeTree	floweringDate	-	floweringDate	128	1
+trees	SafeTree	fruitSettingDate	-	fruitSettingDate	129	1
+trees	SafeTree	fruitGrowthDate	-	fruitGrowthDate	130	1
+trees	SafeTree	veraisonDate	-	veraisonDate	131	1
+trees	SafeTree	floweringDuration	-	floweringDuration	128	1
+trees	SafeTree	leafExpansionEndingDate	-	leafExpansionEndingDate	132	1
+trees	SafeTree	leafFallStartingDate	-	leafFallStartingDate	133	1
+trees	SafeTree	leafFallEndingDate	-	leafFallEndingDate	134	1
+trees	SafeTree	flowerNbrPotentialFromLeafArea	-	flowerNbrPotentialFromLeafArea	137	1
+trees	SafeTree	flowerNbrPotentialReducer	-	flowerNbrPotentialReducer	137	1
+trees	SafeTree	flowerNbrPotential	-	Flower number Potential	137	1
+trees	SafeTree	flowerNbrPotentialDaily	-	Flower number Potential Daily	137	1
+trees	SafeTree	flowerNbr	-	Flower number	137	1
+trees	SafeTree	fruitNbr	-	Fruit number	137	1
+trees	SafeTree	fruitCarbonStressIndex	-	fruitCarbonStressIndex	137	1
+trees	SafeTree	floweringHeatStress	-	floweringHeatStress	137	1
+trees	SafeTree	floweringFrostStress	-	floweringFrostStress	137	1
+trees	SafeTree	fruitCarbonTarget	-	fruitCarbonTarget	137	1
+trees	SafeTree	fruitDemandTarget	-	fruitDemandTarget	137	1
+trees	SafeTree	fruitMeanDryMatterWeight	-	fruit mean DryMatterWeight	137	1
+trees	SafeTree	fruitMeanFreshMatterWeight	-	fruitmean FreshMatterWeight	137	1
+trees	SafeTree	fruitVolume 	-	fruitVolume 	137	1
+trees	SafeTree	fruitEquivalentSurfaceArea	-	fruitEquivalentSurfaceArea	137	1
+trees	SafeTree	fruitOilConcentration	-	fruitOilConcentration	137	1
+trees	SafeTree	fruitOilWeight 	-	fruitOilWeight 	137	1
+trees	SafeTree	fruitOilYield	-	fruitOilYield	137	1
+trees	SafeTree	leafAgeStress	0-1	leafAgeStress	25	1
+trees	SafeTree	leafFrostStress	0-1	leafFrostStress	25	1
+trees	SafeTree	leafWaterNitrogenStress	0-1	leafWaterNitrogenStress	25	1
+trees	SafeTree	co2LueEffect	0-1	Effect of CO2 on LUE	25	1
+trees	SafeTree	co2WueEffect	0-1	Effect of CO2 on WUE	25	1
+trees	SafeTree	nbCellsBellow	-	nbCellsBellow	25	1
+trees	SafeTree	carbonFoliageLitterAllPlot	kg C	carbonFoliageLitterAllPlot	25	1
+trees	SafeTree	carbonBranchesLitterAllPlot	kg C	carbonBranchesLitterAllPlot	25	1
+trees	SafeTree	carbonFruitLitterAllPlot	kg C	carbonFruitLitterAllPlot	25	1
+trees	SafeTree	carbonFoliageLitterUnderTree	kg N	carbonFoliageLitterUnderTree	25	1
+trees	SafeTree	carbonBranchesLitterUnderTree	kg N	carbonBranchesLitterUnderTree	25	1
+trees	SafeTree	carbonFruitLitterUnderTree	kg N	carbonFruitLitterUnderTree	25	1
+voxels	SafeVoxel	thickness	m	Voxel thickness	1	1
+voxels	SafeVoxel	volume	m3	Voxel volume	1	1
+voxels	SafeVoxel	bulkDensity	kg m-3	Soil bulk densiity (including fine soil and stones)	2	1
+voxels	SafeVoxel	fieldCapacity	m m-3	Soil field capacity (including fine soil and stones)	3	1
+voxels	SafeVoxel	wiltingPoint	m m-3	Soil wilting point (fine soil + stones)	4	1
+voxels	SafeVoxel	waterStock	liters	Soil water stock	5	1
+voxels	SafeVoxel	theta	m3 m-3	Fractional soil water content (fine soil + stones)	6	1
+voxels	SafeVoxel	isSaturated	-	Saturated voxel	7	1
+voxels	SafeVoxel	waterPotentialTheta	cm	Soil water potential	9	1
+voxels	SafeVoxel	nitrogenNh4Stock	g N 	NH4 stock in voxel	10	1
+voxels	SafeVoxel	nitrogenNo3Stock	g N 	NO3 stock in voxel	11	1
+voxels	SafeVoxel	cropRootsDensity	m m-3	Crop roots density	12	1
+voxels	SafeVoxel	cropWaterUptake	liters	Crop water uptake	13	1
+voxels	SafeVoxel	cropNitrogenUptake	g N 	Crop nitrogen uptake	14	1
+voxels	SafeVoxel	colonisationDirection	-	Colonisation Direction	15	1
+voxels	SafeVoxel	treeRootsDensity	m m-3	Tree fine roots density	16	1
+voxels	SafeVoxel	treeRootsDensitySen	m m-3	Tree fine roots density senescence	16	1
+voxels	SafeVoxel	totalTreeRootsDensity	m roots m-3 soil	Sum of fine roots density from all trees	17	1
+voxels	SafeVoxel	treeWaterUptake	liters	Tree water uptake	18	1
+voxels	SafeVoxel	totalTreeWaterUptake	liters	Sum of water uptake by all trees	19	1
+voxels	SafeVoxel	treeNitrogenUptake	g N 	Tree nitrogen uptake quantity	20	1
+voxels	SafeVoxel	totalTreeNitrogenUptake	g N 	N uptake by tree 	21	1
+voxels	SafeVoxel	treeCarbonCoarseRoots	kg C	Tree coarse roots biomass	22	1
+voxels	SafeVoxel	treeCarbonCoarseRootsSen	Kg	tree treeCarbonCoarseRootsSen	23	1
+voxels	SafeVoxel	treeNitrogenCoarseRootsSen	Kg	tree treeNitrogenCoarseRootsSen	24	1
+voxels	SafeVoxel	treeCarbonFineRootsSen	Kg	tree treeCarbonFineRootsSen	25	1
+voxels	SafeVoxel	treeNitrogenFineRootsSen	Kg	treeNitrogenFineRootsSen	26	1
+voxels	SafeVoxel	mineralNitrogenStock	g N 	Nitrogen stock No3+Nh4	27	1
+voxels	SafeVoxel	nitrogenRootsResidu	g N 	nitrogenRootsResidu	29	1
+voxels	SafeVoxel	nitrogenAvailableForBoth	g N 	nitrogenAvailableForBoth	30	1
+voxels	SafeVoxel	nitrogenAvailableForTrees	g N 	nitrogenAvailableForTrees	31	1
+voxels	SafeVoxel	nitrogenAvailableForCrops	g N 	nitrogenAvailableForCrops	32	1
+voxels	SafeVoxel	saturationDuration	days	Number of days since saturation in this voxel was initiated	33	1
+voxels	SafeVoxel	treeRootsAgeInWater	days	Number of days tree have roots in water table	33	1
+voxels	SafeVoxel	totalTreeCarbonFineRoots	kg C	C total carbon tree fine roots	36	1
+voxels	SafeVoxel	totalTreeCarbonCoarseRoots	kg C	C total carbon tree coarses roots	36	1
+voxels	SafeVoxel	totalTreeCarbonCoarseRootsSen	kg C	C senesced from coarse roots by tree 	34	1
+voxels	SafeVoxel	totalTreeNitrogenCoarseRootsSen	g N 	N senesced from coarse roots by tree 	35	1
+voxels	SafeVoxel	totalTreeCarbonFineRootsSen	kg C	C senesced from fine roots by tree 	36	1
+voxels	SafeVoxel	totalTreeNitrogenFineRootsSen	g N 	N senesced from fine roots by tree 	37	1
+voxels	SafeVoxel	totalTreeCarbonCoarseRootsTarget	kg	totalTreeCarbonCoarseRootsTarget 	38	1
+voxels	SafeVoxel	totalTreeCarbonCoarseRootsImbalance	kg	totalTreeCarbonCoarseRootsImbalance 	38	1
+voxels	SafeVoxel	totalTreeRootsDensitySen	kg	totalTreeRootsDensitySen 	38	1
+voxelsDetail	SafeVoxel	coefWater0	-	Voxel automata variable	1	1
+voxelsDetail	SafeVoxel	coefNitrogen0	-	Voxel automata variable	2	1
+voxelsDetail	SafeVoxel	coefCost0	-	Voxel automata variable	3	1
+voxelsDetail	SafeVoxel	coefWater1	-	Voxel automata variable	4	1
+voxelsDetail	SafeVoxel	coefNitrogen1	-	Voxel automata variable	5	1
+voxelsDetail	SafeVoxel	coefCost1	-	Voxel automata variable	6	1
+voxelsDetail	SafeVoxel	waterMark	-	Voxel automata variable	7	1
+voxelsDetail	SafeVoxel	nitrogenMark	-	Voxel automata variable	8	1
+voxelsDetail	SafeVoxel	costMark	-	Voxel automata variable	9	1
+voxelsDetail	SafeVoxel	totalMark	-	Voxel automata variable	10	1
+voxelsDetail	SafeVoxel	proportion	-	proportion	11	1
+voxelsDetail	SafeVoxel	waterEfficiency	L m-1	Water uptake efficiency of the fine roots in this voxel (water uptake divided by fine root length)	12	1
+voxelsDetail	SafeVoxel	nitrogenEfficiency	kg N m-1	Nitrogen uptake efficiency of the fine roots in this voxel (nitrogen uptake divided by fine root length)	13	1
+voxelsDetail	SafeVoxel	fineRootsCost	kg coarse root m-1 fine root	Cost of tree fine roots (the biomass of coarse roots necessary to support the fine roots in this voxel)	14	1
+voxelsDetail	SafeVoxel	waterEfficiencyMax	L m-1	waterEfficiencyMax	15	1
+voxelsDetail	SafeVoxel	nitrogenEfficiencyMax	kg N m-1	nitrogenEfficiencyMax	16	1
+voxelsDetail	SafeVoxel	fineRootsCostMax	-	Voxel automata variable	17	1
+voxelsDetail	SafeVoxel	neighboursColonisedNumber	-	neighboursColonisedNumber	18	1
+voxelsDetail	SafeVoxel	fineRootsTotalInvestment	-	Voxel automata variable	19	1
+voxelsDetail	SafeVoxel	additionalRootsToVoxel	m	Additional root length allocated to voxel (to be used for both proliferation AND colonization)	20	1
+voxelsDetail	SafeVoxel	voxelFilling	-	Voxel automata variable	21	1
+voxelsDetail	SafeVoxel	L0	-	Voxel automata variable	22	1
+voxelsDetail	SafeVoxel	L1	-	Voxel automata variable	23	1
+voxelsDetail	SafeVoxel	L2	-	Voxel automata variable	24	1
+voxelsDetail	SafeVoxel	Lmin	-	Voxel automata variable	25	1
+voxelsDetail	SafeVoxel	Lmax	-	Voxel automata variable	26	1
+voxelsDetail	SafeVoxel	waterAvailable	-	waterAvailable	29	1
+voxelsDetail	SafeVoxel	waterUptakePotential	-	waterUptakePotential	30	1
+voxelsDetail	SafeVoxel	thetaFineSoil	m3 m-3	Fractional water content of fine soil component of soil	38	1
+voxelsDetail	SafeVoxel	thetaStone	m3 m-3	Fractional water content of stone component of soil	39	1
+voxelsDetail	SafeVoxel	waterPotentialThetaFineSoil	cm	Water potential of the fine soil component of soil	40	1
+voxelsDetail	SafeVoxel	waterStockFineSoil	liters	Water potential of the fine soil component of soil	41	1
+voxelsDetail	SafeVoxel	fieldCapacityFineSoil	m m-3	Field capacity of fine soil component of soil	42	1
+voxelsDetail	SafeVoxel	fieldCapacityStone	m m-3	Field capacity of stone component of soil	43	1
+voxelsDetail	SafeVoxel	wiltingPointFineSoil	m m-3	Wilting point of fine soil component of soil	44	1
+voxelsDetail	SafeVoxel	wiltingPointStone	m m-3	Wilting point of stone component of soil	45	1
+voxelsDetail	SafeVoxel	bulkDensityFineSoil	kg m-3	Bulk density of fine soil component of soil	46	1
+voxelsDetail	SafeVoxel	volumeFineSoil	m3	Volume of the fine soil in the voxel (voxel volume reduced by volume of stones)	47	1
+zones	SafeCropZone	area	m2	Surface area of the zone	1	1
+zones	SafeCropZone	cropSpeciesName	-	Name of crop species	2	1
+zones	SafeCropZone	totalCropBiomass	t ha-1	Total biomass of the zone	3	1
+zones	SafeCropZone	meanCropBiomass	t ha-1	Mean biomass of the zone	4	1
+zones	SafeCropZone	meanPeakCropBiomass	t ha-1	Mean peak biomass of the zone	5	1
+zones	SafeCropZone	totalCropYield	t ha-1	Total yield of the zone	6	1
+zones	SafeCropZone	meanCropYield	t ha-1	Mean yield of the zone	7	1
+zones	SafeCropZone	meanPeakCropYield	t ha-1	Mean peak yield of the zone	8	1
+zones	SafeCropZone	totalCropLai	m2 leaf m-2 soil	Total LAI of the zone	9	1
+zones	SafeCropZone	meanCropLai	m2 leaf m-2 soil	Mean LAI of the zone	10	1
+zones	SafeCropZone	meanPeakCropLai	m2 leaf m-2 soil	Mean peak LAI of the zone	11	1
+zones	SafeCropZone	totalCropEai	m2 leaf m-2 soil	Total EAI of the zone	12	1
+zones	SafeCropZone	meanCropEai	m2 leaf m-2 soil	Mean EAI of the zone	13	1
+zones	SafeCropZone	meanPeakCropEai	m2 leaf m-2 soil	Mean peak EAI of the zone	14	1
+zones	SafeCropZone	totalCropHeight	m	Mean canopy height in the zone	15	1
+zones	SafeCropZone	meanCropHeight	m	Mean canopy height in the zone	16	1
+zones	SafeCropZone	meanCropGrainNumber	nbr m-2	Mean of number of grains in the zone	17	1
+zones	SafeCropZone	meanCropGrainWeight	g	Mean of grain weight in the zone	18	1
+zones	SafeCropZone	meanCropPlantDensity	plants m-2	Mean of sowing density of the zone	19	1
+zones	SafeCropZone	meanCropSla	cm2 g-1	Mean of  Specific surface area of the zone	20	1
+zones	SafeCropZone	meanCropTemperature	degreesC	Mean crop surface temperature of the zone	21	1
+zones	SafeCropZone	meanSoilSurfaceTemperature	degreesC	Mean soil surface temperature of the zone	22	1
+zones	SafeCropZone	meanCropRootsDepth	m	Mean depth reached by root system in the zone	23	1
+zones	SafeCropZone	meanCropRootsLenght	m	Mean Crop root lenght of the zone	24	1
+zones	SafeCropZone	meanCropQngrain	kg N ha-1	Mean of nitrogen in harvested organs (grains / fruits) on the zone	25	1
+zones	SafeCropZone	meanCropQnplante	kg N ha-1	Mean of nitrogen taken up by the plant on the zone	26	1
+zones	SafeCropZone	meanCropCngrain	%	Mean of Nitrogen concentration of grains on the zone	27	1
+zones	SafeCropZone	meanCropCnplante	%	Mean of Nitrogen concentration of entire plant on the zone	28	1
+zones	SafeCropZone	totalParIncident	moles.m-2	Total PAR Incident on the zone	29	1
+zones	SafeCropZone	meanParIncident	moles.m-2	Mean PAR Incident on the zone	30	1
+zones	SafeCropZone	totalParInterceptedByCrop	moles PAR m-2	Total PAR Intercepted ByCrop on the zone	31	1
+zones	SafeCropZone	meanParInterceptedByCrop	moles PAR m-2	Mean PAR Intercepted ByCrop on the zone	32	1
+zones	SafeCropZone	meanCropHisafeWaterStress	-	mainCropHisafeWaterStress	33	1
+zones	SafeCropZone	meanCropHisafeNitrogenStress	-	mainCropHisafeNitrogenStress	34	1
+zones	SafeCropZone	meanCropNitrogenLaiStress	0-1	Mean Index of nitrogen stress active on leaf growth	35	1
+zones	SafeCropZone	meanCropNitrogenBiomassStress	0-1	Mean of Index of nitrogen stress active on growth in biomass	36	1
+zones	SafeCropZone	meanCropNitrogenSenescenceStress	0-1	Mean Index of nitrogen stress active on leaf death	37	1
+zones	SafeCropZone	totalWaterStock	liters	Total water stock in the zone 	38	1
+zones	SafeCropZone	totalWaterUptakeByCrop	liters	Total of water uptake by the crop in the zone	39	1
+zones	SafeCropZone	totalWaterUptakeByTrees	liters	Total of water uptake by the trees in the zone	40	1
+zones	SafeCropZone	totalWaterUptakeInSaturationByCrop	liters	Total of water uptake by the crop in saturated voxels of the zone	41	1
+zones	SafeCropZone	totalWaterUptakeInSaturationByTrees	liters	Total of water uptake by the trees in saturated voxels of the zone	42	1
+zones	SafeCropZone	totalSoilEvaporation	liters	Total of soil evaporation in the zone	43	1
+zones	SafeCropZone	totalIrrigation	liters	Total of irrigation in the zone	44	1
+zones	SafeCropZone	totalRainTransmittedByCrop	liters	Total of rain transmitted by the crop in the zone	45	1
+zones	SafeCropZone	totalRainInterceptedByCrop	liters	Total of rain intercepted by the crop in the zone	46	1
+zones	SafeCropZone	totalCropWaterDemand	liters	Total of crop water demand in the zone	47	1
+zones	SafeCropZone	totalCropWaterDemandReduced	liters	Total of crop water demand reduiced in the zone	48	1
+zones	SafeCropZone	totalSurfaceRunOff	liters	Total of surface runOff inthe zone	49	1
+zones	SafeCropZone	totalDrainageBottom	liters	Total of bottom drainage in the zone	50	1
+zones	SafeCropZone	totalDrainageArtificial	liters	Total of artificial drainage in the zone	51	1
+zones	SafeCropZone	totalWaterAddedByWaterTable	liters	Total  of water provided by waterTable in the zone	52	1
+zones	SafeCropZone	totalWaterToDesaturation	liters	Total  of water taken by waterTable in the zone	53	1
+zones	SafeCropZone	totalCropNitrogenDemand	kg N ha-1	Total of crop nitrogen demand in the zone	54	1
+zones	SafeCropZone	totalNitrogenUptakeByCrop	kg N	Total of crop nitrogen uptake in the zone	55	1
+zones	SafeCropZone	totalNitrogenUptakeByTrees	kg N	Total of tree nitrogen uptake in the zone	56	1
+zones	SafeCropZone	totalNitrogenUptakeInSaturationByCrop	kg N	Total of nitrogen uptake by the crop in saturated voxels of the zone	57	1
+zones	SafeCropZone	totalNitrogenUptakeInSaturationByTrees	kg N	Total of nitrogen uptake by the trees in saturated voxels of the zone	58	1
+zones	SafeCropZone	totalNitrogenFertilisationMineral	kg N ha-1	Total of nitrogen from mineral fertilisation in the zone	59	1
+zones	SafeCropZone	totalNitrogenFertilisationOrganic	kg N ha-1	Total of nitrogen from organic fertilisation in the zone	60	1
+zones	SafeCropZone	totalNitrogenIrrigation	kg N ha-1	Total of nitrogen from irrigation in the zone	61	1
+zones	SafeCropZone	totalNitrogenRain	kg N ha-1	Total of nitrogen from precipitations in the zone	62	1
+zones	SafeCropZone	totalNitrogenRunOff	kg N ha-1	Total of nitrogen from runoff  in the zone	63	1
+zones	SafeCropZone	totalNitrogenFixation	kg N ha-1	Total of nitrogen from crop fixation in the zone	64	1
+zones	SafeCropZone	totalNitrogenHumusMineralisation	kg N ha-1	Total of nitrogen from humus mineralisation in the zone	65	1
+zones	SafeCropZone	totalNitrogenResiduMineralisation	kg N ha-1	Total of nitrogen from residus mineralisation in the zone	66	1
+zones	SafeCropZone	totalNitrogenDenitrification	kg N ha-1	Total of nitrogen from denitrification in the zone	67	1
+zones	SafeCropZone	totalNitrogenLeachingBottom	kg N ha-1	Total of nitrogen from bottom leaching in the zone	68	1
+zones	SafeCropZone	totalNitrogenLeachingWaterTable	kg N ha-1	Total of nitrogen from wate table leaching in the zone	69	1
+zones	SafeCropZone	totalNitrogenAddedByWaterTable	kg N ha-1	Total of nitrogen added by water table in the zone	70	1
+zones	SafeCropZone	totalNitrogenImmobilisation	kg N ha-1	Total of nitrogen immobilisation in the zone	71	1
+zones	SafeCropZone	totalNitrogenVolatilisation	kg N ha-1	Total of nitrogen volatilisation in the zone	72	1
+zones	SafeCropZone	totalNitrogenVolatilisationOrganic	kg N ha-1	Total of nitrogen organc volatilisation in the zone	73	1
+zones	SafeCropZone	totalBiomassRestitution	t ha-1	Total of biomass restitution in the zone	74	1
+zones	SafeCropZone	totalCarbonResidus	kgC.ha-1	Total of carbon residus in the zone	75	1
+zones	SafeCropZone	totalNitrogenResidus	kgN.ha-1	Total of nitrogen residus in the zone	76	1
+zones	SafeCropZone	totalTreeCarbonLeafLitter	kg C ha-1	Total of carbon from trees leaves litter in the zone	77	1
+zones	SafeCropZone	totalTreeCarbonBranchesLitter	kg C ha-1	Total of carbon from trees branches litter in the zone	78	1
+zones	SafeCropZone	totalTreeCarbonFruitLitter	kg C ha-1	Total of carbon from trees fruits litter in the zone	79	1
+zones	SafeCropZone	totalTreeCarbonFineRootsLitter	kg C ha-1	Total of carbon from trees fine roots litter in the zone	80	1
+zones	SafeCropZone	totalTreeCarbonCoarseRootsLitter	kg C ha-1	Total of carbon from trees coarse roots litter in the zone	81	1
+zones	SafeCropZone	totalTreeCarbonFineRootsDeepLitter	kg C ha-1	Total of carbon from trees deep fine root litter in the zone	82	1
+zones	SafeCropZone	totalTreeCarbonCoarseRootsDeepLitter	kg C ha-1	Total of carbon from trees deep coarse root litter in the zone	83	1
+zones	SafeCropZone	totalTreeNitrogenBranchesLitter	kg N ha-1	Total of nitrogen from trees branches litter in the zone	84	1
+zones	SafeCropZone	totalTreeNitrogenFruitLitter	kg N ha-1	Total of nitrogen from trees fruits litter in the zone	85	1
+zones	SafeCropZone	totalTreeNitrogenLeafLitter	kg N ha-1	Total of nitrogen from trees leaves litter in the zone	86	1
+zones	SafeCropZone	totalTreeNitrogenFineRootsLitter	kg N ha-1	Total of nitrogen from trees fine roots litter in the zone	87	1
+zones	SafeCropZone	totalTreeNitrogenCoarseRootsLitter	kg N ha-1	Total of nitrogen from trees  coarse roots litter in the zone	88	1
+zones	SafeCropZone	totalTreeNitrogenFineRootsDeepLitter	kg N ha-1	Total of nitrogen from trees deep fine root litter in the zone	89	1
+zones	SafeCropZone	totalTreeNitrogenCoarseRootsDeepLitter	kg N ha-1	Total of nitrogen from trees deep coarse root litter in the zone	90	1
+zones	SafeCropZone	totalCarbonHumusStock	kg C ha-1	Total amount of carbon (active + inactive) in the soil humus pool of the zone	91	1
+zones	SafeCropZone	totalActiveCarbonHumusStock	kg C ha-1	Total of active carbon in the soil humus pool of the zone	92	1
+zones	SafeCropZone	totalInactiveCarbonHumusStock	kg C ha-1	Total of inactive carbon in the soil humus pool of the zone	93	1
+zones	SafeCropZone	totalNitrogenHumusStock	kg N ha-1	Total  of nitrogen (active + inactive) in the soil humus pool of the zone	94	1
+zones	SafeCropZone	totalActiveNitrogenHumusStock	kg N ha-1	Total of active nitrogen in the soil humus pool of the zone	95	1
+zones	SafeCropZone	totalInactiveNitrogenHumusStock	kg N ha-1	Total of inactive nitrogen in the soil humus pool of the zone	96	1

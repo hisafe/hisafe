@@ -1,0 +1,141 @@
+## DURUM WHEAT ALLUR (BLE DUR)
+species = durum-wheat-restinclieres.plt
+variete = 1
+daystart = 07-04
+dayend = 07-03
+## SOIL MANAGEMENT
+nbjres = 0
+nbjtrav = 2
+
+## RESIDUE INCORPORATION TABLE
+
+## TILLAGE TABLE
+#jultrav	profres	proftrav
+TILLAGE	07-24	10	10
+TILLAGE	10-07	15	15
+
+## SOWING OPTIONS
+iplt0 = 11-10
+profsem = 2
+densitesem = 250.5
+codetradtec = 2
+interrang = 0
+orientrang = 0
+codedecisemis = 2
+nbjmaxapressemis = 30
+nbjseuiltempref = 15
+
+## STAGE FORCING
+codestade = 2
+ilev = 999
+iamf = 999
+ilax = 999
+isen = 999
+ilan = 999
+iflo = 999
+idrp = 999
+imat = 999
+irec = 999
+irecbutoir = 999
+
+## IRRIGATIONS
+effirr = 1
+codecalirrig = 2
+ratiol = 0
+dosimx = 40
+doseirrigmin = 20
+codedateappH2O = 2
+nap = 0
+codlocirrig = 1
+locirrig = 0
+profmes = 120
+
+## FERTILIZATIONS
+codecalferti = 2
+ratiolN = 0.00000
+dosimxN = 40.00000
+codetesthumN = 1
+engrais = 2
+concirr = 0
+codedateappN = 2
+codefracappN = 1
+Qtot_N = 3
+napN = 3
+codlocferti = 1
+locferti = 0
+
+## FERTILIZATION TABLE
+#julapN	qte
+FERTILIZATION	01-23	48
+FERTILIZATION	03-13	51
+FERTILIZATION	05-07	33
+
+## HARVEST OPTIONS
+ressuite = stubble+roots
+codceuille = 1
+nbceuille = 1
+cadencerec = 7
+codrecolte = 2
+codeaumin = 2
+h2ograinmin = 0.6
+h2ograinmax = 0.16
+sucrerec = 0.25
+CNgrainrec = 0.06
+huilerec = 0.07
+coderecolteassoc = 2
+codedecirecolte = 2
+nbjmaxapresrecolte = 15
+
+## CUTTING INTERVENTIONS
+codefauche = 2
+mscoupemini = 0
+codemodfauche = 1
+hautcoupedefaut = 0
+stadecoupedf = rec
+nbcoupe = 0
+nbinterventions = 0
+
+## OTHER INTERVENTIONS
+codepaillage = 1
+couvermulchplastique = 0
+albedomulchplastique = 0
+codrognage = 1
+largrogne = 0
+hautrogne = 0
+biorognem = 0
+codcalrogne = 1
+julrogne = 0
+margerogne = 0
+codeclaircie = 1
+juleclair = 0
+nbinfloecl = 0
+codeffeuil = 1
+codhauteff = 1
+codcaleffeuil = 1
+laidebeff = 0
+effeuil = 0
+juleffeuil = 0
+laieffeuil = 0
+codetaille = 1
+jultaille = 0
+codepalissage = 1
+hautmaxtec = 0
+largtec = 0.5
+codabri = 1
+transplastic = 0.7
+surfouvre1 = 0
+julouvre2 = 0
+surfouvre2 = 0
+julouvre3 = 0
+surfouvre3 = 0
+codeDST = 2
+dachisel = 1.1
+dalabour = 1.3
+rugochisel = 0.005
+rugolabour = 0.05
+codeDSTtass = 2
+profhumsemoir = 30
+dasemis = 1.6
+profhumrecolteuse = 30
+darecolte = 1.6
+codeDSTnbcouche = 2
