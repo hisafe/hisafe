@@ -1,0 +1,78 @@
+## LIGHT
+diffuseCoeffA = 1.2
+diffuseCoeffB = 1.3
+SOC = 1
+UOC = 0
+turtleOption = 0
+cropLightMethod = 0
+timeStep = 0.5
+nbTimeStepMax = 100
+diffuseAngleStep = 15
+declinationThreshold = 2
+leafAreaThreshold = 5
+nbImpactMultiplication = 3
+parGlobalCoefficient = 0.48
+molesParCoefficient = 0.217
+aangst = 0.18
+bangst = 0.62
+
+## MICROCLIMATE
+priestleyTaylorCoeff = 1.26
+sigma = 5.67e-8
+gamma = 0.65
+integrationStep = 0.1
+maxPhiPF = 6
+
+## SNOW
+maxTempSnow = 3
+minTempSnow = 0
+maxDailySnowMelt = 10
+maxTempSnowMelt = 10	
+minTempSnowMelt = 2 
+
+## WATER
+sticsWaterExtraction = 0
+#laiFileName = lai.obs
+
+## NITROGEN
+nitrogenDiffusionConstant = 1
+nitrogenEffectiveDiffusionA0 = -0.011
+nitrogenEffectiveDiffusionA1 = 0.15
+no3AbsorptionConstant = 0.3
+nh4AbsorptionConstant = 5.00
+no3Fraction = 0.6
+fmin1 = 0.65
+fmin2 = 11
+fmin3 = 60
+
+## WEATHER
+zr = 2.50
+NH3ref = 0.0
+patm = 1000.0
+aclim = 20.0
+codeetp = 1
+codeclichange = 1
+codaltitude = 1
+altistation = 130.0
+gradtn = -0.50
+gradtx = -0.55
+altinversion = 500.0
+gradtninv = 1.30
+cielclair = 0.80
+codadret = 1
+ombragetx = -1.40
+ra = 50.00
+albveg = 0.23
+corecTrosee = 1.0
+codecaltemp = 1
+codernet = 2
+coefdevil = 0.70
+aks = 6.0
+bks = 0.50
+cvent = 0.16
+phiv0 = 0.004
+coefrnet = 0.59
+
+## RESIDUES SPREADING (1=under tree, 2=all over the plot) 
+leavesResiduesSpreading = 2
+branchesResiduesSpreading = 2
