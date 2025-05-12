@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -55,7 +61,6 @@ import jeeb.lib.util.Import;
 import jeeb.lib.util.Record;
 import jeeb.lib.util.RecordSet;
 
-
 /**
  * A loader for an HiSAFE BATCH simulation.
  * 
@@ -83,30 +88,43 @@ public class SafeSimulationLoader extends RecordSet {
 		public TreeTec () {super ();}
 		public TreeTec (String line) throws Exception {super (line);}
 	}
-	private static final long serialVersionUID = 1L;
 
-	//SIMULATION PARAMETERS 
-	public GregorianCalendar simulationDateStart;		//simulation date start (YYYY/MM/DD) 
-	public GregorianCalendar simulationDateEnd;			//simulation date end (YYYY/MM/DD) 
-	public String projectFileName;						//project file name if restarted
-	public int saveProjectOption; 						//0=NO 1=YES project will be saved 
-	public int debugMode;								//0=NO 1=debug traces
-	public int sticsReport;								//0=NO 1=Edit STICS report (1 for each cell each year) 
+	// SIMULATION PARAMETERS
+	/** Simulation date start (AAAA/MM/JJ) */
+	public GregorianCalendar simulationDateStart;		
+	/** Simulation date end (AAAA/MM/JJ) */
+	public GregorianCalendar simulationDateEnd;			
+	/** 0=NO 1=debug traces */
+	public int debugMode;							
+	/** 0=NO 1=YES export STICS logs and reports  */
+	public int sticsReport;
+	/** 0=NO 1=YES project will be saved   */
+	public int saveProjectOption; 					
+	/** project file name if restarted  */
+	public String projectFileName;		
+	/** lai file name to force lai option  */
+	public String laiFileName = "";	
+	/** Simulation toric symmetry on X axis positive (number of tours allowed) */
+	public int toricXp;
+	/** Simulation toric symmetry on X axis negative (number of tours allowed) */
+	public int toricXn;
+	/** Simulation toric symmetry on Y axis positive (number of tours allowed) */
+	public int toricYp;
+	/** Simulation toric symmetry on Y axis negative (number of tours allowed) */
+	public int toricYn;
 	
 	// CROP ZONE DEFINITION
-	public List<Integer>  	zoneId;	
-	public List<String>  	zoneName;	
-	public List<String> 	zoneCellList;	
-	public List<String> 	zoneTecList;
+	/** Zones id list */
+	public List<Integer>  	zonesIds;
+	/** Zones names list */
+	public List<String>  	zonesNames;	  
+	/** list of the cells ids attached to the zones (one per zone) separated by , */
+	public List<String> 	zonesCellsList;	
+	/** list of the tec file attached to the zones (one per zone) separated by , */
+	public List<String> 	zonesTecsList;
+	/** list of the tec file attached to the trees (one per tree) separated by , */
+	public List<String> 	treeTecsList;	
 	
-	//TREE TEC LIST
-	public List<String> 	treeTecList;
-	
-	//TORIC SYMETRY OPTIONS ACTIVATION (0/1)
-	public int toricXn; 
-	public int toricXp;
-	public int toricYn;
-	public int toricYp;
 	
 	/**
 	 * Constructor
@@ -119,11 +137,11 @@ public class SafeSimulationLoader extends RecordSet {
 	 */
 	public void load() throws Exception {
 
-		zoneId = new ArrayList<Integer>();
-		zoneName = new ArrayList<String>();
-		zoneCellList = new ArrayList<String>();
-		zoneTecList = new ArrayList<String>();
-		treeTecList = new ArrayList<String>();
+		zonesIds = new ArrayList<Integer>();
+		zonesNames = new ArrayList<String>();
+		zonesCellsList = new ArrayList<String>();
+		zonesTecsList = new ArrayList<String>();
+		treeTecsList = new ArrayList<String>();
 
 		Set<String> requiredParameters = new HashSet<>();
 		requiredParameters.add("simulationDateStart");
@@ -150,10 +168,10 @@ public class SafeSimulationLoader extends RecordSet {
 				if (r.lib.equals("ZONE")) {
 					requiredParameters.remove("ZONE");
 					zoneIndex++;
-					zoneId.add(zoneIndex);
-					zoneName.add(r.name);
-					zoneCellList.add(r.listCell);
-					zoneTecList.add(r.listItk);
+					zonesIds.add(zoneIndex);
+					zonesNames.add(r.name);
+					zonesCellsList.add(r.listCell);
+					zonesTecsList.add(r.listItk);
 				}
 			}
 			//TREE TEC LIST
@@ -162,7 +180,7 @@ public class SafeSimulationLoader extends RecordSet {
 				SafeSimulationLoader.TreeTec r = (SafeSimulationLoader.TreeTec) record;	// cast to precise type
 
 				if (r.lib.equals("TREETEC")) {
-					treeTecList.add(r.itkFileName);
+					treeTecsList.add(r.itkFileName);
 				}			
 			}
 			
@@ -170,12 +188,13 @@ public class SafeSimulationLoader extends RecordSet {
 			else if (record instanceof SafeSimulationLoader.KeyRecord) {
 
 				SafeSimulationLoader.KeyRecord r = (SafeSimulationLoader.KeyRecord) record;
-
+				
 				String param = r.key;
 
 				if (param.equals("projectFileName")) {
 					projectFileName = r.value;
-	
+				} else if (param.equals("laiFileName")) {
+					laiFileName = r.value;
 				} else if (param.equals("simulationDateStart")) {
 					String [] part1 = r.value.split("-");
 					simulationDateStart= new GregorianCalendar();

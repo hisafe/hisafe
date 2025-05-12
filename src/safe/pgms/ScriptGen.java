@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -62,7 +68,6 @@ import jeeb.lib.util.Log;
 import jeeb.lib.util.StatusDispatcher;
 import safe.model.*;
 
-
 /**
  * A Capsis script to run Hisafe simulation in BATCH MODE
  * 
@@ -71,10 +76,10 @@ import safe.model.*;
 public class ScriptGen {
 
 	// The simulation directory where all usefull files have to be stored
-	private String simulationDir;
+	private String simulationPath;
 
 	// All exports go to the output directory
-	private String outputDir;
+	private String outputPath;
 
 	public static void main(String[] args) throws Exception {
 		new ScriptGen(args);
@@ -107,11 +112,11 @@ public class ScriptGen {
 				projectName = projectName.replace(".sim", "");
 
 				// Set the simulationDir
-				simulationDir = new File(simulationFileName).getParentFile().getAbsolutePath();
+				simulationPath = new File(simulationFileName).getParentFile().getAbsolutePath();
 
 				// outputDir
-				outputDir = simulationDir + "/output-" + projectName;
-				File mydir = new File(outputDir);
+				outputPath = simulationPath + "/output-" + projectName;
+				File mydir = new File(outputPath);
 		 	    mydir.delete();
 				mydir.mkdir();
 
@@ -124,7 +129,7 @@ public class ScriptGen {
 					SafeGeneralParameters ip;
 			
 					if (loader.projectFileName != "") {
-						String projectFileName = simulationDir + "/" + loader.projectFileName;
+						String projectFileName = simulationPath + "/" + loader.projectFileName;
 			
 						if (!Check.isFile(projectFileName)) {
 								throw new Exception("Wrong project file name: " + projectFileName);			
@@ -133,7 +138,7 @@ public class ScriptGen {
 			
 						script = C4Script.openProject(projectFileName);
 						ip = (SafeGeneralParameters) script.getModel().getSettings();
-						ip.resetDataPath(simulationDir);
+						ip.setDataPath(simulationPath);
 						model = (SafeModel) script.getModel();
 			
 						model.setReStart(true);
@@ -152,14 +157,14 @@ public class ScriptGen {
 								
 						//IL 28-11-2017 
 						//Plot file name is search automatically with .pld extension
-						String pldFileName = getFileName(simulationDir, ".pld");
+						String pldFileName = getFileName(simulationPath, ".pld");
 						if (pldFileName == "") {
-							System.out.println("PLD FILE NOT FOUND in folder "+simulationDir);
+							System.out.println("PLD FILE NOT FOUND in folder "+simulationPath);
 						}
 						
-						pldFileName = simulationDir + "/" +pldFileName;
+						pldFileName = simulationPath + "/" +pldFileName;
 
-						ip = new SafeGeneralParameters(simulationDir, pldFileName);
+						ip = new SafeGeneralParameters(simulationPath, pldFileName);
 
 						model = (SafeModel) script.getModel();
 			
@@ -176,8 +181,8 @@ public class ScriptGen {
 
 
 					//EXPORT file name is search automatically with .out extension
-					String exportFile = getFileName(simulationDir, ".out");
-					if (!exportFile.equals("")) exportFile = simulationDir + "/" +exportFile;
+					String exportFile = getFileName(simulationPath, ".out");
+					if (!exportFile.equals("")) exportFile = simulationPath + "/" +exportFile;
 					else {
 						exportFile = getFileName(capsisDataPath, ".out");
 						exportFile = capsisDataPath +   "/" + exportFile; 
@@ -185,20 +190,24 @@ public class ScriptGen {
 					}
 
 
-					model.loadExport(exportFile, outputDir, projectName);
+					model.loadExport(exportFile, outputPath, projectName);
 					
 					//IL 28-11-2017 
 					//Weather file name is search automatically with .wth extension
-					String weatherFile = getFileName(simulationDir, ".wth");	
-					if (weatherFile == "") {
-						System.out.println("WTH FILE NOT FOUND in folder "+simulationDir);
+					String weatherPath = getFileName(simulationPath, ".wth");	
+					if (weatherPath == "") {
+						System.out.println("WTH FILE NOT FOUND in folder "+simulationPath);
 					}
-					weatherFile = simulationDir + "/" +weatherFile;
+					weatherPath = simulationPath + "/" +weatherPath;
 
 					
+					//in case of lai forcing file 
+					String laiPath = "";
+					if (loader.laiFileName!= "") laiPath = simulationPath + "/" + loader.laiFileName;
+
 					//copy session.txt
 					String sessionOrigin = capsisDataPath + "/session.txt";
-					String sessionCopy = outputDir + "/session.txt";
+					String sessionCopy = outputPath + "/session.txt";
 					Path monFichier = Paths.get (sessionOrigin);
 					Path monFichierCopie = Paths.get (sessionCopy);
 					Files.copy (monFichier, monFichierCopie, StandardCopyOption.REPLACE_EXISTING);
@@ -207,9 +216,10 @@ public class ScriptGen {
 
 					// evolution
 					SafeEvolutionParameters ep = new SafeEvolutionParameters (loader, 
-																			simulationDir, 
-																			outputDir, 
-																			weatherFile);
+																			simulationPath, 
+																			outputPath, 
+																			weatherPath,
+																			laiPath);
 			
 					// start from last step of previous simulation (if reload) 
 					if (model.getReStart()) {
@@ -221,7 +231,10 @@ public class ScriptGen {
 					}
 			
 					SafeStand stand = (SafeStand) (step.getScene());
-					model.loadWeather(stand.getLatitude(), stand.getElevation(), ep.weatherFile, ep.simulationDateStart, ep.simulationDateEnd);
+
+					model.loadWeather(stand.getPlot().getPlotSettings().latitude, 
+									  stand.getPlot().getPlotSettings().elevation, 
+									  ep.weatherPath, ep.simulationDateStart, ep.simulationDateEnd);
 
 					model.initExport(stand);
 					
@@ -245,7 +258,7 @@ public class ScriptGen {
 					if (loader.saveProjectOption == 1) {
 						StatusDispatcher.print("Saving project " + projectName + " ...");
 						Engine.getInstance().processSaveAsProject(script.getProject(),
-								outputDir + File.separator + projectName + ".prj");
+								outputPath + File.separator + projectName + ".prj");
 					}
 							
 					script.closeProject(script.getProject());
