@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -40,7 +46,6 @@
  *
  */
 
-
 package safe.model;
 
 import java.util.HashSet;
@@ -56,20 +61,23 @@ import safe.stics.*;
 /**
  * GENERAL parameters format for reading in a file 
  *
- * @author : Isabelle LECOMTE  - INRAE Montpellier (March 2003)
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
 public class SafeGeneralParameterFormat extends RecordSet {
 
-
-	private static final long serialVersionUID = 1L;
-
-	public SafeGeneralParameterFormat (String fileName) throws Exception {
-		prepareImport (fileName);}
+	/**
+	 * Construtor
+	 * @param filePath Path to the file containing the general parameters
+	 */
+	public SafeGeneralParameterFormat (String filePath) throws Exception {
+		prepareImport (filePath);}
 
 	/**
 	 * Load general parameters
+	 * @param generalParameters Reference to the SafeGeneralParameters object containing general parameters
+	 * @param sticsStation Reference to the SafeSticsStation object containing stics weather station parameters
 	 */
-	public  void load (SafeGeneralParameters settings, SafeSticsStation sticsStation) throws Exception {
+	public  void load (SafeGeneralParameters generalParameters, SafeSticsStation sticsStation) throws Exception {
 
 		Set<String> requiredParameters = new HashSet<>();
 
@@ -89,8 +97,8 @@ public class SafeGeneralParameterFormat extends RecordSet {
 		requiredParameters.add("aangst");
 		requiredParameters.add("bangst");
 		requiredParameters.add("priestleyTaylorCoeff");
-		requiredParameters.add("sigma");
-		requiredParameters.add("gamma");
+		requiredParameters.add("stefanBoltzmanConstant");
+		requiredParameters.add("psychrometricConstant");
 		requiredParameters.add("integrationStep");
 		requiredParameters.add("maxPhiPF");
 		requiredParameters.add("maxTempSnow");
@@ -135,7 +143,11 @@ public class SafeGeneralParameterFormat extends RecordSet {
 		requiredParameters.add("coefrnet");	
 		requiredParameters.add("leavesResiduesSpreading");
 		requiredParameters.add("branchesResiduesSpreading");
-				
+		requiredParameters.add("sticsWaterExtractionForCrop");
+		requiredParameters.add("waterStressMin");	
+		requiredParameters.add("nitrogenStressMin");
+		
+		
 		
 		for (Iterator<Record> i = this.iterator (); i.hasNext ();) {
 			Record record =  i.next ();
@@ -145,129 +157,137 @@ public class SafeGeneralParameterFormat extends RecordSet {
 		 		SafeGeneralParameterFormat.KeyRecord r = (SafeGeneralParameterFormat.KeyRecord) record;
 
 				if (r.key.equals ("diffuseCoeffA")) {
-					settings.diffuseCoeffA = r.getDoubleValue ();
+					generalParameters.diffuseCoeffA = r.getDoubleValue ();
 					requiredParameters.remove("diffuseCoeffA");
 					
 				} else if  (r.key.equals ("diffuseCoeffB")) {
-					settings.diffuseCoeffB  = r.getDoubleValue ();
+					generalParameters.diffuseCoeffB  = r.getDoubleValue ();
 					requiredParameters.remove("diffuseCoeffB");
 					
 				} else if  (r.key.equals ("parGlobalCoefficient")) {
-					settings.parGlobalCoefficient  = r.getDoubleValue ();
+					generalParameters.parGlobalCoefficient  = r.getDoubleValue ();
 					requiredParameters.remove("parGlobalCoefficient");
 					
 				} else if  (r.key.equals ("molesParCoefficient")) {
-					settings.molesParCoefficient  = r.getDoubleValue ();
+					generalParameters.molesParCoefficient  = r.getDoubleValue ();
 					requiredParameters.remove("molesParCoefficient");
 					
 				} else if  (r.key.equals ("aangst")) {
-					settings.aangst  = r.getDoubleValue ();
+					generalParameters.aangst  = r.getDoubleValue ();
+					sticsStation.P_aangst = (float) generalParameters.aangst;
 					requiredParameters.remove("aangst");
 					
 				} else if  (r.key.equals ("bangst")) {
-					settings.bangst  = r.getDoubleValue ();
+					generalParameters.bangst  = r.getDoubleValue ();
+					sticsStation.P_bangst = (float) generalParameters.bangst;
 					requiredParameters.remove("bangst");
 					
 				} else if  (r.key.equals ("priestleyTaylorCoeff")) {
-					settings.priestleyTaylorCoeff  = r.getDoubleValue ();
+					generalParameters.priestleyTaylorCoeff  = r.getDoubleValue ();
+					sticsStation.P_alphapt = (float) generalParameters.priestleyTaylorCoeff;
 					requiredParameters.remove("priestleyTaylorCoeff");
 					
-				} else if  (r.key.equals ("sigma")) {
-					settings.sigma  = r.getDoubleValue ();
-					requiredParameters.remove("sigma");
+				} else if  (r.key.equals ("stefanBoltzmanConstant")) {
+					generalParameters.stefanBoltzmanConstant  = r.getDoubleValue ();
+					requiredParameters.remove("stefanBoltzmanConstant");
 					
-				} else if (r.key.equals ("gamma")) {
-					settings.gamma  = r.getDoubleValue ();	
-					requiredParameters.remove("gamma");
+				} else if (r.key.equals ("psychrometricConstant")) {
+					generalParameters.psychrometricConstant  = r.getDoubleValue ();	
+					requiredParameters.remove("psychrometricConstant");
 								
 				} else if (r.key.equals ("timeStep")) {
-					settings.timeStep  = r.getDoubleValue ();
+					generalParameters.timeStep  = r.getDoubleValue ();
 					requiredParameters.remove("timeStep");
 					
 				} else if (r.key.equals ("nbTimeStepMax")) {
-					settings.nbTimeStepMax  = r.getIntValue ();	
+					generalParameters.nbTimeStepMax  = r.getIntValue ();	
 					requiredParameters.remove("nbTimeStepMax");
 					
 				} else if (r.key.equals ("diffuseAngleStep")) {
-					settings.diffuseAngleStep  = r.getDoubleValue ();
+					generalParameters.diffuseAngleStep  = r.getDoubleValue ();
 					requiredParameters.remove("diffuseAngleStep");
 					
 				} else if (r.key.equals ("declinationThreshold")) {
-					settings.declinationThreshold  = r.getDoubleValue ();
+					generalParameters.declinationThreshold  = r.getDoubleValue ();
 					requiredParameters.remove("declinationThreshold");
 					
 				} else if (r.key.equals ("leafAreaThreshold")) {
-					settings.leafAreaThreshold  = r.getDoubleValue ();	
+					generalParameters.leafAreaThreshold  = r.getDoubleValue ();	
 					requiredParameters.remove("leafAreaThreshold");
 					
 				} else if (r.key.equals ("nbImpactMultiplication")) {
-					settings.nbImpactMultiplication  = r.getIntValue ();
+					generalParameters.nbImpactMultiplication  = r.getIntValue ();
 					requiredParameters.remove("nbImpactMultiplication");
 						
 				} else if (r.key.equals("SOC")) {
 					int ri = r.getIntValue();
-					settings.SOC = true;
-					if (ri == 0) settings.SOC = false;
-					if (ri == 1) settings.SOC = true;
+					generalParameters.SOC = true;
+					if (ri == 0) generalParameters.SOC = false;
+					if (ri == 1) generalParameters.SOC = true;
 					requiredParameters.remove("SOC");
 					
 				} else if (r.key.equals("UOC")) {
 					int ri = r.getIntValue();
-					settings.UOC = false;
-					if (ri == 0) settings.UOC = false;
-					if (ri == 1) settings.UOC = true;	
+					generalParameters.UOC = false;
+					if (ri == 0) generalParameters.UOC = false;
+					if (ri == 1) generalParameters.UOC = true;	
 					requiredParameters.remove("UOC");
 					
 				} else if (r.key.equals("turtleOption")) {
 					int ri = r.getIntValue();
-					settings.turtleOption = false;
-					if (ri == 0) settings.turtleOption = false;	
-					if (ri == 1) settings.turtleOption = true;	
+					generalParameters.turtleOption = false;
+					if (ri == 0) generalParameters.turtleOption = false;	
+					if (ri == 1) generalParameters.turtleOption = true;	
 					requiredParameters.remove("turtleOption");
 					
-				} else if (r.key.equals("cropLightMethod")) {
+				} else if (r.key.equals("hisafeLightMethodForCrop")) {
 					int ri = r.getIntValue();
-					settings.cropLightMethod = false;
-					if (ri == 0) settings.cropLightMethod = false;
-					if (ri == 1) settings.cropLightMethod = true;
+					generalParameters.hisafeLightMethodForCrop = false;
+					if (ri == 0) generalParameters.hisafeLightMethodForCrop = false;
+					if (ri == 1) generalParameters.hisafeLightMethodForCrop = true;
 					
 					
 				} else if  (r.key.equals ("integrationStep")) {
-					settings.integrationStep  = r.getDoubleValue ();
+					generalParameters.integrationStep  = r.getDoubleValue ();
 					requiredParameters.remove("integrationStep");
 					
 				} else if  (r.key.equals ("maxPhiPF")) {
-					settings.maxPhiPF  = r.getDoubleValue ();
+					generalParameters.maxPhiPF  = r.getDoubleValue ();
 					requiredParameters.remove("maxPhiPF");
 				
 				} else if  (r.key.equals ("maxTempSnow")) {
-					settings.maxTempSnow  = r.getDoubleValue ();
+					generalParameters.maxTempSnow  = r.getDoubleValue ();
 					requiredParameters.remove("maxTempSnow");
 					
 				} else if  (r.key.equals ("minTempSnow")) {
-					settings.minTempSnow  = r.getDoubleValue ();
+					generalParameters.minTempSnow  = r.getDoubleValue ();
 					requiredParameters.remove("minTempSnow");
 					
 				} else if  (r.key.equals ("maxDailySnowMelt")) {
-					settings.maxDailySnowMelt  = r.getDoubleValue ();
+					generalParameters.maxDailySnowMelt  = r.getDoubleValue ();
 					requiredParameters.remove("maxDailySnowMelt");
 					
 				} else if  (r.key.equals ("maxTempSnowMelt")) {
-					settings.maxTempSnowMelt  = r.getDoubleValue ();
+					generalParameters.maxTempSnowMelt  = r.getDoubleValue ();
 					requiredParameters.remove("maxTempSnowMelt");
 					
 				} else if  (r.key.equals ("minTempSnowMelt")) {
-					settings.minTempSnowMelt  = r.getDoubleValue ();
+					generalParameters.minTempSnowMelt  = r.getDoubleValue ();
 					requiredParameters.remove("minTempSnowMelt");
 					
-				} else if (r.key.equals("sticsWaterExtraction")) {
+				} else if (r.key.equals("sticsWaterExtractionForCrop")) {
 					int ri = r.getIntValue();
-					settings.sticsWaterExtraction = false;
-					if (ri == 1) settings.sticsWaterExtraction = true;	
+					generalParameters.sticsWaterExtractionForCrop = false;
+					if (ri == 1) generalParameters.sticsWaterExtractionForCrop = true;	
+					requiredParameters.remove("sticsWaterExtractionForCrop");
 
-				} else if (r.key.equals("laiFileName")) {
-					settings.laiFileName  = settings.dataPath+"/"+r.value;
-					System.out.println("laiFileName="+settings.laiFileName);
+				} else if  (r.key.equals ("waterStressMin")) {
+					generalParameters.waterStressMin  = r.getDoubleValue ();
+					requiredParameters.remove("waterStressMin");
+
+				} else if  (r.key.equals ("nitrogenStressMin")) {
+					generalParameters.nitrogenStressMin  = r.getDoubleValue ();
+					requiredParameters.remove("nitrogenStressMin");
 				}
 
 				else if (r.key.equals ("codecaltemp")) {
@@ -375,47 +395,47 @@ public class SafeGeneralParameterFormat extends RecordSet {
 					requiredParameters.remove("aclim");	
 				
 				} else if (r.key.equals ("nitrogenDiffusionConstant")) {
-					settings.nitrogenDiffusionConstant = r.getDoubleValue ();
+					generalParameters.nitrogenDiffusionConstant = r.getDoubleValue ();
 					requiredParameters.remove("nitrogenDiffusionConstant");
 					
 				} else if (r.key.equals ("nitrogenEffectiveDiffusionA0")) {
-					settings.nitrogenEffectiveDiffusionA0 = r.getDoubleValue ();
+					generalParameters.nitrogenEffectiveDiffusionA0 = r.getDoubleValue ();
 					requiredParameters.remove("nitrogenEffectiveDiffusionA0");
 					
 				} else if (r.key.equals ("nitrogenEffectiveDiffusionA1")) {
-					settings.nitrogenEffectiveDiffusionA1 = r.getDoubleValue ();
+					generalParameters.nitrogenEffectiveDiffusionA1 = r.getDoubleValue ();
 					requiredParameters.remove("nitrogenEffectiveDiffusionA1");
 					
 				} else if (r.key.equals ("no3AbsorptionConstant")) {
-					settings.no3AbsorptionConstant = r.getDoubleValue ();
+					generalParameters.no3AbsorptionConstant = r.getDoubleValue ();
 					requiredParameters.remove("no3AbsorptionConstant");
 					
 				} else if (r.key.equals ("nh4AbsorptionConstant")) {
-					settings.nh4AbsorptionConstant = r.getDoubleValue ();
+					generalParameters.nh4AbsorptionConstant = r.getDoubleValue ();
 					requiredParameters.remove("nh4AbsorptionConstant");
 					
 				} else if (r.key.equals ("no3Fraction")) {
-					settings.no3Fraction = r.getDoubleValue ();	
+					generalParameters.no3Fraction = r.getDoubleValue ();	
 					requiredParameters.remove("no3Fraction");
 					
 				} else if (r.key.equals ("fmin1")) {
-					settings.fmin1 = r.getDoubleValue ();
+					generalParameters.fmin1 = r.getDoubleValue ();
 					requiredParameters.remove("fmin1");
 					
 				} else if (r.key.equals ("fmin2")) {
-					settings.fmin2 = r.getDoubleValue ();
+					generalParameters.fmin2 = r.getDoubleValue ();
 					requiredParameters.remove("fmin2");
 					
 				} else if (r.key.equals ("fmin3")) {
-					settings.fmin3 = r.getDoubleValue ();
+					generalParameters.fmin3 = r.getDoubleValue ();
 					requiredParameters.remove("fmin3");
 					
 				} else if (r.key.equals ("leavesResiduesSpreading")) {
-					settings.leavesResiduesSpreading =  r.getIntValue ();
+					generalParameters.leavesResiduesSpreading =  r.getIntValue ();
 					requiredParameters.remove("leavesResiduesSpreading");
 					
 				} else if (r.key.equals ("branchesResiduesSpreading")) {
-					settings.branchesResiduesSpreading =  r.getIntValue ();
+					generalParameters.branchesResiduesSpreading =  r.getIntValue ();
 					requiredParameters.remove("branchesResiduesSpreading");
 				}
 		 	}
@@ -426,5 +446,6 @@ public class SafeGeneralParameterFormat extends RecordSet {
 			throw new CancellationException();	// abort
 
 		}
+
 	}
 }

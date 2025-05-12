@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -50,172 +56,84 @@ import capsis.defaulttype.TreeList;
 import capsis.kernel.GModel;
 import capsis.kernel.GScene;
 
-
 /**
  * STAND description 
  *
- * @author Isabelle Lecomte - INRA Montpellier France - July 2002
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
-public class SafeStand extends TreeList {
+public class SafeStand extends TreeList implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	/** simulation date start  */
+	private Date startDate;				
+	/** simulation julian day (0-730) */
+	private int julianDay;				
+	/** weather day  */
+	private int weatherDay;					
+	/** weather month  */
+	private int weatherMonth;			
+	/** weather year  */
+	private int weatherYear;				
 
-	/**
-	 * This class contains immutable instance variables for a Stand
-	 * A class Inmmutable already exist in super class !!!!
-	 */
-	public static class Immutable2 implements Cloneable, Serializable {
-		private static final long serialVersionUID = 1L;
-		public float latitude;		//degree
-		public float elevation;		//m
-	}
-
-	protected Immutable2 immutable2;
-
-	private Date startDate;					//date et heure du jour debut de simulation (peut être modifiée si on reouvre le projet) 
-	private int julianDay;					//julianDay of simulation (0-730)
-	private int weatherDay;					//julianDay of weather (1-365)
-	private int weatherMonth;				//month of weather
-	private int weatherYear;				//year of weather
-
-	
-	/** TO DISPLAY IN SCENARIO INSPECTOR **/
-	private String display;
-	
-
-	// WARNING: if references to objects (not primitive types) are added here,
-	// implement a "public Object clone ()" method (see RectangularPlot.clone () for template)
-
-	public SafeStand (double latitude, double elevation) {
+	public SafeStand () {
 		super ();
-
-		createImmutable2 ();
-
-		immutable2.latitude  = (float) latitude;
-		immutable2.elevation = (float) elevation;
 		this.startDate = new Date();
 	}
 
 	/**
-	 * Create an Immutable object whose class is declared at one level of the hierarchy.
-	 * This is called only in constructor for new logical object in superclass.
-	 * If an Immutable is declared in subclass, subclass must redefine this method
-	 * (same body) to create an Immutable defined in subclass.
+	 * Creates the plot 
+	 * @param model Reference to GModel object
+	 * @param cellWidth Cells width (m)
+	 * @param nRows Number of cells rows
+	 * @param nCols Number of cells columns
 	 */
-	protected void createImmutable2 () {immutable2 = new Immutable2 ();}
-
+	public void createPlot (GModel model, double cellWidth, int nRows, int nCols) {
+		SafePlot initPlot = new SafePlot (this, cellWidth, nRows, nCols);
+		this.setPlot(initPlot);
+	}
 
 	/**
-	 * Creates the plot and cells.
-	 */
-	public void createPlot (GModel model, double cellWidth) { }
-
-	/**
-	 * Redefinition of getEvolutionBase to return a stand WITH CLONED TREES
+	 * Redefinition of getEvolutionBase to return a stand with cloned trees
 	 */
 	public GScene getEvolutionBase () {
 		SafeStand newStand = (SafeStand) super.getHeavyClone ();
-		newStand.display = null;
 		return newStand;
 	}
 	
 
 	/**
-	 * Redefinition of getInterventionBase to return a stand WITH CLONED TREES
+	 * Redefinition of getInterventionBase to return a stand with cloned trees
 	 */
 	public GScene getInterventionBase () {
 		SafeStand newStand = (SafeStand) super.getHeavyClone ();
-		newStand.display = null;
 		return newStand;
 	}
 	
 	/**
-	 * Creation of all objets (plot, trees, soil, voxels) attached to the stand
+	 * Creation of all objets (cells, trees, soil, voxels) attached to the stand
+	 * @param generalParameters Reference to SafeGeneralParameters object
 	 */
-	public void createAll (SafeGeneralParameters safeSettings, 
-							SafePlotSettings plotSettings) throws Exception {
+	public void createAll (SafeGeneralParameters generalParameters) throws Exception {
 	
-		// 1. PlotOfCells creation
-		double aspect 			   	= plotSettings.slopeAspect;
-		double slope  			   	= plotSettings.slopeIntensity;
-		double treeLineOrientation 	= plotSettings.treeLineOrientation;	
-		double northOrientation 	= plotSettings.northOrientation;
-		double cellWidth 			= plotSettings.cellWidth;
-
+		SafePlotSettings plotSettings = this.getPlot().getPlotSettings();
+		SafePlot plot = this.getPlot();
+		SafeSoil soil = this.getPlot().getSoil();
+		
+		// 1. Get plot dimensions
+		double cellWidth 	= this.getPlot().getCellWidth();
 		double plotWidth 	= plotSettings.plotWidth;
 		double plotHeight 	= plotSettings.plotHeight;
 		int nLin = (int) (plotHeight / cellWidth);
 		int nCol = (int) (plotWidth / cellWidth);
-		
-		SafePlot initPlot = new SafePlot (this, safeSettings, cellWidth, nLin, nCol,
-				  aspect, slope, 
-				  northOrientation, treeLineOrientation);
-		
-		this.setPlot(initPlot);
-		double cellSurface = initPlot.getCellSurface ();
-		plotSettings.cellSurface = cellSurface;
+		double voxelThicknessMax = soil.getVoxelThicknessMax();
+		int nbVoxels = soil.getNbVoxels();
+		int nbLayerCreated = soil.getNbLayers();
 
-		//2. Soil creation
-		//general parameters
-		SafeSoil soil = new SafeSoil (safeSettings, plotSettings);		
 
-		initPlot.setSoil(soil);
-
-		//3. Layers creation
-		int nbLayerMax = safeSettings.NB_LAYER_MAX;
-		double voxelThicknessMax = plotSettings.voxelThicknessMax;
-		int nbVoxels = 0;
-		int nbLayerCreated = 0;
-		double surfaceDepth = 0;
-		
-		for (int nbLayer=0; nbLayer<nbLayerMax; nbLayer++) {
-			double layerThickness 		= plotSettings.layerThickness[nbLayer];
-			double sand 			= plotSettings.layerSand[nbLayer];
-			double clay 			= plotSettings.layerClay[nbLayer];
-			double limestone 		= plotSettings.layerLimeStone[nbLayer];
-			double organicMatter 	= plotSettings.layerOrganicMatter[nbLayer];
-			double partSizeSand 	= plotSettings.layerPartSizeSand[nbLayer];
-			double layerStone 		= plotSettings.layerStone[nbLayer];
-			double infiltrability 	= plotSettings.layerInfiltrability[nbLayer];	
-			int stoneType 			= plotSettings.layerStoneType[nbLayer];
-			
-			if (layerThickness > 0) {
-				SafeLayer layer = new SafeLayer(nbLayer, surfaceDepth, layerThickness,
-								sand, clay, limestone, organicMatter,
-								partSizeSand, layerStone, stoneType, infiltrability,
-								safeSettings);
-				
-				soil.putLayer (nbLayer, layer);
-				nbLayerCreated++;
-
-				soil.addDepth (layerThickness);	//cumulation of total soil depth
-				double volume = soil.getDepth() * plotWidth * plotHeight;
-				soil.setVolume (volume);
-				surfaceDepth += layerThickness;
-
-				//to avoid some problem with double numbers IL 22/02/2021
-				surfaceDepth =  (Math.round (surfaceDepth * Math.pow (10,2)) ) / (Math.pow (10,2));
-
-				//nb  voxel calculation depending on layer thickness and voxelThicknessMax
-				if (layerThickness <= voxelThicknessMax) {
-					nbVoxels++; 
-				}
-				else {
-					//to avoid some problem with double numbers IL 22/02/2021
-					int nbVoxelLayer = (int)(layerThickness*10/voxelThicknessMax*10)/100;
-					int lt = (int) (layerThickness*1000);
-					int vt = (int) (voxelThicknessMax*1000);
-					if (lt%vt>0) nbVoxelLayer++;
-
-					nbVoxels += nbVoxelLayer;
-				}
-			}
-		}
-		//4. Cells creation depending of
+		//2. Cells creation depending of
 		//   ne sert que pour amorcer l'EXPORT CropZone
-		initPlot.initialiseCropZone ();
+		plot.initialiseCropZone ();
 		
-		//5. Cells creation depending of
+		//3. Cells creation depending of
 		//    1) nbr of line and nbr of column on the plot
 		//    2) cell width
 		int id = 0;
@@ -225,24 +143,24 @@ public class SafeStand extends TreeList {
 				id = id + 1;
 				double x = j * cellWidth;
 				double y = (nLin - (i + 1)) * cellWidth;
-				double z = zCoordinate(x, y, plotSettings);
+				double z = zCoordinate(x, y, this.getPlot().getPlotSettings());
 				Vertex3d coord = new Vertex3d(x, y, z);
 
-				SafeCell cell = new SafeCell (initPlot, coord, i, j, id, nbVoxels);
-				initPlot.addCell (cell);
+				SafeCell cell = new SafeCell (plot, coord, i, j, id, nbVoxels);
+				plot.addCell (cell);
 			}
 		}
 
-		//6. Trees creation
+		//4. Trees creation
 		this.clearTrees();
-		int nbTrees = plotSettings.nbTrees;
+		int nbTrees = this.getPlot().getPlotSettings().nbTrees;
 		int idTree = 1;
 		for (int i=0; i<nbTrees ; i++) {
 
-			double xTree =  plotSettings.treeX[i];
-			double yTree =  plotSettings.treeY[i];
-			double zTree =  zCoordinate(xTree, yTree, plotSettings);	//GT 2007 slope
-			String treeSpeciesName = plotSettings.treeSpecies[i];
+			double xTree =  this.getPlot().getPlotSettings().treeX[i];
+			double yTree =  this.getPlot().getPlotSettings().treeY[i];
+			double zTree =  zCoordinate(xTree, yTree, this.getPlot().getPlotSettings());	//GT 2007 slope
+			String treeSpeciesName = this.getPlot().getPlotSettings().treeSpecies[i];
 
 			
 			try {
@@ -250,7 +168,7 @@ public class SafeStand extends TreeList {
 											idTree,  
 											treeSpeciesName,
 											xTree, yTree, zTree, //GT 2007 slope
-											safeSettings);
+											generalParameters);
 	
 					this.addTree (tree);
 					idTree++;
@@ -261,9 +179,9 @@ public class SafeStand extends TreeList {
 		}
 
 
-		//7. Voxels creation for each cell of the plot
+		//5. Voxels creation for each cell of the plot
 		int voxelID = 1;
-		for (Iterator c = initPlot.getCells ().iterator (); c.hasNext ();) {
+		for (Iterator c = plot.getCells ().iterator (); c.hasNext ();) {
 			SafeCell cell = (SafeCell) c.next ();
 
 			int voxelIndex = 0;
@@ -278,12 +196,11 @@ public class SafeStand extends TreeList {
 				//single voxel
 				if (layerThickness <= voxelThicknessMax) {
 			
-					SafeVoxel voxel = new SafeVoxel (voxelID, layer, cell,
+					SafeVoxel voxel = new SafeVoxel (voxelID, voxelIndex, layer, cell,
 							layerThickness, voxelDepth,
 							nbTrees);
 				
 					cell.addVoxel(voxelIndex, voxel);
-					layer.addVoxel(voxel);
 					
 					voxelID++;
 					voxelIndex++;
@@ -308,12 +225,11 @@ public class SafeStand extends TreeList {
 					//Firsts voxels
 					for (int v=0; v < nbVoxelLayer-1; v++) {
 					
-						SafeVoxel voxel = new SafeVoxel (voxelID, layer, cell,
+						SafeVoxel voxel = new SafeVoxel (voxelID, voxelIndex, layer, cell,
 														voxelThickness, voxelDepth,
 														nbTrees);
 
 						cell.addVoxel(voxelIndex, voxel);
-						layer.addVoxel(voxel);
 
 						voxelID++;
 						voxelIndex++;
@@ -328,13 +244,12 @@ public class SafeStand extends TreeList {
 					double reste = layerThickness - (voxelThickness*(nbVoxelLayer-1));
 					reste =  (Math.round (reste * Math.pow (10,2)) ) / (Math.pow (10,2));
 					
-					SafeVoxel voxel = new SafeVoxel (voxelID, layer, cell,
+					SafeVoxel voxel = new SafeVoxel (voxelID, voxelIndex, layer, cell,
 													reste, voxelDepth,   
 													nbTrees
 													);
 					
 					cell.addVoxel(voxelIndex, voxel);
-					layer.addVoxel(voxel);
 
 					voxelID++;
 					voxelIndex++;
@@ -346,19 +261,20 @@ public class SafeStand extends TreeList {
 		}
 
 		soil.setNbVoxels(nbVoxels);
-		safeSettings.nbTrees=nbTrees;
+
 		
 	}
 
 	/**
-	 * Initialisation of treeITK
-	 */	
-	public void initialiseTreeItk (SafeEvolutionParameters evolutionParameters, SafeGeneralParameters safeSettings)  {
+	 * Initialization of trees management files (itk)
+	 * @param evolutionParameters Reference to SafeEvolutionParameters object
+	 */
+	public void initialiseTreeItk (SafeEvolutionParameters evolutionParameters)  {
 		
 		for (Iterator iter1=this.getTrees().iterator(); iter1.hasNext(); ) {
 			SafeTree tree = (SafeTree) iter1.next();
 			try {
-			tree.loadItk(evolutionParameters, safeSettings);
+				tree.loadItk(evolutionParameters);
 			} catch (Exception e2) {
 		
 				System.out.println("TREE ITK initialisation problem... simulation is canceled !");
@@ -369,9 +285,9 @@ public class SafeStand extends TreeList {
 		
 	}
 	/**
-	 * Stand initialisation at the beginning of simulation
+	 * Initialization of the stand 
 	 */
-	public void initialisation (SafeGeneralParameters safeSettings,  SafePlotSettings plotSettings) {
+	public void initialisation () {
 
 		SafePlot initPlot = (SafePlot) this.getPlot();
 
@@ -385,22 +301,24 @@ public class SafeStand extends TreeList {
 				//Water and nitrogen initialisation
 				int nbLayer = voxels[i].getLayer().getId();
 				double nProp = voxels[i].getThickness()/voxels[i].getLayer().getThickness();
-				voxels[i].initializeWaterNitrogen (plotSettings.layerWaterContent[nbLayer],
-													plotSettings.layerNo3Content[nbLayer]*nProp,
-													plotSettings.layerNh4Content[nbLayer]*nProp);		
+				voxels[i].initializeWaterNitrogen (initPlot.getPlotSettings().layerWaterContent[nbLayer],
+													initPlot.getPlotSettings().layerNo3Content[nbLayer]*nProp,
+													initPlot.getPlotSettings().layerNh4Content[nbLayer]*nProp);		
 			}
 		}
 
 	}
 
 	/**
-	 * Creation of all objets (plot, trees, soil, voxels) attached to the stand
+	 * Reload the tree species file in case of reopening a project 
+	 * @param evolutionParameters Reference to SafeEvolutionParameters object
+	 * @param generalParameters Reference to SafeGeneralParameters object
 	 */
-	public void reloadTreeSpecies (SafeEvolutionParameters ep, SafeGeneralParameters safeSettings) throws Exception {
+	public void reloadTreeSpecies (SafeEvolutionParameters ep, SafeGeneralParameters generalParameters) throws Exception {
 		
 		for (Iterator iter1=this.getTrees().iterator(); iter1.hasNext(); ) {
 			SafeTree tree = (SafeTree) iter1.next();
-			tree.reloadSpecies(ep, safeSettings, tree.getTreeSpecies().getFileName());
+			tree.reloadSpecies(ep, generalParameters, tree.getTreeSpecies().getFileName());
 		}
 	}
 	/**
@@ -447,12 +365,11 @@ public class SafeStand extends TreeList {
 	}	
    /**
 	* Tree  roots pruning after soil management - gt-09.07.2009
-	*  In case of soil management, some fine roots are removed from trees.
-	*  If soil management depth is below the gravity center of a voxel
-	*  the coarse root in this voxel and all depending topology are removed
+	* If soil management depth is below the gravity center of a voxel the coarse root in this voxel and all depending topology are removed
+	* @param cell Reference to SafeCell object where the soilmanagement occurs
+	* @param soilManagementDepth Soil management depth (m)
 	*/
-
-	public void treeRootSoilManagement (SafeCell cell, float soilManagementDepth, SafeGeneralParameters settings) {
+	public void treeRootSoilManagement (SafeCell cell, float soilManagementDepth) {
 		
 		SafePlot initPlot = (SafePlot) this.getPlot();
 		
@@ -464,12 +381,14 @@ public class SafeStand extends TreeList {
 				SafeVoxel voxel = cell.getVoxels()[i];
 				float voxelSurface = (float)voxel.getSurfaceDepth();
 
+				
 				while (voxelSurface < soilManagementDepth) {
 					if ((t.getCell().getId() != cell.getId()) && (t.getPlantRoots().getRootTopology(voxel) != null)) {
 
 						if (t.getPlantRoots().getRootTopology(voxel).getNodeParent() != null) {
 							float removedProp = 0;
 							boolean testAnoxia = false;
+
 							
 							if ((float)voxel.getZ() < soilManagementDepth) 
 								removedProp = 1;
@@ -477,7 +396,7 @@ public class SafeStand extends TreeList {
 								removedProp = (soilManagementDepth-voxelSurface) / (float)voxel.getThickness();
 
 							
-							t.getPlantRoots().getRootTopology(voxel).getNodeParent().removeSonsRoots(voxel, t, settings, removedProp, testAnoxia, initPlot.getSoil().getHumificationDepth());
+							t.getPlantRoots().getRootTopology(voxel).getNodeParent().removeSonsRoots(voxel, t,  removedProp, testAnoxia, initPlot.getSoil().getHumificationDepth());
 						}
 					}
 					i++;
@@ -490,7 +409,8 @@ public class SafeStand extends TreeList {
 	
  	
     /**
-	 * Check if tree root have colonized the all scene (at least one voxel for each cell) 
+	 * Check if a tree roots have colonized the all scene (at least one voxel for each cell) 
+	* @param treeID Id of the tree 
 	 */
     public boolean isAllColonised (int treeID)  {
 
@@ -635,8 +555,7 @@ public class SafeStand extends TreeList {
 	}	
 	
 
-	public float getLatitude () {return immutable2.latitude;}
-	public float getElevation () {return immutable2.elevation;}
+
 	public Date getStartDate () {return startDate;}
 	
 	public int getWeatherDay () {return weatherDay;}
@@ -659,19 +578,13 @@ public class SafeStand extends TreeList {
 	public void setWeatherYear (int d) {weatherYear = d;}
 
 
-	/** TO DISPLAY IN SCENARIO INSPECTOR **/
-	public void setDisplay (String s) {display = s;}
-	public String getToolTip () {
-		return getCaption ()+((display == null) ? "" : "-"+display);
-	}
-
 	/**
 	* Compute z coordinate of a point (x,y).
 	*/
 	public static double zCoordinate (double x, double y, SafePlotSettings plotSettings) {
 		double slope = Math.toRadians(plotSettings.slopeIntensity);
-		double treeLineOrientation = plotSettings.treeLineOrientation;						//degree
-		double slopeAspect	= plotSettings.slopeAspect;										//degree
+		double treeLineOrientation = plotSettings.treeLineOrientation;					
+		double slopeAspect	= plotSettings.slopeAspect;									
 		double bottomAzimut = Math.toRadians(-90+treeLineOrientation-slopeAspect);
 		double z = -Math.tan(slope)*(x*Math.cos(bottomAzimut)+y*Math.sin(bottomAzimut));
 		return z;

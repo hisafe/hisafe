@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -40,7 +46,6 @@
  *
  */
 
-
 package safe.model;
 
 import java.awt.Point;
@@ -58,46 +63,48 @@ import capsis.util.Point2D;
 /**
  * LIGHT MODEL PROCESS
  * 
- * @author B. Courbaud CEMAGREF Grenoble - January 2000 - Benoit.Courbaud@grenoble.cemagref.fr
+ * @author : B. Courbaud CEMAGREF Grenoble - January 2000 - Benoit.Courbaud@grenoble.cemagref.fr
  * 
- *  @author G. Talbot INRA Montpellier. February 2007, October 2007 
- *         Direct radiation can be computed as diffuse one.
- *         Direct energy is shared between sky discretization sectors.
- *         Toric symetry is now facultative.
+ * @author : G. Talbot INRA Montpellier. February 2007, October 2007 
+ *           Direct radiation can be computed as diffuse one.
+ *           Direct energy is shared between sky discretization sectors.
+ *           Toric symetry is now facultative.
  **/
 public class SafeLightModel {
 
 	/**
 	 * Beam set initialisation
-	 * 
 	 */
-	public static void initialiseBeamSet (SafeMacroClimat macroClimat, SafePlotSettings plotSettings,
-			SafeEvolutionParameters simulationSettings, SafeGeneralParameters safeSettings, int nbImpactMultiplication) {
+	public static void initialiseBeamSet (SafePlotSettings plotSettings,
+										  SafeGeneralParameters generalParameters, 
+										  SafeMacroClimat macroClimat, 
+										  int nbImpactMultiplication) {
+		
 		// 1. Beam Impacts creation for process lighting
 		// Because 1 single beam in the center of each cell is not efficient
-		createCellImpacts (plotSettings, safeSettings, nbImpactMultiplication);
+		createCellImpacts (plotSettings, generalParameters, nbImpactMultiplication);
 
 		// 2. Create SafeBeamSet
-		SafeBeamSet<SafeBeam> beamSet = createBeamSet (safeSettings, plotSettings);
+		SafeBeamSet<SafeBeam> beamSet = createBeamSet (generalParameters, plotSettings);
 
 		macroClimat.setBeamSet (beamSet);
 	}
 
 	/**
-	 * beamSet and beams creation, calcultation of proportions of diffusePar and InfraRed attributed
+	 * beamSet and beams creation, calculation of proportions of diffusePar and InfraRed attributed
 	 * to each beam
 	 */
 
-	public static SafeBeamSet<SafeBeam> createBeamSet (SafeGeneralParameters safeSettings, SafePlotSettings plotSettings) {
+	public static SafeBeamSet<SafeBeam> createBeamSet (SafeGeneralParameters generalParameters, SafePlotSettings plotSettings) {
 		double heightAngle;
 		double azimut;
 		float diffuseEnergy;
 		double energyConvFactor;
 
 
-		boolean SOC = safeSettings.SOC;
-		boolean turtleOption = safeSettings.turtleOption; // if true : turtle sky else : classical sky
-		double angleStep = Math.toRadians (safeSettings.diffuseAngleStep); // used if classical sky
+		boolean SOC = generalParameters.SOC;
+		boolean turtleOption = generalParameters.turtleOption; // if true : turtle sky else : classical sky
+		double angleStep = Math.toRadians (generalParameters.diffuseAngleStep); // used if classical sky
 
 		// if there is a slope
 		double slope = Math.toRadians (plotSettings.slopeIntensity); // slope intensity
@@ -113,16 +120,16 @@ public class SafeLightModel {
 		if (turtleOption) {
 
 			// for each solid directions of the "turtle"
-			for (int i = 0; i < safeSettings.NB_TURTLE_BEAM; i++) {
+			for (int i = 0; i < SafeGeneralParameters.NB_TURTLE_BEAM; i++) {
 
 				// height, azimut and energy are fixed in settings
-				heightAngle = Math.toRadians (safeSettings.LIGHT_TURTLE_EL[i]);
-				azimut = Math.toRadians (safeSettings.LIGHT_TURTLE_AZ[i]);
+				heightAngle = Math.toRadians (SafeGeneralParameters.LIGHT_TURTLE_EL[i]);
+				azimut = Math.toRadians (SafeGeneralParameters.LIGHT_TURTLE_AZ[i]);
 				if (SOC) // standard overcast sky
-					diffuseEnergy = (float) (safeSettings.LIGHT_TURTLE_SOC[i]); // No dimension
+					diffuseEnergy = (float) (SafeGeneralParameters.LIGHT_TURTLE_SOC[i]); // No dimension
 				else
 					// uniform overcast sky
-					diffuseEnergy = (float) (safeSettings.LIGHT_TURTLE_UOC[i]); // No dimension
+					diffuseEnergy = (float) (SafeGeneralParameters.LIGHT_TURTLE_UOC[i]); // No dimension
 
 				energyConvFactor = 1; // relative energy of beam reaching an horizontal surface of 1m2
 				energyConvFactor = 1 / Math.sin (heightAngle); // relative energy of a beam of section 1m2
@@ -148,8 +155,8 @@ public class SafeLightModel {
 
 				SafeBeam b = new SafeBeam (azimut, heightAngle, diffuseEnergy, 0, 0, (float) energyConvFactor);
 
-				b.setInfraRedEnergy ((float) safeSettings.LIGHT_TURTLE_IR[i]); // infra-red energy is fixed in settings
-				skyInfraRedMask += (float) energyConvFactor * safeSettings.LIGHT_TURTLE_IR[i];
+				b.setInfraRedEnergy ((float) SafeGeneralParameters.LIGHT_TURTLE_IR[i]); // infra-red energy is fixed in settings
+				skyInfraRedMask += (float) energyConvFactor * SafeGeneralParameters.LIGHT_TURTLE_IR[i];
 
 				bs.addBeam (b);
 			}
@@ -231,14 +238,17 @@ public class SafeLightModel {
 	 * proportion of the daily direct energy allocated to this beam. The proportion of direct energy
 	 * reaching the scene (slope computation) is calculated (skyDirectMask) Gregoire Talbot
 	 **/
-	public static void beamDirectEnergy (SafeGeneralParameters safeSettings, SafeBeamSet<SafeBeam> beamSet,
-			SafeDailyClimat dailyClimat, SafePlotSettings plotSettings) {
+	public static void beamDirectEnergy (SafeGeneralParameters generalParameters, 
+										SafePlotSettings plotSettings,
+										SafeBeamSet<SafeBeam> beamSet,
+										SafeDailyClimat dailyClimat 
+										) {
 
 
-		double timeStep = safeSettings.timeStep; // time (in hours) between two calculations of Sun position
+		double timeStep = generalParameters.timeStep; // time (in hours) between two calculations of Sun position
 		double dayLength = (double) dailyClimat.getDayLength (); // hours
 		int nbTimeStep = (int) Math.round (dayLength / timeStep); // number of calculations of sun position
-		int nbTimeStepMax = safeSettings.nbTimeStepMax; // maximal number of calculations
+		int nbTimeStepMax = generalParameters.nbTimeStepMax; // maximal number of calculations
 
 		if (nbTimeStep > nbTimeStepMax) {
 			nbTimeStep = nbTimeStepMax;
@@ -254,33 +264,30 @@ public class SafeLightModel {
 		int j = 0;
 		for (Iterator ite = beamSet.getBeams ().iterator (); ite.hasNext ();) {
 			SafeBeam b = (SafeBeam) ite.next ();
-			b.resetDirectEnergy ();
+			b.setDirectEnergy (0);
 			directEnergy[j] = 0;
 			j++;
 		}
 
 		// azimut of treeLine (= -y axis) from North (radians, clockwise rotation)
+		
 		double treeLineOrientation = Math.toRadians (plotSettings.treeLineOrientation);
+	
 		// azimut of South direction from x axis (radians, trigonometric rotation)
 		double southAzimut = (treeLineOrientation - 3 * Math.PI / 2);
-
 		float sunDeclination = dailyClimat.getSunDeclination (); // radians
-
 		double sidec = Math.sin (sunDeclination); // sine of sun declination
 		double codec = Math.cos (sunDeclination); // cosine of sun declination
-		double latitude = Math.toRadians (plotSettings.plotLatitude);
+		double latitude = Math.toRadians (plotSettings.latitude);
 		double silat = Math.sin (latitude); // sine of plot latitude
 		double colat = Math.cos (latitude); // cosine of plot latitude
-
 		double heightAngle; // beam elevation (radians)
 		double azimut; // beam azimut from x axis (radians, trigo rotation)
 		float sumPar = 0; // used for distribution of direct radiation between time steps.
 		double radius = Math.acos (1 - (1 / ((float) (nbBeam)))); // sector mean radius, expressed as plane angle : acos (1 - 1/nb_sectors)
-
 		double angle; // half angle between a beam and solar position
 		double[] weight; // weight of a sky sector for representing a solar position
 		double sumWeight;
-
 		double dayTime = -dayLength / 2;
 
 		// for each Time step
@@ -290,7 +297,6 @@ public class SafeLightModel {
 		double[] sunAzimutSerie = new double[nbTimeStep]; // radians
 		double[] directParSerie = new double[nbTimeStep]; // directParSerie[i] = fraction of direct radiation allocated to timeStep i.
 															// (proportionnal to sin(sunElevationSerie[i]))
-
 		// qm+sa 11.08.2014 log the sun elevation
 		// String lineToLog = "";
 		// lineToLog += dailyClimat.getYear() + "\t" + dailyClimat.getMonth() + "\t" +
@@ -397,8 +403,11 @@ public class SafeLightModel {
 	 * (not only the center) Rectangle size is now the maximum size of trees on the stand for this
 	 * step instead of maximum size for the tree species read in settings
 	 **/
-	public static void computeRelativeCellNeighbourhoods (SafeBeamSet<SafeBeam> beamSet, SafePlotSettings plotSettings,
-			double heightMax, double crownRadiusMax, boolean isDiffus) {
+	public static void computeRelativeCellNeighbourhoods (SafePlotSettings plotSettings,
+														  SafeBeamSet<SafeBeam> beamSet, 												  
+														  double heightMax, 
+														  double crownRadiusMax, 
+														  boolean isDiffus) {
 
 		double treeLineOrientation = plotSettings.treeLineOrientation;
 		double slopeAspect = plotSettings.slopeAspect;
@@ -492,7 +501,7 @@ public class SafeLightModel {
 				yMax = Math.max (yMax, y4);
 
 				// Round of xMin, xMax, yMin, yMax with ceil or floor as necessary
-				// -> an xCenter relatively to target
+				// an xCenter relatively to target
 				int aux = (int) Math.floor (xMax / width); // xMax > 0 : round to maximum int < xMax
 				xMax = aux * width;
 				aux = (int) Math.floor (yMax / width);
@@ -564,13 +573,13 @@ public class SafeLightModel {
 	 * 
 	 * Updated by G. Talbot INRA Montpellier - 2007 = 1000
 	 */
-	public static void processLighting (SafeStand stand, SafePlotSettings plotSettings,
-			SafeEvolutionParameters simulationSettings, SafeGeneralParameters settings, SafeBeamSet<SafeBeam> beamSet,
-			boolean isDiffus) {
+	public static void processLighting (SafeStand stand, 
+										SafeGeneralParameters generalParameters, 
+										SafeEvolutionParameters simulationSettings, 
+										SafePlotSettings plotSettings,
+										SafeBeamSet<SafeBeam> beamSet,
+										boolean isDiffus) {
 
-
-	
-		
 		SafePlot plot = (SafePlot) stand.getPlot ();
 
 		double plotWidth = plot.getXSize (); // x axis
@@ -581,8 +590,8 @@ public class SafeLightModel {
 		double toricYp = ((double) simulationSettings.toricYp) * plotHeight;
 		double toricYn = ((double) simulationSettings.toricYn) * plotHeight;
 
-		double cellSurface = plot.getCellSurface ();
-		int nbImpact = settings.cellImpacts.size ();
+		double cellSurface = plotSettings.cellSurface;
+		int nbImpact = generalParameters.cellImpacts.size ();
 		double impactSize = cellSurface / nbImpact; // to take into acount the surface of an impact
 													// point
 
@@ -688,7 +697,7 @@ public class SafeLightModel {
 										// (average distance from target cell / pathLength / competitor
 										// tree)
 										SafeInterceptionItem item;
-										item = intercept (plot, cell, tree, plotSettings, beam, impact, shift);
+										item = intercept (plotSettings, cell, tree, beam, impact, shift);
 										if (item != null) {
 											vctI.add (item);								
 										}
@@ -697,7 +706,7 @@ public class SafeLightModel {
 							}
 						}
 						//crop light interception method  1=Hi-sAFe 
-						if (settings.cropLightMethod) {
+						if (generalParameters.hisafeLightMethodForCrop) {
 							double L0; // competcell
 							double L;
 							double heightCrop;
@@ -863,7 +872,7 @@ public class SafeLightModel {
 
 							} else { // if intercepting item is a crop
 								//crop light interception method  1=Hi-sAFe 
-								if (settings.cropLightMethod) {
+								if (generalParameters.hisafeLightMethodForCrop) {
 									SafeCrop crop = sc.getCrop ();
 									double cropCoef = crop.getParExtinctionCoef ();
 									double leafDensity = (crop.getLai () + crop.getEai ()) / crop.getHeight ();
@@ -891,7 +900,7 @@ public class SafeLightModel {
 
 						}
 						//crop light interception method  1=Hi-sAFe 
-						if (settings.cropLightMethod) {
+						if (generalParameters.hisafeLightMethodForCrop) {
 							if (isDiffus)
 								cell.addDiffusePar (parNonInterceptedByTrees * beamDiffuseEnergy * energyConvFactor
 										/ nbImpact); // %
@@ -918,74 +927,7 @@ public class SafeLightModel {
 	}
 
 
-	/**
-	 * SafeInterceptionItem : Interception characteristics for a target cell, a given beam and a
-	 * given tree.
-	 * 
-	 * @author B. Courbaud - March 2000
-	 */
-	public static class SafeInterceptionItem implements Comparable {
-
-		private double lEnter;
-		private double pathLength;
-		private SafeTree tree;
-		private boolean trunk; // gt 28/05/2010
-		private SafeCell cell;
-		private ShiftItem shift;
-
-		public SafeInterceptionItem (double le, double pl, SafeCell c, SafeTree t, ShiftItem s, boolean tr) { // gt
-																												// 28/05/2010
-			lEnter = le;
-			pathLength = pl;
-			cell = c;
-			tree = t;
-			shift = s;
-			trunk = tr; // gt 28/05/2010
-		}
-
-		public int compareTo (Object b) {
-			SafeInterceptionItem tb = (SafeInterceptionItem) b;
-			double la = lEnter;
-			double lb = tb.getLEnter ();
-			if (la == lb) {
-				return 0;
-			} else if (la < lb) {
-				return 1;
-			} else {
-				return -1;
-			}
-		}
-
-		protected double getLEnter () {
-			return lEnter;
-		}
-
-		public double getPathLength () {
-			return pathLength;
-		}
-
-		public SafeCell getCell () {
-			return cell;
-		}
-
-		public SafeTree getTree () {
-			return tree;
-		}
-
-		public ShiftItem getShift () {
-			return shift;
-		}
-
-		public boolean isTrunk () {
-			return trunk;
-		} // gt 28/05/2010
-
-		public String toString () {
-			return "cell=" + cell.toString () + "tree=" + tree.toString () + " pathLength=" + pathLength + " lEnter="
-					+ lEnter + "trunk = " + trunk; // gt 28/05/2010
-		}
-
-	}
+	
 
 	/**
 	 * Returns the characteristics of an interception for a target cell, a given beam and a given
@@ -1003,8 +945,8 @@ public class SafeLightModel {
 	 * 
 	 **/
 
-	private static SafeInterceptionItem intercept (SafePlot plot, SafeCell cell, SafeTree tree,
-			SafePlotSettings plotSettings, SafeBeam beam, Vertex3d impact, // beam impact coordinate
+	private static SafeInterceptionItem intercept (SafePlotSettings plotSettings, SafeCell cell, SafeTree tree,
+			SafeBeam beam, Vertex3d impact, // beam impact coordinate
 			ShiftItem shift // for toric symetry
 	) {
 
@@ -1091,7 +1033,7 @@ public class SafeLightModel {
 
 
 			// if (delta < 0) : no interception
-			// if (delta == 0) : one interception : the beam is tangent to the crown -> pathlength=0
+			// if (delta == 0) : one interception : the beam is tangent to the crown (pathlength=0)
 
 			if (delta > 0) { // two interceptions
 				
@@ -1146,7 +1088,7 @@ public class SafeLightModel {
 			double twoA = 2 * A; // OPTIMIZATION fc
 
 			// if (delta < 0) : no interception
-			// if (delta == 0) : one interception : the beam is tangent to the crown -> pathlength=0
+			// if (delta == 0) : one interception : the beam is tangent to the crown (pathlength=0)
 
 			if (delta > 0) { // two interceptions
 				l1 = (-B + sqrtDelta) / (twoA); // biggest solution
@@ -1231,7 +1173,7 @@ public class SafeLightModel {
 
 	/**
 	 * Creation of X * X points of impacts for process Lighting default value nbImpactMultiplication
-	 * = 1 (1 points) if = 2 -> 4 points if = 3 -> 9 points
+	 * = 1 (1 points) = 2 (4 points)  = 3 (9 points)
 	 */
 	public static void createCellImpacts (SafePlotSettings plotSettings, SafeGeneralParameters safeSettings,
 			int nbImpact) {
@@ -1264,10 +1206,12 @@ public class SafeLightModel {
 	 * relative coordinates of the neigbour crop potentially intercepting the beam.
 	 * 
 	 **/
-	public static void createShadingMasks (SafeBeamSet<SafeBeam> beamSet, SafeGeneralParameters safeSettings,
-			SafePlotSettings plotSettings, double heightCropMax) {
+	public static void createShadingMasks (SafeBeamSet<SafeBeam> beamSet, 
+											SafeGeneralParameters safeSettings,
+											SafePlotSettings plotSettings, 
+											double heightCropMax) {
 
-		if (safeSettings.cropLightMethod && (heightCropMax > 0)) {	//crop light interception method  1=Hi-sAFe 
+		if (safeSettings.hisafeLightMethodForCrop && (heightCropMax > 0)) {	//crop light interception method  1=Hi-sAFe 
 			// plotSettings
 			double treeLineOrientation = Math.toRadians (plotSettings.treeLineOrientation);
 			double slopeAspect = Math.toRadians (plotSettings.slopeAspect);
@@ -1477,5 +1421,75 @@ public class SafeLightModel {
 		return nbImpact;
 	}
 
+	
+	
+	/**
+	 * SafeInterceptionItem : Interception characteristics for a target cell, a given beam and a
+	 * given tree.
+	 * 
+	 * @author B. Courbaud - March 2000
+	 */
+	public static class SafeInterceptionItem implements Comparable {
+
+		private double lEnter;
+		private double pathLength;
+		private SafeTree tree;
+		private boolean trunk; // gt 28/05/2010
+		private SafeCell cell;
+		private ShiftItem shift;
+
+		public SafeInterceptionItem (double le, double pl, SafeCell c, SafeTree t, ShiftItem s, boolean tr) { // gt
+																												// 28/05/2010
+			lEnter = le;
+			pathLength = pl;
+			cell = c;
+			tree = t;
+			shift = s;
+			trunk = tr; // gt 28/05/2010
+		}
+
+		public int compareTo (Object b) {
+			SafeInterceptionItem tb = (SafeInterceptionItem) b;
+			double la = lEnter;
+			double lb = tb.getLEnter ();
+			if (la == lb) {
+				return 0;
+			} else if (la < lb) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
+
+		protected double getLEnter () {
+			return lEnter;
+		}
+
+		public double getPathLength () {
+			return pathLength;
+		}
+
+		public SafeCell getCell () {
+			return cell;
+		}
+
+		public SafeTree getTree () {
+			return tree;
+		}
+
+		public ShiftItem getShift () {
+			return shift;
+		}
+
+		public boolean isTrunk () {
+			return trunk;
+		} // gt 28/05/2010
+
+		public String toString () {
+			return "cell=" + cell.toString () + "tree=" + tree.toString () + " pathLength=" + pathLength + " lEnter="
+					+ lEnter + "trunk = " + trunk; // gt 28/05/2010
+		}
+
+	}
 }// end of the Class
 

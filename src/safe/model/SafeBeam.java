@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -51,72 +57,81 @@ import capsis.lib.samsaralight.SLBeam;
  * A light beam (direct or diffuse used in the tree light interception process )
  *
  * @see SafeBeamSet
- * @author B. Courbaud CEMAGREF Grenoble - January 2000 - Benoit.Courbaud@grenoble.cemagref.fr
+ * @author : B. Courbaud CEMAGREF Grenoble - January 2000 - Benoit.Courbaud@grenoble.cemagref.fr
  */
 public class SafeBeam extends SLBeam {
  
-	private static final long serialVersionUID = 1L;
-	private float diffuseEnergy;	//=(fraction of diffuse radiation allocated to this beam)/(sin(heightAngle)) 	(units : m-2 of beam section)
-	private float directEnergy;		//=(fraction of direct radiation allocated to this beam)/(sin(heightAngle)) 	(units : m-2 of beam section)
-	private float infraRedEnergy;	//=(fraction of infra-red radiation allocated to this beam)/(sin(heightAngle)) 	(units : m-2 of beam section)
+	/** fraction of diffuse radiation allocated to this beam (m-2 of beam section) */
+	private float diffuseEnergy;
+	/** fraction of direct radiation allocated to this beam (m-2 of beam section) */
+	private float directEnergy;	
+	/** fraction of infra red radiation allocated to this beam (m-2 of beam section) */
+	private float infraRedEnergy;	
+	/** for each CellImpact, a mask of potentially shading neighbor cells */
+	private Vector<SafeShadingMask> shadingMasks;	
 
-	private Vector<SafeShadingMask> shadingMasks;		//for each CellImpact, a mask of potentially shading neighbor crops.
+	/**
+	 * Constructor
+	 *
+	 * @param azimuth beam azimuth in radiant
+	 * @param height beam heightAngle in radiant
+	 * @param diffuseEnergy beam diffuse energy in m-2 of beam section
+	 * @param directEnergy beam direct energy in m-2 of beam section
+	 * @param infraRedEnergy beam infraRed energy in m-2 of beam section
+	 * @param reativelEnergy beam relative energy 
+	 */
+	public SafeBeam (double azimuth, double height, float diffuseEnergy, float directEnergy, float infraRedEnergy, float reativelEnergy) {
 
-	public SafeBeam (double a, double h, float difE, float dirE, float ire, float convFactor) {
-
-		super(a, h, convFactor, false);
+		super(azimuth, height, reativelEnergy, false);
 		
 		//lightening a surface of unit projection on horizontal and energy of a beam lightening a unit
 		//horizontal surface (=1 when no slope)
-		diffuseEnergy=difE;
-		directEnergy=dirE;
-		infraRedEnergy=ire;
+		this.diffuseEnergy=diffuseEnergy;
+		this.directEnergy=directEnergy;
+		this.infraRedEnergy=infraRedEnergy;
 		shadingMasks = new Vector<SafeShadingMask>();
-
 	}
-
-	public float getDiffuseEnergy () {
-		return diffuseEnergy;
-	}
-
-	public float getDirectEnergy () {
-		return directEnergy;
-	}
-
-	public void setDirectEnergy (float dirE) {
-		directEnergy=dirE;
-	}
-
-	public float getInfraRedEnergy () {
-		return infraRedEnergy;
-	}
-
-	public void setInfraRedEnergy (float ire) {
-		infraRedEnergy=ire;
-	}
-
-	public void resetDirectEnergy (){
-		directEnergy=0;
-	}
-
-	public void addShadingMask (SafeShadingMask mask){	
-		shadingMasks.add(mask);
-	}
-
-	public Vector<SafeShadingMask> getShadingMasks() {	
-		return shadingMasks;
-	}
-
-	public void removeShadingMasks (){
-		shadingMasks.removeAllElements();
-	}
-
+	/**
+	 * Return the beam diffuse energy (m-2 of beam section)
+	 **/
+	public float getDiffuseEnergy () {return diffuseEnergy;}
+	/**
+	 * Return the beam direct energy (m-2 of beam section)
+	 **/
+	public float getDirectEnergy () {return directEnergy;}
+	/**
+	 * Return the beam infra red energy (m-2 of beam section)
+	 **/
+	public float getInfraRedEnergy () {return infraRedEnergy;}
+	/**
+	 * Set beam diffuse energy (m-2 of beam section)
+	 **/
+	public void setDiffuseEnergy (float dirE) {directEnergy=dirE;}
+	/**
+	 * Set beam direct energy (m-2 of beam section)
+	 **/
+	public void setDirectEnergy (float dirE) {directEnergy=dirE;}
+	/**
+	 * Set beam infra red energy (m-2 of beam section)
+	 **/
+	public void setInfraRedEnergy (float ire) {infraRedEnergy=ire;}
+	/**
+	 * Return the ShadingMark collection (a mask of potentially shading neighbor cells)
+	 **/
+	public Vector<SafeShadingMask> getShadingMasks() {	return shadingMasks;}
+	/**
+	 * Remove all elements of the ShadingMark collection (a mask of potentially shading neighbor cells)
+	 **/
+	public void removeShadingMasks (){shadingMasks.removeAllElements();}
+	/**
+	 * Add an elements to the ShadingMark collection (a mask of potentially shading neighbor cells)
+	 * @param mask The SafeShadingMask object to add to the collection 
+	 **/
+	public void addShadingMask (SafeShadingMask mask){shadingMasks.add(mask);}
 	/**
 	 * Clear the neighbourCells collection
 	 */
-	public void removeAllNeighbourCell () {
-		sites.clear ();
-	}
+	public void removeAllNeighbourCell () {sites.clear ();}
 
 	public String toString(){
 		NumberFormat nf = NumberFormat.getNumberInstance();

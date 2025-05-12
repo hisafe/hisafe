@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -49,260 +55,369 @@ import capsis.defaulttype.Species;
 /**
  * Properties for tree species.
  *
- * @author : Isabelle LECOMTE  -  INRAE Montpellier France - (July 2002)
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
 
 public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// fc - 29.7.2004 + fc - 15.11.2004 - Species
-
-	private static final long serialVersionUID = 1L;
 	
-	/*------------- CROWN SHAPE AND ALLOMETRIC PARAMETERS -------------------------*/
+	/** SafeTreeSpecies name */
 	private String name; 						//name of tree species name
+	/** SafeTreeSpecies file name */
 	private String fileName; 					//name of tree species file name
-	private int crownShape;						// 1=elipsoid 2=paraboloid
-	private double ellipsoidTruncationRatio;	// for truncated ellipsoid (0=full ellipsoid)
-	private double heightDbhAllometricCoeffA;	//height = a * dbh^b
+	
+	//ALLOMETRY
+	/** Crown shape 1=ellipsoid 2=paraboloid */
+	private int crownShape;						
+	/** Ratio for truncated ellipsoid (0=full ellipsoid) */
+	private double ellipsoidTruncationRatio;	
+	/** Height/Dbh allometric relationship coefficient */
+	private double heightDbhAllometricCoeffA;	
+	/** Height/Dbh allometric relationship coefficient */
 	private double heightDbhAllometricCoeffB;
-	private double crownDbhAllometricCoeffA;	//crownRadius = a * dbh + b (if crownShape = 1 ellipsoid)
+	/** Crown/Dbh allometric relationship coefficient */
+	private double crownDbhAllometricCoeffA;
+	/** Crown/Dbh allometric relationship coefficient */
 	private double crownDbhAllometricCoeffB;
-	private double stemDbhAllometricCoeffA;		//Ln(stemvolume) = a * ln(dbh) - b * ln(height) + c
+	/** Stem/Dbh allometric relationship coefficient */
+	private double stemDbhAllometricCoeffA;		
+	/** Stem/Dbh allometric relationship coefficient */
 	private double stemDbhAllometricCoeffB;
+	/** Stem/Dbh allometric relationship coefficient */
 	private double stemDbhAllometricCoeffC;
+	/** Dbc/Dbh allometric relationship coefficient */
 	private double dcbFromDbhAllometricCoeff;
+	/** Stump/Stem biomass ratio */
 	private double stumpToStemBiomassRatio;
-	
-	/*-------------  ALLOMETRIC PARAMETERS FOR ROOTS C ALLOCATION -------------------------*/
-	private double 	cRAreaToFRLengthRatio;	//Coarse Root Section Area To Fine Root Length Ratio (m2.m-1)
-	private double  initialTargetLfrRatio;	//initial Leaf to FineRoots ratio
-
-	/*---------------------PHENOLOGY VEGETATIVE (1 or 2) --------------------------------*/
-	private int phenologyType;						//1=cold deciduous 2=evergreen
-	private int nbCohortMax;						//number of leaves cohort for evergreen trees
-	private int budBurstTempAccumulationDateStart;	//date to start accumulation of temperature for budburst (julian day)
-	private double budBurstTempThreshold;	 		// threshold of effective temperature for cumulating degree day (in degree)
-	private double budBurstTriggerTemp;			    //Accumulated temperature to trigger budburst (degree-day)
-	private int leafExpansionDuration;				//date of end of leaf expansion (in no stress condition) (julian day)
-	private int budBurstToLeafFallDuration;			// number of day to compute mean T to trigger leaf fall (day)	// gt - 09.10.2009
-	private int leafFallDuration;					//usual duration of leaf fall (days)
-	private double leafFallFrostThreshold;			//threshold for frost sensibility (degrees)
-	//private int budBurstDelayAfterPollarding;		//number of days  to delay budburst if pollarding (nbr day)
-
-	/*--------------------- PHENOLOGY COLD REQUIREMENT ---------------------------*/
-	private boolean coldRequirement;				//if true : cold requiremnt phenology 
-	private int coldTempAccumulationDateStart;	    	//date to start accumulation of cold temperature for budburst (julian day)
-	private double coldTempThreshold;	 				//Threshold of effective temperature for cumulating cold requierement  (in degree)
-	private double coldBudBurstTriggerTemp;			    //Accumulated cold temperature to trigger budburst (degree-day)
-	private double coldBudBurstTriggerParamA;			//Parameter A to calculate the chilling unit
-	private double coldBudBurstTriggerParamB;			//Parameter B to calculate the chilling unit
-	private double coldBudBurstTriggerParamC;			//Parameter C to calculate the chilling unit
-	private double coldBudBurstTriggerParamE;			//Parameter E to calculate the chilling unit
-
-	/*---------------------FRUIT PHENOLOGY HEAT REQUIREMENT ---------------------------*/
-	private boolean fruitCompartment;				//if true : fruit compartment 
-	private int floweringTempAccumulationDateStart;	//date to start accumulation of temperature for flowering (julian day)
-	private double floweringTempThreshold;			// threshold of effective temperature for cumulating degree day (in degree)
-	private double floweringTriggerTemp;			//accumulated temperature to trigger flowering (degree-day)
-	private double fruitSettingTriggerTemp;			//accumulated temperature to trigger fruit setting (degree-day)
-	private double fruitGrowthTriggerTemp;			//accumulated temperature to trigger fruit growth (degree-day)
-	private double fruitVeraisonTriggerTemp;		//accumulated temperature to trigger fruit veraison (degree-day)
-	
-	/*---------------------BNF PHENOLOGY ---------------------------------------------*/
-	private boolean nitrogenFixation;				//if true : yes
-	private int bnfTempAccumulationDateStart;		//date to start accumulation of temperature for BNF (julian day)
-	private double bnfTempThreshold;	 		    //threshold of effective temperature for cumulating degree day for BNF (in degree)
-	private double bnfStartTriggerTemp;			   	//accumulated temperature to trigger BNF start (degree-day)
-	private int bnfExpansionDuration;			//duration of BNF expension (days)
-	private int bnfStartToEndDuration;			//duration of BNF start to end (days)
-	
-	/*---------------------- LIGHT MODULE PARAMETERS ----------------------------------*/
-	private double woodAreaDensity;	// virtual lad for winter interception by tree branches m2 m-3
-	private double leafParAbsorption;	// no unit : absorption coefficient for Par radiation
-	private double leafNirAbsorption;	// no unit : absorption coefficient for near infra-red radiation
-	private double clumpingCoef;		// no unit : correction parameter to account for leaf clumping
-
-	/*---------------- MICROCLIMATE PARAMETERS ----------------------------------------*/
-	private double stemFlowCoefficient;	    //Coefficient of variation of the stemflow with the LAI
-	private double stemFlowMax; 			//Maximum stemflow fraction
-	private double wettability; 			//Wettability  (mm lai-1)
-
-	/*---------------------- TRANSPIRATION PARAMETERS ----------------------------*/
-	private double transpirationCoefficient;	
-
-	/*---------------------- CALLOCATION MODULE PARAMETERS ----------------------------*/
-	/* G.Vincent  VERSION */
-
-	//LEAF Light use efficiency MAX
-	private double leafLueMax;				// gr C MJ-1 (PAR)
-	private int leafAgeForLueMax;
-	private double leafPhotosynthesisEfficiencyTimeConstant;	// these two parameters are use for computing LUE according to time from budburst (formalism from the model "noyer formel")
-	private double lightCompetitionIndexMin;	// Min of LCI to stop tree growth
-	
-	// the target leaf area depends on crown volume : leafArea = a*crownVolume^b
+	/** Coarse root area to fine root length ratio */
+	private double cRAreaToFRLengthRatio;
+	/** Initial leaf to FineRoots ratio  */
+	private double initialTargetLfrRatio;	
+	/** LeafArea/CrownVol allometric relationship coefficient */
 	private double leafAreaCrownVolCoefA;
+	/** LeafArea/CrownVol allometric relationship coefficient */
 	private double leafAreaCrownVolCoefB;
-
-	private double leafMassArea;				// Leaf dry mass per unit leaf area (kg m-2)
-	private double leafSenescenceRate;			//senescence
+	/** Leaf dry mass per unit leaf area (kg m-2) */
+	private double leafMassArea;		// 
+	/** Leaf carbon content (g C g total dry biomass) */
+	private double leafCarbonContent;	//
+	/** Average branch and stem density (kg m-3) */
+	private double woodDensity; 		//
+	/** Assuming a fixed ratio of branch volume to crown volume. (cm3 cm-3) */
+	private double branchVolumeRatio;	//
+	/** proportion of C in wood dry yield % */
+	private double woodCarbonContent;   
 	
-	// To limit tree daily increment in meters
-	public  double maxCrownRadiusInc; 
+	/** Maximum daily height increment (m)*/
 	public  double maxHeightInc; 
+	/** Maximum daily dbh increment (m) */
 	public  double maxDbhInc;
+	/** Maximum daily crown radius increment (m) */
+	public  double maxCrownRadiusInc;
 	
-	//carbon conversion
-	private double leafCarbonContent;	//g C g total dry biomass
-	private double woodDensity; 		//Average branch and stem density (arbitrarily set to 500 kg per cubic meter) (kg*m-3)
-	private double branchVolumeRatio;	//Assuming a fixed ratio of branch volume to crown volume. (cm3 cm-3)	
-	private double woodCarbonContent;   //proportion of C in wood dry yield %
-	
+	//PHENOLOGY
+	/** Phenology type 1=cold deciduous 2=evergreen  */
+	private int phenologyType;						
+	/** Number of leaves cohorts for evergreen trees  */
+	private int nbCohortMax;							
+	/** Date to start accumulation of temperature for budburst (julian day)  */
+	private int budBurstTempAccumulationDateStart;
+	/** Threshold of effective temperature for cumulating budburst degree day (degrees)  */
+	private double budBurstTempThreshold;	 		
+	/** Accumulated temperature to trigger budburst (degrees) */
+	private double budBurstTriggerTemp;				
+	/** Duration of leaf expansion (in no stress condition)  (days) */
+	private int leafExpansionDuration;				
+	/** Duration between budburst and leaf fall (days) */
+	private int budBurstToLeafFallDuration;			 
+	/** Duration of leaf fall (days) */
+	private int leafFallDuration;				
+	/** Thresold for frost sensibility (degrees) */
+	private double leafFallFrostThreshold;			
+	/** Leaf senescence rate (ratio) */
+	private double leafSenescenceRate;			
+	/** Activation of cold requirement phenology  */
+	private boolean coldRequirement;				
+	/** Date to start accumulation of cold temperature for budburst (julian day) */
+	private int coldTempAccumulationDateStart;	    
+	/** Threshold of effective temperature for cumulating cold requierement  (degrees) */
+	private double coldTempThreshold;	 			
+	/** Accumulated cold temperature to trigger budburst (degrees) */
+	private double coldBudBurstTriggerTemp;			
+	/** Chilling unit calculation parameter */
+	private double coldBudBurstTriggerParamA;	
+	/** Chilling unit calculation parameter */
+	private double coldBudBurstTriggerParamB;		
+	/** Chilling unit calculation parameter */
+	private double coldBudBurstTriggerParamC;	
+	/** Chilling unit calculation parameter */
+	private double coldBudBurstTriggerParamE;		
 
+	// LIGHT MODULE 
+	/** Leaf absorption coefficient for PAR radiation */
+	private double leafParAbsorption;		// no unit
+	/** Leaf absorption coefficient for near infra-red radiation  */
+	private double leafNirAbsorption;
+	/** Virtual leaf area density for winter light interception by tree branches (m2 m-3) */
+	private double woodAreaDensity;			
+	/** Correction parameter for leaf clumping  */
+	private double clumpingCoef; 		
+
+	// TRANSPIRATION
+	/** Scaling factor for transpiration */
+	private double transpirationCoefficient;	
+	/** Coefficient of variation of the stemflow with the LAI */
+	private double stemFlowCoefficient;		
+	/** Maximum fraction of rain going to stemflow (ratio) */
+	private double stemFlowMax; 				
+	/** Wettability of leaves, for calculating interception of rain by tree canopy  (mm lai-1) */
+	private double wettability; 				
+
+	// CALLOCATION MODULE PARAMETERS
+	/**Maximum potential light use efficiency (g C MJ-1) */
+	private double leafLueMax;				
+	/** Leaf age for lue max (days) */
+	private int leafAgeForLueMax;			 
+	/** Used to compute LUE according to time after budburst */
+	private double leafPhotosynthesisEfficiencyTimeConstant;
+	/**  Min of light competition index to stop tree growth */
+	private double lightCompetitionIndexMin;	
+	/**  Target non-structural carbon pool as a fraction of the tree woody carbon pool  */
+	private double targetNSCFraction;		
+	/**  Maximum daily fraction of non-structural carbon (NSC) that can be reallocated from the NSC pool and towards leaf expansion*/
+	private double maxNSCUseFraction;		
+	/**  Limits daily amount of non-structural carbon (NSC) that can be reallocated from the NSC pool and towards leaf expansion */
+	private double maxNSCUseFoliageFraction;			
+	/**  Level of above ground imbalance above which remobilisation of reserves is triggered */
+	private double imbalanceThreshold;  
+		
 
 	//NITROGEN Balance
 	//Functional optimum N/C concentrations
 	// arbitrary value see physiology of woody plants p 304 etc. for some estimates of total N per plant part
-	private double  optiNCBranch;
-	private double  optiNCCoarseRoot;
-	private double  optiNCFineRoot;
-	private double  optiNCFoliage;
+	/**  Functional optimum N/C ratio in stem */
 	private double  optiNCStem;
+	/**  Functional optimum N/C ratio in stump */
 	private double  optiNCStump;
+	/**  Functional optimum N/C ratio in branches */
+	private double  optiNCBranch;
+	/**  Functional optimum N/C ratio in foliage */
+	private double  optiNCFoliage;	
+	/**  Functional optimum N/C ratio in coarse roots */
+	private double  optiNCCoarseRoot;
+	/**  Functional optimum N/C ratio in fine roots */
+	private double  optiNCFineRoot;
+	/**  Functional optimum N/C ratio in fruits */
 	private double  optiNCFruit;
-	private double  targetNCoefficient; 		//coefficient applied to optimum to defined target concentration
-	private double  luxuryNCoefficient; 		//coefficient applied to optimum to defined maximum  concentration
-	private double  leafNRemobFraction;			//Fraction of Nitrogen recovered from dying leaves
-	private double  rootNRemobFraction;			//Fraction of Nitrogen recovered from dying fine roots
+	/**  Coefficient applied to optimum N content to define target N content */
+	private double  targetNCoefficient; 		
+	/**  Coefficient applied to optimum N content to define maximum N content  */
+	private double  luxuryNCoefficient; 		
+	/**  Fraction of leaf nitrogen content recovered from dying leaves each day during senesence */
+	private double  leafNRemobFraction;			
+	/**  Fraction of fine root nitrogen content recovered from dying fine roots each day during senesence */
+	private double  rootNRemobFraction;		
 
-	//others
-	private double maxNSCUseFoliageFraction;		//Relative pool size, arbitrary
-	private double maxNSCUseFraction;				//parameter to smoothen variation in NSC and avoid NSC to become 0
-	private double targetNSCFraction;
+	//ROOT GROWTH MODULE
+	/** Fine root length per unit dry mass (m g-1 of dry matter) */
+	private double specificRootLength;			 
+	/** Threshold for root colonisation (m m-3) */
+	private double colonisationThreshold;		 	
+	/** Fraction of carbon allocated  for root colonisation (ratio) */
+	private double colonisationFraction;		 	 //
+	/**  Horizontal preference in root colonisation process (ratio) */
+	private double horizontalPreference;		
+	/**  Governs the fraction of vertical root colonisation to upward vs. downward voxels (ratio) */
+	private double geotropismFactor;	
+	/**  Effect of source sink distance for root proliferation (dimensionless) */
+	private double sinkDistanceEffect;				
+	/**  Effect of water efficiency for root proliferation (dimensionless) */
+	private double localWaterUptakeFactor;		 	
+	/**  Effect of nitrogen efficiency for root proliferation  (dimensionless) */
+	private double localNitrogenUptakeFactor;	
+	/**  Mean lifespan of fine roots NOT in anoxic voxel for senescence calculation (days) */
+	private double fineRootLifespan;	 		
+	/**  Mean lifespan of fine roots in anoxic voxel for senescence calculations (days) */
+	private double fineRootAnoxiaLifespan;	 		
+	/** Coarse root topology shape at initialization 1: surface then down; 2: taproot, 3: ray from stump */
+	private int    coarseRootTopologyType;		
+	/** After this number of days of saturation in a voxel, anoxia will kill the coarse root and all downstream roots. */
+	private int coarseRootAnoxiaResistance;
 	
-	private double imbalanceThreshold;      	//level of imbalance above which remobilisation of reserves is triggered
+	
+	// WATER EXTRACTION MODULE
+	/** Fine roots diameters (cm) */
+	private double treeRootDiameter;						
+	/** Parameter for transpiration reduction factor following Campbell */
+	private double treeAlpha;
+	/** Minimum tree transpiration potential (cm) */
+	private double treeMinTranspirationPotential;			
+	/** Maximum tree transpiration potential (cm) */
+	private double treeMaxTranspirationPotential;			
+	/** Fine root axial conductance of water  (cm cm-1) */
+	private double treeRootConductivity;		
+	/** Potential drop needed to enter the root expressed as a % of soil water potential (%) */
+	private double treeBufferPotential;		
+	/** Longitudinal resistance factor for water flow in coarse roots from voxel to stem base  (mm.cm-1.m-1) */
+	private double treeLongitudinalResistantFactor;		
+	/** The relative influence of dry voxels on the calculation of the averaged soil water potential perceived by the plant  */
+	public  double treeHarmonicWeightedMean ;
+	
+	// FRUIT MODULE 
+	/** Activation of fruit compartment  */
+	private boolean fruitCompartment;				
+	/** Date to start accumulation of temperature for flowering (julian day) */
+	private int floweringTempAccumulationDateStart;	
+	/** Threshold of effective temperature for cumulating flowering degree day (degrees) */
+	private double floweringTempThreshold;			
+	/** Accumulated temperature to trigger flowering (degrees) */
+	private double floweringTriggerTemp;		   
+	/** Accumulated temperature to trigger fruit setting (degrees)*/
+	private double fruitSettingTriggerTemp;		
+	/** Accumulated temperature to trigger fruit growth (degrees) */
+	private double fruitGrowthTriggerTemp;			
+	/** Accumulated temperature to trigger fruit veraison (degrees) */
+	private double fruitVeraisonTriggerTemp;	
+	/** Temperature above witch fruit production is affected by heat (degrees) */
+	private double fruitHeatStressTemperatureMin;	
+	/** Temperature above witch fruit production is stopped by heat (degrees) */
+	private double fruitHeatStressTemperatureMax;	
+	/** Temperature below witch fruit production is affected by frost  (degrees) */
+	private double fruitFrostStressTemperatureMin;		
+	/** Temperature below witch fruit production is stopped by fros (degrees) */
+	private double fruitFrostStressTemperatureMax;		
+	
+	/** Maximum daily fruit growth (g DM) */
+	private double fruitMaxDryMatterAllocation;			
+	/** Above ground carbon fraction allocated to fruit (ratio) */
+	private double fruitAllocationFraction;			
+	/** Date to start accumulation of fruit carbon stress (julian day) */
+	private int fruitCarbonStressDateStart;				
+	/** Conversion rate from fruit dry to fresh matter  */
+	private double fruitDryToFreshMatterWeight;			
+	/** Fruit dry mater density (m2 / tonnes DM) */
+	private double fruitDryMaterDensity;			
+	/** Fruit fresh matter weight to oil concentration conversion parameter */
+	private double fruitOilConversionCoeffA;			//
+	/** Fruit fresh matter weight to oil concentration conversion parameter */
+	private double fruitOilConversionCoeffB;
+	/** Fruit fresh matter weight to oil concentration conversion parameter */
+	private double fruitOilConversionCoeffC;
+	/** Fruit oil density (ratio) */
+	private double fruitOilDensity;					
+	/** First year of the tree species fruiting  */
+	private int fruitFirstYear;						
+	/** Fruit number related to leaf area in m2  */
+	private double fruitLeafArea;					
+	/** ratio C labile / C lignus organs */
+	private double fruitingConfortThreshold;			
+	/** Ratio of fruitingConfortThreshold inhibate flowering */
+	private double fruitingTotalStressThreshold;		
+	/**  Light use efficiency MAX gr C MJ-1 (PAR) */
+	private double fruitLueMax;				
+	/** Fruit oil density (ratio) */
+	private int fruitAgeForLueMax;
 
+	// NITROGEN FIXATION MODULE 
+	/** Activation of nitrogen fixation BNF  */
+	private boolean nitrogenFixation;				
+	/** Date to start accumulation of temperature for BNF (julian day) */
+	private int bnfTempAccumulationDateStart;		
+	/** Threshold of effective temperature for cumulating degree day for BNF (degrees) */
+	private double bnfTempThreshold;	 		    
+	/** Accumulated temperature to trigger BNF start (degrees) */
+	private double bnfStartTriggerTemp;			   	
+	/** Duration of BNF expansion (days) */
+	private int bnfExpansionDuration;			
+	/** Duration of BNF start to end (days) */
+	private int bnfStartToEndDuration;	
+	/**  Maximum depth for nitrogen fixation (m) */
+	private double bnfMaxDepth;//
+	private double bnfNodulationInhibitionThreshold;	
+	private double bnfCardinalTemp1;
+	private double bnfCardinalTemp2;	
+	private double bnfCardinalTemp3;		 
+	private double bnfCardinalTemp4;	
+	private double bnfFullNoduleActivityThreshold;
+	private double bnfNullNoduleActivityThreshold;
+	/** Air temperature threshold for BNF potential activity to be increased by air temperature (degree) */
+	private double bnfAirTemperatureThreshold; 		
+	private double bnfOptimalTemperatureDifference;  //degrees 
+	private double bnfFixMaxVeg;
+	private double bnfFixMaxRepro;
 	
 	//STRESSES EFFECT ON Root Shoot 
-	private boolean rsBelowGroundStressActivation ;		//effet of below ground stress (water and nitrogen) in shoot root allocation 0=no 1=yes
-	private boolean rsLightStressActivation;			//effet of light competition in shoot root allocation 0=no 1=yes
-	private boolean rsNitrogenExcessStressActivation ;	//effet of nitrogen excess in shoot root allocation 0=no 1=yes
-	private int rsBelowGroundStressMethod;				//1=rsWaterStress * rsNitrogenStress   2=Min(rsWaterStress,rsNitrogenStress)
-	private double rsNoStressResponsiveness;			//values between 0 and 1
-	private double rsWaterStressResponsiveness;			//governs amplitude of response in shoot root allocation to water stress
-	private double rsNitrogenStressResponsiveness;		//governs amplitude of response in shoot root allocation to nitrogen stress
+	/** Activation of effect of below ground stress (water and nitrogen) in shoot root allocation s */
+	private boolean rsBelowGroundStressActivation ;		//
+	/** Activation of effect of light competition in shoot root allocation  */
+	private boolean rsLightStressActivation;			
+	/** Activation of effect of nitrogen excess in shoot root allocation  */
+	private boolean rsNitrogenExcessStressActivation ;	
+	/** Root allocation stress calculation method 1=rsWaterStress*rsNitrogenStress 2=Min(rsWaterStress,rsNitrogenStress) */
+	private int rsBelowGroundStressMethod;			
+	/** Governs amplitude of response in shoot-root allocation when there is no stress */
+	private double rsNoStressResponsiveness;		
+	/** Governs amplitude of response in shoot root allocation to water stress */
+	private double rsWaterStressResponsiveness;			
+	/** Governs amplitude of response in shoot root allocation to nitrogen stress */
+	private double rsNitrogenStressResponsiveness;	
+	/** Maximum daily change (positive or negative) in the target leaf-fine root ratio */
 	private double maxTargetLfrRatioDailyVariation;
+	/** Target daily upwards drift in the target leaf-fine root ratio */
 	private double targetLfrRatioUpperDrift;
+	/** Minimum target leaf-fine root ratio */
 	private double minTargetLfrRatio;
+	/** Maximum target leaf-fine root ratio */
 	private double maxTargetLfrRatio;	
 	
 	//STRESSES EFFECT ON LUE
-	private int lueStressMethod;						//1=lueWaterStress * lueNitrogenStress 2=Min(lueWaterStress,lueNitrogenStress)
-	private double lueWaterStressResponsiveness;		//governs amplitude of response in LUE to water stress
-	private double lueNitrogenStressResponsiveness;		//governs amplitude of response in LUE to nitrogen stress
-	private double lueTemperatureStressTMin;			//temp below which temperature stress affecting lue is = 0  (degree)
-	private double lueTemperatureStressTMax;			//temp above which temperature stress affecting lue is = 0 (degree)
-	private double lueTemperatureStressTOptMin;			//temp above which temperature stress affecting lue is optimal (degree)
-	private double lueTemperatureStressTOptMax;			//temp below which temperature stress affecting lue is optimal (degree)
+	/** LUE stress calculation method 1=lueWaterStress*lueNitrogenStress 2=Min(lueWaterStress,lueNitrogenStress) */
+	private int lueStressMethod;					
+	/** Governs amplitude of response in LUE to water stress */
+	private double lueWaterStressResponsiveness;		
+	/** Governs amplitude of response in LUE to nitrogen stress */
+	private double lueNitrogenStressResponsiveness;	
+	/** Temperature below which temperature stress affecting lue is = 0  (degrees) */
+	private double lueTemperatureStressTMin;		
+	/** Temperature above which temperature stress affecting lue is = 0 (degrees) */
+	private double lueTemperatureStressTMax;		
+	/** Temperature above which temperature stress affecting lue is optimal (degrees) */
+	private double lueTemperatureStressTOptMin;			
+	/** Temperature below which temperature stress affecting lue is optimal (degrees) */
+	private double lueTemperatureStressTOptMax;			
 	
 	//OTHER STRESS EFFECT
-	private double senWaterStressResponsiveness;		//governs amplitude of response in SENESCENCE to water stress
-	private double senNitrogenStressResponsiveness;		//governs amplitude of response in SENESCENCE to nitrogen stress	
-	private double leafFrostStressTemperatureMin;		//temp below which leaf area is not affected by frost (degree)
-	private double leafFrostStressTemperatureMax;		//temp below which leaf area is totally affected by frost (defoliation) (degree)
+	/** Governs amplitude of response in SENESCENCE to water stress */
+	private double senWaterStressResponsiveness;	
+	/** Governs amplitude of response in SENESCENCE to nitrogen stress */
+	private double senNitrogenStressResponsiveness;
+	/** Temperature below which leaf area is not affected by frost (degrees) */
+	private double leafFrostStressTemperatureMin;
+	/** Temperature below which leaf area is totally affected by frost (defoliation) (degrees) */
+	private double leafFrostStressTemperatureMax;	
 
-	//CO2 effect
-	private boolean co2EffectOnLueActivation;				//CO2 Effect on LUE activation (True/False) 
-	private boolean co2EffectOnWueActivation;				//CO2 Effect on WUE activation (True/False) 
-	private double co2EffectOnLueHalfSaturationConstant;	//CO2 Effect on LUE (Light use efficiency) : half saturation constant (ppm) 
-	private double co2EffectIntrinsicWueSensitivity;		//CO2 intrinsic effect on WUE (Water use efficiency): Sensitivity 
-	private double co2ReferenceValue;						//CO2 Effect : CO2 reference value (ppm) 
+	//CO2 EFFECT
+	/** CO2 Effect on LUE activation  */
+	private boolean co2EffectOnLueActivation;				
+	/** CO2 Effect on WUE activation  */
+	private boolean co2EffectOnWueActivation;				
+	/** CO2 Effect on LUE (Light use efficiency) : half saturation constant (ppm)  */
+	private double co2EffectOnLueHalfSaturationConstant;	
+	/** CO2 intrinsic effect on WUE (Water use efficiency) sensitivity  */
+	private double co2EffectIntrinsicWueSensitivity;		
+	/** CO2 reference value (ppm)  */
+	private double co2ReferenceValue;					
  
-
-
-	/*---------------------- FINE ROOT GROWTH MODULE PARAMETERS ----------------------*/
-	private int coarseRootAnoxiaResistance;			// days for coarse root deth in saturation
-	private double specificRootLength;			 	//m g-1 of dry matter
-	private double fineRootLifespan;	 			//number of days for senescence calculation
-	private double fineRootAnoxiaLifespan;	 		//number of days for senescence in case of anoxia
-	private double colonisationThreshold;		 	//alpha : Threshold for root colonisation (m m-3)
-	private double colonisationFraction;		 	//Fraction of carbon allocated  for root colonisation (0-1)
-	private double horizontalPreference;			//lambda : horizontal preference in root colonisation process (dimensionless)
-	private double geotropismFactor;				//eta : geotropism factor (dimensionless)
-	private double localWaterUptakeFactor;		 	//phi : weighting factor for local water uptakes  (dimensionless)
-	private double sinkDistanceEffect;	 		 	//rho : effect of source sink distance 
-	private double localNitrogenUptakeFactor;		//phi2 : weighting factor for local nitrogen uptakes  (dimensionless)
-
-	/*---------------------- COARSE ROOT TOPOLOGY INITIALISATION ----------------------*/
-
-	private int    coarseRootTopologyType;			//1-2-3
-
-	/*-------------- WATER EXTRACTION PROPERTIES-------------------------------*/
-	private double treeRootDiameter;						//cm
-
-	//For calculating the transpiration reduction factor following Campbell
-	private double treeAlpha;
-	private double treeMinTranspirationPotential;			//cm
-	private double treeMaxTranspirationPotential;			//cm
-
-	//Root axial conductance (1/resistance involved in water transport inside the root per unit gradient in water potential and per unit path-length)
-	//Unit should be here kg s-1 cm-1, or if the flux is expressed in cm, cm cm-1
-	//According to Tyree, root axial conductance is higher for large roots
-	private double treeRootConductivity;			//cm cm-1
-
-	//Potential drop needed to enter the root expressed as a % of soil water potential
-	private double treeBufferPotential;						//cm
-
-	//Longitudinal resistance factor for root sap
-	private double treeLongitudinalResistantFactor;						//cm.mm-1.m-1
-
-	// This parameter indicates the relative influence of dry voxels on the calculation
-	// of the averaged soil water potential perceived by the plant
-	// When = 1, we use a harmonic average
-	public  double treeHarmonicWeightedMean ;
-	
-	
-	/*---------------------- FRUIT ALLOCATION CARBON  PARAMETERS ----------------------*/
-	private double fruitHeatStressTemperatureMin;		//temperature above witch fruit production is affected by heat (degree)
-	private double fruitHeatStressTemperatureMax;		//temperature above witch fruit production is stopped by heat(degree)	
-	private double fruitFrostStressTemperatureMin;		//temperature below witch fruit production is affected by frost (degree)
-	private double fruitFrostStressTemperatureMax;		//temperature below witch fruit production is stopped by frost (degree)	
-	private double fruitMaxDryMatterAllocation;			//maximum daily fruit growth (g DM/fruit/day)
-	private double fruitAllocationFraction;				//above ground carbon fraction allocated to fruit 
-	private int fruitCarbonStressDateStart;				//carbon stress calculation date start (n-1 to n)
-	private double fruitDryToFreshMatterWeight;			//conversion rate from fruit dry to fresh matter 
-	private double fruitDryMaterDensity;				//m2 / tonnes DM 
-	private double fruitOilConversionCoeffA;			//conversion parameter from fruit fresh matter weight to oil concentration 
-	private double fruitOilConversionCoeffB;
-	private double fruitOilConversionCoeffC;
-	private double fruitOilDensity;						//fruit oil density
-	private int fruitFirstYear;							//first year of fruiting 
-	private double fruitLeafArea;						//fruit number related to leaf area in m2 
-	private double fruitingConfortThreshold;			//ratio C labile / C lignus organs			
-	private double fruitingTotalStressThreshold;		//ratio of fruitingConfortThreshold inhibate flowering
-	private double fruitLueMax;							// Light use efficiency MAX gr C MJ-1 (PAR)
-	private int fruitAgeForLueMax;	 
-
-	/*---------------------- NITROGEN FIXATION PARAMETERS ----------------------*/
-	private double bnfMaxDepth;							// maximum depth for nitrogen fixation (m) 
-	private double bnfNodulationInhibitionThreshold;	// Nodulation inhibition threshold (g m-3) 
-	private double bnfCardinalTemp1;					// Parameter 1 of the trapezoidal optimum function for nodule activity (degrees) 
-	private double bnfCardinalTemp2;					// Parameter 2 of the trapezoidal optimum function for nodule activity (degrees) 
-	private double bnfCardinalTemp3;		 			// Parameter 3  of the trapezoidal optimum function for nodule activity (degrees) 
-	private double bnfCardinalTemp4;					// Parameter 4  of the trapezoidal optimum function for nodule activity (degrees) 
-	private double bnfFullNoduleActivityThreshold;		// Parameters (full) of the linear threshold function for nitrogen staturation control  (g m-3)
-	private double bnfNullNoduleActivityThreshold;      // Parameters (null) of the linear threshold function for nitrogen staturation control  (g m-3)
-	private double bnfAirTemperatureThreshold; 		    // TCMIN stics : air temperature threshold for BNF potential activity to be increased by air temp (degrees) 
-	private double bnfOptimalTemperatureDifference;     // the optimal difference to bnfAirTemperatureThreshold for optimal activity. (degrees) 
-	
-	//V1
-	private double bnfFixMaxVeg;		//mass of nitrogen fixed per KG of produced vegetative dry matter.  (g.g-1 dry biomass) 
-	private double bnfFixMaxRepro;		//mass of nitrogen fixed per KG of produced reproductive organ dry matter (flowers + fruits).   (g.g-1 dry biomass)
-
-	/*---------------------- SELF PRUNING  PARAMETERS ----------------------*/
-	private boolean selfPruningEffet;							//Self pruning effet activation 0=no 1=yes
-	private double  selfPruningLCIThreshold;					//Light Competiton index threshold for self pruning (value in the [0;1] range)
-	private double  selfPruningHeightRatio;						//Proportion of Self-pruning canopy height 
-	private int     selfPruningNbrDaysShade;					//Number of days of shade to trigger self pruning 
-	private int  	selfPruningNbrYearsForBranchesFullDecay;	//Number of year for full decay of self pruning branches
-	
+	// SELF PRUNING PARAMETERS 
+	/** Self pruning effet activation  */
+	private boolean selfPruningEffet;						
+	/** Light Competition index threshold for self pruning  */
+	private double  selfPruningLCIThreshold;				
+	/** Proportion of Self-pruning canopy height */
+	private double  selfPruningHeightRatio;						
+	/** Number of days of shade to trigger self pruning  */
+	private int     selfPruningNbrDaysShade;					
+	/** Number of year for full decay of self pruning branches */
+	private int     selfPruningNbrYearsForBranchesFullDecay;	
 
 	public SafeTreeSpecies () {}
 	
@@ -343,12 +458,8 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 	public int getBudBurstToLeafFallDuration () {return budBurstToLeafFallDuration;}
 	public int getLeafFallDuration () {return leafFallDuration;}
 	public double getLeafFallFrostThreshold() {return leafFallFrostThreshold;}
-	//public int getBudBurstDelayAfterPollarding () {return budBurstDelayAfterPollarding;}
 	public double getBudBurstTriggerTemp () {return budBurstTriggerTemp;}
-	
 
-	
-	
 	public boolean getColdRequirement () {return coldRequirement;}
 	public int getColdTempAccumulationDateStart() {return coldTempAccumulationDateStart;}
 	
@@ -738,7 +849,6 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 		this.budBurstToLeafFallDuration = budBurstToLeafFallDuration;
 		this.leafFallDuration = leafFallDuration;
 		this.leafFallFrostThreshold = leafFallFrostThreshold;
-		//this.budBurstDelayAfterPollarding = budBurstDelayAfterPollarding;
 
 		this.stemFlowCoefficient = stemFlowCoefficient;
 		this.stemFlowMax = stemFlowMax;

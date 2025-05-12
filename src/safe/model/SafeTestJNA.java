@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -54,227 +60,294 @@ import com.sun.jna.Native;
  * Available native functions are : 
  * =================================
  * verifParam : general parameters initialization verification
- * verifPlante : plants and itk parameters initialization verification
+ * verifPlant : plants and itk parameters initialization verification
  * initClimat : climatic data initialization
- * initBoucleAnnuelle : annual loop initialization
- * apport : add carbon litters from tree
- * boucleJour1 : daily loop part 1
- * boucleJour2 : daily loop part 2
- * finBoucleAnnuelle : annual loop end process
+ * annualLoopStart : annual loop initialization
+ * addLitterInSoil : add carbon litters from tree (branches, stem, leaves, roots) 
+ * dailyLoopPart1 : daily loop part 1
+ * dailyLoopPart2 : daily loop part 2
+ * annualLoopEnd : annual loop end process
  * 
- * @author Isabelle Lecomte - INRA Montpellier France  - November 2016
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
-
 
 public class SafeTestJNA implements  Serializable {
 
-
 	private static final long serialVersionUID = 1L;
 
-
 	public interface TestJNA extends Library {
-
-		// nb-26.01.2018
-		// Loads the gfortran library.
-		// Needed in order the functions of SticsV8 library that depend on gfortran library can be called.
-		// Indeed, without this instruction, the gfortran library should have been placed in classical paths (/lib or 
-		// /usr/lib for Linux) or the LD_LIBRARY_PATH environment variable (for Linux) or the PATH variable (for 
-		// Windows) should have contained the path to the directory containing the gfortran library (capsis4/ext for example).
-		// Windows) should have contained the path to the directory containing the gfortran library (capsis4/ext for example). 
-//		TestJNA INSTANCE_GFORTRAN = (TestJNA) Native.loadLibrary("gfortran", TestJNA.class);
-
-//		if ( System.getProperty("os.name").equals("Linux")  ) {
-//			TestJNA INSTANCE_GFORTRAN = (TestJNA) Native.loadLibrary("gfortran", TestJNA.class);	 
-//		}
-		
 
 		// Loads the SticsV8.so library (libSticsV8.so under Linux, SticsV8.dll under Windows, libSticsV8.dylib under MacOS).
 		TestJNA INSTANCE_STICS = (TestJNA) Native.loadLibrary("SticsV8", TestJNA.class);
 
-		 void verifParam (SafeSticsParameters pg, SafeSticsTransit t, SafeSticsSoil soil, SafeSticsCommun sc, int lg, String outputDir);
-		 void verifPlante (SafeSticsParameters pg, SafeSticsTransit t, SafeSticsCommun sc,  SafeSticsItk itk, SafeSticsCrop p, int zoneId, int lg, String outputDir);
-		 void initClimat (SafeSticsParameters pg, SafeSticsTransit t, SafeSticsStation sta, SafeSticsClimat c);
-		 void initBoucleAnnuelle (SafeSticsParameters pg, SafeSticsTransit t, SafeSticsStation sta, SafeSticsClimat c, SafeSticsCommun sc, SafeSticsSoil soil,  SafeSticsCrop p,SafeSticsItk itk, int cellId, int lg, String outputDir);
-		 void apport (SafeSticsParameters pg,  SafeSticsSoil soil, SafeSticsCommun sc, SafeSticsCrop p, SafeSticsItk itk, float profmax, float carbonLitter, float cnLitter, float cfeupc, float waterLitter, int typeLitter);
-		 void boucleJour1 (SafeSticsParameters pg, SafeSticsTransit t, SafeSticsStation sta, SafeSticsClimat c, SafeSticsCommun sc, SafeSticsSoil soil,  SafeSticsCrop p,SafeSticsItk itk, float cellVisibleSky, int flagFirst);
-		 void boucleJour2 (SafeSticsParameters pg, SafeSticsTransit t, SafeSticsStation sta, SafeSticsClimat c, SafeSticsCommun sc, SafeSticsSoil soil,  SafeSticsCrop p,SafeSticsItk itk, int hisafeInfluence, float cellVisibleSky);
-		 void finBoucleAnnuelle (SafeSticsParameters pg, SafeSticsTransit t, SafeSticsStation sta, SafeSticsClimat c, SafeSticsCommun sc, SafeSticsSoil soil,  SafeSticsCrop p,SafeSticsItk itk, int cellId);
+		 void verifParam (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsSoil soil, SafeSticsCommun commun, int lg, String outputDir);
+		 void verifPlant (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsCommun commun,  SafeSticsItk itk, SafeSticsCrop plant, int zoneId, int lg, String outputDir);
+		 void initClimat (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat);
+		 void annualLoopStart (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, int cellId, int lg, String outputDir);
+		 void addLitterInSoil (SafeSticsParameters param,  SafeSticsSoil soil, SafeSticsCommun commun, SafeSticsCrop plant, SafeSticsItk itk, float profmax, float carbonLitter, float cnLitter, float cfeupc, float waterLitter, int typeLitter);
+		 void dailyLoopPart1 (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, float cellVisibleSky, int flagFirst);
+		 void dailyLoopPart2 (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, int hisafeWaterExtraction, float cellVisibleSky);
+		 void annualLoopEnd (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, int cellId);
 	}
 
 	/**
-	 * verifParam : general parameters initialization verification
+	 * STICS general parameters initialization verification
+	 * @param param Reference on SafeSticsParameters object
+	 * @param transit Reference on SafeSticsTransit object
+	 * @param soil Reference on SafeSticsSoil object
+	 * @param commun Reference on SafeSticsCommun object
+	 * @param exportDir Name of the export folder
 	 */
 	 
-    public static void verifParam(SafeSticsParameters pg, SafeSticsTransit t, SafeSticsSoil soil, SafeSticsCommun sc, String exportDir ) { 
+    public static void verifParam  (SafeSticsParameters param, 
+						    		SafeSticsTransit transit, 
+						    		SafeSticsSoil soil, 
+						    		SafeSticsCommun commun, 
+						    		String exportDir ) { 
     	
-    	TestJNA.INSTANCE_STICS.verifParam (pg, t, soil, sc, exportDir.length(), exportDir);
+    	TestJNA.INSTANCE_STICS.verifParam (param, transit, soil, commun, exportDir.length(), exportDir);
 
 		return;
    } 
     
     /**
-     * verifPlante : plants and itk parameters initialization verification
+     * STICS plants and itk parameters initialization verification
+ 	 * @param param Reference on SafeSticsParameters object
+	 * @param transit Reference on SafeSticsTransit object
+	 * @param commun Reference on SafeSticsCommun object
+	 * @param itk Reference on SafeSticsItk object
+	 * @param plant Reference on SafeSticsCrop object
+	 * @param zoneId ID of the zone
+	 * @param exportDir Name of the export folder
      */ 
-    public static void verifPlante(SafeSticsParameters pg, SafeSticsTransit t, SafeSticsCommun sc, 
-						    		SafeSticsItk itk, SafeSticsCrop p, 
+    public static void verifPlant  (SafeSticsParameters param, 
+						    		SafeSticsTransit transit, 
+						    		SafeSticsCommun commun, 
+						    		SafeSticsItk itk, 
+						    		SafeSticsCrop plant, 
 						    		int zoneId,
 						    		String exportDir) { 
     	
-
-    	//main = true ne sert plus il faudra l'enlever
-   	 	TestJNA.INSTANCE_STICS.verifPlante (pg, t, sc, itk, p, zoneId, exportDir.length(), exportDir);
+   	 	TestJNA.INSTANCE_STICS.verifPlant (param, transit, commun, itk, plant, zoneId, exportDir.length(), exportDir);
 
 		return; 
    }  
     
     /**
-     * initClimat : climatic data initialization
+     * STICS climatic data initialization
+  	 * @param param Reference on SafeSticsParameters object
+	 * @param transit Reference on SafeSticsTransit object
+	 * @param sta Reference on SafeSticsStation object
+	 * @param climat Reference on SafeSticsClimat object
      */
-    public static void initClimat(SafeSticsParameters pg, SafeSticsTransit t,
-					    		SafeSticsStation sta, SafeSticsClimat c)  { 
+    public static void initClimat  (SafeSticsParameters param, 
+    								SafeSticsTransit transit,
+    								SafeSticsStation sta, 
+    								SafeSticsClimat climat)  { 
     	
-
-    	TestJNA.INSTANCE_STICS.initClimat (pg, t, sta, c); 
+    	TestJNA.INSTANCE_STICS.initClimat (param, transit, sta, climat); 
 
 		return;
    }   
     
     /**
-     * initBoucleAnnuelle : annual loop initialization
+     * STICS annual loop initialization
+   	 * @param param Reference on SafeSticsParameters object
+	 * @param transit Reference on SafeSticsTransit object
+	 * @param sta Reference on SafeSticsStation object
+	 * @param climat Reference on SafeSticsClimat object
+	 * @param commun Reference on SafeSticsCommun object
+	 * @param soil Reference on SafeSticsSoil object
+	 * @param plant Reference on SafeSticsCrop object
+	 * @param itk Reference on SafeSticsItk object
+	 * @param dayStart Julian day start of simulation
+	 * @param dayEnd Julian day end of simulation
+	 * @param cellId ID of the cell
+	 * @param exportDir Name of the export folder
+	 * @param sticsReport true if report generation
      */   
  
-    public static void initBoucleAnnuelle(SafeSticsParameters pg, SafeSticsTransit t,
-    								     SafeSticsStation sta, SafeSticsClimat c, 
-    								     SafeSticsCommun sc, SafeSticsSoil soil,
-    								     SafeSticsCrop p, SafeSticsItk itk,
-    								     int dayStart, int dayEnd, 
+    public static void annualLoopStart  (SafeSticsParameters param, 
+    									 SafeSticsTransit transit,
+    								     SafeSticsStation sta, 
+    								     SafeSticsClimat climat, 
+    								     SafeSticsCommun commun, 
+    								     SafeSticsSoil soil,
+    								     SafeSticsCrop plant, 
+    								     SafeSticsItk itk,
+    								     int dayStart, 
+    								     int dayEnd, 
     								     int cellId,
     								     String exportDir,
     								     boolean sticsReport
     								     ) { 
     	
-	//	System.out.println("initBoucleAnnuelle start ="+dayStart+" end ="+dayEnd);
-		
-    	sc.P_iwater = dayStart;	
-    	sc.P_ifwater = dayEnd;	
+    	commun.P_iwater = dayStart;	
+    	commun.P_ifwater = dayEnd;	
     	
-    	sc.ifwater_courant =  dayEnd; 
-    	sc.P_culturean = 1;
+    	commun.ifwater_courant =  dayEnd; 
+    	commun.P_culturean = 1;
     	//culture sur 2 ans
-    	if ((dayStart>1) && (dayStart+dayEnd>366)) sc.P_culturean = 0;
+    	if ((dayStart>1) && (dayStart+dayEnd>366)) commun.P_culturean = 0;
     	
     	//pas de sorties BILAN STICS par defaut 
-    	pg.P_flagEcriture = 0;
-    	if (sticsReport) pg.P_flagEcriture = 31;
+    	param.P_flagEcriture = 0;
+    	if (sticsReport) param.P_flagEcriture = 31;
 
-    	TestJNA.INSTANCE_STICS.initBoucleAnnuelle (pg, t, sta, c, sc, soil, p, itk, cellId, exportDir.length(), exportDir);
+    	TestJNA.INSTANCE_STICS.annualLoopStart (param, transit, sta, climat, commun, soil, plant, itk, cellId, exportDir.length(), exportDir);
 	  
 		return;     
    } 
     /**
-     * apport : add carbon litters from tree
+     * Add carbon litters from tree (branches - stem - leaves - roots) in soil
+     * @param param Reference on SafeSticsParameters object
+  	 * @param soil Reference on SafeSticsSoil object
+	 * @param commun Reference on SafeSticsCommun object
+	 * @param plant Reference on SafeSticsCrop object
+	 * @param itk Reference on SafeSticsItk object
+	 * @param profMax Max depth of residues incorporation
+	 * @param carbonLitter Fresh matter (FM) added from residue (t.ha-1)
+	 * @param cnLitter C/N ratio of residue
+	 * @param cfeupc C content of residue  (%FM)
+	 * @param waterLitter Water content of residue   (%FM)
+	 * @param typeLitter Type of litter
      */
-    public static void apport(SafeSticsParameters pg,  
-    						  SafeSticsSoil soil,
-    						  SafeSticsCommun sc, 
-    						  SafeSticsCrop p, 
-    						  SafeSticsItk itk,
-    						  float profMax,
-							  float	carbonLitter, 							   
-							  float	cnLitter, 
-							  float cfeupc, 
-							  float  waterLitter,
-							  int    typeLitter) { 
+    public static void addLitterInSoil   (SafeSticsParameters param,  
+			    						  SafeSticsSoil soil,
+			    						  SafeSticsCommun commun, 
+			    						  SafeSticsCrop plant, 
+			    						  SafeSticsItk itk,
+			    						  float profMax,
+										  float	carbonLitter, 							   
+										  float	cnLitter, 
+										  float cfeupc, 
+										  float  waterLitter,
+										  int    typeLitter) { 
     	
-        TestJNA.INSTANCE_STICS.apport (pg, soil, sc, p, itk, profMax, carbonLitter, cnLitter, cfeupc, waterLitter, typeLitter);
+        TestJNA.INSTANCE_STICS.addLitterInSoil (param, soil, commun, plant, itk, profMax, carbonLitter, cnLitter, cfeupc, waterLitter, typeLitter);
     
     }
     /**
-     * boucleJour1 : daily loop part 1
+     * STICS daily loop part 1
+     * @param param Reference on SafeSticsParameters object
+     * @param transit Reference on SafeSticsTransit object
+     * @param sta Reference on SafeSticsStation object
+     * @param climat Reference on SafeSticsClimat object
+	 * @param commun Reference on SafeSticsCommun object
+	 * @param soil Reference on SafeSticsSoil object
+	 * @param plant Reference on SafeSticsCrop object
+	 * @param itk Reference on SafeSticsItk object
+	 * @param simulationJulianDay Julian of the simulation
+	 * @param sticsJulianDay Julian day of the simulation for STICS (can be different from simulationJulianDay)
+	 * @param cellRad Radiation on this cell (MJ m-2)
+	 * @param cellRain Rain on this cell (mm)
+	 * @param cellEtp ETP on this cell (mm)
+	 * @param cellVisibleSky Visible sky on this cell (ratio)
+	 * @param flagFirst True if this cell is the first one of the same ZONE
      */
-    public static void boucleJour1(SafeSticsParameters pg, SafeSticsTransit t,
-							     SafeSticsStation sta, SafeSticsClimat c, 
-							     SafeSticsCommun sc, SafeSticsSoil soil,
-							     SafeSticsCrop p, SafeSticsItk itk,
-							     int sticsDay, 
-							     int julianDay,
-							     double	cellRad, 							   
-							     double	cellRain, 
-							     double cellEtp,
-							     double cellVisibleSky,
-							     int flagFirst) { 
+    public static void dailyLoopPart1   (SafeSticsParameters param, 
+    									 SafeSticsTransit transit,
+									     SafeSticsStation sta, 
+									     SafeSticsClimat climat, 
+									     SafeSticsCommun commun, 
+									     SafeSticsSoil soil,
+									     SafeSticsCrop plant, 
+									     SafeSticsItk itk,
+									     int simulationJulianDay,
+									     int sticsJulianDay, 						    
+									     double	cellRad, 							   
+									     double	cellRain, 
+									     double cellEtp,
+									     double cellVisibleSky,
+									     int flagFirst) { 
  
-		//n=1 to 365
-    	//julianDay = 1 to 364 or 290 to 654
-    	//day = 1 to 365 
-		
-
-		
-       sc.n = sticsDay;
-       sc.jjul = julianDay;
-       sc.jul = julianDay;
-       if (sc.jul > 365) sc.jul = sc.jul - 365;
-       sc.numdate = sc.jul;
+    	commun.n = sticsJulianDay;
+    	commun.jjul = simulationJulianDay;
+    	commun.jul = simulationJulianDay;
+        if (commun.jul > 365) commun.jul = commun.jul - 365;
+        commun.numdate = commun.jul;
 		
        	//Tree influence on cell data
-   		c.trg[sticsDay-1]    = (float) cellRad; 				  /* RG on crop after tree interception */		 
-		c.trr[sticsDay-1]    = (float) cellRain;                  /* rain on crop after tree interception (mm) */
-		c.tetp[sticsDay-1]   = (float) cellEtp;                   /* ETP on crop (mm) */
+        climat.trg[sticsJulianDay-1]    = (float) cellRad; 				  /* RG on crop after tree interception */		 
+        climat.trr[sticsJulianDay-1]    = (float) cellRain;                  /* rain on crop after tree interception (mm) */
+        climat.tetp[sticsJulianDay-1]   = (float) cellEtp;                   /* ETP on crop (mm) */
 
 		//STICS HISAFE COMPARAISON
 		//il faut arrondir à une decimale
 
-		//c.trg[sticsDay-1] = (float)Math.round(cellRad * 10) / 10 ;
-		//c.trr[sticsDay-1] = (float)Math.round(cellRain * 10) / 10 ;
-		//c.tetp[sticsDay-1] = (float)Math.round(cellEtp * 10) / 10 ;
+		//climat.trg[sticsDay-1] = (float)Math.round(cellRad * 10) / 10 ;
+		//climat.trr[sticsDay-1] = (float)Math.round(cellRain * 10) / 10 ;
+		//climat.tetp[sticsDay-1] = (float)Math.round(cellEtp * 10) / 10 ;
 
 		float visibleSky = (float) cellVisibleSky;				//% of visible sky (1=100%)
 		
 		
 		//RAZ Emulch (bug in STICS) 
-		sc.Emulch=0;
-		sc.drain=0;
-		p.offrenod[1]=0;
+		commun.Emulch=0;
+		commun.drain=0;
+		plant.offrenod[1]=0;
 
-
-       TestJNA.INSTANCE_STICS.boucleJour1 (pg, t, sta, c, sc, soil, p, itk, visibleSky, flagFirst);
+       TestJNA.INSTANCE_STICS.dailyLoopPart1 (param, transit, sta, climat, commun, soil, plant, itk, visibleSky, flagFirst);
 
 		return;
     } 
     
     /**
-     * boucleJour2 : daily loop part 2
+     * STICS daily loop part 2
+     * @param param Reference on SafeSticsParameters object
+     * @param transit Reference on SafeSticsTransit object
+     * @param sta Reference on SafeSticsStation object
+     * @param climat Reference on SafeSticsClimat object
+	 * @param commun Reference on SafeSticsCommun object
+	 * @param soil Reference on SafeSticsSoil object
+	 * @param plant Reference on SafeSticsCrop object
+	 * @param itk Reference on SafeSticsItk object
+	 * @param hisafeWaterExtraction Water extraction is calculated by Hisafe 0=no 1=yes
+	 * @param cellVisibleSky Visible sky on this cell (ratio)
+
      */ 
-    public static void boucleJour2(SafeSticsParameters pg, SafeSticsTransit t,
-		     SafeSticsStation sta, SafeSticsClimat c, 
-		     SafeSticsCommun sc, SafeSticsSoil soil,
-		     SafeSticsCrop p, SafeSticsItk itk,
-		     int sticsDay, int julianDay,
-		     int hisafeInfluence,
-		     double cellVisibleSky
-		    ) { 
-
-
-	       	//Tree influence on cell data		
+    public static void dailyLoopPart2 ( SafeSticsParameters param, 
+    								 	SafeSticsTransit transit,
+    								 	SafeSticsStation sta, 
+    								 	SafeSticsClimat climat, 
+    								 	SafeSticsCommun commun, 
+    								 	SafeSticsSoil soil,
+    								 	SafeSticsCrop plant, 
+    								 	SafeSticsItk itk,
+    								 	int hisafeWaterExtraction,
+    								 	double cellVisibleSky) { 
+	
 			float visibleSky = (float) cellVisibleSky;		//% of visible sky (1=100%)
-			
 
-	    	TestJNA.INSTANCE_STICS.boucleJour2 (pg, t, sta, c, sc, soil, p, itk, hisafeInfluence, visibleSky);
+	    	TestJNA.INSTANCE_STICS.dailyLoopPart2 (param, transit, sta, climat, commun, soil, plant, itk, hisafeWaterExtraction, visibleSky);
 	   	  
   		}		
 
 
     /**
-     * finBoucleAnnuelle : annual loop end process
+     * STICS annual loop end
+     * @param param Reference on SafeSticsParameters object
+     * @param transit Reference on SafeSticsTransit object
+     * @param sta Reference on SafeSticsStation object
+     * @param climat Reference on SafeSticsClimat object
+	 * @param commun Reference on SafeSticsCommun object
+	 * @param soil Reference on SafeSticsSoil object
+	 * @param plant Reference on SafeSticsCrop object
+	 * @param itk Reference on SafeSticsItk object
+	 * @param cellId ID of the call
      */   
     
-    public static void finBoucleAnnuelle(SafeSticsParameters pg, SafeSticsTransit t,
-								     SafeSticsStation sta, SafeSticsClimat c, 
-								     SafeSticsCommun sc, SafeSticsSoil soil,
-								     SafeSticsCrop p, SafeSticsItk itk,
-								     int cellId) { 
+    public static void annualLoopEnd    (SafeSticsParameters param, 
+    									 SafeSticsTransit transit,
+									     SafeSticsStation sta, 
+									     SafeSticsClimat climat, 
+									     SafeSticsCommun commun, 
+									     SafeSticsSoil soil,
+									     SafeSticsCrop plant, 
+									     SafeSticsItk itk,
+									     int cellId) { 
 
-		TestJNA.INSTANCE_STICS.finBoucleAnnuelle (pg, t, sta, c, sc, soil, p, itk, cellId);
+		TestJNA.INSTANCE_STICS.annualLoopEnd (param, transit, sta, climat, commun, soil, plant, itk, cellId);
 
 		return;
     }   

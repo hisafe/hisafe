@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -49,62 +55,87 @@ import java.util.Iterator;
 /**
  * Pedologic layers description
  *
- * @author Isabelle Lecomte - INRAE Montpellier - July 2002
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
 public class SafeLayer implements Serializable {
 
-
-	private static final long serialVersionUID = 1L;
+	/** Layer id  */
 	private int id;
-	private int topSoil;				// 1=topsoil 0=subsoil
-
-	private double surfaceDepth;  		// m
-	private double thickness;  			// m
-	private double sand;				// %
-	private double silt;				// %
-	private double clay;				// %
-	private double limestone;			// %
-	private double organicMatter;		// %
-	private double medianPartSizeSand;	// %
-
-	private int    stoneType; 			// 0-10
-	private double stone; 				// %
-	private double infiltrability; 		// mm j-1
-	private double thetaSat;			// m3 m-3
+	/** Depth from surface (m)  */
+	private double surfaceDepth;  		
+	/** Thickness (m)  */
+	private double thickness;  			
+	/** Percentage of sand (%)   */
+	private double sand;				
+	/**  Percentage of silt (%)  */
+	private double silt;				
+	/** Percentage of clay (%)  */
+	private double clay;				
+	/**  Percentage of limestone (%)  */
+	private double limestone;		
+	/**  Percentage of organic matter (%)  */
+	private double organicMatter;		
+	/**  Particle size of sand  (micrometers) */
+	private double particleSizeSand;	
+	/**  Percentage of stones  (%) */
+	private double stone; 				
+	/**  Stones type 1=limestone B1, 2=limestone B2, 3=limestone L, 4=scree L, 5=gravel m, 6=flint, 7=granite a, 8=limestone J, 9=other1, 10=other2 */
+	private int    stoneType; 
+	/**  Infiltrability rate at the base of the layer (mm day-1) */
+	private double infiltrability; 	
+	/**  Total saturated porosity (m3 water m-3 soil) */
+	private double thetaSat;		
+	/**  Bulk density (fine soil+stones) (kg m-3) */
+	private double bulkDensity;		
+	/**  Bulk density (fine soil) (kg m-3) */
+	private double bulkDensityFineSoil;		
+	/**  Field capacity (fine soil+stones) (m3 m-3) */
+	private double fieldCapacity;	
+	/**  Field capacity (fine soil) (m3 m-3) */
+	private double fieldCapacityFineSoil;	
+	/**  Field capacity (stones) (m3 m-3) */
+	private double fieldCapacityStone;	
+	/**  Wilting point (fine soil+stones) (m3 m-3) */
+	private double wiltingPoint;		
+	/**  Wilting point (fine soil) (m3 m-3) */
+	private double wiltingPointFineSoil;		
+	/**  Wilting point (stones) (m3 m-3) */
+	private double wiltingPointStone;		
 	
-	//Pedotransfert properties (total voxel fine soil and stone)
-	private double bulkDensity;			//kg m-3
-	private double fieldCapacity;		//m3 m-3
-	private double wiltingPoint;		//m3 m-3
-	
-
-	//Fine soil pedotransfert properties (fine soil only)
-	private double bulkDensityFineSoil;			//kg m-3
-	private double fieldCapacityFineSoil;		//m3 m-3
-	private double wiltingPointFineSoil;		//m3 m-3
-
-	//Fine soil pedotransfert properties (stones)
-	private double fieldCapacityStone;		//m3 m-3
-	private double wiltingPointStone;		//m3 m-3
-	
-	
-	//other pedotransfert properties
+	/**  Saturated conductivity	(cmm day-1) */
 	private double kSat;
 	private double alpha;
 	private double lambda;
 	private double n;
 	
-	//List of voxels for this layer
-	private ArrayList<SafeVoxel> voxelList;
-	
+	/**
+	 * Constructor
+	 */
 	public SafeLayer (int id) {
 		this.id = id;
 	}
 	
-	public SafeLayer (int id, double surfaceDepth, double thickness,  double sand, double clay,  double limestone,
-						double organicMatter, double medianPartSizeSand,
+	/**
+	 * Constructor
+	 *
+	 * @param id Layer id
+	 * @param surfaceDepth Depth from surface (m)
+	 * @param thickness Thickness (m)
+	 * @param sand Percentage of sand (%) 
+	 * @param clay Percentage of clay (%) 
+	 * @param limestone Percentage of limestone (%) 
+	 * @param organicMatter Percentage of organicMatter (%) 
+	 * @param particleSizeSand Particle size of sand (micrometers) 
+	 * @param stonePercent Percentage of stones (%)  
+	 * @param stoneType Type of stones 1=limestone B1, 2=limestone B2, 3=limestone L, 4=scree L, 5=gravel m, 6=flint, 7=granite a, 8=limestone J, 9=other1, 10=other2
+	 * @param infiltrability Infiltrability rate at the base of the layer (mm day-1)
+	 * @param generalParameters Reference to SafeGeneralParameters object
+	 */
+	public SafeLayer (int id, double surfaceDepth, double thickness,  
+						double sand, double clay,  double limestone,
+						double organicMatter, double particleSizeSand,
 						double stonePercent, int stoneType, double infiltrability,
-						SafeGeneralParameters safeSettings) {
+						SafeGeneralParameters generalParameters) {
 
 		this.id = id;
 		this.surfaceDepth = surfaceDepth;
@@ -112,18 +143,18 @@ public class SafeLayer implements Serializable {
 		this.silt = 100 - sand - clay;
 		this.sand = sand;
 		this.clay = clay;
-		this.medianPartSizeSand = medianPartSizeSand;
+		this.particleSizeSand = particleSizeSand;
 		this.organicMatter = organicMatter;
 		this.limestone = limestone;
 		this.infiltrability = infiltrability;
 
 		//TOPSOIL TYPES
-		this.topSoil = 0;
-		if (id == 0) this.topSoil = 1;
+		int topSoil = 0;
+		if (id == 0) topSoil = 1;
 
 		//Initialisation of soil pedoTransfert PROPERTIES (without stones)
 		this.bulkDensityFineSoil = 	SafePedotransferUtil.getBulkDensity (
-							medianPartSizeSand,
+							particleSizeSand,
 							clay,
 							silt,
 							organicMatter,
@@ -134,6 +165,7 @@ public class SafeLayer implements Serializable {
 							silt,
 							organicMatter,
 							topSoil);
+
 		this.kSat =	SafePedotransferUtil.getKSat (
 							clay,
 							bulkDensityFineSoil,
@@ -159,13 +191,13 @@ public class SafeLayer implements Serializable {
 							topSoil);
 
 		//field capacity
-		double p = SafePedotransferUtil.getP (safeSettings.PF_FIELD_CAPACITY);
+		double p = SafePedotransferUtil.getP (generalParameters.PF_FIELD_CAPACITY);
 		this.fieldCapacityFineSoil = SafePedotransferUtil.getTheta (p, thetaSat, alpha, n);
 
+		
 		//wilting point
-		p = SafePedotransferUtil.getP (safeSettings.PF_WILTING_POINT);
+		p = SafePedotransferUtil.getP (generalParameters.PF_WILTING_POINT);
 		this.wiltingPointFineSoil = SafePedotransferUtil.getTheta (p, thetaSat, alpha, n);
-
 
 		//If stone, calculation of fine soil properties
 		// it was decided to let other variables : ksat, alpha, lambda and n unchanged 
@@ -176,12 +208,12 @@ public class SafeLayer implements Serializable {
 
 			this.stone   	= stonePercent;
 			
-			this.fieldCapacityStone = safeSettings.STONE_VOLUMIC_DENSITY [this.stoneType-1] * safeSettings.STONE_WATER_CONTENT [this.stoneType-1];    // % 
+			this.fieldCapacityStone = generalParameters.STONE_VOLUMIC_DENSITY [this.stoneType-1] * generalParameters.STONE_WATER_CONTENT [this.stoneType-1];    // % 
 			
 			this.wiltingPointStone =  this.fieldCapacityStone * this.wiltingPointFineSoil / this.fieldCapacityFineSoil;
 
 			
-			this.bulkDensity  = (safeSettings.STONE_VOLUMIC_DENSITY [this.stoneType-1] * this.stone 
+			this.bulkDensity  = (generalParameters.STONE_VOLUMIC_DENSITY [this.stoneType-1] * this.stone 
 								+ (100 - this.stone) * this.bulkDensityFineSoil) 
 								/ 100;
  	
@@ -192,12 +224,12 @@ public class SafeLayer implements Serializable {
 			this.wiltingPoint = (this.wiltingPointStone * this.stone
 								+ (100 - this.stone) * this.wiltingPointFineSoil)
 								 / 100;
-			
-													
+											
 			//to avoid STICS stop error
 			if ((this.wiltingPoint/this.bulkDensity) < 0.01)
 						this.wiltingPoint = 0.01 * this.bulkDensity;
 
+			
 		}
 		else
 		{
@@ -208,128 +240,116 @@ public class SafeLayer implements Serializable {
 			this.wiltingPointStone 	= 0;
 			this.fieldCapacityStone = 0;			
 		}
-
 	}
-
-	public int 	  getId () {return id;}
-	public int 	  getStoneType () {return stoneType;}
+	/**
+	 * Return the layer id 
+	 **/	
+	public int getId () {return id;}
+	/**
+	 * Return the layer depth from surface (m)  
+	 **/	
 	public double getSurfaceDepth () {return surfaceDepth;}
+	/**
+	 * Return the layer Thickness (m)
+	 **/	
 	public double getThickness () {return thickness;}
+	/**
+	 * Return the layer sand (%)
+	 **/	
 	public double getSand () {return sand;}
+	/**
+	 * Return the layer silt (%)
+	 **/	
 	public double getSilt () {return silt;}
+	/**
+	 * Return the layer clay (%)
+	 **/	
 	public double getClay () {return clay;}
+	/**
+	 * Return the layer limestone (%)
+	 **/	
 	public double getLimestone () {return limestone;}
+	/**
+	 * Return the layer organic matter (%)
+	 **/	
 	public double getOrganicMatter () {return organicMatter;}
-	public double getMedianPartSizeSand () {return medianPartSizeSand;}
-	
-	
-	
+	/**
+	 * Return the layer particle size of sand  (micrometers)
+	 **/	
+	public double getParticleSizeSand() {return particleSizeSand;}
+	/**
+	 * Return the percentage of stones  (%)
+	 **/	
 	public double getStone () {return stone;}
+	/**
+	 * Return the layer stones type 1=limestone B1, 2=limestone B2, 3=limestone L, 4=scree L, 5=gravel m, 6=flint, 7=granite a, 8=limestone J, 9=other1, 10=other2 
+	 **/	
+	public int 	  getStoneType () {return stoneType;}
+	/**
+	 * Return the layer infiltrability rate at the base of the layer (mm day-1)
+	 **/	
 	public double getInfiltrability () {return infiltrability;}
+	/**
+	 * Return the layer residual humidity 
+	 **/	
 	public double getResidualHumidity() {return silt/100/15;}
+	/**
+	 * Return the layer saturated conductivity	(cm day-1)
+	 **/
 	public double getKSat () {return kSat;}
+	/**
+	 * Return the layer alpha
+	 **/	
 	public double getAlpha () {return alpha;}
+	/**
+	 * Return the layer lambda
+	 **/	
 	public double getLambda () {return lambda;}
+	/**
+	 * Return the layer N
+	 **/	
 	public double getN () {return n;}
-	
-	//voxel values (fine soil + stone) 
+	/**
+	 * Return the layer bulk density (fine soil+stones) (kg m-3)
+	 **/	
 	public double getBulkDensity () {return bulkDensity;}
-	public double getFieldCapacity() {return fieldCapacity;}
-	public double getWiltingPoint() {return wiltingPoint;}
-	public double getThetaSat () {return thetaSat;}
-	
-	
-	//voxel values (fine soil only) 
+	/**
+	 * Return the layer bulk density (fine soil) (kg m-3)
+	 **/	
 	public double getBulkDensityFineSoil () {return bulkDensityFineSoil;}
+	/**
+	 * Return the layer field capacity (fine soil+stones) (m3 m-3)
+	 **/	
+	public double getFieldCapacity() {return fieldCapacity;}
+	/**
+	 * Return the layer field capacity (fine soil) (m3 m-3)
+	 **/	
 	public double getFieldCapacityFineSoil() {return fieldCapacityFineSoil;}
-	public double getWiltingPointFineSoil() {return wiltingPointFineSoil;}
-
-	//voxel values (stone only) 
+	/**
+	 * Return the layer field capacity (stones) (m3 m-3)
+	 **/	
 	public double getFieldCapacityStone() {return fieldCapacityStone;}
+	/**
+	 * Return the layer wilting point (fine soil+stones) (m3 m-3)
+	 **/	
+	public double getWiltingPoint() {return wiltingPoint;}
+	/**
+	 * Return the layer wilting point (fine soil) (m3 m-3)
+	 **/	
+	public double getWiltingPointFineSoil() {return wiltingPointFineSoil;}
+	/**
+	 * Return the layer wilting point (stones) (m3 m-3)
+	 **/	
 	public double getWiltingPointStone() {return wiltingPointStone;}
-	
-	
-	// gt - 12.11.2009 - added this method used in SafeVoxel.countWaterUptakePotential
+	/**
+	 * Return the layer thetaSat (Total saturated porosity) in m3 water m-3 soil
+	 **/	
+	public double getThetaSat () {return thetaSat;}
+	/**
+	 * Return the layer theta in m3 water m-3 soil
+	 **/	
 	public double getTheta(double p){			
 		return(SafePedotransferUtil.getTheta(p,this.getThetaSat(),this.getAlpha(),this.getN()));		
 	}
 	
-	public void razVoxel() {
-		this.voxelList = new ArrayList<SafeVoxel> ();
-	}
-	public void addVoxel (SafeVoxel v) {
-		if (this.voxelList == null)
-			this.voxelList = new ArrayList<SafeVoxel>  ();
-		voxelList.add(v);
-	}
-
-	public int getNbVoxels () {
-		return voxelList.size();
-	}
-	public double getLayerVolume () {
-		return this.thickness * getNbVoxels ();
-	}
-	
-	public double getLayerEvaporation () {
-		double evaporation = 0;
-		Iterator<SafeVoxel>  itr = voxelList.iterator();
-		while (itr.hasNext()) {
-			SafeVoxel v = itr.next();
-			evaporation = evaporation + v.getEvaporation();
-		}
-		return  evaporation;
-	}
-	
-	public double getLayerWaterStock () {
-		double waterStock = 0;
-		Iterator<SafeVoxel>  itr = voxelList.iterator();
-		while (itr.hasNext()) {
-			SafeVoxel v = itr.next();
-			waterStock = waterStock + v.getWaterStock();
-		}
-		return waterStock;
-	}
-
-	public double getLayerNitrogenNo3Stock () {
-		double nitrogenNo3Stock = 0;
-		Iterator<SafeVoxel>  itr = voxelList.iterator();
-		while (itr.hasNext()) {
-			SafeVoxel v = itr.next();
-			nitrogenNo3Stock = nitrogenNo3Stock + v.getNitrogenNo3Stock();
-		}
-		return nitrogenNo3Stock;
-	}
-
-	public double getLayerNitrogenNh4Stock () {
-		double nitrogenNh4Stock = 0;
-		Iterator<SafeVoxel>  itr = voxelList.iterator();
-		while (itr.hasNext()) {
-			SafeVoxel v = itr.next();
-			nitrogenNh4Stock = nitrogenNh4Stock + v.getNitrogenNh4Stock();
-		}
-		return nitrogenNh4Stock;
-	}
-	
-	public double getLayerTreeRootDensity () {
-		double treeRootDensity = 0;
-		Iterator<SafeVoxel>  itr = voxelList.iterator();
-		while (itr.hasNext()) {
-			SafeVoxel v = itr.next();
-			treeRootDensity = treeRootDensity + v.getTotalTreeRootsDensity();
-		}
-		return treeRootDensity;
-	}
-
-	public double getLayerCropRootDensity () {
-		double cropRootDensity = 0;
-		Iterator<SafeVoxel>  itr = voxelList.iterator();
-		while (itr.hasNext()) {
-			SafeVoxel v = itr.next();
-			cropRootDensity = cropRootDensity + v.getCropRootsDensity();
-		}
-		return cropRootDensity;
-	}
-	
-	//for export
-	public int getIdLayer() {return getId();}
 }

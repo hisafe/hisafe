@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -52,50 +58,79 @@ import jeeb.lib.util.Vertex3d;
 /**
  * SafeRootNode is used to build tree coarse roots topology
  * 
- * @author Isabelle Lecomte - INRAE Montpellier France - November 2005
- *         Grégoire Talbot  - INRAE Montpellier France - September 2008
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
+ * @author : Grégoire Talbot  - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
-public class SafeRootNode implements Serializable {
+public class SafeRootNode implements Serializable, Comparable {
 
+	/** Plant type 1=crop 2=tree  */
+	private int planteType;				
+	/** Reference to the SafePlantRoot object  */
+	private SafePlantRoot plantRoots;		
+	/** Reference to the SafeVoxel object  */
+	private SafeVoxel voxelRooted; 	
+	/** Reference of the single parent node SafeRootNode object  */
+	private SafeRootNode nodeParent; 	
+	/** Collection of colonized nodes */
+	private Collection<SafeRootNode> nodeColonised; 		
+	/** Date of first colonization */
+	private int colonisationDate; 			
+	/** Direction of the colonization from father node ( 0 is for x+, 1 for x-, 2 for y+, 3 for y-, 4 for z+, 5 for z-) */
+	private int colonisationDirection; 	
+	/** Distance to the tree trunk following topology path (m) */									
+	private float treeDistance; 		
+	/** Distance from father node (m) */	
+	private float fatherDistance; 			
+	/** Effective distance from tree (m)  */	
+	private float effectiveDistance;		
+	/** Plant fine roots density (m m-3)  */
+	private double fineRootsDensity; 		
 
-	private static final long serialVersionUID = 1L;
-	private int planteType;					//1=crop 2=tree
-	private SafePlantRoot plantRoots;		// plant (tree or crop) fine root reference address
-	private SafeVoxel voxelRooted; 			// Reference of the rooted voxel
-	private SafeRootNode nodeParent; 		// Reference of the single parent node
-	private Collection<SafeRootNode> nodeColonised; 		// Reference of the collection of colonised nodes
-
-	private int colonisationDate; 			// Date of first colonisation
-	private int colonisationDirection; 		// direction of the colonization from father node // gt - 27.03.2009
-											// 0 is for x+, 1 for x-, 2 for y+, 3 for y-, 4 for z+, 5 for z-
-	
-	private float treeDistance; 			// Distance to the tree trunc following topology path (m)
-	private float fatherDistance; 			// Distance from father node // GT 17/07/2008
-	private float effectiveDistance;		//effective distance from tree (m) 
-
-	private double fineRootsDensity; 		// m m-3
 	private double fineRootsTotalInvestment;
-	private double fineRootsCost; 			// kg of CoarseRoot m-1 of fine roots.
+	/** Plant fine roots cost (kg of CoarseRoot m-1 of fine roots)  */
+	private double fineRootsCost; 
 	
-	private double phiPf;						//cm2 day-1
-	private double waterRhizospherePotential; 	// cm
-	private double nitrogenUptake; 				// kg N
-	private double waterUptake; 				// liters
-	
+	/** Plant phi PF (cm2 day-1)  */
+	private double phiPf;					
+	/** Plant water rhizosphere potential (cm)  */
+	private double waterRhizospherePotential; 
+	/** Plant water uptake potential (liters)  */
+	private double waterUptakePotential;	
+	/** Plant water uptake (liters)  */
+	private double waterUptake; 
 
-	public SafeRootNode (SafePlantRoot root, SafeVoxel voxelRooted, SafeRootNode nodeParent, int day, double fineRoots, SafeTree tree,  int direction) {
+	private double nitrogenShareUptake;			//ND
+	/** Potential zero-sink supply per voxel (g N) */
+	private double nitrogenZeroSinkPotential;
+	/** Plant nitrogen uptake potential (g N)  */
+	private double nitrogenUptakePotential;		
+	/** Plant nitrogen uptake (g N)  */
+	private double nitrogenUptake; 				
+
+
+	public SafeRootNode (SafePlantRoot root, 
+						 SafeVoxel voxelRooted, 
+						 SafeRootNode nodeParent, 
+						 int day, 
+						 double fineRoots, 
+						 SafeTree tree,  
+						 int direction) {
 
 		this.planteType = 2; //tree
 		this.plantRoots = root;
 		this.voxelRooted = voxelRooted;
 		this.nodeParent = nodeParent;
 		this.colonisationDate = day;
-		this.fineRootsDensity = (float) fineRoots;
-		this.fineRootsTotalInvestment =  (float) fineRoots;
+		this.fineRootsDensity = fineRoots;
+		this.fineRootsTotalInvestment =  fineRoots;
 		this.nodeColonised = null;
 		this.waterUptake = 0;
 		this.nitrogenUptake = 0;
 		this.fineRootsCost = 0;
+		this.waterUptakePotential = 0;
+		this.nitrogenShareUptake = 0;
+		this.nitrogenZeroSinkPotential  = 0;
+		this.nitrogenUptakePotential = 0;
 
 		// linking father and son
 		if (nodeParent != null) {
@@ -121,8 +156,8 @@ public class SafeRootNode implements Serializable {
 		this.voxelRooted = voxelRooted;
 		this.nodeParent = nodeParent;
 		this.colonisationDate = day;
-		this.fineRootsDensity = (float) fineRootDensity;
-		this.fineRootsTotalInvestment =  (float) fineRootDensity;
+		this.fineRootsDensity = fineRootDensity;
+		this.fineRootsTotalInvestment =  fineRootDensity;
 		this.nodeColonised = null;
 		this.waterUptake = 0;
 		this.nitrogenUptake = 0;
@@ -269,14 +304,16 @@ public class SafeRootNode implements Serializable {
 							* this.getTopologicalToEffDistance (); 				// voir les explication la dessus dans la methode computeEffDist
 																				// - 30.03.2009
 
-		if (additionalRootLength != null) 
+		if (additionalRootLength != null) {
 			fineRootsLength += additionalRootLength[v] // m
 							* this.getTopologicalToEffDistance ();
+
+		}
 
 
 		double carbonTarget =  (fineRootsLength * cRAreaToFRLengthRatio * this.getFatherDistance () // m x m2 m-1 x m = m3
 								      * cRWoodDensity * cRWoodCarbonContent); // kg.m-3 x kgC.kg-1 = kgC.m-3
-		
+
 		//We remove the voxels with enough carbon in coarse root (negative imbalance)  
 		//https://github.com/hisafe/hisafe/issues/123
 		carbonTarget = Math.max(carbonTarget, voxelRooted.getTheTreeCarbonCoarseRootsTarget(treeIndex));
@@ -284,7 +321,8 @@ public class SafeRootNode implements Serializable {
 		voxelRooted.setTreeCarbonCoarseRootsTarget (treeIndex, carbonTarget);
 
 		// Math.max(...) : if target< carbon : the coarse root can't contribute to carbon allocation as a negative sink
-		tree.addCarbonCoarseRootsTarget (carbonTarget);
+
+		tree.addTargetCarbonCoarseRoots (carbonTarget);
 
 
 		
@@ -472,7 +510,7 @@ public class SafeRootNode implements Serializable {
 	/**
 	 * Tree fine roots and coarse roots anoxia (computed each day only if water table) 
 	 */
-	public void computeCoarseRootsAnoxia (SafeTree tree, SafeGeneralParameters settings, double humificationDepth) {
+	public void computeCoarseRootsAnoxia (SafeTree tree, SafeGeneralParameters generalParameters, double humificationDepth) {
 		
 		SafeVoxel v = this.getVoxelRooted ();
 		int treeIndex = tree.getId()-1;
@@ -483,7 +521,7 @@ public class SafeRootNode implements Serializable {
 			if (v.getTheTreeRootsAgeInWater (treeIndex) > tree.getTreeSpecies ().getCoarseRootAnoxiaResistance ()) {
 				boolean testAnoxia = true;
 				float proportion = 1;
-				this.removeSonsRoots (null, tree, settings, proportion, testAnoxia, humificationDepth); 
+				this.removeSonsRoots (null, tree,  proportion, testAnoxia, humificationDepth); 
 				v.setTreeRootsAgeInWater (treeIndex, 0);	
 			}
 		}
@@ -492,7 +530,7 @@ public class SafeRootNode implements Serializable {
 			if (nodeColonised != null) {
 				for (Iterator<SafeRootNode>  it = this.getNodeColonised ().iterator (); it.hasNext ();) {
 					SafeRootNode nodeColonised = it.next ();
-					nodeColonised.computeCoarseRootsAnoxia (tree, settings, humificationDepth);
+					nodeColonised.computeCoarseRootsAnoxia (tree, generalParameters, humificationDepth);
 				}
 			}
 		}
@@ -501,7 +539,7 @@ public class SafeRootNode implements Serializable {
 	/**
 	 * Tree fine roots senescence (computed each day only if budbust has started) 
 	 */
-	public void computeFineRootsSenescence (SafeTree tree, SafeGeneralParameters settings, double humificationDepth) {
+	public void computeFineRootsSenescence (SafeTree tree, SafeGeneralParameters generalParameters, double humificationDepth) {
 	
 
 		int treeIndex = tree.getId()-1;
@@ -557,7 +595,7 @@ public class SafeRootNode implements Serializable {
 		if (nodeColonised != null) {
 			for (Iterator<SafeRootNode>  it = this.getNodeColonised ().iterator (); it.hasNext ();) {
 				SafeRootNode nodeColonised = it.next ();
-				nodeColonised.computeFineRootsSenescence (tree, settings, humificationDepth);
+				nodeColonised.computeFineRootsSenescence (tree, generalParameters, humificationDepth);
 			}
 		}
 	}
@@ -585,8 +623,9 @@ public class SafeRootNode implements Serializable {
 	 * ALSO after ROOT prunnig (IL 12 05 2015) 
 	 * ADD cumulation in Carbon and Nitrogen Anoxia (not for root pruning or soil management)  IL 10-04-2018
 	 */
-	public void removeSonsRoots (SafeVoxel voxel, SafeTree tree, SafeGeneralParameters settings, float prop, boolean testAnoxia , double humificationDepth) {
+	public void removeSonsRoots (SafeVoxel voxel, SafeTree tree,  float prop, boolean testAnoxia , double humificationDepth) {
 		
+	
 		int treeIndex = tree.getId()-1;
 		double carbonToDryMatter = 1d / tree.getTreeSpecies ().getWoodCarbonContent(); 
 		double frCost =  1 / (carbonToDryMatter * 1000 * tree.getTreeSpecies ().getSpecificRootLength ());
@@ -641,11 +680,10 @@ public class SafeRootNode implements Serializable {
 					//If all fine roots are removed, son roots have also to be killed (and coarse root also) 
 					if (prop == 1) {
 						//remove sons roots
-						nodeSon.removeSonsRoots (null, tree, settings, prop, testAnoxia, humificationDepth);
+						nodeSon.removeSonsRoots (null, tree,  prop, testAnoxia, humificationDepth);
 						
 						double carbonCoarseRootSenescence = voxelSon.getTheTreeCarbonCoarseRoots(treeIndex);
 						double nitrogenCoarseRootSenescence = carbonCoarseRootSenescence * tree.getNitrogenCoarseRoots () / tree.getCarbonCoarseRoots ();
-						
 
 						voxelSon.setTreeCarbonCoarseRoots(treeIndex, 0);
 						voxelSon.setTreeCarbonCoarseRootsTarget(treeIndex, 0);
@@ -721,29 +759,24 @@ public class SafeRootNode implements Serializable {
 	public void addFineRootsCost (double c) {fineRootsCost += (float) c;}
 	public void setFineRootsCost (double c) {fineRootsCost = (float) c;}
 	
-	public double getFineRootsDensity () {return (double) fineRootsDensity;}
-	public void setFineRootsDensity (double d) {fineRootsDensity = (float) d;}
+	public double getFineRootsDensity () {return fineRootsDensity;}
+	public void setFineRootsDensity (double d) {fineRootsDensity = d;}
 
 	public double getFineRootsLength () {
 		return this.getFineRootsDensity () * this.getVoxelRooted ().getVolume ();
 	} 
 
-	public double getFineRootsTotalInvestment () {return (double) fineRootsTotalInvestment;}
-	public void setFineRootsTotalInvestment (double fr) {fineRootsTotalInvestment = (float) fr;}
-	public void addFineRootsTotalInvestment (double fr) {fineRootsTotalInvestment += (float) fr;}
+	public double getFineRootsTotalInvestment () {return fineRootsTotalInvestment;}
+	public void setFineRootsTotalInvestment (double fr) {fineRootsTotalInvestment = fr;}
+	public void addFineRootsTotalInvestment (double fr) {fineRootsTotalInvestment += fr;}
 	
 
-	public double getWaterUptake () {return (double) waterUptake;}
-	public void addWaterUptake (double d) {waterUptake += (float) d;}
-	public void setWaterUptake (double d) {waterUptake = (float) d;}
-
-	public double getNitrogenUptake () {return (double) nitrogenUptake;}
-	public void addNitrogenUptake (double v) {
-		nitrogenUptake += (float) v;
-	}
-	public void setNitrogenUptake (double v) {
-		nitrogenUptake = (float) v;
-	}
+	public double getWaterUptake () {return waterUptake;}
+	public void addWaterUptake (double d) {waterUptake += d;}
+	public void setWaterUptake (double d) {waterUptake = d;}
+	public double getNitrogenUptake () {return nitrogenUptake;}
+	public void addNitrogenUptake (double v) {nitrogenUptake += v;}
+	public void setNitrogenUptake (double v) {nitrogenUptake = v;}
 
 	public double getWaterEfficiency () {
 		if ((getFineRootsLength() > 0) && (getWaterUptake() > 0))
@@ -752,16 +785,30 @@ public class SafeRootNode implements Serializable {
 	}
 	public double getNitrogenEfficiency () {
 		if ((getFineRootsLength() > 0) && (getNitrogenUptake() > 0))
-			return getNitrogenUptake()/getFineRootsLength();
+			return (getNitrogenUptake()/1000)/getFineRootsLength();	//convert gN to kgN
 		else return 0;		
 	}
 	
-	public double getPhiPf () {return (double) phiPf;}
-	public void setPhiPf (double d) {phiPf = (float) d;}
-	
-	public double getWaterRhizospherePotential () {return (double) waterRhizospherePotential;}
-	public void setWaterRhizospherePotential (double d) {waterRhizospherePotential = (float) d;}
+	public double getPhiPf () {return phiPf;}
+	public void setPhiPf (double d) {phiPf = d;}
+	public double getWaterRhizospherePotential () {return waterRhizospherePotential;}
+	public void setWaterRhizospherePotential (double d) {waterRhizospherePotential =  d;}
 
+	public double getWaterUptakePotential () {return waterUptakePotential;}
+	
+	public void setWaterUptakePotential (double v) {waterUptakePotential =  v;}
+	public void addWaterUptakePotential (double v) {waterUptakePotential +=  v;}
+
+
+	public double getNitrogenShareUptake() {return nitrogenShareUptake;}
+	public double getNitrogenZeroSinkPotential () {return  nitrogenZeroSinkPotential;}
+
+	public void setNitrogenShareUptake (double v) {nitrogenShareUptake =   v;}
+	public void setNitrogenZeroSinkPotential (double v) {nitrogenZeroSinkPotential =   v;}
+	
+	public double getNitrogenUptakePotential () {return  nitrogenUptakePotential;}
+	public void setNitrogenUptakePotential  (double v) {nitrogenUptakePotential =   v;}
+	public void addNitrogenUptakePotential (double v) {nitrogenUptakePotential +=   v;}
 	
   	public void drawNodes() {
 		System.out.println("drawNodes cell="+getVoxelRooted().getCell().getId()+" node="+this);
@@ -772,6 +819,14 @@ public class SafeRootNode implements Serializable {
 		}
   	}
   	
+	public int compareTo (Object other) {
+		  double nombre1 = ((SafeRootNode) other).getPhiPf();
+		  double nombre2 = this.getPhiPf();
+		  if (nombre1 > nombre2)  return -1;
+		  else if(nombre1 == nombre2) return 0;
+		  else return 1;
+		}
+	
 	public String toString(){
 		String str = "";
 		str = "Node= "+planteType+" voxel="+voxelRooted.getId()+" z="+voxelRooted.getZ()+" FRDensity="+getFineRootsDensity();

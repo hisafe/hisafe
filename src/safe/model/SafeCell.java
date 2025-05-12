@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -53,92 +59,147 @@ import capsis.defaulttype.plotofcells.SquareCell;
 import safe.stics.*;
 
 /**
- * SafeCell is a square spatial division of a SafePlot 
+ * SafeCell is a square spatial division of a SafePlot  
  *
- * @author Isabelle Lecomte - INRAE Montpellier - july 2002 
+ * @author : Isabelle Lecomte - INRA (UMR-SYSTEM), University of Montpellier, France
  */
 public class SafeCell extends SquareCell {
 
-
-	private static final long serialVersionUID = 1L;
-	
-	//4 neighbourg cells used for toric symetry
+	/** 4 neighbor cells used for toric symmetry */
 	private static class Immutable2 implements Cloneable, Serializable {
-		private static final long serialVersionUID = 1L;
-		public int cellIdRight;					//ID of the right neighbourg cell x+
-		public int cellIdLeft;					//ID of the left  neighbourg cell x-
-		public int cellIdBack;					//ID of the back  neighbourg cell y+
-		public int cellIdFront;					//ID of the front neighbourg cell y-
+		/**  ID of the right neighbor cell x+ */
+		public int cellIdRight;		
+		/**  ID of the left neighbor cell x- */
+		public int cellIdLeft;				
+		/**  ID of the back neighbor cell y+ */
+		public int cellIdBack;					
+		/**  ID of the front neighbor cell y- */
+		public int cellIdFront;				
 	}
 	protected Immutable2 immutable2;
-
-	private SafeCropZone cropZone;				//reference of the crop zone object 
-	private SafeCrop crop;						//reference of the crop object sown on this cell
-	private SafeVoxel [] voxels;				//references of voxels objects attached to this cell
-	private int idTreePlanted;					//ID of tree if planted in this cell 
-	private boolean isTreeAbove;				//true if one tree at least is above the cell 
-	Collection<SafeTree> treeAbove;				//list of tree above this cell
-	private float  laiTree;						//sum of lai of all trees above
-
-	//LIGHT MODULE RESULTS (in % for each execution of the process lighting)
+	
+	/** Reference of the crop zone object  */
+	private SafeCropZone cropZone;			
+	/** Reference of the crop object  */
+	private SafeCrop crop;						
+	/** References of voxels objects attached to this cell  */
+	private SafeVoxel [] voxels;				
+	/** ID of tree if planted in this cell   */
+	private int idTreePlanted;					
+	/** True if at least one tree crown is above the cell    */
+	private boolean isTreeAbove;				
+	/** List of tree crown above this cell  */
+	Collection<SafeTree> treeAbove;				
+	/** Sum of lai of all trees above */
+	private float  laiTree;						
+	/** ETP calculated on the cell   */
+	private float etpCalculated;
+	
+	//LIGHT 
 	private float relativeToFlatCellDirectParIncident;	// %
 	private float relativeToFlatCellDiffuseParIncident;	// %
 	private float relativeToFlatCellVisibleSky;			// %
 	private float relativeToFlatCellDirectNirIncident;	// %
 	private float relativeToFlatCellDiffuseNirIncident;	// %
 
-	private float directParIncident;				//moles.m-2
-	private float diffuseParIncident;				//moles.m-2
-	private float relativeDirectParIncident;		//%
-	private float relativeDiffuseParIncident;		//%
-	private float relativeTotalParIncident;			//%
-	private float relativeGlobalRadIncident;		//%
-	private float visibleSky;						//%
-	private float etpCalculated;					//etp calculated with global incident radiation
+	/** Direct PAR incident on the cell (moles PAR m-2)  */
+	private float directParIncident;				
+	/** Diffuse PAR incident on the cell (moles PAR m-2)  */
+	private float diffuseParIncident;	
+	/** Relative direct PAR incident on the cell (%)  */
+	private float relativeDirectParIncident;	
+	/** Relative diffuse PAR incident on the cell (%)  */
+	private float relativeDiffuseParIncident;		
+	/** Relative total PAR incident on the cell (%)  */
+	private float relativeTotalParIncident;	
+	/** Relative global PAR incident on the cell (%) */
+	private float relativeGlobalRadIncident;
+	/** Visible sky from the cell (%) */
+	private float visibleSky;
+	/** Total month direct PAR  on this cell (moles PAR m-2)   */
+	private float monthDirectPar;				
+	/** Total month diffuse PAR  on this cell (moles PAR m-2)   */
+	private float monthDiffusePar;				
+	/** Total month direct PAR incident on this cell (moles PAR m-2)   */
+	private float monthDirectParIncident;		
+	/** Total month diffuse PAR incident on this cell (moles PAR m-2)   */
+	private float monthDiffuseParIncident;			
+	/** Total month visible sky on this cell (%)   */
+	private float monthVisibleSky;								
+	/** Total annual direct PAR incident on this cell (moles PAR m-2)   */
+	private float annualDirectParIncident;		
+	/** Total annual diffuse PAR incident on this cell (moles PAR m-2)   */
+	private float annualDiffuseParIncident;				
 	
-	//WATER AND NITROGEN BUDGET
-	private float waterAddedByWaterTable;			//amout of water provided by the water table to saturated voxels (mm)
-	private float waterTakenByDesaturation;			//amout of water taken    by the water table to desaturated voxels (mm)
-	private float waterUptakeInSaturationByTrees;	//amout of water uptaken  by the trees in saturated voxels (liters) 
-	private float waterUptakeInSaturationByCrop;	//amout of water uptaken  by the crop  in saturated voxels (liters) 
-	private float nitrogenUptakeInSaturationByTrees;//amout of nitrogen uptaken  by the trees in saturated voxels (kg) 
-	private float nitrogenUptakeInSaturationByCrop;	//amout of nitrogen uptaken  by the trees in saturated voxels (kg) 
+	//WATER ENTRIES 
+	/** Rain intercepted by trees on this cell (mm d-1)   */
+	private float rainInterceptedByTrees; 			
+	/** Rain transmitted by trees on this cell (mm d-1) (mm d-1)   */
+	private float rainTransmittedByTrees; 			
+	/** Stemflow by trees on this cell  (mm d-1)   */
+	private float stemFlowByTrees; 				
 
-	//MICROCLIMATE MODEL DAILY VALUE
-	private float rainInterceptedByTrees; 			//Rain intercepted by trees on this cell (mm d-1)
-	private float rainTransmittedByTrees; 			//Rain transmitted by trees on this cell (mm d-1)
-	private float stemFlowByTrees; 					//Stemflow by trees on this cell (mm d-1)
-	//rainInterceptedByCrop is taken directly from SticsCrop.interpluie[1] (mm d-1)
-	//rainTransmittedByCrop is calculated (mm d-1) 
-	//stemFlowByCrop is taken directly from SticsCrop.stemflow (mm d-1) 
+	//WATER AND NITROGEN UPTAKE 
+	/** Total annual water uptake by crop (mm)   */
+	private float annualWaterUptakeByCrop;		
+	/** Total annual nitrogen uptake by crop (kg N ha-1)   */
+	private float annualNitrogenUptakeByCrop;	
+	/** Total annual water uptake by trees (mm)   */
+	private float annualWaterUptakeByTrees;		
+	/** Total annual nitrogen uptake by trees (kg N ha-1)   */
+	private float annualNitrogenUptakeByTrees;		
 	
-	//CARBON SURFACE LITTER (Kg C )
-	private double 	treeCarbonFoliageLitter;		//litter from tree foliage
-	private double 	treeCarbonBranchesLitter;		//litter from tree branches
-	private double 	treeCarbonFruitLitter;			//litter from tree fruit
-	private double  treeCarbonFineRootsLitter;		//litter from tree fine roots
-	private double  treeCarbonCoarseRootsLitter;	//litter from tree coarse roots
+	//WATER TABLE IN AND OUT
+	/** Amount of water provided by the water table flooding  (mm)   */
+	private float waterAddedByWaterTable;			
+	/** Amount of water taken by the water table flow back (mm)   */
+	private float waterTakenByDesaturation;				
+	/** Amount of water uptake  by the trees in saturated voxels (mm)   */
+	private float waterUptakeInSaturationByTrees;	
+	/** Amount of water uptake  by the crop in saturated voxels (mm)   */
+	private float waterUptakeInSaturationByCrop;	
+	/** Amount of nitrogen uptake  by the trees in saturated voxels (kg N ha-1)   */
+	private float nitrogenUptakeInSaturationByTrees;
+	/** Amount of nitrogen uptake  by the crop in saturated voxels (kg N ha-1)   */
+	private float nitrogenUptakeInSaturationByCrop;
+	/** Amount of nitrogen provided by the water table flooding  (kg N ha-1 )   */
+	private float nitrogenAddedByWaterTable;		
+	/** Amount of nitrogen taken by the water table flow back (kg N ha-1 )   */
+	private float nitrogenLeachingWaterTable;	
+	/** Amount of annual nitrogen taken by the water table flow back (kg N ha-1 )   */
+	private float annualNitrogenLeachingWaterTable; 
 	
-	//NITROGEN SURFACE LITTER (Kg N ha-1)
-	private double 	treeNitrogenFoliageLitter;		//litter from tree foliage
-	private double 	treeNitrogenBranchesLitter;		//litter from tree branches
-	private double 	treeNitrogenFruitLitter;		//litter from tree fruit
-	private double  treeNitrogenFineRootsLitter;	//litter from tree fine roots
-	private double  treeNitrogenCoarseRootsLitter;	//litter from tree coarse roots
+	//CARBON AND NITROGEN TREE LITTER AND RESIDUES 
+	/** Carbon litter from tree foliage residues (kg C)   */
+	private double 	treeCarbonFoliageLitter;		
+	/** Carbon litter from tree branches residues (kg C)   */
+	private double 	treeCarbonBranchesLitter;		
+	/** Carbon litter from tree fruits residues (kg C)   */
+	private double 	treeCarbonFruitLitter;			
+	/** Carbon litter from tree fine roots residues (kg C)   */
+	private double  treeCarbonFineRootsLitter;		
+	/** Carbon litter from tree coarse roots residues (kg C)   */
+	private double  treeCarbonCoarseRootsLitter;	
+	/** Nitrogen litter from tree foliage residues (kg N)   */
+	private double 	treeNitrogenFoliageLitter;		
+	/** Nitrogen litter from tree branches residues (kg N)   */
+	private double 	treeNitrogenBranchesLitter;		
+	/** Nitrogen litter from tree fruits residues (kg N)   */
+	private double 	treeNitrogenFruitLitter;		
+	/** Nitrogen litter from tree fine roots residues (kg N)   */
+	private double  treeNitrogenFineRootsLitter;	
+	/** Nitrogen litter from tree coarse roots residues (kg N)   */
+	private double  treeNitrogenCoarseRootsLitter;
 	
-	//MONTLY MEAN VALUES FOR EXPORT
-	private float monthDirectParIncident;			//moles PAR m-2
-	private float monthDiffuseParIncident;			//moles PAR m-2
-	private float monthVisibleSky;					//%	
-	private float monthDirectPar;					//moles PAR m-2
-	private float monthDiffusePar;					//moles PAR m-2
-	private int   monthNbrDays;						//number of days in the month (used for monthly calculation) 					
-
-	//ANNUAL VALUES FOR EXPORT
-	private float annualWaterUptakeByTrees;			//liters
-	private float annualNitrogenUptakeByTrees;		//liters
-	private float annualParIncident;				//moles PAR m-2
-	
+	/**	
+	 *	Constructor 
+	 * @param plot the SafePlot where the cell is attached
+	 * @param coord origin coordinate of the cell in 3D
+	 * @param i line number in the cell grid
+	 * @param j column number in the cell grid
+	 * @param id id of the cell
+	 * @param nbVoxels number of voxels
+	 */
 	public SafeCell (SafePlot plot, Vertex3d coord, int i, int j, int id, int nbVoxels) {
 		
 		super (plot, id, 0, coord, i, j);			//SquareCell
@@ -157,21 +218,8 @@ public class SafeCell extends SquareCell {
 		//reset light results 
 		resetDirect();
 		resetDiffuse();
-		
-		this.relativeToFlatCellDirectParIncident=1f;
-		this.relativeToFlatCellDiffuseParIncident=1f;
-		this.relativeToFlatCellVisibleSky=1f;
-		this.relativeToFlatCellDirectNirIncident=1f;
-		this.relativeToFlatCellDiffuseNirIncident=1f;
-		this.directParIncident=0f;
-		this.diffuseParIncident=0f;
-		this.relativeDirectParIncident=1f;
-		this.relativeDiffuseParIncident=1f;
-		this.relativeTotalParIncident=1f;
-		this.relativeGlobalRadIncident=1f;
-		this.visibleSky=1f;
 
-		//reset water transfert results
+		//reset water results
 		setRainTransmittedByTrees (0);
 		setStemFlowByTrees (0); 
 		setRainInterceptedByTrees (0); 
@@ -181,38 +229,36 @@ public class SafeCell extends SquareCell {
 		setWaterUptakeInSaturationByCrop(0);	
 		setNitrogenUptakeInSaturationByTrees(0);	
 		setNitrogenUptakeInSaturationByCrop(0);	
+		setNitrogenLeachingWaterTable(0);	
+		setNitrogenAddedByWaterTable(0);	
 
 	}
 
 	/**
-	 * Create an Immutable object whose class is declared at one level of the hierarchy.
-	 * This is called only in constructor for new logical object in superclass.
-	 * If an Immutable is declared in subclass, subclass must redefine this method
-	 * (same body) to create an Immutable defined in subclass.
+	 * Create an Immutable object.
 	 */
 	protected void createImmutable2 () {immutable2 = new Immutable2 ();}
 
 	/**
-	 * Clone a SafeCell
+	 * Clone the SafeCell
 	 */
 	public Object clone () {
 
-		SafeCell c = (SafeCell) super.clone ();	// calls protected Object Object.clone () {}
+		SafeCell c = (SafeCell) super.clone ();	
 		return c;
 	}
+
 	/**
-	 * Reset or add daily results on this cell
+	 * Reset daily results on this cell
 	 */
-	public void dailyRaz () {
-		
+	public void razDaily () {
+
 		//total Monthly values
 		this.monthVisibleSky=this.monthVisibleSky+this.visibleSky;	
-		this.monthNbrDays = this.monthNbrDays + 1;
 
 		//Totals for EXPORT
 		this.annualWaterUptakeByTrees = this.annualWaterUptakeByTrees + (float) this.getWaterUptakeByTrees();				
 		this.annualNitrogenUptakeByTrees = this.annualNitrogenUptakeByTrees+ (float) this.getNitrogenUptakeByTrees();	
-		this.annualParIncident = this.annualParIncident + (float) this.getTotalParIncident();
 
 		//RAZ
 		this.setWaterAddedByWaterTable (0);
@@ -224,16 +270,33 @@ public class SafeCell extends SquareCell {
 		this.setRainTransmittedByTrees (0);
 		this.setRainInterceptedByTrees (0); 
 		this.setStemFlowByTrees (0); 
+		this.setNitrogenLeachingWaterTable(0);	
+		this.setNitrogenAddedByWaterTable(0);
+		
+		this.getCrop().razDaily();
 
 	}
 	
+	/**
+	 * Reset month results on this cell
+	 */
+	public void razTotalMonth () {
+		monthDirectPar = 0; 
+		monthDiffusePar = 0;
+		monthDirectParIncident = 0; 
+		monthDiffuseParIncident = 0;
+		monthVisibleSky = 0;
+
+		this.getCrop().razTotalMonth();
+	}
 	/**
 	 * Reset annual results on this cell
 	 */
 	public void razTotalAnnual () {
 		annualWaterUptakeByTrees = 0;				
 		annualNitrogenUptakeByTrees = 0;
-		annualParIncident= 0 ;									
+		
+		this.getCrop().razTotalAnnual();
 	}
 	
 	/**
@@ -247,7 +310,6 @@ public class SafeCell extends SquareCell {
 		setVisibleSky(0);
 		setRelativeGlobalRadIncident (0);
 		setDiffuseParIncident(0);
-
 	}
 	/**
 	 * Reset direct incident energy on this cell
@@ -262,20 +324,11 @@ public class SafeCell extends SquareCell {
 	}
 
 	/**
-	 * Reset month results on this cell
-	 */
-	public void razTotalMonth () {
-		monthDirectPar = 0; 
-		monthDiffusePar = 0;
-		monthDirectParIncident = 0; 
-		monthDiffuseParIncident = 0;
-		monthVisibleSky = 0;
-		monthNbrDays = 0;
-		this.getCrop().razTotalMonth();
-	}
-	/**
-	* Agregation of STICS minicouches values in HISAFE voxels 
-	* after STICS PART 1
+	 * Aggregation of STICS mini-layers values in Hi-sAFe voxels after STICS PART 1
+	 * @param sticsParam SafeSticsParameters
+	 * @param waterTableDepth water table depth (m)
+	 * @param simulationDay Hi-sAFe simulation day
+	 * @param sticsDay STICS simulation day
 	*/
 	public void miniCouchesToVoxelsAfterStics1 (SafeSticsParameters sticsParam, 
 												double waterTableDepth,
@@ -299,7 +352,6 @@ public class SafeCell extends SquareCell {
 			float soilTemperature = 0;
 			float soilEvapo    = 0;
 
-
 			//number of miniCouches in this voxel
 			int miniCoucheMin = voxels[i].getMiniCoucheMin();			//starting  miniCouches  for current voxel
 			int miniCoucheMax = voxels[i].getMiniCoucheMax();	   		//ending    miniCouches  for current voxel
@@ -320,7 +372,6 @@ public class SafeCell extends SquareCell {
 				}		
 			}
 
-
 			//convert cm/cm3 in m/m3 (miniCouches is 1cm)
 			cropRootDensity = (cropRootDensity * 10000) / miniCoucheNumber;
 			cropRootEffectiveDensity = (cropRootEffectiveDensity * 10000) / miniCoucheNumber;
@@ -329,7 +380,7 @@ public class SafeCell extends SquareCell {
 
 			//add a new root branch in the TOPOLOGY MAP
 			if (cropRootDensity > 0) {
-				if (! this.getCrop().getPlantRoots().getRootTopology ().containsKey(voxels[i])) {
+				if (this.getCrop().getPlantRoots().getRootTopology (voxels[i]) == null) {
 					if (i > 0)
 						this.getCrop().getPlantRoots().addCropRootTopology (voxels[i], voxels[i-1], simulationDay, cropRootDensity);
 					else
@@ -338,7 +389,7 @@ public class SafeCell extends SquareCell {
 			}
 			
 			//UPDATE fine root density in the TOPOLOGY MAP
-			if (this.getCrop().getPlantRoots().getRootTopology ().containsKey(voxels[i]))
+			if (this.getCrop().getPlantRoots().getRootTopology (voxels[i]) != null) 
 				this.getCrop().getPlantRoots().setFineRootTopology (voxels[i], cropRootDensity);			
 
 			//Store agregation result in voxel
@@ -360,15 +411,13 @@ public class SafeCell extends SquareCell {
 
 			voxels[i].setSoilTemperature(newSoilTemperature); 							//mean of temperature
 			voxels[i].setEvaporation  (soilEvapo * cellArea);							//convert mm in liters;	
-
 		}
 	}
 
 
 	/**
-	* Agregation of STICS minicouches values in HISAFE voxels 
-	* after STICS PART 2
-	* Nitrogen have been updated by majNsol
+	 * Aggregation of STICS mini-layers values in Hi-sAFe voxels after STICS PART 2
+	 * @param waterTableDepth water table depth (m)
 	*/
 	public void miniCouchesToVoxelsAfterStics2 (double waterTableDepth) {
 
@@ -400,7 +449,6 @@ public class SafeCell extends SquareCell {
 					voxelNh4 		+= sticsSoil.amm[z];					// voxel soil nh4 kg N ha-1	
 				}
 				
-
 				//Store agregation result in voxel
 				double newTheta 		= (voxelMoisture/10)/miniCoucheNumber;
 				double newNo3			= voxelNo3;
@@ -413,11 +461,11 @@ public class SafeCell extends SquareCell {
 	}	
 	
 	/**
-	* Agregation of STICS minicouches values in HISAFE voxels 
-	* after STICS PART 2 
-	* only if water extraction have been calculated by STICS (testing STICS stand alone) 
+	 * Aggregation of STICS mini-layers values in Hi-sAFe voxels after STICS PART 2
+	*  only if water extraction have been calculated by STICS (testing STICS stand alone) 
+	 * @param generalParameters Reference to SafeGeneralParameters object
 	*/
-	public void miniCouchesToVoxelsAfterSticsWaterExtraction () {
+	public void miniCouchesToVoxelsAfterSticsWaterExtraction (SafeGeneralParameters generalParameters) {
 
 		SafeSticsCommun sticsCommun = this.getCrop().sticsCommun;
 		SafeSticsCrop sticsCrop = this.getCrop().sticsCrop;
@@ -446,7 +494,7 @@ public class SafeCell extends SquareCell {
 					//For these data No need to go further than root depth limit
 					if (z <= zrac) {
 						//if pure crop, crop water extraction is computed by STICS
-						//real      :: epz(0:2,1000) 
+						//real      :: epz(0:2,1000) 	0=shade+sun 1=sun 2=shade (in case of associated crops) 1000=mini layess number
 						int indice     = (z*3)+1;
 						cropWaterUptake    += sticsCrop.epz[indice];			// voxel crop water uptake 	mm		
 						cropNitrogenUptake += sticsCommun.absz[z];			    // voxel crop nitrogen uptake kg N ha-1		
@@ -458,7 +506,6 @@ public class SafeCell extends SquareCell {
 				voxels[i].setCropWaterUptake  (cropWaterUptake * cellArea);				// convert mm in liters
 				voxels[i].setCropNitrogenUptake ((cropNitrogenUptake / 10) * cellArea );// convert kg ha-1 in g
 				
-
 				totalWaterUptake += cropWaterUptake; 		  		// total crop water uptake (all voxels)
 				totalNitrogenUptake  += cropNitrogenUptake ;		// total crop nitrogen uptake (all voxels)
 				
@@ -471,38 +518,42 @@ public class SafeCell extends SquareCell {
 		this.getCrop().setWaterUptake (totalWaterUptake);			// mm
 		this.getCrop().setNitrogenUptake (totalNitrogenUptake);		// kg ha-1
 
+		//Set the water stress 
 		double waterStress = 1;
 		double nitrogenStress = 1;
 		if (this.getCrop().getWaterDemand() > 0) {
 			if(totalWaterUptake <= 0) {
-				waterStress = 0.0001d; //P_swfacmin;						
+				waterStress = generalParameters.waterStressMin;					
 			}
 			else {
 				waterStress = Math.min (totalWaterUptake  / this.getCrop().getWaterDemand(), 1);		
 			}
-			waterStress = Math.max (waterStress,  0.0001d);
+			waterStress = Math.max (waterStress,  generalParameters.waterStressMin);
 		}
-		//Set the stress 
-		crop.setHisafeWaterStress (waterStress);
+	
+		crop.setHisafeWaterStomatalStress (waterStress);
 		
+		//Set the nitrogen stress 
 		if (this.getCrop().getNitrogenDemand() > 0) {
 			if(totalNitrogenUptake <= 0) {
-				nitrogenStress = 0.0001d; //P_swfacmin;						
+				nitrogenStress = generalParameters.nitrogenStressMin;						
 			}
 			else {
 				nitrogenStress = Math.min (totalNitrogenUptake  / this.getCrop().getNitrogenDemand(), 1);		
 			}
-			nitrogenStress = Math.max (nitrogenStress,  0.0001d);
+			nitrogenStress = Math.max (nitrogenStress,  generalParameters.nitrogenStressMin);
 		}
-		//Set the stress 
+
 		crop.setHisafeNitrogenStress (nitrogenStress);
 	}
 	
 	/**
-	* Desagregation of HISAFE voxels in STICS miniCouches (crop and tree water and nitrogen uptake) 
-	* Called after water and nitrogen competition calculation  
-	*/	
-	public void voxelsToMiniCouches (SafeGeneralParameters safeSettings, boolean isDebugMode) {
+	 * Desaggregation of Hi-sAFe voxels values in STICS mini-layers (crop and tree water and nitrogen uptake) 
+	*  Called after water and nitrogen competition calculation
+	*  @param generalParameters SafeGeneralParameters
+	*  @param isDebugMode (0/1) to report errors
+	*/
+	public void voxelsToMiniCouches (SafeGeneralParameters generalParameters, SafePlotSettings plotSettigs, boolean isDebugMode) {
 
 		SafeSticsCrop sticsCrop = this.getCrop().sticsCrop;
 		SafeSticsCommun sticsCommun = this.getCrop().sticsCommun;
@@ -514,25 +565,24 @@ public class SafeCell extends SquareCell {
 	
 		//RAZ tree and crop water and nitrogen extraction table before desagregation
 		for (int i=0; i<1000; i++) {	
-			int indice     = (i*3)+1;		////real      :: epz(0:2,1000) 
+			//real      :: epz(0:2,1000) 0=shade+sun 1=sun 2=shade (in case of associated crops) 1000=mini layess number
+			int indice     = (i*3)+1;		
 			sticsCrop.epz[indice] = 0;
 			sticsCommun.absz[i]=0;
 		}
 		//il correction 16/02/2017
-		for (int i=0; i<safeSettings.STICS_MINI_LAYERS; i++) {	
+		for (int i=0; i<generalParameters.STICS_MINI_LAYERS; i++) {	
 			sticsCommun.treeWaterUptake [i] =0;
 			sticsCommun.treeNitrogenUptake [i] =0;
 
 		}
-
-		
+	
 		// if (tree+crop water uptake + soil evaporation) > (waterStock-ha) in a miniCouche
 		// ha is residual water. 
 		// In that case, tree and crop water  uptake are affected to the next miniCouche
 		double reportWaterTree = 0;	
 		double reportWaterCrop = 0;	
 
-		
 		//FOR EACH VOXEL
 		for (int i=0; i < this.voxels.length; i++) {
 
@@ -552,10 +602,9 @@ public class SafeCell extends SquareCell {
 				cropWaterUptake = voxels[i].getCropWaterUptake ();					//liters
 				cropNitrogenUptake = voxels[i].getCropNitrogenUptake ();			//g N
 				
-				for (int t=0; t < safeSettings.nbTrees; t++) {
+				for (int t=0; t < plotSettigs.nbTrees; t++) {
 					treeWaterUptake += voxels[i].getTheTreeWaterUptake (t);			//liters
 					treeNitrogenUptake += voxels[i].getTheTreeNitrogenUptake (t);	//g N
-
 				}
 				
 				//if no extraction, no need to continue
@@ -644,10 +693,8 @@ public class SafeCell extends SquareCell {
 							}
 					//	}
 	
-					    
-						
-						//Passage dans STICS de l'extraction en AZOTE des arbres et de la culture dans les minicouches 
-					  				
+
+						//Passage dans STICS de l'extraction en AZOTE des arbres et de la culture dans les minicouches 			  				
 						if ( (sticsSoil.nit[z+1] > 0 ) && (sticsSoil.amm[z] >= 0)) {	
 							if  (treeNitrogenUptake > 0) {	
 								sticsCommun.treeNitrogenUptake [z] = (float) ((treeNitrogenUptake  / cellArea) * 10)
@@ -670,18 +717,19 @@ public class SafeCell extends SquareCell {
 		
 		//Si après exploration de tous les voxels il reste des choses à extraire 
 		//Qu'est ce qu'on fait ???? 
-	
-			if (reportWaterTree > 0.000001)  System.out.println("cell="+this.getId()+"  reportWaterTree="+reportWaterTree);
-			if (reportWaterCrop > 0.000001) System.out.println("cell="+this.getId()+"  reportWaterCrop="+reportWaterCrop);
+	if (isDebugMode) {
+		if (reportWaterTree > 0.000001)  System.out.println("cell="+this.getId()+"  reportWaterTree="+reportWaterTree);
+		if (reportWaterCrop > 0.000001) System.out.println("cell="+this.getId()+"  reportWaterCrop="+reportWaterCrop);
+	}
+
 		
 		
 	}
-	
 	/**
-	* Desagregation of HISAFE voxels in STICS miniCouches (water and nitrogen content) 
-	* Called after water table calculation  
+	 * Desaggregation of hisafe voxels values in STICS mini-layers (water and nitrogen content) 
+	*  Called after water table calculation 
 	*/
-	public void voxelsToMinicouchesWaterNitrogen (SafeGeneralParameters safeSettings) {
+	public void voxelsToMinicouchesWaterNitrogen () {
 
 		double cellArea = this.getArea();
 		SafeSticsCommun sticsCommun = this.getCrop().sticsCommun;
@@ -714,10 +762,8 @@ public class SafeCell extends SquareCell {
 		}
 	}
 
-	
 	/**
 	* Reduction of waterStock with soil evaporation before water repartition
-	* gt - 5.02.2009
 	*/
 	public void computeEvaporation () {
 		
@@ -743,8 +789,8 @@ public class SafeCell extends SquareCell {
 	}	
 	
 	/**
-	* Recalculation of crop root topology
-	* After STICS PART 1 (crop root growth) 
+	* Recalculation of crop root topology after STICS PART 1 (crop root growth)
+	* @param simulationDay Hi-sAfe simulation day  
 	*/
 	public void computeCropRootsTopology (int simulationDay) {
 	
@@ -755,7 +801,7 @@ public class SafeCell extends SquareCell {
 			if (cropRootDensity > 0) {
 				
 				//ADD NEW TOPOLOGY NODE
-				if (! this.getCrop().getPlantRoots().getRootTopology ().containsKey(voxels[i])) {
+				if (this.getCrop().getPlantRoots().getRootTopology (voxels[i]) == null) {
 					if (i > 0)
 						this.getCrop().getPlantRoots().addCropRootTopology (voxels[i], voxels[i-1], simulationDay, cropRootDensity);
 					else
@@ -763,17 +809,16 @@ public class SafeCell extends SquareCell {
 				}
 		
 				//UPDATE fine root density in the TOPOLOGY NODE
-				if (this.getCrop().getPlantRoots().getRootTopology ().containsKey(voxels[i]))
+				if (this.getCrop().getPlantRoots().getRootTopology (voxels[i]) != null) 
 					this.getCrop().getPlantRoots().setFineRootTopology (voxels[i], cropRootDensity);
 			}
-
 		}
-
 	}
 	
 
     /**
-	 * Check if the cell is colonized by tree roots (at least one voxel) 
+	 * Check if the cell is colonized by a tree roots (at least one voxel) 
+	 * @param treeID ID of the tree to check   
 	 */
     public boolean isColonised (int treeID)  {
     	boolean isColonised = false; 		
@@ -791,18 +836,21 @@ public class SafeCell extends SquareCell {
 
 	/**
 	 * Daily calculation of PAR incident on the cell depending climatic entries
+	 * @param generalParameters Reference to SafeGeneralParameters general parameters 
+	 * @param beamSet Reference to SafeBeamSet collection of light beam 
+	 * @param dayClimat Reference to SafeDailyClimat climate of the day 
+
 	 */
-	public void updateDailyLightResults(SafeBeamSet<SafeBeam> beamSet, SafeDailyClimat dayClimat, SafeGeneralParameters settings) {
+	public void updateDailyLightResults(SafeGeneralParameters generalParameters, SafeBeamSet<SafeBeam> beamSet, SafeDailyClimat dayClimat) {
 
 		//crop light interception method 0=STICS 
-		if(!settings.cropLightMethod){
-			getCrop().cropSticsLightInterception(settings, beamSet, getRelativeToFlatCellDirectParIncident(), getRelativeToFlatCellDiffuseParIncident());
+		if(!generalParameters.hisafeLightMethodForCrop){
+			getCrop().cropSticsLightInterception( beamSet, getRelativeToFlatCellDirectParIncident(), getRelativeToFlatCellDiffuseParIncident());
 		}
 
 		//Calculation of diffuse PAR transmitted today on this cell in Moles m-2 d-1
 		float dailyDiffuse = dayClimat.getDiffusePar ();				  					// Climatic entry of the day in Moles m-2 d-1
 		setDiffuseParIncident(dailyDiffuse * getRelativeToFlatCellDiffuseParIncident())  ;  // Moles m-2 d-1
-
 		
 		//Same in relative (%)
 		float skyDiffuseMask =(float)(beamSet.getSkyDiffuseMask());
@@ -818,8 +866,7 @@ public class SafeCell extends SquareCell {
 		double dailyDirect = dayClimat.getDirectPar ();												//Climatic entry of the day in Moles m-2 d-1 //GT 2007
 		double dayDirectTransmitted = dailyDirect * this.getRelativeToFlatCellDirectParIncident();	//Moles m-2 d-1
 		setDirectParIncident (dayDirectTransmitted);												//Moles m-2 d-1
-
-			
+		
 		//Same in relative (%)
 		double skyDirectMask = beamSet.getSkyDirectMask();
 
@@ -828,7 +875,6 @@ public class SafeCell extends SquareCell {
 			if (getRelativeDirectParIncident() > 1) {setRelativeDirectParIncident (1);}	//to avoid rounding errors
 		}
 		else setRelativeDirectParIncident(0);
-
 
 		//total is direct + diffuse
 		double totalParIncident = getDirectParIncident() + getDiffuseParIncident();
@@ -840,12 +886,11 @@ public class SafeCell extends SquareCell {
 		}
 		else setRelativeTotalParIncident(0);
 
-
 		//Compute relative visibleSky
 		setVisibleSky(getRelativeToFlatCellVisibleSky()/((float) (beamSet.getSkyInfraRedMask())));
 
 		//Compute relative Global Radiation Incident
-		double parProp = settings.parGlobalCoefficient;
+		double parProp = generalParameters.parGlobalCoefficient;
 		double directProp = dailyDirect/(dailyDirect+dailyDiffuse);
 		setRelativeGlobalRadIncident(
 			(getRelativeDiffuseParIncident()*parProp + getRelativeToFlatCellDiffuseNirIncident()/skyDiffuseMask*(1-parProp))
@@ -854,18 +899,17 @@ public class SafeCell extends SquareCell {
 			*(directProp)
 			);
 
-		
-		//month cumul 
+		//month total 
 		monthDirectPar += dailyDirect;					
 		monthDiffusePar += dailyDiffuse;					
-		monthDirectParIncident += directParIncident;	
-		monthDiffuseParIncident += diffuseParIncident;
 	}
 
 
 	/**
 	 * Find shading cells from shading mask 
-	 *  used to compute light interception by crops if cropLightMethod=1
+	 *  used to compute light interception by crops if hisafeLightMethodForCrop=1
+	 * @param beamSet SafeBeamSet collection of light beam 
+	 * @param plot the SafePlot
 	 */
 	public void findShadingCells (SafeBeamSet<SafeBeam> beamSet, SafePlot plot){
 
@@ -880,15 +924,12 @@ public class SafeCell extends SquareCell {
 
 					int iGrid = this.getIGrid();
 					int jGrid = this.getJGrid();
-
 					int nLin = plot.getNLin();
 					int nCol = plot.getNCol();
-
 					int iDec = neighbour.getRelCoordinates().x;
 					int jDec = neighbour.getRelCoordinates().y;
 
 					neighbour.setCell((SafeCell) plot.getCell (iGrid+iDec, jGrid+jDec));		// uses modulo
-
 
 					double xShift = 0;
 					double yShift = 0;
@@ -899,19 +940,16 @@ public class SafeCell extends SquareCell {
 						int n = dep/nLin;							// integer division
 						yShift = (n+1) * plot.getYSize ();
 					}
-
 					if (iGrid+iDec > nLin-1) {
 						int dep = Math.abs ((nLin-1)-iGrid-iDec) - 1;	// overflow
 						int n = dep/nLin;							// integer division
 						yShift = - (n+1) * plot.getYSize ();
 					}
-
 					if (jGrid+jDec < 0) {
 						int dep = Math.abs (jGrid+jDec) - 1;	// overflow
 						int n = dep/nCol;							// integer division
 						xShift = - (n+1) * plot.getXSize ();
 					}
-
 					if (jGrid+jDec > nCol-1) {
 						int dep = Math.abs ((nCol-1)-jGrid-jDec) - 1;	// overflow
 						int n = dep/nCol;							// integer division
@@ -926,10 +964,11 @@ public class SafeCell extends SquareCell {
 	
 	/**
 	 * TREE irrigation : SET dose in the crop to be treated by STICS
-	 * method = 1 (drip) water is injected in second voxel 
-	 * method = 2,3 (aspersion flood) water is on the surface
+	 * @param sticsSimulationDay stics simulation day  
+	 * @param method 1=drip (water is injected in second voxel) / 2=aspersion (on surface) / 3=flood (on surface)
+	 * @param irrigationDose irrigation dose (mm) 
 	 **/
-	public void treeIrrigation (int n, int method, double irrigationDose) {
+	public void treeIrrigation (int sticsSimulationDay, int method, double irrigationDose) {
 		
 		SafeSticsItk cropItk = this.getCropZone().sticsItk;
 		SafeSticsCommun sc = this.getCrop().sticsCommun;
@@ -948,8 +987,8 @@ public class SafeCell extends SquareCell {
 		}		
 		
 		//add a new irrigation date
-		if (sc.airg[n]==0) {
-			sc.airg[n] = (float) irrigationDose;
+		if (sc.airg[sticsSimulationDay]==0) {
+			sc.airg[sticsSimulationDay] = (float) irrigationDose;
 			//irrigation number reset
 			cropItk.nap = 0;			
 			for (int i=0; i<366; i++) {
@@ -958,22 +997,25 @@ public class SafeCell extends SquareCell {
 		} 
 		//irrigation date already exists (update the dose) 
 		else 
-			sc.airg[n] += (float) irrigationDose;
+			sc.airg[sticsSimulationDay] += (float) irrigationDose;
 	
 	}
 	
 	/**
 	 * TREE fertilization : SET dose in the crop to be treated by STICS
+	 * @param sticsSimulationDay stics simulation day  
+	 * @param fertilizationDose fertilization dose (kg) 
+	 * @param fertilizerCode 1=Nitrate of ammonium ,2=Solution,3=urea,4=Anhydrous ammoniac,5= Sulfate of ammonium,6=phosphate of ammonium,7=Nitrate of calcium,8= fixed efficiency
 	 **/
-	public void treeFertilization(int n, double fertilizationDose, int fertilizerCode) {
+	public void treeFertilization(int sticsSimulationDay, double fertilizationDose, int fertilizerCode) {
 
 		SafeSticsItk cropItk = this.getCropZone().sticsItk;
 		SafeSticsCommun sc = this.getCrop().sticsCommun;
 		
 		//add a new fertilization date
-		if (sc.anit[n]==0) {
-			sc.anit[n] = (float) fertilizationDose;
-			sc.type_ferti[n] = fertilizerCode;
+		if (sc.anit[sticsSimulationDay]==0) {
+			sc.anit[sticsSimulationDay] = (float) fertilizationDose;
+			sc.type_ferti[sticsSimulationDay] = fertilizerCode;
 			//fertilization number reset
 			cropItk.napN = 0;
 			for (int i=0; i<366; i++) {
@@ -982,8 +1024,7 @@ public class SafeCell extends SquareCell {
 		}
 		//fertilization date already exists (update the dose) 
 		else 
-			sc.anit[n] += (float) fertilizationDose;
-			
+			sc.anit[sticsSimulationDay] += (float) fertilizationDose;			
 	}
 	
 	/**
@@ -996,11 +1037,9 @@ public class SafeCell extends SquareCell {
 	
 	/**
 	 * Set the crop reference on this cell
+	 * 	@param crop the SafeCrop  
 	 **/
-	public void setCrop (SafeCrop crop) {
-		this.crop  = crop;
-	}
-
+	public void setCrop (SafeCrop crop) { this.crop  = crop;}
 	/**
 	 * Return the crop object sown on this cell
 	 **/
@@ -1009,67 +1048,117 @@ public class SafeCell extends SquareCell {
 	 * Return the crop name sown on this cell
 	 **/
 	public String getCropName () {return this.getCropZone().getCropSpecies().getName();}
-
 	/**
-	 * Set  the crop zone object 
+	 * Set  the crop zone object
+	 * @param zone the SafeCropZone   
 	 **/
-	public void setCropZone (SafeCropZone z) {this.cropZone = z;}
+	public void setCropZone (SafeCropZone zone) {this.cropZone = zone;}
 	/**
 	 * Return the crop zone object 
 	 **/
 	public SafeCropZone getCropZone () {return cropZone;}
+	/**
+	 * Return the crop zone ID 
+	 **/
 	public int getIdZone() {return cropZone.getId();}
+	/**
+	 * Return the crop zone name 
+	 **/	
 	public String getZoneName () {return cropZone.getName();}
 	/**
 	 * Add a voxel on the voxel collection for this cell
+	 * @param i index of the voxel
+	 * @param voxel SafeVoxel to add
 	 **/
 	public void addVoxel (int i, SafeVoxel voxel) {voxels[i]=voxel;}
 	/**
 	 * Return the voxel collection for this cell
 	 **/
 	public SafeVoxel[] getVoxels  () {return voxels;}
-
+	/**
+	 * Return the first voxel for this cell
+	 **/
 	public SafeVoxel getFirstVoxel  () {return voxels[0];}
-	
-	protected void setCellIdRight (int id) {
-		immutable2.cellIdRight = id;
-	}
-	protected int getCellIdRight () {
-		return immutable2.cellIdRight;
-	}
-	protected void setCellIdLeft (int id) {
-		immutable2.cellIdLeft = id;
-	}
-	protected int getCellIdLeft () {
-		return immutable2.cellIdLeft;
-	}
-	protected void setCellIdBack (int id) {
-		immutable2.cellIdBack = id;
-	}
-	protected int getCellIdBack () {
-		return immutable2.cellIdBack;
-	}
-	protected void setCellIdFront (int id) {
-		immutable2.cellIdFront = id;
-	}
-	protected int getCellIdFront () {
-		return immutable2.cellIdFront;
-	}
-
-	public boolean isTreeAbove() {return isTreeAbove;}
-	public void setIsTreeAbove (boolean b) {isTreeAbove = b;}
-	
+	/**
+	 * Return the cell ID (this is for export) 
+	 **/	
+	public int getIdCell() {return getId();}
+	/**
+	 * Set the cell ID on the right
+	 **/
+	protected void setCellIdRight (int id) {immutable2.cellIdRight = id;}
+	/**
+	 * Return the cell ID on the right
+	 **/	
+	protected int getCellIdRight () {return immutable2.cellIdRight;}
+	/**
+	 * Set the cell ID on the left
+	 **/	
+	protected void setCellIdLeft (int id) {immutable2.cellIdLeft = id;}
+	/**
+	 * Return the cell ID on the right
+	 **/
+	protected int getCellIdLeft () {return immutable2.cellIdLeft;}
+	/**
+	 * Set the cell ID on the back
+	 **/
+	protected void setCellIdBack (int id) {immutable2.cellIdBack = id;}
+	/**
+	 * Return the cell ID on the right
+	 **/
+	protected int getCellIdBack () {return immutable2.cellIdBack;}
+	/**
+	 * Set the cell ID on the front
+	 **/
+	protected void setCellIdFront (int id) {immutable2.cellIdFront = id;}
+	/**
+	 * Get the cell ID on the right
+	 *  @return cell id
+	 **/
+	protected int getCellIdFront () {return immutable2.cellIdFront;}
+	/**
+	 * Return the tree ID if a tree is planted
+	 **/
 	public int getIdTreePlanted() {return idTreePlanted;}
+	/**
+	 * Set the tree ID if a tree is planted
+	 **/
 	public void setIdTreePlanted (int i) {idTreePlanted = i;}
-	
-	
+	/**
+	 * Return true if a tree crown is above the cell
+	 **/
+	public boolean isTreeAbove() {return isTreeAbove;}
+	/**
+	 * Set true if a tree crown is above the cell
+	 **/	
+	public void setIsTreeAbove (boolean b) {isTreeAbove = b;}
+	/**
+	 * RAZ the tree collection above 
+	 **/
 	public void razTreeAbove() {treeAbove = new TreeSet<SafeTree> (new SafeTreeHeightComparator());}
-	public void addTreeAbove (SafeTree t) {treeAbove.add(t);}
+	/**
+	 * Return the collection of tree above 
+	 **/	
 	public Collection<SafeTree> getTreeAbove () {return treeAbove;}
-	public int getNbrTreeAbove() {return treeAbove.size();}
-	
+	/**
+	 * Return the number of trees in the collection of tree above 
+	 **/	
+	public int getNbrTreeAbove() {return treeAbove.size();}	
+	/**
+	 * ADD the tree in the collection of tree above 
+	 **/
+	public void addTreeAbove (SafeTree t) {treeAbove.add(t);}
+	/**
+	 * Set the lai of the trees above 
+	 **/	
 	public void setLaiTree (double v) {laiTree = (float) v;}
+	/**
+	 * Add a value to the lai of the trees above 
+	 **/
 	public void addLaiTree (double v) {laiTree += (float) v;}
+	/**
+	 * Return the value to the lai of the trees above 
+	 **/
 	public double getLaiTree () {return (double) laiTree;}
 
 	public void setRainInterceptedByTrees (double v) {rainInterceptedByTrees  =   (float) v;}
@@ -1102,7 +1191,13 @@ public class SafeCell extends SquareCell {
 	public void addWaterTakenByDesaturation(double v) {waterTakenByDesaturation += (float) v;}
 	public double getWaterTakenByDesaturation () {return (double) waterTakenByDesaturation;}
 
-
+	public float getNitrogenLeachingWaterTable() {return  nitrogenLeachingWaterTable;}
+	public float getNitrogenAddedByWaterTable () {return  nitrogenAddedByWaterTable;}// AQ 11/04/2011
+	public void addNitrogenAddedByWaterTable (double np) {nitrogenAddedByWaterTable +=np;}// AQ 11/04/2011
+	public void addNitrogenLeachingWaterTable (double lix) {nitrogenLeachingWaterTable +=lix;}	
+	public void setNitrogenAddedByWaterTable (double np) {nitrogenAddedByWaterTable =(float)np;}// AQ 11/04/2011
+	public void setNitrogenLeachingWaterTable (double lix) {nitrogenLeachingWaterTable =(float)lix;}
+	public double getAnnualNitrogenLeachingWaterTable () {return  (double) annualNitrogenLeachingWaterTable;}
 	public void setWaterUptakeInSaturationByTrees (double v) {waterUptakeInSaturationByTrees = (float) v;}
 	public void addWaterUptakeInSaturationByTrees (double v) {waterUptakeInSaturationByTrees += (float) v;}
 	public double getWaterUptakeInSaturationByTrees () {return (double) waterUptakeInSaturationByTrees;}
@@ -1161,8 +1256,6 @@ public class SafeCell extends SquareCell {
 	public void addTreeCarbonCoarseRootsLitter (double v){treeCarbonCoarseRootsLitter += v;}
 	public void addTreeNitrogenCoarseRootsLitter(double v){treeNitrogenCoarseRootsLitter += v;}
 
-	
-	
 	public double getNitrogenUptakeByTrees () {
 		double nitrogenUptakeByTrees = 0;
 		SafeVoxel[] voxels = this.getVoxels();
@@ -1173,7 +1266,6 @@ public class SafeCell extends SquareCell {
 	}
 	
 	public double getNitrogenUptakeByCrop () {
-
 		return this.getCrop().getNitrogenUptake();
 	}
 	
@@ -1189,13 +1281,11 @@ public class SafeCell extends SquareCell {
 	/****************************************************
 	MANAGEMENT OF THE RESULTS OF LIGHT COMPETITION MODULE
 	*****************************************************/
-
 	public double getRelativeToFlatCellDirectParIncident () {return (double) relativeToFlatCellDirectParIncident;}
 	public double getRelativeToFlatCellDiffuseParIncident () {return (double) relativeToFlatCellDiffuseParIncident;}
 	public double getRelativeToFlatCellVisibleSky () {return (double) relativeToFlatCellVisibleSky;}
 	public double getRelativeToFlatCellDirectNirIncident () {return (double) relativeToFlatCellDirectNirIncident;}
 	public double getRelativeToFlatCellDiffuseNirIncident () {return (double) relativeToFlatCellDiffuseNirIncident;}
-
 	public double getDirectParIncident () {return (double) directParIncident;}
 	public double getDiffuseParIncident () {return (double) diffuseParIncident;}
 	public double getTotalParIncident () {return (double) directParIncident+diffuseParIncident;}
@@ -1204,13 +1294,11 @@ public class SafeCell extends SquareCell {
 	public double getRelativeTotalParIncident () {return (double) relativeTotalParIncident;}
 	public double getRelativeGlobalRadIncident () {return (double) relativeGlobalRadIncident;}
 	public double getVisibleSky () {return visibleSky;}
-
 	public void setRelativeToFlatCellDirectParIncident (double e) {relativeToFlatCellDirectParIncident= (float) e;}
 	public void setRelativeToFlatCellDiffuseParIncident (double e) {relativeToFlatCellDiffuseParIncident= (float) e;}
 	public void setRelativeToFlatCellVisibleSky (double e) {relativeToFlatCellVisibleSky= (float) e;}
 	public void setRelativeToFlatCellDirectNirIncident (double e) {relativeToFlatCellDirectNirIncident= (float) e;}
 	public void setRelativeToFlatCellDiffuseNirIncident (double e) {relativeToFlatCellDiffuseNirIncident= (float) e;}
-
 	public void setDirectParIncident (double e) {directParIncident= (float) e;}
 	public void setDiffuseParIncident (double e) {diffuseParIncident=(float) e;}
 	public void setRelativeDirectParIncident (double e) {relativeDirectParIncident=(float) e;}
@@ -1227,18 +1315,12 @@ public class SafeCell extends SquareCell {
 	public void addDiffuseNir (double energy){this.relativeToFlatCellDiffuseNirIncident += (float) energy;}
 
 	//Monthly values for export
-
+	public float getMonthDirectParIncident () { return monthDirectParIncident;}
+	public float getMonthDiffuseParIncident () {return monthDiffuseParIncident;}
+	public float getMonthVisibleSky () {return monthVisibleSky;}	
 	public float getMonthDirectPar() { return monthDirectPar;}
 	public float getMonthDiffusePar () {return monthDiffusePar;}
-	
-	public float getMonthDirectParIncident () { 
-		if (monthNbrDays > 0) return monthDirectParIncident/monthNbrDays;
-		else return 0;
-	}
-	public float getMonthDiffuseParIncident () {
-		if (monthNbrDays > 0)   return monthDiffuseParIncident/monthNbrDays;
-		else return 0;
-	}
+
 	public float getMonthRelativeDirectParIncident () {
 		if (monthDirectPar > 0) 
 			return monthDirectParIncident/monthDirectPar;
@@ -1253,21 +1335,12 @@ public class SafeCell extends SquareCell {
 		if (monthDirectPar+monthDiffusePar > 0)   return (monthDirectParIncident + monthDiffuseParIncident)/(monthDirectPar+monthDiffusePar);
 		else return 0;
 	}
-	public float getMonthVisibleSky () {
-		if (monthNbrDays > 0)   return monthVisibleSky/monthNbrDays;
-		else return 0;
-	}	
-	
-
-
 	
 	public String getCropSpeciesName () {
 		if (this.getCropZone() == null) return "";
 		if (this.getCropZone().getCropSpecies() == null) return "";
 		return this.getCropZone().getCropSpecies().getName();
 	}
-	
-
 	
 	public double getWaterUptakeByTrees () {
 		double waterUptakeByTrees = 0;
@@ -1279,7 +1352,6 @@ public class SafeCell extends SquareCell {
 	}
 
 	public double getWaterUptakeByCrop () {
-
 		return this.getCrop().getWaterUptake();		//mm
 	}
 	
@@ -1301,14 +1373,12 @@ public class SafeCell extends SquareCell {
 
 
 	//for export
-	public int getIdCell() {return getId();}
+
 	
 	// Methods for exportation about WATER BUDGET
 	public double getWaterStock() {
 		double waterStock = 0;
-
 		SafeVoxel[] voxel = this.getVoxels();
-
 		for (int i = 0; i < voxel.length; i++) {
 			waterStock += Math
 					.max(voxel[i].getWaterStock(),
@@ -1318,13 +1388,9 @@ public class SafeCell extends SquareCell {
 		return waterStock / this.getArea();
 	}
 	
-	
 	public double getNitrogenNo3Stock() {
 		double nitrogenStock = 0;
-
-
 		SafeVoxel[] voxel = this.getVoxels();
-
 		for (int i = 0; i < voxel.length; i++) {
 			nitrogenStock += Math
 					.max(voxel[i].getNitrogenNo3Stock(),
@@ -1336,10 +1402,7 @@ public class SafeCell extends SquareCell {
 	
 	public double getNitrogenNh4Stock() {
 		double nitrogenStock = 0;
-
-
 		SafeVoxel[] voxel = this.getVoxels();
-
 		for (int i = 0; i < voxel.length; i++) {
 			nitrogenStock += Math
 					.max(voxel[i].getNitrogenNh4Stock(),
@@ -1352,8 +1415,7 @@ public class SafeCell extends SquareCell {
 	
 	//to export tree deep root residus
 	public double getCumulatedTreeNitrogenShallowRootsSen () {
-		double nitrogenRootResidu=0;
-		
+		double nitrogenRootResidu=0;	
 		SafeVoxel[] voxel = this.getVoxels();
 
 			for (int i = 0; i < voxel.length; i++) {
@@ -1366,7 +1428,6 @@ public class SafeCell extends SquareCell {
 	//to export tree deep root residus 
 	public double getCumulatedTreeNitrogenDeepRootsSen () {
 		double nitrogenRootResidu=0;
-		
 		SafeVoxel[] voxel = this.getVoxels();
 
 			for (int i = 0; i < voxel.length; i++) {
@@ -1378,16 +1439,18 @@ public class SafeCell extends SquareCell {
 	}
 	
 	//Total for export
-		public float getAnnualWaterUptakeByTrees() { return annualWaterUptakeByTrees;}
-		public float getAnnualNitrogenUptakeByTrees() { return annualNitrogenUptakeByTrees;}
-		public float getAnnualParIncident() { return annualParIncident;}
-		
-		public String toString(){
-			String str = "id = "+this.getId();
-			if (this.getCropZone()!=null)
-				str = str+" cropZone ="+this.getCropZone().getId();
-			if (this.getCrop()!=null)
-				str = str+" crop ="+this.getCrop().getCropSpeciesName();
-			return str;
-		}
+	public float getAnnualWaterUptakeByTrees() { return annualWaterUptakeByTrees;}
+	public float getAnnualNitrogenUptakeByTrees() { return annualNitrogenUptakeByTrees;}
+	public float getAnnualWaterUptakeByCrop() { return annualWaterUptakeByCrop;}
+	public float getAnnualNitrogenUptakeByCrop() { return annualNitrogenUptakeByCrop;}
+	public float getAnnualDirectParIncident() { return annualDirectParIncident;}
+	public float getAnnualDiffuseParIncident() { return annualDiffuseParIncident;}
+	public String toString(){
+		String str = "id = "+this.getId();
+		if (this.getCropZone()!=null)
+			str = str+" cropZone ="+this.getCropZone().getId();
+		if (this.getCrop()!=null)
+			str = str+" crop ="+this.getCrop().getCropSpeciesName();
+		return str;
+	}
 }

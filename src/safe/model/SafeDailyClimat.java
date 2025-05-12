@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), University of Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -45,99 +51,147 @@ package safe.model;
 import java.io.Serializable;
 
 /**
- * Wheather data for one day
+ * Climatic entries for one day
  *
- * @author : Isabelle LECOMTE - INRAE Montpellier / Hervé SINOQUET - INRAE Clermont Ferrand
- * Date    : January 2003
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
+ * @author : Hervé SINOQUET - INRA (UMR-PIAF), University of Clermont-Ferrand, France
  */
 
-
 public class SafeDailyClimat implements  Serializable {
-
-	private static final long serialVersionUID = 1L;
-	
-	// Input values (read from file) 
-	private int julianDay;				// number of the day in the year (1 to 365)
-	private int year;					// year YYYY
-	private int realYear;				// real year YYYY
-	private int month;					// month MM
-	private int day;					// day DD
-	private float minTemperature;		// degree
-	private float maxTemperature;		// degree
-	private float minRelativeHumidity;	// %
-	private float maxRelativeHumidity;	// %
-	private float globalRadiation;		// MJ m-2
-	private float globalPar; 			// Moles m-2 (direct+diffuse)
-	private float precipitation;		// mm
-	private float windSpeed;			// m s-1
-	private float waterTableDepth;		// m
-	private float cO2Concentration;		// ppm
+		
+	// Input values
+	/** Year YYYY */
+	private int year;				
+	/** Real year YYYY (in case it is a copy of a missing climate measurement)  */
+	private int realYear;				
+	/** Month MM (1 to 12) */
+	private int month;				
+	/** Day DD (1 to 31)  */
+	private int day;					
+	/** Number of the day in the year (1 to 365) */
+	private int julianDay;	
+	/** Temperature min (degree) */
+	private float minTemperature;	
+	/** Temperature max (degree) */
+	private float maxTemperature;		
+	/** Relative humidity min (%)*/
+	private float minRelativeHumidity;	
+	/** Relative humidity max (%) */
+	private float maxRelativeHumidity;	
+	/** Global radiation (MJ m-2) */
+	private float globalRadiation;				
+	/** Precipitation (mm)*/
+	private float precipitation;		
+	/** Wind speed (m s-1) */
+	private float windSpeed;		
+	/** water table depth (m) */
+	private float waterTableDepth;	
+	/** CO2 concentration (ppm) */
+	private float cO2Concentration;		
 
 	// Calculated values
-	private float diffusePar; 					// Moles m-2
-	private float sunDeclination; 				// radian
-	private float dayLength; 					// in hours
-	private float extraTerrestrialRadiation; 	// MJ m-2 day-1
-	private float airVapourPressure;			// Vapour pressure of the day (mbar or hPa)
-	private float delta;						// slope of the saturation vapour pressure curve of the air
-	private float etpPenman;					// etp penman calculated
-	private float infraRedRadiation;			// atmospheric long-wave radiation (Watts m-2)
-	private float rain;							//mm of rain (precipitation - snow + meltedSnow) 
-	private float snow;							//mm of rain transformed in snow
-	private float stockedSnow;					//mm of rain transformed in snow (stocked to day-1) 
-	private float meltedSnow;					//mm of snow melted
-	private float rainCapacityinSnow;			//mm capacity of rain stocked by snow 
-	private float rainCapturedBySnow;			//mm rain captured by snow 
+	/** Global PAR direct+diffuse (Moles m-2) */
+	private float globalPar; 
+	/** Diffuse PAR  (Moles m-2) */
+	private float diffusePar; 					
+	/** Sun declination (radian) */
+	private float sunDeclination; 			
+	/** Day length (hours) */
+	private float dayLength; 					
+	/** Extra terrestrial radiation (MJ m-2 day-1) */
+	private float extraTerrestrialRadiation; 
+	/** Atmospheric long-wave radiation (Watts m-2) */
+	private float infraRedRadiation;
+	/** Air vapor pressure (mbar or hPa) */
+	private float airVapourPressure;			
+	/** Slope of the saturation vapour pressure curve of the air */
+	private float delta;						
+	/** Etp penman calculated (mm) */
+	private float etpPenman;								
+	/** Rain (precipitation - snow + meltedSnow) (mm)  */
+	private float rain;							
+	/** Snow (mm) */
+	private float snow;							
+	/** snow stocked from previous days(mm) */
+	private float stockedSnow;					
+	/** Snow melted (mm)  */
+	private float meltedSnow;				
+	/** Rain capacity stocked in snow (mm)  */
+	private float rainCapacityinSnow;			
+	/** Rain captured by snow (mm) */
+	private float rainCapturedBySnow;			
 	
+	/**	
+	 *	Constructor 
+	 */
 	public SafeDailyClimat() {}
 	
-	public SafeDailyClimat (SafeGeneralParameters settings, 
-							int julian, double latitude,
-							int y, int ry, int m, int d,
+	/**	
+	 *	Constructor 
+	 * @param generalParameters Reference to SafeGeneralParameters object
+	 * @param latitude Latitude of the plot
+	 * @param julian Julian day of the climatic entry
+	 * @param year Year of the climatic entry
+	 * @param realYear Real year of the climatic entry
+	 * @param month Month of the climatic entry
+	 * @param day Day of the climatic entry
+	 * @param tmin Temperature min of the climatic entry (degree)
+	 * @param tmax Temperature max of the climatic entry (degree)
+	 * @param rhmin Relative humidity min of the climatic entry (%)
+	 * @param rhmax Relative humidity max of the climatic entry (%)
+	 * @param globalRadiation Global radiation of the climatic entry (MJ m-2)
+	 * @param rain Rain of the climatic entry (mm)
+	 * @param windSpeed Wind speed (m s-1)
+	 * @param waterTableDepth Water table depth of the climatic entry (m) 
+	 * @param co2 CO2 concentration of the climatic entry (ppm) 
+	 */	
+	public SafeDailyClimat (SafeGeneralParameters generalParameters, 
+							float latitude, 
+							int julian, int year, int realYear, int month, int day,
 							float tmin, float tmax,	float rhmin, float rhmax,
-							float rg,  float r,  float ws, float wt, float co2) {
+							float globalRadiation,  float rain,  float windSpeed, 
+							float waterTableDepth, float co2) {
 
 		julianDay = julian;
-		this.year = y;
-		this.realYear = ry;
-		this.month = m;
-		this.day = d;
+		this.year = year;
+		this.realYear = realYear;
+		this.month = month;
+		this.day = day;
 		this.minTemperature = tmin;
 		this.maxTemperature = tmax;
 		this.minRelativeHumidity = rhmin;
 		this.maxRelativeHumidity = rhmax;
-		this.globalRadiation = rg;
+		this.globalRadiation = globalRadiation;
 		//convertion of global radiation (MJ m-2) in PAR (Moles m-2)
-		this.globalPar = (float) ((rg * settings.parGlobalCoefficient) / settings.molesParCoefficient);
-		this.precipitation = r;		
-		this.windSpeed = ws;
-		this.waterTableDepth = wt;
+		this.globalPar = (float) ((globalRadiation * generalParameters.parGlobalCoefficient) / generalParameters.molesParCoefficient);
+		this.precipitation = rain;		
+		this.windSpeed = windSpeed;
+		this.waterTableDepth = waterTableDepth;
 		this.cO2Concentration = co2;
 		//snow module (il 31-10-2017)
-		this.rain = r;
+		this.rain = rain;
 		this.snow = 0;
 		this.meltedSnow = 0;
 		this.stockedSnow = 0;
 		this.rainCapacityinSnow = 0;
 		this.rainCapturedBySnow = 0;
-		
-		//VPD HISAFE
-		this.airVapourPressure = (float) (vpSatFunction (getMeanTemperature ())
-					  	      		* (minRelativeHumidity+maxRelativeHumidity) / 2 / 100) ;
-		
+			
 		//VPD STICS FOR STICS HISAFE COMPARAISON
 		//this.airVapourPressure = (float) (vpSatFunction (getMinTemperature () - 1));
 		
-
-		this.delta = (float) (deltaFunction (getMeanTemperature ()));
-
+		//VPD HISAFE
+		double airTemperature = getMeanTemperature ();
+		this.airVapourPressure = (float) (vpSatFunction (airTemperature)
+					  	      			* (minRelativeHumidity+maxRelativeHumidity) / 2 / 100) ;
+		this.delta = (float) (deltaFunction (airTemperature));
+		
 		//sun declination in radian
 		double om = 0.017202 * (((float) julianDay) - 3.244);
 		double teta = om + 0.03344 * Math.sin(om) * (1 + 0.021 * Math.cos(om)) - 1.3526;        // Celestial longitude of the sun
 		double sidec = 0.3978 * Math.sin(teta);			// Sine of sun declination
 		sunDeclination = (float) (Math.asin(sidec));	//in radian
 
-		//day lenght calculation in hours
+		//day length calculation in hours
 		double codec = Math.cos(sunDeclination);				// cosine of sun declination
 		double silat = Math.sin(Math.toRadians(latitude));
 		double colat = Math.cos(Math.toRadians(latitude));
@@ -148,15 +202,14 @@ public class SafeDailyClimat implements  Serializable {
 		// extra Terrestrial Radiation calculation
 		double CC = 1370 * 3600	* 1.e-6;			//Solar constant, in MJ m-2 hour-1
 		CC = CC * (1 + 0.033 * Math.cos(2 * Math.PI * ((float)(julianDay)-4)/366)); //Solar constant, with sun-earth distance correction
-
 		double G0 = silat * sidec * dayLength;
 		G0 = G0 + colat * codec * (24/Math.PI) * Math.sin((Math.PI/12)*(dayLength/2));
 		extraTerrestrialRadiation = (float) (G0 * CC);
 
 		//	Coefficients aDG and bDG of the relationship : D/G = a - b G/G0
 		//	(where D, G, G0 are diffuse incident, global incident and extraterrestrial radiation at daily time step, respectively.
-		double aDG = settings.diffuseCoeffA;
-		double bDG = settings.diffuseCoeffB;
+		double aDG = generalParameters.diffuseCoeffA;
+		double bDG = generalParameters.diffuseCoeffB;
 
 		diffusePar = (float) (globalPar * (aDG - bDG * (globalRadiation/extraTerrestrialRadiation)));
 		if (diffusePar >= globalPar) {
@@ -164,79 +217,59 @@ public class SafeDailyClimat implements  Serializable {
 		}
 		if (diffusePar <= (0.1*globalPar)) diffusePar = (float) (globalPar * 0.1);
 
-		//ETP penman calculation
-		etpPenman = etpPenmanCalculation (settings, globalRadiation, 1);
+		//Calculation of ETP Penman (mm)
+		double fracinsol = ((globalRadiation/extraTerrestrialRadiation)-generalParameters.aangst)/generalParameters.bangst;	//insolation fraction
+		double visibleSky = 1;
+		double dsat = vpSatFunction(getMeanTemperature()) - getAirVapourPressure();
+		double L = (2500840-2358.6*getMeanTemperature())/1000000;
 
-		infraRedRadiation = infraRedCalculation(settings, globalRadiation,
-												extraTerrestrialRadiation,
-												airVapourPressure,
-												minTemperature, maxTemperature);
-
-
-	}
-
-	/**
-	 * Calculation of infra red radiation of the day
-	 * infra red radiation is (atmospheric radiation)-(system radiation, assuming T=Tair)
-	 * grégoire Talbot 14/09/2007
-	 * Brutsaert's formula, from Stics formalism
-	*/
-	public float infraRedCalculation(SafeGeneralParameters settings, float rad, float extraRad,
-										float vapourP, float tmin, float tmax){
-		
-		double t = (tmin+tmax)/2+2*(tmax-tmin)*Math.sin(Math.PI*this.dayLength/24)/this.dayLength;		// GT 1/02/2008
-		double fracinsol = ((rad/extraRad)-settings.aangst)/settings.bangst;	//insolation fraction
-		double eabrut = 1.24*Math.pow(vapourP/(t+273.15),1/7);
-		double emissa = eabrut+(1-fracinsol)*(1-eabrut)*(1-4*11/(t+273.15));	//sky emissivity
-		double infraRed = settings.sigma*Math.pow((t+273.15),4)*(1-emissa);				// W.m-2
-		return (float) infraRed;
-	}
-
-
-	/**
-	 * Calculation of saturated vapour pressure of air mbar
-	*/
-	public double vpSatFunction (double airTemp)
-	{
-		return (6.107 * Math.pow (
-					(1 + Math.sqrt(2)*Math.sin(Math.PI*airTemp/3d/180d)),8.827));
-	}
-
-	/**
-	 * Calculation of slope of the saturation vapour pressure curve of the air
-	 */
-	public double deltaFunction (double airTemp)
-	{
-		return (vpSatFunction(airTemp+0.5) - vpSatFunction(airTemp-0.5));
-	}
-	/**
-	 * Calculation of ETP Penman
-	 */
-	public float etpPenmanCalculation (SafeGeneralParameters settings, double rg, double visibleSky) {
-
-		double gamma = settings.gamma;
-		double tmoy = getMeanTemperature();
-		double delta = getDelta();
-
-		double dsat = vpSatFunction(tmoy) - getAirVapourPressure();
-		double L = (2500840-2358.6*tmoy)/1000000;
-		double fracinsol =((getGlobalRadiation()/getExtraTerrestrialRadiation ()) - 0.18) / 0.62;
-		double var1 =Math.pow((tmoy + 273.16), 4)/1000000000;
+		double var1 = Math.pow((getMeanTemperature() + 273.16), 4)/1000000000;
 		double var2 =(0.1 + 0.9*fracinsol);
 		double var3 = 0.56 - 0.08*Math.sqrt(getAirVapourPressure());
 		double rglo = 4.9 * var1 * var2 * var3;
-		double rnetp =(1-0.2)*rg-rglo*visibleSky;
-		double etp =  (rnetp/L*delta/(delta+gamma)+(gamma/(delta+gamma))
+		double rnetp =(1-0.2)*getGlobalRadiation()-rglo*visibleSky;
+		double etp =  (rnetp/L*getDelta()/(getDelta()+generalParameters.psychrometricConstant)+(generalParameters.psychrometricConstant/(delta+generalParameters.psychrometricConstant))
 							 *(0.26*(1+0.54*getWindSpeed()))*dsat);
-		etp = Math.max (etp,0);
-		return (float) etp;
+		etpPenman = (float) Math.max (etp,0);
+
+
+		//Calculation of infra red radiation of the day (W.m-2) 
+		//Infra red radiation is (atmospheric radiation)-(system radiation, assuming T=Tair)
+		//Brutsaert's formula, from Stics formalism
+		double t = (minTemperature+maxTemperature)/2+2*(maxTemperature-minTemperature)*Math.sin(Math.PI*dayLength/24)/dayLength;		// GT 1/02/2008
+		double eabrut = 1.24*Math.pow(airVapourPressure/(t+273.15),1/7);
+		double emissa = eabrut+(1-fracinsol)*(1-eabrut)*(1-4*11/(t+273.15));	//sky emissivity
+		infraRedRadiation = (float) (generalParameters.stefanBoltzmanConstant*Math.pow((t+273.15),4)*(1-emissa));				// W.m-2
 
 	}
 
 	/**
+	 * Calculation of saturated vapor pressure of air (mbar)
+	 * @param airTemperature Air temperature (degree)
+     * @return value of saturated vapor pressure of air (mbar)
+	*/
+	public double vpSatFunction (double airTemperature)
+	{
+		return (6.107 * Math.pow (
+					(1 + Math.sqrt(2)*Math.sin(Math.PI*airTemperature/3d/180d)),8.827));
+	}
+
+	/**
+	 * Calculation of slope of the saturation vapor pressure curve of the air
+	 * @param airTemperature Air temperature (degree)
+     * @return value of slope of the saturation vapor pressure curve of the air
+	 */
+	public double deltaFunction (double airTemperature)
+	{
+		return (vpSatFunction(airTemperature+0.5) - vpSatFunction(airTemperature-0.5));
+	}
+	
+
+	/**
 	 * Calculation of rain transformed in snow of the day
-	 * Calculation of snow melted  transformed in rain of the day
-	 * Isabelle LECOMTE 26/10/2017
+	 * @author Christian DUPRAZ - INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+	 * @param generalParameters Reference to SafeGeneralParameters object
+	 * @param yesterday Reference on SafeDailyClimat objet : climatic data of the day before today 
 	*/
 	public void calculateSnow (SafeGeneralParameters settings, SafeDailyClimat yesterday) {
 		
@@ -287,48 +320,140 @@ public class SafeDailyClimat implements  Serializable {
 			}
 		}
 	}
-	
+	/**
+	 * Return the year of the climatic entry (YYYY)
+	 **/
 	public int getYear () {return year;}
+	/**
+	 * Return the real year of the climatic entry (YYYY)
+	 **/
 	public int getRealYear () {return realYear;}
-	public int getJulianDay () {return julianDay;}
-	public int getDay () {return day;}
+	/**
+	 * Return the month of the climatic entry (MM)
+	 **/
 	public int getMonth () {return month;}
-
+	/**
+	 * Return the day of the climatic entry (DD)
+	 **/
+	public int getDay () {return day;}
+	/**
+	 * Return the julian day of the climatic entry (0-365)
+	 **/
+	public int getJulianDay () {return julianDay;}
+	/**
+	 * Return the mean temperature of the climatic entry (degree)
+	 **/
 	public float getMeanTemperature () {return (maxTemperature+minTemperature)/2;}
+	/**
+	 * Return the min temperature of the climatic entry (degree)
+	 **/
 	public float getMinTemperature () {return minTemperature;}
+	/**
+	 * Return the max temperature of the climatic entry (degree)
+	 **/
 	public float getMaxTemperature () {return maxTemperature;}
+	/**
+	 * Return the min relative humidity of the climatic entry (%) 
+	 **/
 	public float getMinRelativeHumidity() {return minRelativeHumidity;}
+	/**
+	 * Return the max relative humidity of the climatic entry (%) 
+	 **/
 	public float getMaxRelativeHumidity () {return maxRelativeHumidity;}
+	/**
+	 * Return the ETP Prennam of the climatic entry (mm)
+	 **/
 	public float getEtpPenman () {return etpPenman;}
+	/**
+	 * Return the global radiation of the climatic entry (MJ m-2)
+	 **/
 	public float getGlobalRadiation () {return globalRadiation;}
+	/**
+	 * Return the global PAR of the climatic entry (Moles m-2)
+	 **/
 	public float getGlobalPar () {return globalPar;}
+	/**
+	 * Return the diffuse PAR of the climatic entry (Moles m-2)
+	 **/
 	public float getDiffusePar () {return diffusePar;}
-	public float getDiffuseProp() {return (diffusePar/globalPar);}
+	/**
+	 * Return the direct PAR of the climatic entry (Moles m-2)
+	 **/
 	public float getDirectPar () {return globalPar - diffusePar;}
+	/**
+	 * Return the proportion of diffuse PAR of the climatic entry (%)
+	 **/
+	public float getDiffuseProp() {return (diffusePar/globalPar);}
+	/**
+	 * Return the precipitation (rain+snow) of the climatic entry (mm)
+	 **/
 	public float getPrecipitation () {return precipitation;}
+	/**
+	 * Return the wind speed of the climatic entry (m s-1)
+	 **/
 	public float getWindSpeed () {return windSpeed;}
+	/**
+	 * Return the co2 concentration day of the climatic entry (ppm)
+	 **/
 	public float getCO2Concentration () {return cO2Concentration;}
+	/**
+	 * Return the sun declination of the climatic entry (radian)
+	 **/
 	public float getSunDeclination () {return sunDeclination;}
+	/**
+	 * Return the lenght of the day of the climatic entry (hours)
+	 **/
 	public float getDayLength () {return dayLength;}
+	/**
+	 * Return rhe extra terrestrial radiation of the climatic entry (MJ m-2 day-1)
+	 **/
 	public float getExtraTerrestrialRadiation () {return extraTerrestrialRadiation;}
-	public float getAirVapourPressure () {return airVapourPressure;}
-
-	public float getDelta () {return delta;}
+	/**
+	 * Return the atmospheric long-wave radiation of the climatic entry  (Watts m-2)
+	 **/
 	public float getInfraRedRadiation() {return infraRedRadiation;}
-	
-	//To avoid flood 
+	/**
+	 * Return the air vapor pressure of the climatic entry (mbar)
+	 **/	
+	public float getAirVapourPressure () {return airVapourPressure;}
+	/**
+	 * Return the slope of the saturation vapor pressure curve of the air
+	 **/
+	public float getDelta () {return delta;}
+	/**
+	 * Return the water table depth (negative value) of the climatic entry  (m) 
+	 **/
 	public float getWaterTableDepth () {
 		if (waterTableDepth == 0) return (float)(-0.1);
 		return (waterTableDepth);
 	}
-	
-	//snow module (il 31-10-2017)
+	/**
+	 * Return the rain value of the climatic entry (mm) 
+	 **/
 	public float getRain () {return rain;}
+	/**
+	 * Return the snow value of the climatic entry (mm) 
+	 **/
 	public float getSnow () {return snow;}
+	/**
+	 * Return the snow value stocked  (mm) 
+	 **/
 	public float getStockedSnow () {return stockedSnow;}
+	/**
+	 * Return the snow melted value (mm) 
+	 **/
 	public float getMeltedSnow () {return meltedSnow;}
+	/**
+	 * Return the rain capacity in snow (mm) 
+	 **/
 	public float getRainCapacityinSnow() {return rainCapacityinSnow;}
+	/**
+	 * Return the rain captured in snow (mm) 
+	 **/
 	public float getRainCapturedBySnow() {return rainCapturedBySnow;}
-	public float getWaterEnteringSoil() {return rain + meltedSnow - rainCapturedBySnow ;}
+	/**
+	 * Return the water entering the soil (mm) 
+	 **/
+	public float getWaterEnteringSoil() {return rain + meltedSnow - rainCapturedBySnow;}
 
 }

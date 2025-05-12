@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -55,30 +61,34 @@ import safe.stics.*;
 
 /**
  * MACRO CLIMAT parameters 
- * Wheather data for a simulation  (day by day)
+ * Weather data for a simulation  (day by day)
  * Each day is an instance of SafeDailyClimat
  *
- * @author Isabelle Lecomte - INRAE Montpellier - January 2003
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
 
 public class SafeMacroClimat  implements  Serializable {
 
-	private static final long serialVersionUID = 1L;
-	private Map<String, SafeDailyClimat> weather;						//weather data
-	private SafeBeamSet<SafeBeam> beamSet;				//beam set (created once) mixing diffuse and direct information
-	private SafeBeamSet<SafeBeam> directBeamSet;			//direct beam set  (created at each direct lighting process) in case DirectLightMethod=True
+	/** Calendar to convert dates */
+	private static  GregorianCalendar calendar;
+	/** Map of weather data */
+	private Map<String, SafeDailyClimat> weather;					
+	/** Beams set (created once) mixing diffuse and direct information */
+	private SafeBeamSet<SafeBeam> beamSet;				
+	/** Direct beams set  (created at each direct lighting process) in case DirectLightMethod=True */
+	private SafeBeamSet<SafeBeam> directBeamSet;			
 
-	private static GregorianCalendar calendar;
-	
+	/**	
+	 *	Constructor 
+	 */
 	public SafeMacroClimat () {
 		weather = new Hashtable<String, SafeDailyClimat> ();
 	}
 
 	/**
-	 * Tells if the given year is leap year.
+	 * Return if the given year is leap year.
      * @param year  the four digit year
-     *
-     * @return      true if year is leap year 
+     * @return true if year is leap year 
 	 */
 	public boolean isLeapYear(int year) {
 		if (calendar == null) {
@@ -88,16 +98,14 @@ public class SafeMacroClimat  implements  Serializable {
 	}
 	
  /**
-   * A method to get the last day of a month
+   * Return the last day of a month
    *
    * @param year  the four digit year
    * @param month the two digit month
-   *
-   * @return      the last day of the specified month
+   * @return the last day of the specified month
    */
   public static int getLastDay(int year, int month) {
   
-    // get a calendar object
 	if (calendar == null) {
 		calendar = new GregorianCalendar();
 	}
@@ -112,35 +120,56 @@ public class SafeMacroClimat  implements  Serializable {
     
   } 
 	  
-	/**
-	 * Add a new daily weather (day j) in macro climat
+
+	/**	
+	 *	Add a new daily weather in macro climat
+	 * @param generalParameters Reference to SafeGeneralParameters object
+	 * @param latitude Latitude of the plot
+	 * @param julian Julian day of the climatic entry
+	 * @param year Year of the climatic entry
+	 * @param realYear Real year of the climatic entry
+	 * @param month Month of the climatic entry
+	 * @param day Day of the climatic entry
+	 * @param tmin Temperature min of the climatic entry (degree)
+	 * @param tmax Temperature max of the climatic entry (degree)
+	 * @param rhmin Relative humidity min of the climatic entry (%)
+	 * @param rhmax Relative humidity max of the climatic entry (%)
+	 * @param globalRad Global radiation of the climatic entry (MJ m-2)
+	 * @param rain Rain of the climatic entry (mm)
+	 * @param windSpeed Wind speed (m s-1)
+	 * @param waterTableDepth Water table depth of the climatic entry (m) 
+	 * @param co2 CO2 concentration of the climatic entry (ppm) 
 	 */
-	public void createDailyClimat (SafeGeneralParameters settings, 
-									double latitude,
-									int j, int y, int ry, int m, int d,
+	public void createDailyClimat (SafeGeneralParameters generalParameters, 
+									float latitude,
+									int julian, int year, int realYear, int month, int day,
 									float tmin, float tmax,
 									float rhmin, float rhmax, float globalRad,
 									float rain, float windSpeed, float waterTableDepth, float co2) {
 
-		SafeDailyClimat s = new SafeDailyClimat (settings,  j, latitude, y, ry, m, d,
+		SafeDailyClimat s = new SafeDailyClimat (generalParameters, latitude, julian, year, realYear, month, day,
 												tmin, tmax, rhmin, rhmax,
 												globalRad, rain, windSpeed, waterTableDepth, co2);
 
-		String julian = new Integer(j).toString();
-		String year   = new Integer(y).toString();
-		String key    = year+"|"+julian;
+		String sjulian = new Integer(julian).toString();
+		String syear   = new Integer(year).toString();
+		String key    = syear+"|"+sjulian;
 		weather.put (key, s);
 		return;
 	}
 	/**
 	 * Return the weather for a day
+	 * @param year Year 
+	 * @param julian Julian day 
 	 */
-	public SafeDailyClimat getDailyWeather (int y, int d)  {
+	public SafeDailyClimat getDailyWeather (int year, int julian)  {
 
-		String julian = new Integer(d).toString();
-		String year = new Integer(y).toString();
-		String key = year+"|"+julian;
-		if (d == 0) return null; 
+		if (julian == 0) return null;
+		
+		String sjulian = new Integer(julian).toString();
+		String syear = new Integer(year).toString();
+		String key = syear+"|"+sjulian;
+	 
 		SafeDailyClimat s = (SafeDailyClimat) weather.get (key);
 		if (s != null) 	{
 			if (s.getWaterTableDepth()>0) {
@@ -163,15 +192,16 @@ public class SafeMacroClimat  implements  Serializable {
 	
 	
 	/**
-	 * Load climate in STICS object for a new year (365 days) 
+	 * Load climate in STICS object between 2 dates 
 	 * This code replace the subroutine Iniclim.f90 in STICS fortran code 
+	 * @param sticsClimat Reference to the  SafeSticsClimat object
+	 * @param yearStart Year start
+	 * @param dayStart Julian start 
+	 * @param dayEnd Julian day end
 	 */
-	public void loadClimate (SafeSticsClimat c, int yearStart, int dayStart, int dayEnd) throws Exception  {
+	public void loadClimate (SafeSticsClimat sticsClimat, int yearStart, int dayStart, int dayEnd) throws Exception  {
 			  
-		//je sais plus pkoi j'avais mis 0 ????
-		//je crois faut mettre 0 pour les bilan STICS MC de reference ???
 		int indice = 0;
-		//int indice = 1;
 		int yearFin = yearStart;
 
 		//leap year
@@ -191,26 +221,26 @@ public class SafeMacroClimat  implements  Serializable {
 				SafeDailyClimat dayClimat  = this.getDailyWeather(climatYear, climateDay);
 				
 				if (indice < 366) {
-					c.tmin[indice]	= dayClimat.getMinTemperature ();	//tmin
-					c.tmax[indice]	= dayClimat.getMaxTemperature ();	//tmax
-					c.trg[indice]	= dayClimat.getGlobalRadiation ();	//RG
-					c.tetp[indice]  = dayClimat.getEtpPenman();
+					sticsClimat.tmin[indice]	= dayClimat.getMinTemperature ();	//tmin
+					sticsClimat.tmax[indice]	= dayClimat.getMaxTemperature ();	//tmax
+					sticsClimat.trg[indice]	= dayClimat.getGlobalRadiation ();	//RG
+					sticsClimat.tetp[indice]  = dayClimat.getEtpPenman();
 			
 					//il 31-10-2017 rain on cell = rain + snowMelted
-					c.trr[indice]	= dayClimat.getRain () + dayClimat.getMeltedSnow () ;				
-					c.tvent[indice]	= dayClimat.getWindSpeed ();
-					c.co2[indice]	= dayClimat.getCO2Concentration();
-					c.tpm[indice]	= dayClimat.getAirVapourPressure ();
+					sticsClimat.trr[indice]	= dayClimat.getRain () + dayClimat.getMeltedSnow () ;				
+					sticsClimat.tvent[indice]	= dayClimat.getWindSpeed ();
+					sticsClimat.co2[indice]	= dayClimat.getCO2Concentration();
+					sticsClimat.tpm[indice]	= dayClimat.getAirVapourPressure ();
 	
 
 					//STICS HISAFE COMPARAISON
 					// il faut arrondi à une decimale
 			
-				//	c.tmin[indice] = (float)Math.round(dayClimat.getMinTemperature() * 10) / 10 ;
-				//	c.tmax[indice] = (float)Math.round(dayClimat.getMaxTemperature() * 10) / 10 ;
-				//	c.trg[indice] = (float)Math.round(dayClimat.getGlobalRadiation() * 10) / 10 ;
-				//	c.tetp[indice] = (float)Math.round(dayClimat.getEtpPenman() * 10) / 10 ;
-				//	c.trr[indice] = (float)Math.round((dayClimat.getRain () + dayClimat.getMeltedSnow ()) * 10) / 10 ;
+				//	sticsClimat.tmin[indice] = (float)Math.round(dayClimat.getMinTemperature() * 10) / 10 ;
+				//	sticsClimat.tmax[indice] = (float)Math.round(dayClimat.getMaxTemperature() * 10) / 10 ;
+				//	sticsClimat.trg[indice] = (float)Math.round(dayClimat.getGlobalRadiation() * 10) / 10 ;
+				//	sticsClimat.tetp[indice] = (float)Math.round(dayClimat.getEtpPenman() * 10) / 10 ;
+				//	v.trr[indice] = (float)Math.round((dayClimat.getRain () + dayClimat.getMeltedSnow ()) * 10) / 10 ;
 				
 				}
 				
@@ -222,27 +252,25 @@ public class SafeMacroClimat  implements  Serializable {
 			}
 
 		}
-    	c.julzero = dayStart;
-    	c.julfin = dayEnd; 
-    	c.anneezero = yearStart; 
-    	c.anneefin = yearFin;		
-    	c.nometp = 1; //default etp pennam 
+		sticsClimat.julzero = dayStart;
+		sticsClimat.julfin = dayEnd; 
+		sticsClimat.anneezero = yearStart; 
+		sticsClimat.anneefin = yearFin;		
+		sticsClimat.nometp = 1; //default etp pennam 
 		return;
 	}
 	
 	/**
-	 * Computation of rainfall stemflow interception by trees in mm
-	 * Everyday, stored rain is evaporated in SafeTree.computeWaterDemand module
-	 *
-	 *  Hypothesis :
-	 *   1) Tree LAI is homogenous above all covered cells
-	 *   2) Stemflow is calculated first
-	 *   3) No umbrella effect
+	 * Computation of stemflow and rain interception by trees in mm
+	 * Stored rain in trees will be evaporated in SafeTree.computeWaterDemand module
+	 * Hypothesis : Tree LAI is homogenous above all covered cells, stemflow is calculated first, no umbrella effect
+	 * @param stand Reference on SafeStand object
+	 * @param dailyClimat Reference on SafeDailyClimat object
 	 */
-	public static void rainTreatement (SafeGeneralParameters safeSettings, SafeStand stand, SafeDailyClimat dailyClimat) {
+	public static void rainTreatement (SafeStand stand, SafeDailyClimat dailyClimat) {
 	
-		double cellSurface = ((SafePlot) stand.getPlot()).getCellSurface();
-		int nbTrees = safeSettings.nbTrees;
+		double cellSurface = stand.getPlot().getPlotSettings().cellSurface;
+		int nbTrees = stand.getPlot().getPlotSettings().nbTrees;
 		double [] storedRain = new double [nbTrees];
 
 		//for each tree (with leaf area > 0 !)
@@ -259,7 +287,6 @@ public class SafeMacroClimat  implements  Serializable {
 		}
 
 		//For each cell
-
 		PlotOfCells plotc = (PlotOfCells) stand.getPlot(); // fc-30.10.2017
 		
 		for (Iterator iter=plotc.getCells().iterator(); iter.hasNext(); ) {
@@ -285,7 +312,7 @@ public class SafeMacroClimat  implements  Serializable {
 					//*************************************
 					// STEMFLOW
 					//*************************************
-					double stemflow = cellStemflow (safeSettings, t, rainForStemFlow);
+					double stemflow = cellStemflow (t, rainForStemFlow);
 
 					
 					//stemflow is decreasing for the next tree bellow
@@ -306,7 +333,7 @@ public class SafeMacroClimat  implements  Serializable {
 					//*************************************
 					// RAIN INTERCEPTION
 					//*************************************
-					double interceptedRain = cellRainInterception (safeSettings, t, rainForInterception, storedRain[treeIndex]);
+					double interceptedRain = cellRainInterception (t, rainForInterception, storedRain[treeIndex]);
 
 					//interception is decreasing rain entry for next tree
 					rainForInterception -= interceptedRain;
@@ -319,27 +346,24 @@ public class SafeMacroClimat  implements  Serializable {
 						
 						//update total available water for the cell
 						totalWaterOnCell -= interceptedRain;
-						//storedRain[treeIndex] += interceptedRain;
 						
 						//update tree state variables in liters				
 						t.addInterceptedRain (interceptedRain * cellSurface);
 						t.addStoredRain (interceptedRain * cellSurface);
 						cell.addRainInterceptedByTrees(interceptedRain);
-						
-						
+
 					}
 					
 					//*************************************
 					// SNOW INTERCEPTION
 					//*************************************
-					double interceptedSnow = cellRainInterception (safeSettings, t, snowForInterception, storedRain[treeIndex]);
+					double interceptedSnow = cellRainInterception (t, snowForInterception, storedRain[treeIndex]);
 
 					
 					//interception is decreasing rain entry for next tree
 					snowForInterception -= interceptedSnow;
 					snowForInterception = Math.max (interceptedSnow, 0); //to avoid very small negative values due to rounding
 					if (interceptedSnow > 0) {
-						//storedRain[treeIndex] += interceptedSnow;
 						
 						//update tree state variables in liters				
 						t.addInterceptedRain (interceptedSnow * cellSurface);
@@ -368,10 +392,14 @@ public class SafeMacroClimat  implements  Serializable {
 
 	}
 
+
 	/**
-	 * For one cell, computation of rainfall interception by trees in mm
+	 * For one cell above the tree, computation of rainfall interception by trees in mm
+	 * @param tree Reference on SafeTree object
+	 * @param rain Rain value of the day (mm) 
+	 * @param storedRain Stored rain value of the day before (mm) 
 	 */
-	public static double cellRainInterception (SafeGeneralParameters safeSettings, SafeTree tree, double rain, double storedRain) {
+	public static double cellRainInterception (SafeTree tree, double rain, double storedRain) {
 
 		//wettability parameter in mm lai-1
 		double wettability = tree.getTreeSpecies ().getWettability();
@@ -387,9 +415,11 @@ public class SafeMacroClimat  implements  Serializable {
 	}
 
 	/**
-	 * For one cell, computation of stemflow by trees in mm
+	 * For one cell above the tree, computation of stemflow by trees in mm
+	 * @param tree Reference on SafeTree object
+	 * @param rain Rain value of the day (mm) 
 	 */
-	private static double cellStemflow (SafeGeneralParameters safeSettings, SafeTree tree, double rain) {
+	private static double cellStemflow (SafeTree tree, double rain) {
 
 		//stemflow parameters
 		double stemFlowCoefficient = tree.getTreeSpecies ().getStemFlowCoefficient();
@@ -417,15 +447,20 @@ public class SafeMacroClimat  implements  Serializable {
 		beamSet = bs;
 	}
 	/**
-	 * Create direct beam set
+	 * Create collection of direct beam set
 	 */
 	public void setDirectBeamSet  (SafeBeamSet<SafeBeam> bs) {
 		directBeamSet = null;
 		directBeamSet = new SafeBeamSet<SafeBeam>();
 		directBeamSet = bs;
 	}
-
+	/**
+	 * Return collection of beam set (direct and diffuse)
+	 */
 	public SafeBeamSet<SafeBeam> getBeamSet () {return beamSet;}
+	/**
+	 * Return collection of direct beam set
+	 */
 	public SafeBeamSet<SafeBeam> getDirectBeamSet ()  {return directBeamSet;}
 
 

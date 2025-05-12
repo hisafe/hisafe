@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -55,141 +61,146 @@ import safe.stics.SafeSticsSoil;
 /**
  * 3D voxel of soil attached to a cell
  *
- * @author Isabelle Lecomte -  INRAE Montpellier France - July 2002
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
 public class SafeVoxel implements Serializable, Identifiable {
 
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * This class contains immutable instance variables for a Voxel
 	 */
 	public static class Immutable implements  Cloneable, Serializable  {
-		private static final long serialVersionUID = 1L;
-		private int 	 	id;					//id of this voxel
-		private SafeCell 	cell;				//cell reference for this voxel
-		private SafeLayer 	layer;				//layer of reference for this compartment
-		private Vertex3d 	gravityCenter;		//coordinates of gravity center with bottom left origin		
-		private double 	 	thickness;			//m
-		private double 	 	surfaceDepth;		//top depth from the surface m
-		private double 	 	volume;				//m3
-		private double  	surfaceDistance;	//gravity center distance to the surface in m
-		private double[] 	treeDistance;		//gravity center distance to the trees base stem in m
-		private int 	 	nbTrees;			//usefull for table size definition	
+		/** Voxel id  */
+		private int 	 	id;	
+		/** Voxel index in voxel table */
+		private int 	 	index;	
+		/** Reference to the cell object (SafeCell) for this voxel*/
+		private SafeCell 	cell;			
+		/** Reference to the layer object (SafeLayer) for this voxel*/
+		private SafeLayer 	layer;				
+		/** Coordinates of gravity center with bottom left origin*/
+		private Vertex3d 	gravityCenter;				
+		/** Voxel thickness (m)  */
+		private double 	 	thickness;			
+		/** Top depth from the surface (m) */
+		private double 	 	surfaceDepth;		
+		/** Voxel volume (m3) */
+		private double 	 	volume;				
+		/** Gravity center distance to the trees base stem (m) */
+		private double[] 	treeDistance;		
+		/** Number of tres on the all plot */
+		private int 	 	nbTrees;			
 	}
 	protected Immutable immutable;
 	
-	//FINE ROOTS
-	private double   cropRootsDensity; 			// total roots (rl) m m-3
-	private double   cropRootsEffectiveDensity; // only effective roots (flracz) m m-3
-	private double[]  treeRootsDensity; 		// m m-3 per tree
-	private double[]  treeRootsDensitySen; 		// m m-3 per tree
-	private int[] 	 treeRootsAgeInWater; 		// ag of root in saturated voxels (days) per tree	
+	//ROOTS
+	/** Crop roots density (m m-3)  */
+	private double   cropRootsDensity; 			
+	/** Crop only effective roots (m m-3)  */
+	private double   cropRootsEffectiveDensity; 
+	/** Tree roots density (m m-3 per tree)  */
+	private double[]  treeRootsDensity; 		
+	/** Tree roots density senescence (m m-3 per tree)  */
+	private double[]  treeRootsDensitySen; 		
+	/** Tree roots age in saturated voxels (days per tree) */
+	private int[] 	 treeRootsAgeInWater; 	
+	/** Tree carbon fine roots (kg C per tree) */
+	private double[] treeCarbonFineRoots;			
+	/** Tree carbon fine roots senescence (kg C per tree) */
+	private double[] treeCarbonFineRootsSen;		
+	/** Tree carbon coarse roots (kg C per tree) */
+	private double[] treeCarbonCoarseRoots;			
+	/** Tree carbon coarse roots target (kg C per tree) */
+	private double[] treeCarbonCoarseRootsTarget;	
+	/** Tree carbon coarse roots senescence (kg C per tree) */
+	private double[] treeCarbonCoarseRootsSen;		
+	/** Tree nitrogen fine roots (kg N per tree) */
+	private double[] treeNitrogenFineRoots;   
+	/** Tree nitrogen fine roots senescence (kg N per tree) */
+	private double[] treeNitrogenFineRootsSen;    
+	/** Tree nitrogen coarse roots (kg N per tree) */
+	private double[] treeNitrogenCoarseRoots;    	
+	/** Tree nitrogen coarse roots senescence (kg N per tree) */
+	private double[] treeNitrogenCoarseRootsSen;   
+	/** Tree nitrogen fine root senescence (cumulation all trees) (Kg N)   */
+	private double   cumulatedTreeNitrogenRootsSen;	 
+	/** Tree deep fine roots mineralisation (cumulation all trees) (Kg N)  */
+	private double   treeDeepRootsMineralisation;	
 	
-	//WATER REPARTITON MODULE
-	private double 	 waterStock;				// liters
-	private double[] treeWaterUptake;			// liters
-	private double   cropWaterUptake;			// liters
-	private double   evaporation;				// mm
-	private boolean  isSaturated;				// true/false if voxel is water saturated
-	private int   	 saturationDuration;		// number of days since saturation occured
 
-	//CALCUL TURFAC/SENFAC
-	private double 	 waterStockNormal;			// liters
-	private double 	 waterStockTurfac;			// liters
-	private double 	 waterStockSenfac;			// liters
-	
-	//NITROGEN REPARTITON MODULE
-	private double   nitrogenDiffusionFactor;	// cm-2 d-1
-	private double   nitrogenConcentration;		// g cm-3
-	private double   cropNitrogenUptake;		// g
-	private double[] treeNitrogenUptake;		// g
-	private double   nitrogenNo3Stock;			// g of Nitrogen NO3 in the voxel
-	private double   nitrogenNh4Stock;			// g of Nitrogen NH4 in the voxel 
-	
-	private double   nitrogenAvailableForBoth;
+		
+	/** Water stock (liters) */
+	private double 	 waterStock;		
+	/** Trees water uptake (liters) */
+	private double[] treeWaterUptake;		
+	/** Crop water uptake (liters) */
+	private double   cropWaterUptake;			
+	/** Evaporation (mm) */
+	private double   evaporation;			
+	/** true/false if voxel is water saturated */
+	private boolean  isSaturated;			
+	/** Number of days since saturation occurred */
+	private int   	 saturationDuration;	
+
+	/** Nitrogen NO3 stock (g) */
+	private double   nitrogenNo3Stock;			
+	/** Nitrogen NH4 stock (g) */
+	private double   nitrogenNh4Stock;			
+	/** Nitrogen diffusion factor (cm-2 d-1)*/
+	private double   nitrogenDiffusionFactor;	
+	/** Nitrogen concentration (g cm-3) */
+	private double   nitrogenConcentration;		
+	/** Crop nitrogen uptake (g) */
+	private double   cropNitrogenUptake;		
+	/** Trees nitrogen uptake (g) */
+	private double[] treeNitrogenUptake;		
+	/** Nitrogen available for trees (g) */
 	private double   nitrogenAvailableForTrees;
+	/** Nitrogen available for crop (g) */
 	private double   nitrogenAvailableForCrops;
+	/** Nitrogen available for trees and crop (g) */
+	private double   nitrogenAvailableForBoth;
 	
-	//CARBON ROOTS AND SENESCENCE (Natural death, soil management, root pruning, anoxia) 
-	private double[] treeCarbonFineRoots;			// kg C 
-	private double[] treeCarbonFineRootsSen;		// kg C 
-	private double[] treeCarbonCoarseRoots;			// kg C 
-	private double[] treeCarbonCoarseRootsTarget;	// kg C 
-	private double[] treeCarbonCoarseRootsSen;		// kg C
-	private double[] treeNitrogenFineRoots;      	// kg N 
-	private double[] treeNitrogenCoarseRoots;    	// kg N
-	private double[] treeNitrogenFineRootsSen;      // kg N 
-	private double[] treeNitrogenCoarseRootsSen;    // kg N 
+	/** Soil temperature (degrees) */
+	private double   soilTemperature;						
 
-
-	//DEEP TREE ROOT SENESENCE MINERALISATION
-	private double   soilTemperature;						// degrees
-	private double   cumulatedTreeNitrogenRootsSen;			// kg N (cumulation of all trees)  
-	private double   treeDeepRootsMineralisation;			// kg N (cumulation of all trees) 
-
-	//FOR WATER COMPETITION MODULE
-	//RAZ EVERY DAY 
-	private Collection<SafeRootVoxel> rootMap;		//storing data for water competition		
-	
-
-	//ROOT MODULE
-	private double fineRootsLength;
-	
-	//colonisation direction for each tree 
-	// 0 = x+ = right dir = 0
-	// 1 = x- = left  dir = 0
-	// 2 = y+ = front dir = 1
-	// 3 = y- = back  dir = 1
-	// 4 = z+ = down  dir = 2
-	// 5 = z- = up    dir = 2
-	private int [] colonisationDirection;		
-	
-	
-	private double additionalRootsToVoxel ;
-	private double fineRootsTotalInvestment;
-	private double coefWater0;
-	private double coefWater1;
-	private double coefNitrogen0;
-	private double coefNitrogen1;
-	private double coefCost0;
-	private double coefCost1;
+	//USED FOR WATER COMPETITION MODULE (RAZ EVERY DAY)
+	//Will be stored on PhiPf to give water to the strongest plant 
+	/** Collection of roots from different plant present in the voxel  */
+	private Collection<SafeRootNode> rootMap;					
+	/** colonization direction for each tree (0 = x+ right ; 1 = x- left;  2 = y+ front; 3 = y- back;  4 = z+ down; 5 = z- up*/
+	private int [] colonisationDirection;	
+	/** Water mark for colonization calculation */
 	private double waterMark;
+	/** Nitrogen mark for colonization calculation */
 	private double nitrogenMark;
+	/** Fine root cost mark for colonization calculation */
 	private double costMark;
-	private double totalMark;
-	private double proportion;
-	private int neighboursColonisedNumber;
-	private double voxelFilling;
-	private double L0;
-	private double L1;
-	private double L2;
-	private double Lmin;
-	private double Lmax;
 
-	private double[] T1threshold;
-	private double[] T2threshold;
-	private double[] T3threshold;
-	private double waterEfficiency;
-	private double nitrogenEfficiency;
-	private double fineRootsCost;
-	private double waterEfficiencyMax;
-	private double nitrogenEfficiencyMax;
-	private double fineRootsCostMax;	
-	private double phiPFSoil;
-	private double phiPFCrop;
-	private double waterAvailable;
-	private double waterUptakePotential;
+
+	/** Store value for stress calculation (turfac senfac) */
+	private double waterStockSave;			// liters
 	
-
 	/**
 	 * Constructor to create a new voxel
+	 * @param id ID of the voxel
+	 * @param layer Reference to the SafeLayer object
+	 * @param cell Reference to the SafeCell onject
+	 * @param thickness Thickness (m)
+	 * @param surfaceDepth Depth from the soil surface (m)
+	 * @param nbTrees Number of trees on the plot
 	 */
-	 public SafeVoxel (int id, SafeLayer layer, SafeCell cell, double thickness,
-					  double surfaceDepth,  int nbTrees) {
+	 public SafeVoxel  (int id, 
+			 			int index,
+			 			SafeLayer layer, 
+			 			SafeCell cell, 
+			 			double thickness,
+			 			double surfaceDepth,  
+			 			int nbTrees) {
 
 		createImmutable ();
 		immutable.id = id;
+		immutable.index = index;
 		immutable.layer = layer;
 		immutable.cell = cell;
 		immutable.surfaceDepth = surfaceDepth;
@@ -211,11 +222,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 			z =  (Math.round (z * Math.pow (10,2)) ) / (Math.pow (10,2));//rounding
 
 			immutable.gravityCenter = new Vertex3d (x,y,z);
-			immutable.surfaceDistance =  Math.pow (
-										Math.pow((immutable.gravityCenter.x - immutable.gravityCenter.x),2)
-			                          + Math.pow((immutable.gravityCenter.y - immutable.gravityCenter.y),2)
-			                          + Math.pow((immutable.gravityCenter.z - 0),2)
-			                          , 0.5) ;
+
 		}
 		else
 		{
@@ -225,11 +232,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 			z= ((Math.round (z * Math.pow (10,3)) ) / (Math.pow (10,3)));		//rounding
 
 			immutable.gravityCenter = new Vertex3d (x,y,z);
-			immutable.surfaceDistance =  Math.pow (
-										Math.pow((immutable.gravityCenter.x - immutable.gravityCenter.x),2)
-			                          + Math.pow((immutable.gravityCenter.y - immutable.gravityCenter.y),2)
-			                          + Math.pow((immutable.gravityCenter.z - 0),2)
-			                          , 0.5) ;
+
 		}
 
 		this.cropRootsDensity = 0;
@@ -317,12 +320,12 @@ public class SafeVoxel implements Serializable, Identifiable {
 
 	/**
 	 * Create an Immutable object whose class is declared at one level of the hierarchy.
-	 * This is called only in constructor for new logical object in superclass.
-	 * If an Immutable is declared in subclass, subclass must redefine this method
-	 * (same body) to create an Immutable defined in subclass.
 	 */
 	protected void createImmutable () {immutable = new Immutable ();}
-
+	
+	/**
+	 * RAZ daily values
+	 */
 	public void dailyRaz () {
 		
 		//WATER REPARTITION
@@ -345,12 +348,31 @@ public class SafeVoxel implements Serializable, Identifiable {
 		nitrogenAvailableForTrees = 0;
 		nitrogenAvailableForCrops = 0;
 	}
-	
+	/**
+	 * RAZ water uptake potential
+	 */
+	public void razWaterUptakePotential () {
+		if (getRootMap() == null) return;
+		List<SafeRootNode> rootMap = (List<SafeRootNode>) getRootMap();
+		Iterator<SafeRootNode> itr = rootMap.iterator();
+		while (itr.hasNext()) {
+			SafeRootNode voxelRoot =  itr.next();
+			SafePlantRoot plantRoot  = voxelRoot.getPlantRoots ();
+			voxelRoot.setWaterUptakePotential (0);
+			plantRoot.setWaterUptakePotential (0);
+			voxelRoot.setNitrogenUptakePotential (0);
+			plantRoot.setNitrogenUptakePotential (0);
+		}
+	}
 
 	/**
 	 * Compute the voxel gravity center distance this the origin of one tree (m)
+	 * @param treeIndex index of the tree on the plot
+	 * @param treeOrigin Tree coordinate in X,Y,Z
 	 */
- 	public void computeTreeDistance (int treeIndex, Vertex3d treeOrigin) {
+ 	public void computeTreeDistance (int treeIndex, 
+ 									 Vertex3d treeOrigin) {
+ 		
 		immutable.treeDistance[treeIndex] =  Math.pow(
 												Math.pow((immutable.gravityCenter.x - treeOrigin.x),2)
 					                          + Math.pow((immutable.gravityCenter.y - treeOrigin.y),2)
@@ -359,9 +381,19 @@ public class SafeVoxel implements Serializable, Identifiable {
 	}
 	/**
 	 * Check if the voxel is rooted according to the tree root shape criteria
+	 * @param shape Type of shape 1=Sphere 2=Elipsoide 3=Cone
+	 * @param shapeOrigin Coordinate of the shape origin in X,Y,Z
+	 * @param paramShape1 Parameter to calculate the shape size (m)
+	 * @param paramShape2 Parameter to calculate the shape size (m)
+	 * @param paramShape3 Parameter to calculate the shape size (m)
+	 * @param plotWidth Width of the plot(m)
+	 * @param plotHeight Height of the plot(m)
+	 * @param evolutionParameters Reference to SafeEvolutionParameters the object
 	 */
-	public boolean isVoxelInShape (int shape, Vertex3d shapeOrigin, double paramShape1, double paramShape2, double paramShape3,
-									double plotWidth, double plotHeight, SafeEvolutionParameters evolutionParameters) {
+	public boolean isVoxelInShape  (int shape, 
+									Vertex3d shapeOrigin, double paramShape1, double paramShape2, double paramShape3,
+								    double plotWidth, double plotHeight, 
+								    SafeEvolutionParameters evolutionParameters) {
 
 		boolean isIntheShape = false;
 		double criteria = 0;
@@ -429,9 +461,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 			originForTest = virtualOriginBelow;
 
 
-		
-		
-		//Sheric shape
+		//Spheric shape
 		//the voxel is in the shape if it's distance to the center of the sphere is < sphere radius (param1)
 		if (shape == 1) {
 			criteria = distance;
@@ -458,12 +488,12 @@ public class SafeVoxel implements Serializable, Identifiable {
 			}
 		}
 
-
-		
 		return isIntheShape;
 	}
 	/**
 	 * Return fine roots repartition coefficient
+	 * @param treeIndex Index of the tree on the plot
+	 * @param repartition Type of repartition  1-Uniform  2-Reverse to the tree distance 3-Negative exponential
 	 */
  	public double computeRepartitionCoefficient (int treeIndex, int repartition)
  	{
@@ -480,10 +510,17 @@ public class SafeVoxel implements Serializable, Identifiable {
 	}
 	/**
 	 * Compute the carbon repartion for fine roots in rooted voxels
+	 * @param treeIndex Index of the tree on the plot
+	 * @param repartition Type of repartition  1-Uniform  2-Reverse to the tree distance 3-Negative exponential
+	 * @param totalTreeRootLength Tree root lenght total (m) 
+	 * @param coefficient Coefficient of fine root repartition
+	 * @return Tree root density in this voxel
 	 */
- 	public double computeTreeFineRootsRepartition (int treeIndex, int repartition,
- 											   double totalTreeRootLength,
- 											   double coefficient) {
+ 	public double computeTreeFineRootsRepartition  (int treeIndex, 
+ 													int repartition,
+ 													double totalTreeRootLength,
+ 													double coefficient) {
+ 		
 		//Initial Root lenght (m) have to be reparted in the shape
 		//and converted in m m-3
 		double rootDensity = 0;
@@ -508,12 +545,14 @@ public class SafeVoxel implements Serializable, Identifiable {
 		}
 		//set the value in the voxel
 		setTreeRootsDensity (treeIndex, rootDensity);
+		
 		return rootDensity;
 
 	}
  	
 	/**
-	 * Return total roots diameter (all species trees and crop) in m
+	 * Return plants (trees and cropts) roots diameter total (m) 
+	 * @param stand Reference to SafeStand object
 	 */
 	public double getRootsDiameterTotal (SafeStand stand) {
 
@@ -548,10 +587,14 @@ public class SafeVoxel implements Serializable, Identifiable {
 	}
 
 	/**
-	* Voxel initialisation for water end nitrogen
+	* Voxel initialization 
+	* @param thetaInit Value of nitrogen NO3 for initialization (m3 m-3)
+	* @param nitrogenNo3Init Value of nitrogen NO3 for initialization (kg N)
+	* @param nitrogenNh4Init Value of nitrogen NO3 for initialization (kg N)
 	*/
 	public void initializeWaterNitrogen (double thetaInit,
-										double nitrogenNo3Init, double nitrogenNh4Init) {
+										 double nitrogenNo3Init, 
+										 double nitrogenNh4Init) {
 
 		//to avoid theta > field capacity
 		double thetaSat = this.getLayer().getFieldCapacity();		
@@ -571,46 +614,68 @@ public class SafeVoxel implements Serializable, Identifiable {
 	/**
 	* Compute Pressure head in soil at plant root surface (cm)
 	* and the associated matrix flux potentials phi_pF (cm-2 day-1)
+	* @author Meine Van Noordwijk (ICRAF) - September 2004
+	* @param plant Reference to the plant object (crop or tree) 
+	* @param generalParameters Reference to SafeGeneralParameters object
 	*/
-	public void computePlantRhizospherePotential (Object plant, SafeGeneralParameters safeSettings, SafeVoxel voxel){
+	public void computePlantRhizospherePotential (Object plant, SafeGeneralParameters generalParameters){
 		
 
-		double rootDepth = voxel.getZ();
+		double rootDepth = this.getZ();
 		double rootDistance = 0;
 		double density = 0;
 
 		SafePlantRoot plantRoots = null;
 		rootDistance = 0;
-		if(plant instanceof SafeCrop){	// if the plant is a crop
+		// if the plant is a crop
+		if(plant instanceof SafeCrop){	
 			plantRoots = ((SafeCrop)plant).getPlantRoots();
 			rootDistance = rootDepth;
-			density = voxel.getCropRootsDensity();
-
-		} else {												// if the plant is a tree
+			density = this.getCropRootsDensity();
+		} else {
+			// if the plant is a tree
 			SafeTree t = ((SafeTree)plant);
-			//if tree has roots
 			if (t.getPlantRoots().getRootTopology() != null) {
 				plantRoots = t.getPlantRoots();
-				rootDistance = t.getPlantRoots().getRootTopology(voxel).getEffectiveDistance();
-				density = voxel.getTheTreeRootsDensity(t.getId()-1);
+				rootDistance = t.getPlantRoots().getRootTopology(this).getEffectiveDistance();
+				density = this.getTheTreeRootsDensity(t.getId()-1);
 			}
 		}
 
+		//IL 30/04/2025
+		//on remet le waterUptakePotentiel = 0 
 		double actualWaterPotential = plantRoots.getActualWaterPotential();
 
+		if(actualWaterPotential >= 0) {
+			if(plant instanceof SafeTree){
+				SafeTree tree = (SafeTree) plant;
+				//if tree has roots
+				if (tree.getPlantRoots().getFirstRootNode() != null) {
+					SafeRootNode node = tree.getPlantRoots().getRootTopology(this);
+					node.setWaterUptakePotential(0);
+					node.setNitrogenUptakePotential(0);
 
-		if(actualWaterPotential>=0){
+				}
+			}
+			else {
+				SafeCrop crop = (SafeCrop) plant;
+				//if crop has roots
+				if (crop.getPlantRoots().getFirstRootNode() != null) {
+					SafeRootNode node = crop.getPlantRoots().getRootTopology(this);
+					node.setWaterUptakePotential(0);
+					node.setNitrogenUptakePotential(0);
+				}
+			}
 			return;
 		}
+	
 		double longitudinalTransportPotential = plantRoots.getLongitudinalTransportPotential();
 
-
 		double rhizospherePotential = actualWaterPotential					//cm
-									- rootDistance* longitudinalTransportPotential	// m * cm.m-1 = cm	//GT 20/94/2011 rootDistance instead of rootDistance/meanRootDistance
+									- rootDistance * longitudinalTransportPotential	// m * cm.m-1 = cm	
 									//- radialTransportPotential		// cm		// gt - 12.11.2009 desactivé
-									+ rootDepth*100;							// m -> cm		//GT 20/94/2011 réactivé
+									+ rootDepth*100;							// m -> cm		
 
-		
 		double kSat 	= getLayer().getKSat();
 		double alpha 	= getLayer().getAlpha();
 		double lambda 	= getLayer().getLambda();
@@ -621,53 +686,47 @@ public class SafeVoxel implements Serializable, Identifiable {
 		if (rhizospherePotential < 0)
 			pF_Rhiz = Math.log (-rhizospherePotential) / Math.log (10);
 
-		double deltaPf  = safeSettings.integrationStep;
-		double maxPhiPf = safeSettings.maxPhiPF;
+		double deltaPf  = generalParameters.integrationStep;
+		double maxPhiPf = generalParameters.maxPhiPF;
 
 		double phiPf =
 			SafePedotransferUtil.getPhi (pF_Rhiz, kSat, alpha, lambda, n, deltaPf, maxPhiPf);
-
-
-		
-		//storing result in rootMap and voxelMap
-		plantRoots.addRootedVoxelMap (this, new SafeRootVoxel (plantRoots, this, density, rhizospherePotential, phiPf));
-		rootMap.add (plantRoots.getRootedVoxelMap (this));
 
 		if(plant instanceof SafeTree){
 			SafeTree tree = (SafeTree) plant;
 			//if tree has roots
 			if (tree.getPlantRoots().getFirstRootNode() != null) {
-				tree.getPlantRoots().getRootTopology(this).setWaterRhizospherePotential(rhizospherePotential);
-				tree.getPlantRoots().getRootTopology(this).setPhiPf(phiPf);
+				SafeRootNode node = tree.getPlantRoots().getRootTopology(this);
+				node.setWaterRhizospherePotential(rhizospherePotential);
+				node.setPhiPf(phiPf);
+				rootMap.add (node);
 			}
 		}
-
-	}
-
-	public void razWaterUptakePotential () {
-		if (getRootMap() == null) return;
-		List<SafeRootVoxel> rootMap = (List<SafeRootVoxel>) getRootMap();
-		Iterator<SafeRootVoxel> itr = rootMap.iterator();
-		while (itr.hasNext()) {
-			SafeRootVoxel voxelRoot =  itr.next();
-			SafePlantRoot plantRoot  = voxelRoot.getPlantRoots ();
-			voxelRoot.setWaterUptakePotential (0);
-			plantRoot.setUptakeWaterPotential (0);
+		else {
+			SafeCrop crop = (SafeCrop) plant;
+			//if crop has roots
+			if (crop.getPlantRoots().getFirstRootNode() != null) {
+				SafeRootNode node = crop.getPlantRoots().getRootTopology(this);
+				node.setWaterRhizospherePotential(rhizospherePotential);
+				node.setPhiPf(phiPf);
+				rootMap.add (node);
+			}
 		}
 	}
+
+
 	/**
 	* Calculation of total water potential on the basis of matric flux potentials Phi
 	* @author Meine Van Noordwijk (ICRAF) - September 2004
-	* Reformulated by Gregoire Talbot 2011
+	* @author Gregoire Talbot - 2011
+	* @param generalParameters Reference to SafeGeneralParameters object
 	*/
 
-	public void countWaterUptakePotential (SafeStand stand, SafeGeneralParameters safeSettings,
-											double cellArea, double plotArea, int day,
-											boolean debug) {
+	public void countWaterUptakePotential  (SafeGeneralParameters generalParameters) {
 
 		//Sorting root map on PHIPF ASC
 		if (getRootMap() == null) return;
-		List<SafeRootVoxel> sortedRootMap = (List<SafeRootVoxel>) getRootMap();
+		List<SafeRootNode> sortedRootMap = (List<SafeRootNode>) getRootMap();
 		
 		Collections.sort(sortedRootMap);		//sorting elements is define by the method compareTo in SafeRootVoxel
 
@@ -679,32 +738,31 @@ public class SafeVoxel implements Serializable, Identifiable {
 		double nextPhiPF = 0;
 		double nextPotential = 0;
 
-		this.phiPFSoil = this.getPhi (safeSettings);
+		double phiPFSoil = this.getPhi (generalParameters);
 
 
 		//for each plant rooted in this voxel
 		//order by PHIPF
-		Iterator<SafeRootVoxel> itr = sortedRootMap.iterator();
+		Iterator<SafeRootNode> itr = sortedRootMap.iterator();
 		while (itr.hasNext()) {
 
-			SafeRootVoxel voxelRoot = itr.next();
+			SafeRootNode voxelRoot = itr.next();
 			SafePlantRoot plantRoot  = voxelRoot.getPlantRoots ();
 			double phiPF   = voxelRoot.getPhiPf();
-			this.phiPFCrop = phiPF;
+			double phiPFCrop = phiPF;
 			
 			if((phiPF > lastPhiPFForRootTotalComputation) && (phiPF<phiPFSoil)){
 				double potWaterUpPerFrd = 0;
-				double waterAvailable = 0;
 
 				// a second iterator for checking plants with the same phiPf for computing rootDiameterTotal and rootDensityCum
-				Iterator<SafeRootVoxel> itr2 = sortedRootMap.iterator();
+				Iterator<SafeRootNode> itr2 = sortedRootMap.iterator();
 				double otherPhiPF = phiPF;
 				while (itr2.hasNext() && (otherPhiPF==phiPF)) {
-					SafeRootVoxel otherVoxelRoot = itr2.next();
+					SafeRootNode otherVoxelRoot = itr2.next();
 					otherPhiPF   = otherVoxelRoot.getPhiPf();
 					
 					if (otherPhiPF == phiPF) {
-						double dens = otherVoxelRoot.getRootDensity()/safeSettings.MM3_TO_CMCM3;
+						double dens = otherVoxelRoot.getFineRootsDensity()/generalParameters.MM3_TO_CMCM3;
 						rootDensityCum += dens;
 
 						if (otherVoxelRoot.getPlantRoots().getPlant() instanceof SafeTree) {						
@@ -719,8 +777,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 					}
 				}
 
-
-				
 				rootDiameterTotal = Math.pow(sumRootDiameterTotal/rootDensityCum , 2);
 				double rho = 1/(rootDiameterTotal/2*Math.sqrt(Math.PI*rootDensityCum));		// rho = R1/R0
 				rootVGnt = (0.5*((1-3*Math.pow(rho,2))/4+Math.pow(rho,4)*Math.log(rho)/(Math.pow(rho,2)-1)))/(Math.pow(rho,2)-1);		// van genuchten function as described by Heinen 2001
@@ -744,17 +800,13 @@ public class SafeVoxel implements Serializable, Identifiable {
 						* phiRange						//cm2 day-1
 						/ rootVGnt;						// unitless
 
-				
-				
-				
-				
+
 				// calculer la quantite d'eau fournissable par le sol dans cette gamme de phi. 
 				//En deduire alors un vrai uptake potential qui prend ca en compte
-				waterAvailable = (this.getLayer().getTheta(nextPotential)-this.getLayer().getTheta(voxelRoot.getWaterRhizospherePotential()))		// m3.m-3
-								* this.getThickness()		// m
-								* 1000;						// from m to mm
+				double waterAvailable = (this.getLayer().getTheta(nextPotential)-this.getLayer().getTheta(voxelRoot.getWaterRhizospherePotential()))		// m3.m-3
+								      * this.getThickness()		// m
+								      * 1000;					// from m to mm
 				
-				this.waterAvailable = waterAvailable;
 				
 				if(((potWaterUpPerFrd* rootDensityCum) > waterAvailable)||(this.getIsSaturated())){
 					potWaterUpPerFrd = waterAvailable/(rootDensityCum);
@@ -762,17 +814,14 @@ public class SafeVoxel implements Serializable, Identifiable {
 				lastPhiPFForRootTotalComputation = phiPF;
 
 				
-				double density = voxelRoot.getRootDensity() / safeSettings.MM3_TO_CMCM3; //convert m m-3 in cm cm-3
+				double density = voxelRoot.getFineRootsDensity() / generalParameters.MM3_TO_CMCM3; //convert m m-3 in cm cm-3
+				double waterUptakePotential = potWaterUpPerFrd			// mm.(m.m-3)-1
+										   * density					// cm cm-3
+										   * this.getCell().getArea();	// m2
 				
-				double waterUptakePot = potWaterUpPerFrd	// mm.(m.m-3)-1
-										*density					// m.m-3
-										*cellArea;				// m2
-				
-				this.waterUptakePotential = waterUptakePot;
-
-				if (waterUptakePot > 0) {
-					voxelRoot.addWaterUptakePotential (waterUptakePot);
-					plantRoot.addUptakeWaterPotential (waterUptakePot);
+				if (waterUptakePotential > 0) {
+					voxelRoot.addWaterUptakePotential (waterUptakePotential);
+					plantRoot.addWaterUptakePotential (waterUptakePotential);
 				}
 
 			}
@@ -782,19 +831,21 @@ public class SafeVoxel implements Serializable, Identifiable {
 	/**
 	* Calculation of total nitrogen potential
 	* @author Meine Van Noordwijk (ICRAF) - January 2005
+	* @param stand Reference to SafeStand object
+	* @param generalParameters Reference to SafeGeneralParameters object
 	*/
-	public void countNitrogenUptakePotential (SafeStand stand, SafeGeneralParameters safeSettings) {
+	public void countNitrogenUptakePotential (SafeStand stand, SafeGeneralParameters generalParameters) {
 
 	// from a general equation for zero-sink uptake (De Willigen and Van Noordwijk, 1994)
 	// on the basis of the total root length in that cell, and allocated to each component
 	// proportional to its effective root length
 
-		double nitrogenDiffusionConstant 	= safeSettings.nitrogenDiffusionConstant;
-		double nitrogenEffectiveDiffusionA0 = safeSettings.nitrogenEffectiveDiffusionA0;
-		double nitrogenEffectiveDiffusionA1 = safeSettings.nitrogenEffectiveDiffusionA1;
-		double no3AbsorptionConstant 		= safeSettings.no3AbsorptionConstant;
-		double nh4AbsorptionConstant 		= safeSettings.nh4AbsorptionConstant;
-		double no3Fraction 					= safeSettings.no3Fraction;
+		double nitrogenDiffusionConstant 	= generalParameters.nitrogenDiffusionConstant;
+		double nitrogenEffectiveDiffusionA0 = generalParameters.nitrogenEffectiveDiffusionA0;
+		double nitrogenEffectiveDiffusionA1 = generalParameters.nitrogenEffectiveDiffusionA1;
+		double no3AbsorptionConstant 		= generalParameters.no3AbsorptionConstant;
+		double nh4AbsorptionConstant 		= generalParameters.nh4AbsorptionConstant;
+		double no3Fraction 					= generalParameters.no3Fraction;
 
 		//MODIF IL 05/04/2018
 		//correction bug when stone is included in soil
@@ -820,12 +871,12 @@ public class SafeVoxel implements Serializable, Identifiable {
 
 		this.setNitrogenConcentration (((this.getNitrogenNo3Stock()	+ this.getNitrogenNh4Stock())	//g
 									/ (absorptionConstant + theta))
-									/ (volume * safeSettings.M3_TO_CM3));		//cm-3
+									/ (volume * generalParameters.M3_TO_CM3));		//cm-3
 
 		//If NO ROOTS return
 		if (getRootMap() == null) return;
 	
-		Iterator<SafeRootVoxel> itr = getRootMap().iterator();
+		Iterator<SafeRootNode> itr = getRootMap().iterator();
 
 
 		double totalSinkStrengthLrv = 0;
@@ -835,14 +886,15 @@ public class SafeVoxel implements Serializable, Identifiable {
 		//Calculation of total sink strenght
 		while (itr.hasNext()) {
 
-			SafeRootVoxel voxelRoot = itr.next();
+			SafeRootNode voxelRoot = itr.next();
 			SafePlantRoot plantRoot  = voxelRoot.getPlantRoots ();
 
 			// Product of sink strengths and root length densities per plant in this voxel
 			double nitrogenSinkStrength   = plantRoot.getNitrogenSinkStrength (); 		// kg/m
-			double density = voxelRoot.getRootDensity() / safeSettings.MM3_TO_CMCM3;
+			double density = voxelRoot.getFineRootsDensity() / generalParameters.MM3_TO_CMCM3;
 			totalSinkStrengthLrv += nitrogenSinkStrength * density;		//somme sur les deux plantes!!!!     kg/m*cm/cm3
 			totalDensity += density;
+
 		
 		}
 
@@ -861,9 +913,11 @@ public class SafeVoxel implements Serializable, Identifiable {
 			double zeroSinkCombined = ((Math.PI * getNitrogenConcentration() * getNitrogenDiffusionFactor())
 										/ gModCombined)
 										* volume
-										* safeSettings.M3_TO_CM3;
+										* generalParameters.M3_TO_CM3;
 	
 			availableNitrogen = Math.min (zeroSinkCombined, (this.getNitrogenNo3Stock() + this.getNitrogenNh4Stock()));
+			
+
 
 		}
 
@@ -873,10 +927,10 @@ public class SafeVoxel implements Serializable, Identifiable {
 		double nitrogenZeroSinkTotal = 0;
 
 		//For each PLANT rooted in this voxel
-		Iterator<SafeRootVoxel> itr2 = getRootMap().iterator();
+		Iterator<SafeRootNode> itr2 = getRootMap().iterator();
 		while (itr2.hasNext()) {
 
-			SafeRootVoxel voxelRoot = itr2.next();
+			SafeRootNode voxelRoot = itr2.next();
 			SafePlantRoot plantRoot  = voxelRoot.getPlantRoots ();
 			
 
@@ -885,7 +939,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 
 			//Each plant share in combined uptake
 			double nitrogenSinkStrength   = plantRoot.getNitrogenSinkStrength ();
-			double density = voxelRoot.getRootDensity() / safeSettings.MM3_TO_CMCM3;
+			double density = voxelRoot.getFineRootsDensity() / generalParameters.MM3_TO_CMCM3;
 			double nitrogenShareUptake = (nitrogenSinkStrength * density) / totalSinkStrengthLrv;		
 
 			double rootDiameter = 0;
@@ -907,7 +961,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 			double nitrogenZeroSinkPotential = ((Math.PI * getNitrogenConcentration() *  getNitrogenDiffusionFactor())
 												/ gMod)
 												* volume
-												* safeSettings.M3_TO_CM3;
+												* generalParameters.M3_TO_CM3;
 
 			voxelRoot.setNitrogenZeroSinkPotential (nitrogenZeroSinkPotential);
 			voxelRoot.setNitrogenShareUptake (nitrogenShareUptake);
@@ -923,10 +977,10 @@ public class SafeVoxel implements Serializable, Identifiable {
 		// and the relative share in the root length density
 		//For each PLANT rooted in this voxel
 		
-		Iterator<SafeRootVoxel> itr3 = getRootMap().iterator();
+		Iterator<SafeRootNode> itr3 = getRootMap().iterator();
 		while (itr3.hasNext()) {
 
-			SafeRootVoxel voxelRoot = itr3.next();
+			SafeRootNode voxelRoot = itr3.next();
 			SafePlantRoot plantRoot  = voxelRoot.getPlantRoots ();
 
 			//For each PLANT rooted in this voxel
@@ -937,51 +991,48 @@ public class SafeVoxel implements Serializable, Identifiable {
 			
 			nitUptakePot = Math.max (availableNitrogen - nitrogenZeroSinkTotal + nitrogenZeroSinkPotential,
 										Math.min(nitrogenZeroSinkPotential,availableNitrogen * nitrogenShareUptake));
-
-
-
-			
-			if (plantRoot.getPlant() instanceof SafeTree) 
+	
+			if (plantRoot.getPlant() instanceof SafeTree) {
 				this.nitrogenAvailableForTrees = nitUptakePot;
-			else 		
+			}
+			else { 		
 				this.nitrogenAvailableForCrops = nitUptakePot;
-
-		
+			}
 
 			if (nitUptakePot > 0) {
-				voxelRoot.addNitrogenUptakePotential (nitUptakePot);
+				voxelRoot.addNitrogenUptakePotential (nitUptakePot);	//g
 				plantRoot.addNitrogenUptakePotential (nitUptakePot);
 			}
 		}
 	}
 
 	/**
-	* Declare a voxel saturated with water	AQ 2011-- 
-	* This method is rewrite to include Nitrogen leaching by water table
+	* Declare a voxel saturated or not with water	
+	* This method include Nitrogen leaching by water table
+	* @param saturated Tells if the voxel is saturated true or false
+	* @param soil Reference to the SafeSoil object
+	* @return Table with water and nitrogen increase 
 	*/
-	public double[] setIsSaturated (boolean b, SafePlotSettings plotSettings, boolean first) {	//aq 09.08.2011 added stand
+	public double[] setIsSaturated (boolean saturated, SafeSoil soil) {	
 		
-		double[] waterNStockIncrease = {0,0,0,0,0};		// the first value contains water, the second nitrogen
+		double[] waterNStockIncrease = {0,0,0,0,0};		// the first value contains water, the others nitrogen
 
-		isSaturated = b;
+		isSaturated = saturated;
 
-		if (b == true) {	//When a voxel is flooded by watertable, theta = field capacity
-			if(first)	{	// first call to the method for this day
-				addSaturationDuration (); 								//Increase saturation duration
-				addTreeRootsAgeInWater();								//Increase all trees age in water  
-			}
-				
+		if (saturated == true) {	//When a voxel is flooded by watertable, theta = field capacity
+
+			addSaturationDuration (); 								//Increase saturation duration
+			addTreeRootsAgeInWater();								//Increase all trees age in water  
+
 			// voxel water is reset to fieldCapacity (fineSoil + stone) 
 			double thetaInit = this.getLayer().getFieldCapacity();		//test AQ 08.08.2011 (in the water table, voxels are at saturation)
-			waterNStockIncrease[0]= -(this.getWaterStock()); 	//water stock before saturation in liters
-			setWaterStock (thetaInit * this.getVolume () * 1000);		    	//from m3 m-3 to liters/voxel
-			waterNStockIncrease[0] += this.getWaterStock(); 				//water stock difference after saturation
+			waterNStockIncrease[0]= -(this.getWaterStock()); 			//water stock before saturation in liters
+			setWaterStock (thetaInit * this.getVolume () * 1000);		 //from m3 m-3 to liters/voxel
+			waterNStockIncrease[0] += this.getWaterStock(); 			//water stock difference after saturation
 
 			// NO3 fluctuation only if water have changed
 			if (waterNStockIncrease[0] !=0) {
-				double no3ConcentrationInWaterTable = plotSettings.no3ConcentrationInWaterTable;		//AQ in g/L
-				
-				//test aq 04.11.2011
+				double no3ConcentrationInWaterTable = soil.getNo3ConcentrationInWaterTable();		//AQ in g/L
 				double wtNitrogenNo3Stock = this.getWaterStock()*no3ConcentrationInWaterTable;	//g.voxel-1	
 				double tempA = this.getNitrogenNo3Stock()-wtNitrogenNo3Stock;	//calcul variation stock NO3 dans le voxel
 				if (tempA >0) {
@@ -992,10 +1043,9 @@ public class SafeVoxel implements Serializable, Identifiable {
 				}	
 				
 				setNitrogenNo3Stock(wtNitrogenNo3Stock);			
-				//FIN test aq 04.11.2011
 							
 				// NH4
-				double nh4ConcentrationInWaterTable = plotSettings.nh4ConcentrationInWaterTable;		//AQ
+				double nh4ConcentrationInWaterTable = soil.getNh4ConcentrationInWaterTable();		//AQ
 				
 				//test aq 04.11.2011
 				double wtNitrogenNh4Stock = this.getWaterStock()*nh4ConcentrationInWaterTable;	//g.voxel-1	
@@ -1008,7 +1058,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 				}	
 	
 				setNitrogenNh4Stock(wtNitrogenNh4Stock);			
-				//FIN test aq 04.11.2011
+
 			}
 				
 		} else {	//watertable is receeding, theta doesn't change
@@ -1020,23 +1070,26 @@ public class SafeVoxel implements Serializable, Identifiable {
 	
 	//
 	/**
-	* AQ	Deep senescent roots mineralization: (from STICS algorithms V5 mineral.for)
-	*       For each voxel with Z > P_profhum  
+	* Deep senescence roots mineralization for each voxel with Z greater than humificationDepth (P_profhum) 
+	* @author AQ (from STICS algorithms V5 mineral.for)
+	* @param generalParameters Reference to SafeGeneralParameters object 
+	* @param sticsSoil Reference to SafeSticsSoil object      
+	* @param humificationDepth Depth for humification (m)     
 	*/	
-	public void deepSenescentRootsMineralization (SafeGeneralParameters settings, 
+	public void deepSenescentRootsMineralization (SafeGeneralParameters generalParameters, 
 												  SafeSticsSoil sticsSoil,
-												  double humificationDepth,
-												  double cellArea) {
+												  double humificationDepth) {
 		//compute if voxel 
 		//- is NOT saturated 
 		//- is BELLOW humificationDepth 
 		//- has tree nitrogen from dead roots
 		double voxelBottom = this.getZ()+(this.getThickness()/2);
+		
 		if (!this.getIsSaturated() && voxelBottom > humificationDepth && this.getCumulatedTreeNitrogenRootsSen() > 0) {
 			
-			double fmin1 = settings.fmin1;
-			double fmin2 = settings.fmin2;
-			double fmin3 = settings.fmin3;
+			double fmin1 = generalParameters.fmin1;
+			double fmin2 = generalParameters.fmin2;
+			double fmin3 = generalParameters.fmin3;
 			
 			//humidity factor (fh in STICS) 
 			double fh = 0.80*((this.getTheta()-getLayer().getWiltingPoint())/(getLayer().getFieldCapacity()-getLayer().getWiltingPoint()))+0.20;
@@ -1051,7 +1104,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 			double kpot = fmin1/(fmin2+argi)/(fmin3+calc);
 			double k = kpot*fh*ft;
 
-			
 			//calculation in KG N
 			double nMinFromRootSen = k*(this.getCumulatedTreeNitrogenRootsSen());
 			
@@ -1060,6 +1112,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 			this.setTreeDeepRootsMineralisation(nMinFromRootSen);
 			
 			if (nMinFromRootSen > 0) {
+				double cellArea = this.getCell().getArea();
 
 				this.addCumulatedTreeNitrogenRootsSen(-nMinFromRootSen);
 				
@@ -1138,17 +1191,18 @@ public class SafeVoxel implements Serializable, Identifiable {
 	
 	/**
 	* Return PHI
+	* @param generalParameters Reference to SafeGeneralParameters object
 	*/
 
-	public double getPhi (SafeGeneralParameters safeSettings) {
+	public double getPhi (SafeGeneralParameters generalParameters) {
 
 		double kSat 	= getLayer().getKSat ();
 		double alpha 	= getLayer().getAlpha ();
 		double lambda 	= getLayer().getLambda ();
 		double n 		= getLayer().getN ();
 
-		double deltaPF = safeSettings.integrationStep;
-		double maxPhiPf = safeSettings.maxPhiPF;
+		double deltaPF = generalParameters.integrationStep;
+		double maxPhiPf = generalParameters.maxPhiPF;
 
 		double pF =
 				SafePedotransferUtil.getpF(
@@ -1287,6 +1341,8 @@ public class SafeVoxel implements Serializable, Identifiable {
 	
 
 	public int getId () {return immutable.id;}
+	public int getIndex () {return immutable.index;}
+	
 	public SafeLayer getLayer () {return immutable.layer;}
 	public SafeCell getCell () {return immutable.cell;}
 	public int getIdCell () {return immutable.cell.getId();}
@@ -1295,7 +1351,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 	
 	public double getThickness () {return  immutable.thickness;}
 	public double getSurfaceDepth () {return  immutable.surfaceDepth;}
-	public double getSurfaceDistance () {return immutable.surfaceDistance;}
+
 	public double getVolume() {return  immutable.volume;}
 	public double getVolumeFineSoil () {
 		if (getLayer().getStone() == 0) return  immutable.volume;
@@ -1369,8 +1425,8 @@ public class SafeVoxel implements Serializable, Identifiable {
 	
 	/* TREE FINE ROOT ACCESSORS */
  	
-	public Collection<SafeRootVoxel> getRootMap () {return rootMap;}
-	public void initRootMap () {rootMap = new ArrayList<SafeRootVoxel> ();}
+	public Collection<SafeRootNode> getRootMap () {return rootMap;}
+	public void initRootMap () {rootMap = new ArrayList<SafeRootNode> ();}
 	
 	public double getTheTreeRootsDensity (int t) {
 		if (treeRootsDensity != null) return treeRootsDensity[t];
@@ -2045,119 +2101,21 @@ public class SafeVoxel implements Serializable, Identifiable {
 		if (colonisationDirection != null) return colonisationDirection[treeIndex];
 		else return -9999;
 	}
-	
-
-	
 
 
-
-	
-	//a enlever c'est pour tester le module
-	public double getFineRootsTotalInvestment() {return  fineRootsTotalInvestment;}
-	public void setFineRootsTotalInvestment (double v) {fineRootsTotalInvestment =  v;}
-	public double getAdditionalRootsToVoxel () {return  additionalRootsToVoxel ;}
-	public void setAdditionalRootsToVoxel (double v) {additionalRootsToVoxel =  v;}
-	
-	public double[] getT1threshold() {
-		if (T1threshold==null) T1threshold = new double[6];
-		return T1threshold;}
-	public double[] getT2threshold() {
-		if (T2threshold==null) T2threshold = new double[6];
-		return T2threshold;}
-	public double[] getT3threshold() {
-		if (T3threshold==null) T3threshold = new double[6];
-		return T3threshold;}
-
-	public int getT1thresholdSize () {
-		return 6;
-	}
-	public int getT2thresholdSize () {
-		return 6;
-	}	public int getT3thresholdSize () {
-		return 6;
-	}	
 	
 	public double getWaterMark() {return waterMark;}
 	public double getNitrogenMark() {return nitrogenMark;}
 	public double getCostMark() {return costMark;}
-	public double getTotalMark() {return totalMark;}
-	public double getProportion() {return proportion;}
-	public double getVoxelFilling() {return voxelFilling;}
-	public int getNeighboursColonisedNumber() {return neighboursColonisedNumber;}
-	public double getCoefWater0() {return coefWater0;}
-	public double getCoefWater1() {return coefWater1;}
-	public double getCoefNitrogen0() {return coefNitrogen0;}
-	public double getCoefNitrogen1() {return coefNitrogen1;}
-	public double getCoefCost0() {return coefCost0;}
-	public double getCoefCost1() {return coefCost1;}	
-	public double getFineRootsLength() {return fineRootsLength;}
-	
-	
 
-	public double getL0() {return L0;}
-	public double getL1() {return L1;}
-	public double getL2() {return L2;}
-	public double getLmin() {return Lmin;}
-	public double getLmax() {return Lmax;}
-	public double getPhiPFSoil() {return phiPFSoil;}
-	public double getPhiPFCrop() {return phiPFCrop;}
-	public double getWaterAvailable() {return waterAvailable;}
-	public double getWaterUptakePotential() {return waterUptakePotential;}
-	
-
-	
 	public void setWaterMark(double v) {waterMark = v;}
 	public void setNitrogenMark(double v) {nitrogenMark = v;}
 	public void setCostMark(double v) {costMark = v;}
-	public void setTotalMark(double v) {totalMark = v;}
-	public void setProportion(double v) {proportion = v;}
-	public void setVoxelFilling(double v) {voxelFilling = v;}
-	public void setNeighboursColonisedNumber(int v) {neighboursColonisedNumber = v;}
+
 	public void setColonisationDirection(int treeIndex, int v) {colonisationDirection[treeIndex] = v;}
-	
-	public void setCoefWater0(double v) {coefWater0 = v;}
-	public void setCoefWater1(double v) {coefWater1 = v;}
-	public void setCoefNitrogen0(double v) {coefNitrogen0 = v;}
-	public void setCoefNitrogen1(double v) {coefNitrogen1 = v;}
-	public void setCoefCost0(double v) {coefCost0 = v;}
-	public void setCoefCost1(double v) {coefCost1 = v;}
-	
-	public void setL0(double v) {L0 = v;}
-	public void setL1(double v) {L1 = v;}
-	public void setL2(double v) {L2 = v;}
-	public void setLmin(double v) {Lmin = v;}
-	public void setLmax(double v) {Lmax = v;}
 
 
-	
-	public void setFineRootsLength(double v) {fineRootsLength = v;}
-	
-	public void setT1threshold(int i, double v) {
-		if (T1threshold==null) T1threshold = new double[6];
-		T1threshold[i] = v;
-	}
-	public void setT2threshold(int i, double v) {
-		if (T2threshold==null) T2threshold = new double[6];
-		T2threshold[i] = v;}
-	public void setT3threshold(int i, double v) {
-		if (T3threshold==null) T3threshold = new double[6];
-		T3threshold[i] = v;}
 
-	public double getWaterEfficiency() {return waterEfficiency;}
-	public double getNitrogenEfficiency() {return nitrogenEfficiency;}
-	public double getFineRootCost() {return fineRootsCost;}
-
-	public double getWaterEfficiencyMax() {return waterEfficiencyMax;}
-	public double getNitrogenEfficiencyMax() {return nitrogenEfficiencyMax;}
-	public double getFineRootsCostMax() {return fineRootsCostMax;}
-	
-	
-	public void setWaterEfficiency(double v) {waterEfficiency = v;}
-	public void setNitrogenEfficiency(double v) {nitrogenEfficiency = v;}
-	public void setFineRootsCost(double v) {fineRootsCost = v;}
-	public void setWaterEfficiencyMax(double v) {waterEfficiencyMax = v;}
-	public void setNitrogenEfficiencyMax(double v) {nitrogenEfficiencyMax = v;}
-	public void setFineRootsCostMax(double v) {fineRootsCostMax = v;}
 
 
 	//STICS MINICOUCHES
@@ -2272,50 +2230,52 @@ public class SafeVoxel implements Serializable, Identifiable {
 		return v;
 	}
 	
-	public double getWaterStockSenfac() {return waterStockSenfac;}
-	public void setWaterStockSenfac (double v) {waterStockSenfac= v;}
-	public double getWaterStockTurfac() {return waterStockTurfac;}
-	public void setWaterStockTurfac (double v) {waterStockTurfac= v;}
+
 	
 	/**
-	 * Calul de waterStockTurfac
+	 * Calul de waterStockTurfac = water stock - 20%
 	 */
- 	public void computeWaterStockTurfac (double psisto, double psiturg) {
- 		waterStockNormal  = waterStock; 			
- 		waterStockTurfac = waterStock;
+ 	public double computeWaterStockTurfac (double psisto, double psiturg) {
+			
+ 		double waterStockTurfac = waterStock;
  		
- 		//on verifie qu'on ne descend pas en dessous du PF
+ 		//Check water stock is not < wilting point
  		double waterStockMin =  this.getLayer().getWiltingPoint() * this.getVolume() * 1000;	
- 		if (waterStock > waterStockMin) {
+ 		if (waterStockTurfac > waterStockMin) {
  			waterStockTurfac = waterStock - (this.getVolume() * 1d/80d * Math.log(psisto/psiturg) * 1000);
  			if (waterStockTurfac < waterStockMin) waterStockTurfac = waterStockMin;
  		}
+ 		return waterStockTurfac;
  		
  	}
 	 
 	/**
-	 * Calul de waterStockSenfac
+	 * Calul de waterStockSenfac = water stock + 20%
 	 */
- 	public void computeWaterStockSenfac (double psisto, double psiturg) {			
- 		waterStockSenfac = waterStock;
+ 	public double computeWaterStockSenfac (double psisto, double psiturg) {			
+ 		double waterStockSenfac = waterStock;
  		
- 		//on verifie qu'on ne remonte pas au dessus de FC
+ 		//Check water stock is not > field capacity 
  		double waterStockMax =  this.getLayer().getFieldCapacity() * this.getVolume() * 1000;	
- 		if (waterStock < waterStockMax) {
+ 		if (waterStockSenfac < waterStockMax) {
  			waterStockSenfac = waterStock + (this.getVolume() * 1d/80d * Math.log(psisto/psiturg) * 1000);
  			if (waterStockSenfac > waterStockMax) waterStockSenfac = waterStockMax;
  		}
+ 		return waterStockSenfac;
  		
  	}
- 	
 	/**
-	 * remet waterStockNormal
+	 * Save waterStock
 	 */
- 	public void resetWaterStockNormal () {
- 		waterStock = waterStockNormal;
+ 	public void saveWaterStock () {
+ 		waterStockSave = waterStock;
  	}
- 	
- 	
+	/**
+	 * Restore waterStockNormal
+	 */
+ 	public void restoreWaterStock () {
+ 		waterStock = waterStockSave;
+ 	}
  	public void resetTreeRootsAgeInWater() {
  		Arrays.fill(this.treeRootsAgeInWater, 0);
  	}

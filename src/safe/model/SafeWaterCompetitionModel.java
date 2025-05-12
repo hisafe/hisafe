@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -45,54 +51,62 @@ package safe.model;
 import java.util.Iterator;
 
 public class SafeWaterCompetitionModel  {
-
+	
 	/**
 	 * WATER AND NITROGEN REPARTITION PROCESS
 	 * 
-	 * @author M.Van NOORDWIJK  - ICRAF Bogor Indonisia FROM JULY 2004 TO MAY 2005
-	 * @author D.HARJA          - ICRAF Bogor Indonisia
-	 * @author I.LECOMTE        - INRAE Montpellier France
+	 * @author : M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
+	 * @author : D.HARJA          - ICRAF Bogor Indonisia
+	 * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
+	 * 
+	 * @param stand Reference to SafeStand object
+	 * @param generalParameters Reference to SafeGeneralParameters object
 	 * 
 	 **/
-	public static void waterNitrogenRepartition (SafeStand newStand,
-												SafeGeneralParameters safeSettings,
-												int day) {
-		
-		int nbTrees = safeSettings.nbTrees;
-		double plotArea = newStand.getArea();
-		double cellArea = 0;
+	public static void waterNitrogenRepartition (SafeStand stand,
+												 SafeGeneralParameters generalParameters) {
 
-		//FOR EACH PLANT (tree ou crop)  calculate WATER DEMAND REDUICE and POTENTIEL 
-		for (Iterator i = newStand.getTrees().iterator(); i.hasNext();) {
+		//FOR EACH TREE CALCULATE WATER POTENTIEL and WATER DEMAND REDUICE 
+		for (Iterator i = stand.getTrees().iterator(); i.hasNext();) {
 
 			SafeTree tree = (SafeTree) i.next();
 			
 			if (tree.isPlanted() && !tree.isHarvested()) {
 				
 				double treeTotalRootLenght = tree.computeTotalRootLength();
-				if (treeTotalRootLenght>0) tree.computePlantWaterPotential(safeSettings);
+				if (treeTotalRootLenght>0) tree.computePlantWaterPotential();
 				
 				if (tree.getWaterDemand () > 0) {
-					tree.getPlantRoots().calculatePotential (safeSettings, tree.getWaterDemand ());
+					
+					//calculate potentials
+					double  campbellFactor = tree.getTreeSpecies().getCampbellFactorIcraf();
+					double halfCurrWaterPotential =  tree.getTreeSpecies().getHalfCurrWaterPotentialIcraf();
+					tree.getPlantRoots().calculatePotential (tree.getWaterDemand (), campbellFactor, halfCurrWaterPotential);
 
 					// Reduction factor for water demand
 					double waterDemandReductionFactor = tree.getPlantRoots().getWaterDemandReductionFactor();
 					tree.setWaterDemandReduced (tree.getWaterDemand() * waterDemandReductionFactor);		//liters
+
 				}
 			}
 		}
-
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		
+		//FOR EACH CROP CALCULATE WATER POTENTIEL and WATER DEMAND REDUICE 
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 
 			SafeCell cell	= (SafeCell) iter.next();
 			SafeCrop crop = cell.getCrop();
 			
 			double cropTotalRootLenght = crop.computeTotalRootsLength();
-			if (cropTotalRootLenght>0) crop.computePlantWaterPotential(safeSettings);
-			
-			//Reduction factor for water demand (dimensionless)
+			if (cropTotalRootLenght>0) crop.computePlantWaterPotential();
+		
 			if (crop.getWaterDemand () > 0) {		//in mm
-				crop.getPlantRoots().calculatePotential (safeSettings, crop.getWaterDemand()* (float)cell.getArea());		// gt - 12.11.2009 - water demand is now expressed in liters instead of mm
+				//calculate potentials
+				double  campbellFactor = cell.getCropZone().getCropSpecies().getCampbellFactorIcraf();
+				double halfCurrWaterPotential =  cell.getCropZone().getCropSpecies().getHalfCurrWaterPotentialIcraf();
+				crop.getPlantRoots().calculatePotential (crop.getWaterDemand()* (float)cell.getArea(), campbellFactor, halfCurrWaterPotential);		
+				
+				//Reduction factor for water demand (dimensionless)
 				double waterDemandReductionFactor = crop.getPlantRoots().getWaterDemandReductionFactor();
 				crop.setWaterDemandReduced (crop.getWaterDemand() * waterDemandReductionFactor);		//mm
 			}
@@ -100,11 +114,9 @@ public class SafeWaterCompetitionModel  {
 		
 		
 		//FOR EACH VOXEL, CALCULATION OF PRESSURE HEAD IN SOIL AT PLANT ROOT SURFACE (cm)
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell cell	= (SafeCell) iter.next();
-			
 			SafeVoxel voxels[] = cell.getVoxels();
-
 			for (int iz=0; iz<voxels.length; iz++) {
 
 				//root map creation
@@ -113,27 +125,28 @@ public class SafeWaterCompetitionModel  {
 				//for the crop
 				if (voxels[iz].getCropRootsDensity () > 0) {
 					SafeCrop crop = cell.getCrop();
-					voxels[iz].computePlantRhizospherePotential (crop, safeSettings, voxels[iz]);
+					voxels[iz].computePlantRhizospherePotential (crop, generalParameters);
+
+					
 				}
 
 				//Same for trees roots
-				for (int t=0; t < nbTrees;t++) {
+				for (int t=0; t < voxels[iz].getTreeRootsDensitySize();t++) {
 
 					if (voxels[iz].getTheTreeRootsDensity(t) > 0) {
 						int treeId = t+1;
-						SafeTree tree = (SafeTree) (newStand.getTree (treeId));
+						SafeTree tree = (SafeTree) (stand.getTree (treeId));
 						if (tree != null) {					//tree can be missing after a thinning intervention
-							voxels[iz].computePlantRhizospherePotential (tree, safeSettings,voxels[iz]);
+							voxels[iz].computePlantRhizospherePotential (tree, generalParameters);
 						}
 					}
 				}
 			}
 		}
 
-		//FOR EACH VOXEL, CALCULATION OF WATER UPTAKE POTENTIAL
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		//FOR EACH VOXEL, RAZ OF WATER UPTAKE POTENTIAL
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell theCell	= (SafeCell)iter.next();
-			cellArea = theCell.getArea();
 			SafeVoxel voxels[] = theCell.getVoxels();
 			for (int iz=0; iz<voxels.length; iz++) {
 					voxels[iz].razWaterUptakePotential ();
@@ -141,94 +154,85 @@ public class SafeWaterCompetitionModel  {
 		}	
 		
 		//FOR EACH VOXEL, CALCULATION OF WATER AND NITROGEN UPTAKE POTENTIAL
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell theCell	= (SafeCell)iter.next();
-			cellArea = theCell.getArea();
 			SafeVoxel voxels[] = theCell.getVoxels();
 			for (int iz=0; iz<voxels.length; iz++) {
-					voxels[iz].countWaterUptakePotential (newStand, safeSettings, cellArea, plotArea, day, true);
-					voxels[iz].countNitrogenUptakePotential (newStand, safeSettings);	
+					voxels[iz].countWaterUptakePotential (generalParameters); 
+					voxels[iz].countNitrogenUptakePotential (stand, generalParameters);	
 			}
 		}
 
 
-		//FOR EACH PLANT, CALCULATION OF PLANTS WATER AND NITROGEN UPTAKE
-		//for each crop
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		//FOR EACH CROP, CALCULATION OF WATER AND NITROGEN UPTAKE
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell cell	= (SafeCell) iter.next();
-			cellArea = cell.getArea();
 			SafeCrop crop	= cell.getCrop();
 			SafePlantRoot cropRoot = crop.getPlantRoots();
-			int phenologicalStage = crop.getPhenologicStageVegetative();
+			
 			//WATER
-
-			double cropWaterDemandReduced  = crop.getWaterDemandReduced ()  * cellArea;	//liters
-			double cropWaterDemand  = crop.getWaterDemand ()  * cellArea;				//liters
+			double cropWaterDemandReduced  = crop.getWaterDemandReduced ()  * cell.getArea();	//liters
+			double cropWaterDemand  = crop.getWaterDemand ()  * cell.getArea();				//liters
 			
 			crop.setWaterUptake (0);
 			double waterStress = 1;
 			
 			//water extraction is computed if demand is > 0 and if  crop is NOT harvested 
-			if ((cropWaterDemandReduced > 0) && (phenologicalStage < 11)) {
+			if ((cropWaterDemandReduced > 0) && (crop.getPhenologicStageVegetative() < 11)) {
 
-				double cropWaterUptake = cropRoot.calculateWaterUptake (newStand, crop, safeSettings, cropWaterDemandReduced, day);
-				crop.setWaterUptake (cropWaterUptake / cellArea);					 	//mm
+				double cropWaterUptake = cropRoot.calculateWaterUptake (stand, crop,  cropWaterDemandReduced, true);
+				crop.setWaterUptake (cropWaterUptake / cell.getArea());					 	//mm
 
 				if (cropWaterDemand > 0) {
-					if(cropWaterUptake <= 0) {
-						waterStress = safeSettings.stressMin; //P_swfacmin;						
-					}
-					else {
+					if(cropWaterUptake <= 0) 
+						waterStress = generalParameters.waterStressMin; 						
+					else 
 						waterStress = Math.min (cropWaterUptake  / cropWaterDemand, 1);		
-					}
-					waterStress = Math.max (waterStress,  safeSettings.stressMin);
+					
+					waterStress = Math.max (waterStress,  generalParameters.waterStressMin);
 				}
 
-				//Ajout influence sur STICS
+				//Store crop water uptake in STICS
 				crop.sticsCrop.ep[0] = (float) crop.getWaterUptake() ;
 				crop.sticsCrop.ep[1] = (float) crop.getWaterUptake() ;	
 			}
 			else {
-				//if cropWaterDemand = 0 stress is very high 
-				if ((cropWaterDemand > 0) && (cropWaterDemandReduced == 0) ) {
-					waterStress = 0.0001d; 
-				}
+
+				if ((cropWaterDemand > 0) && (cropWaterDemandReduced == 0) ) 
+					waterStress = generalParameters.waterStressMin; 
 			}
-			//Set the stress 
-			crop.setHisafeWaterStress (waterStress);
 			
-			//Also in STICS	
+			//Store the water stress 
+			crop.setHisafeWaterStomatalStress (waterStress);
 			crop.sticsCrop.swfac[0] = (float) waterStress;
 			crop.sticsCrop.swfac[1] = (float) waterStress;
 
-
 			//NITROGEN		
-			double cropNitrogenDemand  = (crop.getNitrogenDemand() / 10) * cellArea;	//convert kg ha-1 in g
+			double cropNitrogenDemand  = (crop.getNitrogenDemand() / 10) * cell.getArea();	//convert kg ha-1 in g
 			crop.setNitrogenUptake (0);
 			double nitrogenStress = 1;
-			
+		
 			if (cropNitrogenDemand > 0) {
-				double cropNitrogenUptake = cropRoot.calculateNitrogenUptake (newStand, crop, safeSettings, cropNitrogenDemand);
-				
 
-				crop.setNitrogenUptake ((cropNitrogenUptake * 10) / cellArea);		//convert g in kg ha-1
-				if(cropNitrogenUptake <= 0) {
-					nitrogenStress = 0.0001d;
-				}
+				double cropNitrogenUptake = cropRoot.calculateNitrogenUptake (stand, crop,  cropNitrogenDemand);
+	
+				crop.setNitrogenUptake ((cropNitrogenUptake * 10) / cell.getArea());		//convert g in kg ha-1
+				if(cropNitrogenUptake <= 0) 
+					nitrogenStress = generalParameters.nitrogenStressMin; 
 				else {
 					nitrogenStress = Math.min (cropNitrogenUptake  / cropNitrogenDemand, 1);
-					nitrogenStress = Math.max (nitrogenStress,  0.0001d);
+					nitrogenStress = Math.max (nitrogenStress, generalParameters.nitrogenStressMin);
 				}
 			}
+			//store nitrogen stress
 			crop.setHisafeNitrogenStress (nitrogenStress);
-			//Ajout influence sur STICS
 			//crop.sticsCrop.innlai[0] = (float) nitrogenStress;
 			//crop.sticsCrop.innlai[1] = (float) nitrogenStress;
 		
 		}
 
-		//for each tree
-		for (Iterator iter=newStand.getTrees().iterator(); iter.hasNext(); ) {
+		//FOR EACH TREE, CALCULATION OF WATER AND NITROGEN UPTAKE
+		for (Iterator iter=stand.getTrees().iterator(); iter.hasNext(); ) {
 			SafeTree tree = (SafeTree)iter.next();
 			if (tree.isPlanted() && !tree.isHarvested()) {
 				SafePlantRoot treeRoot = (SafePlantRoot) tree.getPlantRoots();
@@ -236,20 +240,24 @@ public class SafeWaterCompetitionModel  {
 				//WATER
 				tree.setWaterUptake (0);
 				double treeWaterDemand = tree.getWaterDemandReduced ();		//liters
-				if (treeWaterDemand > 0) {
-					double treeWaterUptake = treeRoot.calculateWaterUptake (newStand, tree, safeSettings, treeWaterDemand, day);
+				if (treeWaterDemand > 0 && treeRoot.getActualWaterPotential()<0) {
+					double treeWaterUptake = treeRoot.calculateWaterUptake (stand, tree,  treeWaterDemand, true);
+					tree.setWaterUptake(treeWaterUptake);
 				}
 				
-	
 				//NITROGEN UPTAKE
 				tree.setNitrogenAvailable (0);
 				tree.setNitrogenUptake (0);
 				
 				double treeNitrogenDemand = tree.getNitrogenDemandAfterFixation() * 1000;	//convert kg in g;
-				if (treeNitrogenDemand > 0) {
+		
+				if (treeNitrogenDemand > 0 && treeRoot.getActualWaterPotential()<0) {
+
 					//calcul de setNitrogenUptakeWithoutFixation dans ce code
-					double value = treeRoot.calculateNitrogenUptake (newStand, tree, safeSettings, treeNitrogenDemand);
-					
+					double nitrogenUptake = treeRoot.calculateNitrogenUptake (stand, tree,  treeNitrogenDemand);
+					tree.setNitrogenUptake(nitrogenUptake);
+
+
 					//add fixation 
 					if (tree.getTreeSpecies().getNitrogenFixation()) {
 						tree.setNitrogenAvailable (tree.getNitrogenUptake() + tree.getBnfNitrogenFixation());
@@ -270,43 +278,43 @@ public class SafeWaterCompetitionModel  {
 	/**
 	 * TURFAC CALCULATION (crop turgescence stress) 
 	 * ADDED in JUNE 2020 
+	 * @param stand Reference to SafeStand object
+	 * @param generalParameters Reference to SafeGeneralParameters object
 	 **/	
-	public static void waterNitrogenRepartitionTurfac (SafeStand newStand,
-			SafeGeneralParameters safeSettings,
-			int day) {
+	public static void computeWaterStressTurfac  (SafeStand stand,
+														SafeGeneralParameters generalParameters) {
 
-		int nbTrees = safeSettings.nbTrees;
-		double plotArea = newStand.getArea();
-		double cellArea = 0;
 
 		//FOR EACH VOXEL, CALCULATION OF WATER STOCK REDUICED OF 20%
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell cell	= (SafeCell) iter.next();
-
 			SafeVoxel voxels[] = cell.getVoxels();
-
 			for (int iz=0; iz<voxels.length; iz++) {
 				double psisto = cell.getCrop().sticsCrop.P_psisto;
 				double psiturg = cell.getCrop().sticsCrop.P_psiturg;
-				voxels[iz].computeWaterStockTurfac (psisto, psiturg);	
-				voxels[iz].setWaterStock(voxels[iz].getWaterStockTurfac());			
+				voxels[iz]. saveWaterStock ();	//save real values
+				double waterStockTurfac = voxels[iz].computeWaterStockTurfac (psisto, psiturg);	
+				voxels[iz].setWaterStock(waterStockTurfac);	//replace real value by -20%		
 			}
 		}
 
 		
-		//FOR EACH PLANT (tree ou crop)  calculate WATER DEMAND REDUICE and POTENTIEL 
-		for (Iterator i = newStand.getTrees().iterator(); i.hasNext();) {
+		//FOR EACH TREE CALCULATED WATER POTENTIEL and WATER DEMAND REDUICE   
+		for (Iterator i = stand.getTrees().iterator(); i.hasNext();) {
 
 			SafeTree tree = (SafeTree) i.next();
 			
 			if (tree.isPlanted() && !tree.isHarvested()) {
 				
 				double treeTotalRootLenght = tree.computeTotalRootLength();
-				if (treeTotalRootLenght>0) tree.computePlantWaterPotential(safeSettings);
+				if (treeTotalRootLenght>0) tree.computePlantWaterPotential();
 				
 				if (tree.getWaterDemand () > 0) {
-					tree.getPlantRoots().calculatePotential (safeSettings, tree.getWaterDemand ());
-
+					//calculate potentials
+					double  campbellFactor = tree.getTreeSpecies().getCampbellFactorIcraf();
+					double halfCurrWaterPotential =  tree.getTreeSpecies().getHalfCurrWaterPotentialIcraf();
+					tree.getPlantRoots().calculatePotential (tree.getWaterDemand (), campbellFactor, halfCurrWaterPotential);
+	
 					// Reduction factor for water demand
 					double waterDemandReductionFactor = tree.getPlantRoots().getWaterDemandReductionFactor();
 					tree.setWaterDemandReduced (tree.getWaterDemand() * waterDemandReductionFactor);		//liters
@@ -314,28 +322,29 @@ public class SafeWaterCompetitionModel  {
 			}
 		}
 		
-		//FOR EACH VOXEL, CALCULATION OF PRESSURE HEAD IN SOIL AT PLANT ROOT SURFACE (cm)
-
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		//FOR EACH CROP CALCULATED WATER POTENTIEL and WATER DEMAND REDUICE 
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 
 			SafeCell cell	= (SafeCell) iter.next();
 			SafeCrop crop = cell.getCrop();
 			double cropTotalRootLenght = crop.computeTotalRootsLength();
-			if (cropTotalRootLenght>0) crop.computePlantWaterPotential(safeSettings);
+			if (cropTotalRootLenght>0) crop.computePlantWaterPotential();
 			
-			//Reduction factor for water demand (dimensionless)
-			if (crop.getWaterDemand () > 0) {		//in mm
-				crop.getPlantRoots().calculatePotential (safeSettings, crop.getWaterDemand()*cell.getArea());		// gt - 12.11.2009 - water demand is now expressed in liters instead of mm
 
+			if (crop.getWaterDemand () > 0) {		//in mm
+				//calculate potentials
+				double  campbellFactor = cell.getCropZone().getCropSpecies().getCampbellFactorIcraf();
+				double halfCurrWaterPotential =  cell.getCropZone().getCropSpecies().getHalfCurrWaterPotentialIcraf();
+				crop.getPlantRoots().calculatePotential (crop.getWaterDemand()*cell.getArea(), campbellFactor, halfCurrWaterPotential);		
+				
+				// Reduction factor for water demand
 				double waterDemandReductionFactor = crop.getPlantRoots().getWaterDemandReductionFactor();
 				crop.setWaterDemandReduced (crop.getWaterDemand() * waterDemandReductionFactor);		//mm
-
 			}
 		}
 		
 		//FOR EACH VOXEL, CALCULATION OF PRESSURE HEAD IN SOIL AT PLANT ROOT SURFACE (cm)
-
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell cell	= (SafeCell) iter.next();
 			
 			SafeVoxel voxels[] = cell.getVoxels();
@@ -348,97 +357,80 @@ public class SafeWaterCompetitionModel  {
 				//for the crop
 				if (voxels[iz].getCropRootsDensity () > 0) {
 					SafeCrop crop = cell.getCrop();
-					voxels[iz].computePlantRhizospherePotential (crop, safeSettings, voxels[iz]);
+					voxels[iz].computePlantRhizospherePotential (crop, generalParameters);
 				}
 
 				//Same for trees roots
-				for (int t=0; t < nbTrees;t++) {
+				for (int t=0; t < voxels[iz].getTreeRootsDensitySize();t++) {
 
 					if (voxels[iz].getTheTreeRootsDensity(t) > 0) {
 						int treeId = t+1;
-						SafeTree tree = (SafeTree) (newStand.getTree (treeId));
+						SafeTree tree = (SafeTree) (stand.getTree (treeId));
 						if (tree != null) {					//tree can be missing after a thinning intervention
-							voxels[iz].computePlantRhizospherePotential (tree, safeSettings,voxels[iz]);
+							voxels[iz].computePlantRhizospherePotential (tree, generalParameters);
 						}
 					}
 				}
 			}
 		}
 			
-		//FOR EACH VOXEL, CALCULATION OF WATER UPTAKE POTENTIAL
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		//FOR EACH VOXEL, RAZ OF WATER UPTAKE POTENTIAL
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell theCell	= (SafeCell)iter.next();
-			cellArea = theCell.getArea();
 			SafeVoxel voxels[] = theCell.getVoxels();
 			for (int iz=0; iz<voxels.length; iz++) {
-					voxels[iz].razWaterUptakePotential ();
+				voxels[iz].razWaterUptakePotential ();
 			}
 		}	
 
 		//FOR EACH VOXEL, CALCULATION OF WATER UPTAKE POTENTIAL
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell theCell	= (SafeCell)iter.next();
-			cellArea = theCell.getArea();
 			SafeVoxel voxels[] = theCell.getVoxels();
 			for (int iz=0; iz<voxels.length; iz++) {
-					voxels[iz].countWaterUptakePotential (newStand, safeSettings, cellArea, plotArea, day, false);
+				voxels[iz].countWaterUptakePotential (generalParameters);
 			}
 		}
 			
 
-	
 
-		//FOR EACH PLANT, CALCULATION OF PLANTS WATER AND NITROGEN UPTAKE
-		//for each crop
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		//FOR EACH CROP, CALCULATION OF WATER UPTAKE AND WATER STRESS
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell cell	= (SafeCell) iter.next();
-			cellArea = cell.getArea();
 			SafeCrop crop	= cell.getCrop();
 			SafePlantRoot cropRoot = crop.getPlantRoots();
-			int phenologicalStage = crop.getPhenologicStageVegetative();
-			//WATER
 
-			double cropWaterDemandReduced  = crop.getWaterDemandReduced ()  * cellArea;	//liters
-			double cropWaterDemand  = crop.getWaterDemand ()  * cellArea;				//liters
-
+			double cropWaterDemandReduced  = crop.getWaterDemandReduced ()  * cell.getArea();	//liters
+			double cropWaterDemand  = crop.getWaterDemand ()  * cell.getArea();				//liters
 			double waterStress = 1;
-			//on calcule l'extraction si la demande n'est pas null et qu'on a pas atteint le stade récolte 
-			if ((cropWaterDemandReduced > 0) && (phenologicalStage < 11)) {
-				double cropWaterUptake = cropRoot.calculateWaterUptake2 (newStand, crop, safeSettings, cropWaterDemandReduced, day);
+			
+			//Water stress is calculated if demand if positive and crop is not harvested
+			if ((cropWaterDemandReduced > 0) && (crop.getPhenologicStageVegetative() < 11)) {
+				double cropWaterUptake = cropRoot.calculateWaterUptake (stand, crop, cropWaterDemandReduced, false);
 
 				if (cropWaterDemand > 0) {
-					if(cropWaterUptake <= 0) {
-						waterStress =  safeSettings.stressMin; //P_swfacmin;
-
-					}
-					else {
+					if (cropWaterUptake <= 0) 
+						waterStress =  generalParameters.waterStressMin; //P_swfacmin;
+					else 
 						waterStress = Math.min (cropWaterUptake  / cropWaterDemand, 1);						
-					}
 				}
-
+				waterStress = Math.max (waterStress,  generalParameters.waterStressMin);
 			}
 
-			//Ajout influence sur STICS					
-			waterStress = Math.max (waterStress,  safeSettings.stressMin);
-			
-			crop.setHisafeTurfac(waterStress);
+			//Store water stress in STICS turfac				
+			crop.setHisafeWaterTurgescenceStress(waterStress);
 			crop.sticsCrop.turfac[0] = (float) waterStress;
 			crop.sticsCrop.turfac[1] = (float) waterStress;
 
 		}	
 	
 		
-		//FOR EACH VOXEL, CALCULATION OF PRESSURE HEAD IN SOIL AT PLANT ROOT SURFACE (cm)
-
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		//Restore the real water stock in each voxels
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell cell	= (SafeCell) iter.next();
-
 			SafeVoxel voxels[] = cell.getVoxels();
-
 			for (int iz=0; iz<voxels.length; iz++) {
-
-				voxels[iz].resetWaterStockNormal ();
-
+				voxels[iz].restoreWaterStock ();
 			}
 		}
 	}
@@ -446,17 +438,17 @@ public class SafeWaterCompetitionModel  {
 	/**
 	 * SENFAC CALCULATION (crop senescence stress) 
 	 * ADDED in JUNE 2020 
+	 * @param stand Reference to SafeStand object
+	 * @param generalParameters Reference to SafeGeneralParameters object
 	 **/
-	public static void waterNitrogenRepartitionSenfac (SafeStand newStand,
-			SafeGeneralParameters safeSettings,
-			int day) {
+	public static void computeWaterStressSenfac  (SafeStand stand,
+														SafeGeneralParameters generalParameters) {
 
-		int nbTrees = safeSettings.nbTrees;
-		double plotArea = newStand.getArea();
+		double plotArea = stand.getArea();
 		double cellArea = 0;
 
-		//FOR EACH VOXEL, CALCULATION OF WATER STOCK REDUICED OF 20%
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		//FOR EACH VOXEL, CALCULATION OF WATER STOCK INCREASE OF 20%
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell cell	= (SafeCell) iter.next();
 
 			SafeVoxel voxels[] = cell.getVoxels();
@@ -464,25 +456,28 @@ public class SafeWaterCompetitionModel  {
 			for (int iz=0; iz<voxels.length; iz++) {
 				double psisto = cell.getCrop().sticsCrop.P_psisto;
 				double psiturg = cell.getCrop().sticsCrop.P_psiturg;
-				voxels[iz].computeWaterStockSenfac (psisto, psiturg);
-				voxels[iz].setWaterStock(voxels[iz].getWaterStockSenfac());	
+				voxels[iz]. saveWaterStock ();	//save real water stock value
+				double waterStockSenfac = voxels[iz].computeWaterStockSenfac (psisto, psiturg);
+				voxels[iz].setWaterStock(waterStockSenfac);	//replace water stock with +20%
 			}
 		}
 
 		
-		//FOR EACH PLANT (tree ou crop)  calculate WATER DEMAND REDUICE and POTENTIEL 
-		for (Iterator i = newStand.getTrees().iterator(); i.hasNext();) {
+		//FOR EACH TREE CALCULATE WATER POTENTIEL and WATER DEMAND REDUICE 
+		for (Iterator i = stand.getTrees().iterator(); i.hasNext();) {
 
 			SafeTree tree = (SafeTree) i.next();
 			
 			if (tree.isPlanted() && !tree.isHarvested()) {
 				
 				double treeTotalRootLenght = tree.computeTotalRootLength();
-				if (treeTotalRootLenght>0) tree.computePlantWaterPotential(safeSettings);
-				
-				
+				if (treeTotalRootLenght>0) tree.computePlantWaterPotential();
+
 				if (tree.getWaterDemand () > 0) {
-					tree.getPlantRoots().calculatePotential (safeSettings, tree.getWaterDemand ());
+					//calculate potentials
+					double  campbellFactor = tree.getTreeSpecies().getCampbellFactorIcraf();
+					double halfCurrWaterPotential =  tree.getTreeSpecies().getHalfCurrWaterPotentialIcraf();
+					tree.getPlantRoots().calculatePotential (tree.getWaterDemand (), campbellFactor, halfCurrWaterPotential);
 
 					// Reduction factor for water demand
 					double waterDemandReductionFactor = tree.getPlantRoots().getWaterDemandReductionFactor();
@@ -491,60 +486,56 @@ public class SafeWaterCompetitionModel  {
 			}
 		}
 		
-		//FOR EACH VOXEL, CALCULATION OF PRESSURE HEAD IN SOIL AT PLANT ROOT SURFACE (cm)
-
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		//FOR EACH CROP CALCULATE WATER POTENTIEL and WATER DEMAND REDUICE 
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 
 			SafeCell cell	= (SafeCell) iter.next();
 			SafeCrop crop = cell.getCrop();
 			double cropTotalRootLenght = crop.computeTotalRootsLength();
-			if (cropTotalRootLenght>0) crop.computePlantWaterPotential(safeSettings);
-			
-			//Reduction factor for water demand (dimensionless)
-			if (crop.getWaterDemand () > 0) {		//in mm
-				crop.getPlantRoots().calculatePotential (safeSettings, crop.getWaterDemand()*cell.getArea());		// gt - 12.11.2009 - water demand is now expressed in liters instead of mm
+			if (cropTotalRootLenght>0) crop.computePlantWaterPotential();
 
+			if (crop.getWaterDemand () > 0) {		//in mm
+				//calculate potentials
+				double  campbellFactor = cell.getCropZone().getCropSpecies().getCampbellFactorIcraf();
+				double halfCurrWaterPotential =  cell.getCropZone().getCropSpecies().getHalfCurrWaterPotentialIcraf();
+				crop.getPlantRoots().calculatePotential (crop.getWaterDemand()*cell.getArea(), campbellFactor, halfCurrWaterPotential);		
+
+				//Reduction factor for water demand (dimensionless)
 				double waterDemandReductionFactor = crop.getPlantRoots().getWaterDemandReductionFactor();
 				crop.setWaterDemandReduced (crop.getWaterDemand() * waterDemandReductionFactor);		//mm
-
 			}
 		}
 		
 		//FOR EACH VOXEL, CALCULATION OF PRESSURE HEAD IN SOIL AT PLANT ROOT SURFACE (cm)
-
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell cell	= (SafeCell) iter.next();
-			
 			SafeVoxel voxels[] = cell.getVoxels();
-
 			for (int iz=0; iz<voxels.length; iz++) {
 
 				//root map creation
 				voxels[iz].initRootMap();
 				
-				
 				//for the crop
 				if (voxels[iz].getCropRootsDensity () > 0) {
 					SafeCrop crop = cell.getCrop();
-					voxels[iz].computePlantRhizospherePotential (crop, safeSettings, voxels[iz]);
+					voxels[iz].computePlantRhizospherePotential (crop, generalParameters);
 				}
 
 				//Same for trees roots
-				for (int t=0; t < nbTrees;t++) {
-
+				for (int t=0; t < voxels[iz].getTreeRootsDensitySize();t++) {
 					if (voxels[iz].getTheTreeRootsDensity(t) > 0) {
 						int treeId = t+1;
-						SafeTree tree = (SafeTree) (newStand.getTree (treeId));
+						SafeTree tree = (SafeTree) (stand.getTree (treeId));
 						if (tree != null) {					//tree can be missing after a thinning intervention
-							voxels[iz].computePlantRhizospherePotential (tree, safeSettings,voxels[iz]);
+							voxels[iz].computePlantRhizospherePotential (tree, generalParameters);
 						}
 					}
 				}
 			}
 		}
 			
-		//FOR EACH VOXEL, CALCULATION OF WATER UPTAKE POTENTIAL
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		//FOR EACH VOXEL, RAZ OF WATER UPTAKE POTENTIAL
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell theCell	= (SafeCell)iter.next();
 			cellArea = theCell.getArea();
 			SafeVoxel voxels[] = theCell.getVoxels();
@@ -554,70 +545,54 @@ public class SafeWaterCompetitionModel  {
 		}	
 
 		//FOR EACH VOXEL, CALCULATION OF WATER UPTAKE POTENTIAL
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell theCell	= (SafeCell)iter.next();
 			cellArea = theCell.getArea();
 			SafeVoxel voxels[] = theCell.getVoxels();
 			for (int iz=0; iz<voxels.length; iz++) {
-					voxels[iz].countWaterUptakePotential (newStand, safeSettings, cellArea, plotArea, day, false);
+					voxels[iz].countWaterUptakePotential (generalParameters);
 			}
 		}
 			
-		//FOR EACH PLANT, CALCULATION OF PLANTS WATER AND NITROGEN UPTAKE
-		//for each crop
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		//FOR EACH CROP, CALCULATION OF WATER UPTAKE AND STRESS
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell cell	= (SafeCell) iter.next();
 			cellArea = cell.getArea();
 			SafeCrop crop	= cell.getCrop();
-
 			SafePlantRoot cropRoot = crop.getPlantRoots();
-			int phenologicalStage = crop.getPhenologicStageVegetative();
-			
-			//WATER
 
 			double cropWaterDemandReduced  = crop.getWaterDemandReduced ()  * cellArea;	//liters
 			double cropWaterDemand  = crop.getWaterDemand ()  * cellArea;				//liters
 			double waterStress = 1;
 			
-			//on calcule l'extraction si la demande n'est pas null et qu'on a pas atteint le stade récolte 
-			//et si on a dejà du stress stomatique
-			if ((cropWaterDemandReduced > 0) && (phenologicalStage < 11) &&  (crop.getHisafeWaterStress() < 1)) {
+			//Water stress is calculated if demand if positive and crop is not harvested
+			if ((cropWaterDemandReduced > 0) && (crop.getPhenologicStageVegetative() < 11) && (crop.getHisafeWaterStomatalStress() < 1)) {
 				
-				double cropWaterUptake = cropRoot.calculateWaterUptake2 (newStand, crop, safeSettings, cropWaterDemandReduced, day);
+				double cropWaterUptake = cropRoot.calculateWaterUptake (stand, crop, cropWaterDemandReduced, false);
 
 				if (cropWaterDemand > 0) {
-					if(cropWaterUptake <= 0) {
-						waterStress =  safeSettings.stressMin; //P_swfacmin;
-
-					}
-					else {
+					if(cropWaterUptake <= 0) 
+						waterStress =  generalParameters.waterStressMin; //P_swfacmin;
+					else 
 						waterStress = Math.min (cropWaterUptake  / cropWaterDemand, 1);						
-					}
 				}
+				
+				waterStress = Math.max (waterStress,  generalParameters.waterStressMin);
 
 			}
-			//Ajout influence sur STICS					
-			waterStress = Math.max (waterStress,  safeSettings.stressMin);
-			
-			crop.setHisafeSenfac(waterStress);
+			//Store water stress in STICS senfac				
+			crop.setHisafeWaterSenescenceStress(waterStress);
 			crop.sticsCrop.senfac[0] = (float) waterStress;
 			crop.sticsCrop.senfac[1] = (float) waterStress;
-			
 
 		}	
 	
-		
-		//FOR EACH VOXEL, CALCULATION OF PRESSURE HEAD IN SOIL AT PLANT ROOT SURFACE (cm)
-
-		for (Iterator iter=newStand.getPlot().getCells().iterator(); iter.hasNext();) {
+		//Restore real water stock in each voxels
+		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell cell	= (SafeCell) iter.next();
-
 			SafeVoxel voxels[] = cell.getVoxels();
-
 			for (int iz=0; iz<voxels.length; iz++) {
-
-				voxels[iz].resetWaterStockNormal ();
-
+				voxels[iz].restoreWaterStock ();
 			}
 		}
 	}

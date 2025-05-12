@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -49,6 +55,7 @@ import java.util.List;
 
 import jeeb.lib.util.Log;
 import jeeb.lib.util.Vertex3d;
+import safe.model.SafeVoxel.Immutable;
 import capsis.defaulttype.plotofcells.RectangularPlot;
 import capsis.kernel.GScene;
 
@@ -56,85 +63,99 @@ import capsis.kernel.GScene;
 /**
  * SafePlot represent the spatial desagregation of the SafeStand on a grid 
  * 
- * @author Isabelle Lecomte - INRA Montpellier France - July 2002
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
 public class SafePlot extends RectangularPlot implements Serializable {
 
-	// WARNING: if references to objects (not primitive types) are added here,
-	// implement a "public Object clone ()" method (see RectangularPlot.clone ()
-	// for template)
-	// float variables must be accessed with access methods (casts to double)
+	/** Reference to the SafePlotSettings object : plot parameters */
+	private SafePlotSettings plotSettings; 
+	/** Reference of SafeSoil object  */
+	private SafeSoil soil;						
+	/** List of the plot crop zones  */
+	private ArrayList<SafeCropZone> cropZones;
 	
-
-	private static final long serialVersionUID = 1L;
-
-	private SafeSoil soil;						//the description of the soil
-	private ArrayList<SafeCropZone> cropZones;	//crop zones
-	
-	private float slopeIntensity; 			// degree
-	private float slopeAspect; 				// degree
-	private float treeLineOrientation; 		// degree
-	private float northOrientation; 		// degree
-	private float cellSurface; 				// cells surface m2
-
 	//ANNUAL PAR TOTALS FOR EXPORT
-	private double annualParInterceptedByTrees;				// Moles PAR m-2
-	private double annualParInterceptedByCrops;				// Moles PAR m-2
-	private double annualParIncident;						// Moles PAR m-2
+	/** Total annual PAR intercepted by trees (Moles PAR m-2) */
+	private double annualParInterceptedByTrees;			
+	/**  Total annual PAR intercepted by crops (Moles PAR m-2)  */
+	private double annualParInterceptedByCrops;				
+	/** Total annual PAR incident(Moles PAR m-2) */
+	private double annualParIncident;					
 
-	
 	//ANNUAL WATER BUDGET FOR EXPORT  
-	//IN (liters) 
-	private double waterStockBefore;
+	/** Total annual water entries by irrigation (liter) */
 	private double annualIrrigation;					
+	/** Total annual water entries by water table flow (liter) */
 	private double annualWaterAddedByWaterTable;
+	/** Total annual water entries by rain transmitted by trees (liter)  */
 	private double annualRainTransmittedByTrees;	
+	/** Total annual water entries by rain transmitted by crops or bare soil (liter)  */
 	private double annualRainTransmittedByCrops;
-	
-	//OUT (liters) 
+	//OUT
+	/** Total annual water uptake by trees (liter)   */
 	private double annualWaterUptakeByTrees;		
+	/** Total annual water uptake by crops (liter)  */
 	private double annualWaterUptakeByCrops;		
+	/** Total annual water uptake by trees in saturated voxels (liter)  */
 	private double annualWaterUptakeInSaturationByTrees;		
+	/** Total annual water uptake by crops in saturated voxels (liter)  */
 	private double annualWaterUptakeInSaturationByCrops;		
+	/** Total annual soil evaporation (liter) */
 	private double annualEvaporation;				
+	/**  Total annual soil surface run off (liter)   */
 	private double annualSurfaceRunOff;								
+	/** Total annual soil bottom drainage (liter)  */
 	private double annualDrainageBottom;				
+	/**  Total annual soil artificial drainage (liter)   */
 	private double annualDrainageArtificial;			
+	/**  Total annual rain intercepted by trees (liter)   */
 	private double annualRainInterceptedByTrees;					
+	/** Total annual rain intercepted by crops (liter)   */
 	private double annualRainInterceptedByCrops;	
+	/** Total annual water out by desaturation (liter) */
 	private double annualWaterToDesaturation;						
 				
 
 
 	//ANNUAL NITROGEN BUDGET FOR EXPORT 
-	//IN (kg N ha-1)
-
+	/** Total annual N entries by mineral fertilization (kg N ha-1) */
 	private double annualFertilisationMineral;
+	/** Total annual N entries by organic fertilization (kg N ha-1) */
 	private double annualFertilisationOrganic;
+	/** Total annual N entries by rain (kg N ha-1) */
 	private double annualNitrogenRain;
+	/** Total annual N entries by irrigation (kg N ha-1) */
 	private double annualNitrogenIrrigation;
-	
-	//OUT (kg N ha-1)
+	//OUT 
+	/** Total annual N uptake by trees (kg N ha-1) */
 	private double annualNitrogenUptakeByTrees;		//kg N  
+	/** Total annual N uptake by crops (kg N ha-1) */
 	private double annualNitrogenUptakeByCrops;		//kg N  
+	/** Total annual N out by soil run off (kg N ha-1) */
 	private double annualNitrogenRunOff;			
+	/** Total annual N out by soil bottom leaching (kg N ha-1) */
 	private double annualNitrogenLeachingBottom;	
+	/** Total annual N out by water table leaching  (kg N ha-1) */
 	private double annualNitrogenLeachingWaterTable;
 
-	
-						
+	public SafePlot(GScene stand, double cellWidth) {
 
+		super(stand, cellWidth);
+	}
 	
 	/**
-	 * Create the plot
+	 * Constructor
+     * @param stand Reference to the GScene (stand) object
+ 	 * @param cellWidth Cells width (m) 
+     * @param nRows Number of rows on the plot
+ 	 * @param nCols Number of columns on the plot	
 	 */
-	public SafePlot(GScene stn, SafeGeneralParameters settings, double cw, int nRows, int nCols, double aspect,
-				double slope,  double northOrientation, double treeLineOrientation) {
-			
-		
-		super(stn, cw);
-		double userWidth = cw * nCols;
-		double userHeight = cw * nRows;
+	public SafePlot(GScene stand, double cellWidth, int nRows, int nCols) {
+
+		super(stand, cellWidth);
+
+		double userWidth = cellWidth * nCols;
+		double userHeight = cellWidth * nRows;
 		getImmutable().nLin = nRows;
 		getImmutable().nCol = nCols;
 
@@ -147,18 +168,59 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		setOrigin(new Vertex3d(0d, 0d, 0d));
 		setXSize(userWidth);
 		setYSize(userHeight);
-
-		// 4. More initializations...
-		this.slopeAspect = (float) aspect;
-		this.slopeIntensity = (float) slope;
-		this.northOrientation = (float) northOrientation;
-		this.treeLineOrientation = (float) treeLineOrientation;
 		setArea (userWidth * userHeight);
-		setCellSurface ((float) (getCellWidth() * getCellWidth()));
 
 	}
+
+	
 	/**
-	 * Initialisation of the crop ZONES
+	 * Computation of cell neighbors in 4 directions (right left back front) 
+     * @param evolutionParameters Reference to the SafeEvolutionParameters object
+	 */
+	public void computeCellsNeighbourg (SafeEvolutionParameters evolutionParameters) {
+
+		for (Iterator c = getCells().iterator(); c.hasNext();) {
+			SafeCell cell = (SafeCell) c.next();
+			int i = cell.getIGrid();
+			int j = cell.getJGrid();
+
+			SafeCell rightNeighbourg = (SafeCell) this.getCell(i, j + 1);
+
+			//if toric symetry id off on Xp
+			if (evolutionParameters.toricXp == 0) {
+				if (rightNeighbourg.getX() < cell.getX()) rightNeighbourg = null;
+			}
+			if (rightNeighbourg != null)	cell.setCellIdRight(rightNeighbourg.getId());
+			
+
+			SafeCell leftNeighbourg = (SafeCell) this.getCell(i, j - 1);
+			//if toric symetry id off on Xn
+			if (evolutionParameters.toricXn == 0) {
+				if (leftNeighbourg.getX() > cell.getX()) leftNeighbourg = null;
+			}
+			if (leftNeighbourg != null) cell.setCellIdLeft(leftNeighbourg.getId());
+	
+
+			SafeCell backNeighbourg = (SafeCell) this.getCell(i - 1, j);
+			//if toric symetry id off on Yn
+			if (evolutionParameters.toricYn == 0) {
+				if (backNeighbourg.getY() < cell.getY()) backNeighbourg = null;
+			}			
+			if (backNeighbourg != null) cell.setCellIdBack(backNeighbourg.getId());
+		
+
+			SafeCell frontNeighbourg = (SafeCell) this.getCell(i + 1, j);
+			//if toric symetry id off on Yp
+			if (evolutionParameters.toricYp == 0) {
+				if (frontNeighbourg.getY() > cell.getY()) frontNeighbourg = null;
+			}			
+			if (frontNeighbourg != null) cell.setCellIdFront(frontNeighbourg.getId());
+			
+		}
+	}
+	
+	/**
+	 * Creation of the crop ZONES
 	 */	
 	public void initialiseCropZone ()  {
 		cropZones = new ArrayList<SafeCropZone>();
@@ -166,17 +228,18 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		cropZones.add(zone);
 	}
 	/**
-	 * Initialisation of the crop ZONES
+	 * Initialization of the crop ZONES
+     * @param evolutionParameters Reference to the SafeEvolutionParameters object
 	 */	
 	public void initialiseCropZone (SafeEvolutionParameters evolutionParameters)  {
 		
 		cropZones = new ArrayList<SafeCropZone>();
 		int nbCells = 0;
-		 for(int i = 0 ; i < evolutionParameters.zoneId.size(); i++) {
-			 int zoneId = evolutionParameters.zoneId.get(i);
-			 String zoneName = evolutionParameters.zoneName.get(i);
-			 String zoneCellList = evolutionParameters.zoneCellList.get(i);
-			 String zoneTecList = evolutionParameters.zoneTecList.get(i);
+		 for(int i = 0 ; i < evolutionParameters.zonesIds.size(); i++) {
+			 int zoneId = evolutionParameters.zonesIds.get(i);
+			 String zoneName = evolutionParameters.zonesNames.get(i);
+			 String zoneCellList = evolutionParameters.zonesCellsList.get(i);
+			 String zoneTecList = evolutionParameters.zonesTecsList.get(i);
 			 
 			 List<SafeCell> zoneCells = new ArrayList<SafeCell>();
 			 List<String> zoneItk = new ArrayList<String>();
@@ -230,7 +293,7 @@ public class SafePlot extends RectangularPlot implements Serializable {
 				for (int o = 0; o < occurence; o++) zoneItk.add(itkName);
 			}
 
-			SafeCropZone zone = new SafeCropZone(evolutionParameters, zoneId, zoneName, zoneCells, zoneItk, cellSurface);
+			SafeCropZone zone = new SafeCropZone(zoneId, zoneName, evolutionParameters, zoneCells, zoneItk, plotSettings.cellSurface);
 			zone.initCells();
 			cropZones.add(zone);
 		 }
@@ -243,10 +306,94 @@ public class SafePlot extends RectangularPlot implements Serializable {
 				System.exit(1);
 			}
 		}
-
-
 	}
 
+	
+	/**
+	 * Compute all saturated voxels regards to water table depth
+     * @param waterTableDepth Water table depth (m) 
+	 */
+	public void computeWaterTable (double waterTableDepth) {
+
+		// for each cell of the plot
+		for (Iterator c = this.getCells().iterator(); c.hasNext();) {
+
+			SafeCell cell = (SafeCell) c.next();
+			SafeVoxel[] voxels = cell.getVoxels();
+			
+			boolean changes = false;
+			double waterAddedByWaterTable = 0;
+			double waterTakenByDesaturation = 0;
+			double drainageWaterTable = 0;
+			double nitrogenLeaching= 0; // AQ
+			double nitrogenAddedByWaterTable = 0;
+
+			// for each voxel of the cell
+			for (int iz = 0; iz < voxels.length; iz++) {
+				// Voxel gravity center under water table depth are saturated
+				if (voxels[iz].getZ() >= waterTableDepth) {
+					
+					// calculate the water stock increase in this voxel
+					//5 positions in result table (0=water, 1-2=NO3, 3-4=NH4) 
+					double[] waterNStockIncrease = new double[3];
+					waterNStockIncrease = voxels[iz].setIsSaturated(true, this.getSoil());
+					
+					if (waterNStockIncrease[0] >= 0) waterAddedByWaterTable += waterNStockIncrease[0];
+					
+					// Small negative value can occur when water table saturates voxels that are already saturated FROM STICS (due to heavy rain)
+					// This is because rounding errors can cause the field capacity calculated by STICS to be higher (by a very small amount) than the
+					// field capacity calculated by HISAFE. This value is always extremely small. It is just sent to increase the draiangeBottom from STICS.
+					else drainageWaterTable -= waterNStockIncrease[0];
+					
+					nitrogenLeaching += (waterNStockIncrease[1] + waterNStockIncrease[3]); 																						
+					nitrogenAddedByWaterTable += (waterNStockIncrease[2] + waterNStockIncrease[4]); 																							
+					changes = true;
+
+				}
+				// voxel saturated which are no more under water table are back
+				// to field capacity
+				else if (voxels[iz].getIsSaturated() == true) {
+					// calculate the water stock decrease in this voxel
+					double[] waterNStockIncrease = voxels[iz].setIsSaturated(false, this.getSoil());
+					waterTakenByDesaturation -= waterNStockIncrease[0];
+					changes = true; //A REACTIVER QUAND ON PASSERA DE SAT A
+					// FC -- AQ 08.08.2011
+				}
+			}
+			// if something have changed, new values have to be desagregated in
+			// STICS mini layers
+			if (changes) {		
+				cell.voxelsToMinicouchesWaterNitrogen();
+				cell.addWaterAddedByWaterTable(waterAddedByWaterTable / cell.getArea()); // mm
+				cell.addDrainageWaterTable(drainageWaterTable / cell.getArea()); // mm
+				cell.addWaterTakenByDesaturation(waterTakenByDesaturation / cell.getArea()); // mm
+				cell.addNitrogenLeachingWaterTable(nitrogenLeaching * 10 / cell.getArea()); // AQ from g to kg/cell to kg/ha
+				cell.addNitrogenAddedByWaterTable(nitrogenAddedByWaterTable * 10 / cell.getArea()); 
+			}
+		}
+
+	} // fin
+
+	/**
+	 * Compute Deep Root Mineralization: AQ
+	 */
+	public void deepSenescentRootsMineralization(SafeGeneralParameters generalParameters, double humificationDepth) {
+		
+		for (Iterator c = this.getCells().iterator(); c.hasNext();) {
+
+			SafeCell cell = (SafeCell) c.next();
+			SafeVoxel[] voxels = cell.getVoxels();
+
+			// for each voxel of the cell
+			for (int iz = 0; iz < voxels.length; iz++) {				
+					voxels[iz].deepSenescentRootsMineralization(generalParameters,  cell.getCrop().sticsSoil, humificationDepth);
+			}	
+		}
+	}
+
+	
+
+	
 	/**
 	 * Calculate totals for annual Export 
 	 */	
@@ -284,25 +431,15 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		this.annualWaterUptakeInSaturationByCrops += this.getTotalWaterUptakeInSaturationByCrops();	
 		this.annualNitrogenUptakeByTrees += this.getTotalNitrogenUptakeByTrees();
 		this.annualNitrogenUptakeByCrops += this.getTotalNitrogenUptakeByCrops();
-	
-
 	}
 	/**
-	 * RAZ annual totals for export
+	 * RAZ annual totals 
 	 */
 	public void razTotalAnnual() {
-		
-
-		this.setWaterStockBefore(this.getTotalWaterStock());
 		
 		for (Iterator i = ((SafeStand) this.getScene()).getTrees().iterator(); i.hasNext();) {
 			SafeTree t = (SafeTree) i.next();
 			t.razTotalAnnual();
-		}
-
-		for (Iterator i = this.getCells().iterator(); i.hasNext();) {
-			SafeCell c = (SafeCell) i.next();
-			c.getCrop().razTotalAnnual();
 		}
 
 		annualParIncident = 0; 
@@ -333,161 +470,13 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		annualNitrogenUptakeByTrees = 0;
 		annualNitrogenUptakeByCrops = 0;
 
-
 	}	
-	/**
-	 * Compute all saturated voxels regards to water table depth
-	 */
-	public void computeWaterTable(SafeGeneralParameters safeSettings, 
-								SafePlotSettings plotSettings,
-								double waterTableDepth, boolean first) {
-
-		// for each cell of the plot
-		for (Iterator c = this.getCells().iterator(); c.hasNext();) {
-
-			SafeCell cell = (SafeCell) c.next();
-			SafeVoxel[] voxels = cell.getVoxels();
-			
-			boolean changes = false;
-			double waterAddedByWaterTable = 0;
-			double waterTakenByDesaturation = 0;
-			double drainageWaterTable = 0;
-			double nitrogenLeaching= 0; // AQ
-			double nitrogenAddedByWaterTable = 0;
-
-			// for each voxel of the cell
-			for (int iz = 0; iz < voxels.length; iz++) {
-				// Voxel gravity center under water table depth are saturated
-				if (voxels[iz].getZ() >= waterTableDepth) {
-					
-					// calculate the water stock increase in this voxel
-					//5 positions in result table (0=water, 1-2=NO3, 3-4=NH4) 
-					double[] waterNStockIncrease = new double[3];
-					waterNStockIncrease = voxels[iz].setIsSaturated(true, plotSettings, first);
-					
-					if (waterNStockIncrease[0] >= 0) waterAddedByWaterTable += waterNStockIncrease[0];
-					
-					// Small negative value can occur when water table saturates voxels that are already saturated FROM STICS (due to heavy rain)
-					// This is because rounding errors can cause the field capacity calculated by STICS to be higher (by a very small amount) than the
-					// field capacity calculated by HISAFE. This value is always extremely small. It is just sent to increase the draiangeBottom from STICS.
-					else drainageWaterTable -= waterNStockIncrease[0];
-					
-					nitrogenLeaching += (waterNStockIncrease[1] + waterNStockIncrease[3]); 																						
-					nitrogenAddedByWaterTable += (waterNStockIncrease[2] + waterNStockIncrease[4]); 																							
-					changes = true;
-
-				}
-				// voxel saturated which are no more under water table are back
-				// to field capacity
-				else if (voxels[iz].getIsSaturated() == true) {
-					// calculate the water stock decrease in this voxel
-					double[] waterNStockIncrease = voxels[iz].setIsSaturated(false, plotSettings, first);
-					waterTakenByDesaturation -= waterNStockIncrease[0];
-					changes = true; //A REACTIVER QUAND ON PASSERA DE SAT A
-					// FC -- AQ 08.08.2011
-				}
-			}
-			// if something have changed, new values have to be desagregated in
-			// STICS mini layers
-			if (changes) {		
-				cell.voxelsToMinicouchesWaterNitrogen(safeSettings);
-				cell.addWaterAddedByWaterTable(waterAddedByWaterTable / cell.getArea()); // mm
-				cell.addDrainageWaterTable(drainageWaterTable / cell.getArea()); // mm
-				cell.addWaterTakenByDesaturation(waterTakenByDesaturation / cell.getArea()); // mm
-				cell.getCrop().addNitrogenLeachingWaterTable(nitrogenLeaching * 10 / cell.getArea()); // AQ from g to kg/cell to kg/ha
-				cell.getCrop().addNitrogenAddedByWaterTable(nitrogenAddedByWaterTable * 10 / cell.getArea()); 
-			}
-		}
-
-	} // fin
-
-	/**
-	 * Compute Deep Root Mineralization: AQ
-	 */
-	public void deepSenescentRootsMineralization(double humificationDepth, SafeGeneralParameters safeSettings) {
-		
-		for (Iterator c = this.getCells().iterator(); c.hasNext();) {
-
-			SafeCell cell = (SafeCell) c.next();
-			SafeVoxel[] voxels = cell.getVoxels();
-
-			// for each voxel of the cell
-			for (int iz = 0; iz < voxels.length; iz++) {				
-					voxels[iz].deepSenescentRootsMineralization(safeSettings,  cell.getCrop().sticsSoil, humificationDepth, cell.getArea());
-			}	
-		}
-	}
-
-	/**
-	 * Computation of cell neighbourgs for tree roots colonisation in voxels
-	 */
-	public void computeCellsNeighbourg (SafeEvolutionParameters evolutionParameters) {
-
-		for (Iterator c = getCells().iterator(); c.hasNext();) {
-			SafeCell cell = (SafeCell) c.next();
-			int i = cell.getIGrid();
-			int j = cell.getJGrid();
-
-			SafeCell rightNeighbourg = (SafeCell) this.getCell(i, j + 1);
-
-			//if toric symetry id off on Xp
-			if (evolutionParameters.toricXp == 0) {
-				if (rightNeighbourg.getX() < cell.getX()) rightNeighbourg = null;
-			}
-			if (rightNeighbourg != null)	cell.setCellIdRight(rightNeighbourg.getId());
-			
-
-			SafeCell leftNeighbourg = (SafeCell) this.getCell(i, j - 1);
-			//if toric symetry id off on Xn
-			if (evolutionParameters.toricXn == 0) {
-				if (leftNeighbourg.getX() > cell.getX()) leftNeighbourg = null;
-			}
-			if (leftNeighbourg != null) cell.setCellIdLeft(leftNeighbourg.getId());
-	
-
-			SafeCell backNeighbourg = (SafeCell) this.getCell(i - 1, j);
-			//if toric symetry id off on Yn
-			if (evolutionParameters.toricYn == 0) {
-				if (backNeighbourg.getY() < cell.getY()) backNeighbourg = null;
-			}			
-			if (backNeighbourg != null) cell.setCellIdBack(backNeighbourg.getId());
-		
-
-			SafeCell frontNeighbourg = (SafeCell) this.getCell(i + 1, j);
-			//if toric symetry id off on Yp
-			if (evolutionParameters.toricYp == 0) {
-				if (frontNeighbourg.getY() > cell.getY()) frontNeighbourg = null;
-			}			
-			if (frontNeighbourg != null) cell.setCellIdFront(frontNeighbourg.getId());
-			
-		}
-	}
-
 	protected void initPlot() {}
 
 
-	public float getSlopeIntensity() {return slopeIntensity;}
-	public float getSlopeAspect() {return slopeAspect;}
-	public float getTreeLineOrientation() {return treeLineOrientation;}
-	public float northOrientation() {return northOrientation;}
-	public float getCellSurface() {return cellSurface;}
-	public void setCellSurface(double e) {cellSurface = (float) e;}
+	public int getNbCells () {return this.getCells().size();}
 
-	public int getNbCells () {
-		return this.getCells().size();
-	}
-	//***************************************************
-	// Methods for exportation about WATER BUDGET
-	//***************************************************
-	public void setWaterStockBefore(double v) {
-		waterStockBefore = v;
-	}
-	public double getWaterStockBefore() {
-		return waterStockBefore;
-	}
 
-	
-	
 	//****************************************
 	//Total and mean values for EXPORT
 	//****************************************
@@ -762,7 +751,7 @@ public class SafePlot extends RectangularPlot implements Serializable {
 			SafeCell cell = (SafeCell) c.next();
 			cropLai = cell.getCrop().getLai();
 			if (cropLai != 0) {
-				waterStress += cell.getCrop().getHisafeWaterStress();
+				waterStress += cell.getCrop().getHisafeWaterStomatalStress();
 				count++;
 			}
 		}
@@ -1202,7 +1191,7 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		double v = 0;
 		for (Iterator c = this.getCells().iterator(); c.hasNext();) {
 			SafeCell cell = (SafeCell) c.next();
-			v += cell.getCrop().getNitrogenLeachingWaterTable();
+			v += cell.getNitrogenLeachingWaterTable();
 		}
 		return v;//kg N ha-1
 	}
@@ -1212,7 +1201,7 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		double v = 0;
 		for (Iterator c = this.getCells().iterator(); c.hasNext();) {
 			SafeCell cell = (SafeCell) c.next();
-			v += cell.getCrop().getNitrogenAddedByWaterTable();
+			v += cell.getNitrogenAddedByWaterTable();
 		}
 		return v;//kg N ha-1
 	}
@@ -1535,6 +1524,8 @@ public class SafePlot extends RectangularPlot implements Serializable {
 	
 
 
+	public SafePlotSettings getPlotSettings() {return plotSettings;}
+	public void setPlotSettings(SafePlotSettings p) {plotSettings = p;}
 	
 	public SafeSoil getSoil () {return soil;}
 	public void setSoil (SafeSoil s) {soil = s;}

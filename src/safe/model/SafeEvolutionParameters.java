@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -48,80 +54,97 @@ import capsis.kernel.EvolutionParameters;
 import jeeb.lib.util.CancellationException;
 import safe.pgms.SafeSimulationLoader;
 
-
 /**
- * Evolution settings   
+ * Evolution parameters   
  * 
- * @author Isabelle Lecomte - INRAE Montpellier - July 2002
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
 public class SafeEvolutionParameters implements EvolutionParameters {
 
-	public static final int NB_ZONE_MAX = 10; 			// max number of crop zone
-	
-	public static final int TORIC_X_POS = 1000; 		// toric symetry on x axis positive (number of tours allowed)
-	public static final int TORIC_X_NEG = 1000; 		// toric symetry on y axis negative (number of tours allowed)
-	public static final int TORIC_Y_POS = 1000; 		// toric symetry on x axis positive (number of tours allowed)
-	public static final int TORIC_Y_NEG = 1000; 		// toric symetry on y axis negative (number of tours allowed)
+	// STATIC VALUES
+	/** Max number of crop zone */
+	public static final int NB_ZONE_MAX = 10; 			
+	/** Default toric symmetry on X axis positive (number of tours allowed) */
+	public static final int TORIC_X_POS = 1000; 		// 
+	/** Default toric symmetry on X axis negative (number of tours allowed) */
+	public static final int TORIC_X_NEG = 1000; 		
+	/** Default toric symmetry on Y axis positive (number of tours allowed) */
+	public static final int TORIC_Y_POS = 1000; 		
+	/** Default toric symmetry on Y axis negative (number of tours allowed) */
+	public static final int TORIC_Y_NEG = 1000; 		
+
+	// SIMULATION PARAMETERS
+	/** Simulation date start (AAAA/MM/JJ) */
+	public GregorianCalendar simulationDateStart;		
+	/** Simulation date end (AAAA/MM/JJ) */
+	public GregorianCalendar simulationDateEnd;			
+	/** if TRUE this is the first simulation */
+	public boolean firstSimulation;	
+	/** Simulation folder path */
+	public String simulationPath;	
+	/** Weather file path  */
+	public String weatherPath; 							
+	/** LAI file path  */
+	public String laiPath; 	
+	/** Output folder path */
+	public String outputPath;							
+	/** if TRUE = export STICS report and logs  */
+	public boolean sticsReport;
+	/** Simulation toric symmetry on X axis positive (number of tours allowed) */
 	public int toricXp;
+	/** Simulation toric symmetry on X axis negative (number of tours allowed) */
 	public int toricXn;
+	/** Simulation toric symmetry on Y axis positive (number of tours allowed) */
 	public int toricYp;
+	/** Simulation toric symmetry on Y axis negative (number of tours allowed) */
 	public int toricYn;
 	
-	// SIMULATION PARAMETERS
-	public String simulationDir;						//path to the simulation directory
-	public GregorianCalendar simulationDateStart;		//simulation Date Start (AAAA/MM/JJ) 
-	public GregorianCalendar simulationDateEnd;			//simulation Date END (AAAA/MM/JJ) 
-	public boolean firstSimulation;						//if TRUE this is the first simulation
-	public String weatherFile; 							//path to the weather file name
-	
-	// CROP ZONE DEFINITION
-	public List<Integer>  	zoneId;						//id of the zone
-	public List<String>  	zoneName;					//name of the zone  
-	public List<String> 	zoneCellList;	 			//list of the cells composing the zone separated by , and -
-	public List<String> 	zoneTecList;				//list of the crop itk attached to the zone (one per crop rotation) separated by , 
-	
-	//TREE ITK
-	public List<String> 	treeTecList;				//list of the tree itk attached to the trees (one per tree) separated by , 
-
-
-	// EXPORTATION
-	public String exportDir;							//path to the export directory
-	public boolean sticsReport; 						//if TRUE = export STICS report and logs   
+	// ZONES DEFINITION
+	/** Zones id list */
+	public List<Integer>  	zonesIds;
+	/** Zones names list */
+	public List<String>  	zonesNames;	  
+	/** list of the cells ids attached to the zones (one per zone) separated by , */
+	public List<String> 	zonesCellsList;	
+	/** list of the tec file attached to the zones (one per zone) separated by , */
+	public List<String> 	zonesTecsList;
+	/** list of the tec file attached to the trees (one per tree) separated by , */
+	public List<String> 	treeTecsList;			
 
 	/**
 	 * Constructor.
+	 * @param loader Reference to SafeSimulationLoader object (parameters load in batch mode)
+	 * @param simulationPath Simulation folder path
+	 * @param outputPath Output folder path
+	 * @param weatherPath Weather file path
+	 * @param laiPath Lai observed file path
 	 */
 	public SafeEvolutionParameters(SafeSimulationLoader loader,
-									String simulationDir, 
-									String exportDir, 
-									String weatherFile) throws Exception {
-		
-		this.weatherFile = weatherFile;
-		this.toricXp = TORIC_X_POS; 
-		this.toricXn = TORIC_X_NEG;
-		this.toricYp = TORIC_Y_POS;
-		this.toricYn = TORIC_Y_NEG;
-		this.sticsReport = false;
-		
+									String simulationPath, 
+									String outputPath, 
+									String weatherPath,
+									String laiPath) throws Exception {
+
 		//BATCH MODE
 		if (loader != null) {
 			
-			if (loader.sticsReport==1) this.sticsReport = true;
-			
-			this.simulationDir = simulationDir; 
-			this.exportDir = exportDir;
-			
 			this.simulationDateStart = loader.simulationDateStart;	
-			this.simulationDateEnd = loader.simulationDateEnd;	
-
+			this.simulationDateEnd = loader.simulationDateEnd;
+			this.simulationPath = simulationPath; 
+			this.outputPath = outputPath;
+			this.weatherPath = weatherPath;
+			this.laiPath = laiPath;
+			this.sticsReport = false;
+			if (loader.sticsReport==1) this.sticsReport = true;
+	
 			//CROP ZONE
-			this.zoneId = loader.zoneId;
-			this.zoneName = loader.zoneName;
-			this.zoneCellList = loader.zoneCellList;
-			this.zoneTecList = loader.zoneTecList;
+			this.zonesIds = loader.zonesIds;
+			this.zonesNames = loader.zonesNames;
+			this.zonesCellsList = loader.zonesCellsList;
+			this.zonesTecsList = loader.zonesTecsList;
 			
 			//TREE ITK
-			this.treeTecList = loader.treeTecList;
+			this.treeTecsList = loader.treeTecsList;
 			
 			//TORIC SYMETRIE parameter set
 			this.toricXp = loader.toricXp * TORIC_X_POS;

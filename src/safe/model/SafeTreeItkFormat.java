@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -42,7 +48,6 @@
 
 package safe.model;
 
-
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -55,15 +60,14 @@ import jeeb.lib.util.RecordSet;
 /**
  * TREE management parameters Format
  *
- * @author : Isabelle LECOMTE  - INRA SYSTEM Montpellier (March 2003)
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
 public class SafeTreeItkFormat extends RecordSet {
 
-	// Generic keyword record is described in superclass RecordSet : key = value
-	// We use only key records  here
-
-	private static final long serialVersionUID = 1L;
-
+	/** 
+	 * Constructor
+	 * @param fileName The file name to read to create the tree species parameters
+	*/
 	public SafeTreeItkFormat (String fileName) throws Exception {
 		try {
 			prepareImport (fileName);
@@ -75,7 +79,11 @@ public class SafeTreeItkFormat extends RecordSet {
 	
 	}
 
-	//julian days replaced by MM-JJ (IL 25/05/2023)
+	/** 
+	 * Get julian days from a date MM-DD
+	 * @param dateMMDD Date format MM-DD
+	 * @return Julian day (0-365)
+	*/
 	public int getJulianDay (String dateMMDD) throws Exception
 	{
 		if (dateMMDD.equals ("999")) return 999;
@@ -91,9 +99,10 @@ public class SafeTreeItkFormat extends RecordSet {
 	}
 	
 	/**
-	 * Load RecordSet -> updating SafeTreeSpecies
+	 * Load RecordSet for updating SafeTreeItk
+	 * @param itk Reference to SafeTreeItk object
 	 */
-	public  void load (SafeTreeItk itk, SafeEvolutionParameters ep) throws Exception {
+	public  void load (SafeTreeItk itk) throws Exception {
 
 		Set<String> requiredParameters = new HashSet<>();
 
@@ -104,7 +113,6 @@ public class SafeTreeItkFormat extends RecordSet {
 		requiredParameters.add("plantingHeight");
 		requiredParameters.add("plantingCrownBaseHeight");
 		requiredParameters.add("plantingCrownRadius");
-		
 		requiredParameters.add("plantingRootShape");
 		requiredParameters.add("plantingRootRepartition");
 		requiredParameters.add("plantingRootShapeParam1");

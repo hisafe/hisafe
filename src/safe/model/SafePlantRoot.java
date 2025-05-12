@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -43,48 +49,57 @@
 package safe.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 
 /**
- * PLANT (Tree of crop) fine roots
+ * PLANT (Tree of crop) roots system
  *
- * @author Degi HARJA          - ICRAF Bogor Indonisia		- July 2004
- * @author Isabelle LECOMTE    - INRA Montpellier France
+ * @author : Degi HARJA       - ICRAF, Bogor 16001, Indonesia
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  *
  **/
 
 public class SafePlantRoot implements   Serializable {
 
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * This class contains immutable instance variables for a SafeFineRoot
 	 */
 	public static class Immutable implements  Cloneable, Serializable {
-		private Object plant;			//Reference on initial SafeTree or SafeCrop object
+		/** Reference on plant object (SafeTree or SafeCrop)   */
+		private Object plant;			
 	}
 	protected Immutable immutable;
 
-	//PLANT POTENTIALS
-	private double radialTransportPotential;			//Potential gradient  for root radial transport entry (cm)
-	private double longitudinalTransportPotential;		//Potential gradient for longitudinal transport (cm)
-  	private double requiredWaterPotential;				//Required plant water potential (cm)
-	private double actualWaterPotential;				//Required Plant Water Potential with reduced uptake (cm)
-	private double waterUptakePotential;				//Potential water uptake in all rooted voxels (cm)
-	private double nitrogenUptakePotential;				//Potential nitrogen uptake in all rooted voxels (g)
-    private double waterDemandReductionFactor;			//Reduction factor for transpirational demand (dimensionless)
-	private double nitrogenSinkStrength;				//dimensionless
-	
-	//Total root lenght in all rooted voxels (density * voxels volume)  (m)
-	private double totalRootsLength;					//m
-
-	private SafeRootNode firstRootNode;		//First node for coarse root topology
-	private HashMap<SafeVoxel, SafeRootNode> rootTopology;			//Root topology of RootNode 
-	private HashMap<SafeVoxel, SafeRootVoxel> rootedVoxelMap;			//Root topology of RootVoxel
+	/** Potential gradient  for root radial transport entry (cm)   */
+	private double radialTransportPotential;			
+	/** Potential gradient for longitudinal transport (cm)  */
+	private double longitudinalTransportPotential;	
+	/** Required plant water potential (cm)   */
+	private double requiredWaterPotential;				
+	/** Required Plant Water Potential with reduced uptake (cm)  */
+	private double actualWaterPotential;				
+	/** Potential water uptake in all rooted voxels (cm)  */
+	private double waterUptakePotential;			
+	/** Potential nitrogen uptake in all rooted voxels (g)  */
+	private double nitrogenUptakePotential;				
+	/** Reduction factor for transpiration demand (dimensionless)   */
+	private double waterDemandReductionFactor;		
+	/** Plant root nitrogen sink strength (kg N m-1)  */
+	private double nitrogenSinkStrength;				//
+	/** Total root length in all rooted voxels (density * voxels volume)  (m) */
+	private double totalRootsLength;				
+	/** First node for coarse root topology */
+	private SafeRootNode firstRootNode;		//
+	/** Root topology of RootNode */
+	private HashMap<SafeVoxel, SafeRootNode> rootTopology;		
+		
 	/**
 	 * Create an Immutable object whose class is declared at one level of the hierarchy.
 	 * This is called only in constructor for new logical object in superclass.
@@ -95,13 +110,13 @@ public class SafePlantRoot implements   Serializable {
 
 	/**
 	* Root constructor
+	* @param plant Reference on the plant object (SafeTree or SafeCrop) 
 	*/
 	public SafePlantRoot (Object plant)  {
 		createImmutable ();
 
-		this.immutable.plant = plant;			//tree or crop
+		this.immutable.plant = plant;			
 		this.totalRootsLength = 0;
-		this.rootedVoxelMap = null;
 		this.radialTransportPotential = 0;
 		this.longitudinalTransportPotential = 0;
 		this.requiredWaterPotential = 0;
@@ -111,15 +126,16 @@ public class SafePlantRoot implements   Serializable {
 		this.waterDemandReductionFactor = 0;
    		this.nitrogenSinkStrength = 0;
    		
-		this.rootTopology = new LinkedHashMap<SafeVoxel, SafeRootNode> (); // fc+qm-6.8.2014 tracking inconsistency
+   		//create empty root topology
+		this.rootTopology = new LinkedHashMap<SafeVoxel, SafeRootNode> (); 
 		this.firstRootNode = null;
-		
 	}
 
-	
-
-	public void dailyRaz () {
-		this.rootedVoxelMap = null;
+	/**
+	* RAZ of daily values
+	*/
+	public void razDaily () {
+		
 		this.radialTransportPotential=0;
 		this.longitudinalTransportPotential= 0;
 	  	this.requiredWaterPotential= 0;
@@ -129,6 +145,7 @@ public class SafePlantRoot implements   Serializable {
 	    this.waterDemandReductionFactor= 0;
    		this.nitrogenSinkStrength = 0;
    		
+   		//clone root toology
    		this.rootTopology = new LinkedHashMap<SafeVoxel, SafeRootNode> ();
    		
    		if (firstRootNode != null) {
@@ -136,33 +153,35 @@ public class SafePlantRoot implements   Serializable {
    			firstRootNode.setNitrogenUptake(0);
    			firstRootNode.setFineRootsCost(0);
    			
-			cloneNode(this.rootTopology, this.firstRootNode);
+			cloneNode(this.firstRootNode, this.rootTopology);
 			if  (this.firstRootNode.getNodeColonised() != null) {
-				this.cloneRootTopology(this.rootTopology, this.firstRootNode.getNodeColonised());
+				this.cloneRootTopology(this.firstRootNode.getNodeColonised(), this.rootTopology);
 			}
-
 		}
 	}
-	
-	
 
 	/**
 	* cloning root topology hash MAP
+	 * @param collection The collection of SafeRootNode original
+	 * @param after The collection of SafeRootNode cloned
 	*/
-  	public void cloneRootTopology (HashMap<SafeVoxel, SafeRootNode> after, Collection<SafeRootNode>  collection) {
+  	public void cloneRootTopology (Collection<SafeRootNode>  collection, HashMap<SafeVoxel, SafeRootNode> after) {
 		if (collection == null) return;
 
 		for (Iterator <SafeRootNode> v = collection.iterator (); v.hasNext ();) {
 			SafeRootNode node =  v.next ();
-			cloneNode(after, node);
-			cloneRootTopology (after, node.getNodeColonised());
-		
+			cloneNode(node, after);
+			cloneRootTopology (node.getNodeColonised(), after);
 		}
   	} 	
-    //We have decides that Root node is not cloned
-  	//BUT voxel references have changed because of cells cloning
-  	public void cloneNode (HashMap<SafeVoxel, SafeRootNode> after, SafeRootNode node) {
-		//New voxel reference for the KEY voxel
+
+	/**
+	* Cloning root topology node : SafeRootNode is not cloned BUT voxel references have changed because of SafeVoxel cloning
+	 * @param collection The collection of SafeRootNode original
+	 * @param after The collection of SafeRootNode cloned
+	*/
+  	public void cloneNode (SafeRootNode node, HashMap<SafeVoxel, SafeRootNode> after) {
+
 		SafeVoxel voxelBefore = node.getVoxelRooted ();
 		node.setVoxelRooted (voxelBefore);
 
@@ -174,88 +193,56 @@ public class SafePlantRoot implements   Serializable {
 		//ADD the new SET in the HashMap
 		after.put (voxelBefore, node);
   	} 
-  	
-	/**
-	* RAZ root topology hash MAP
-	*/
-  	public void dailyRazRootTopology (HashMap<SafeVoxel, SafeRootNode> topo, Collection<SafeRootNode>  collection) {
-		if (collection == null) return;
-		for (Iterator <SafeRootNode> v = collection.iterator (); v.hasNext ();) {
-			SafeRootNode node =  v.next ();
-			node.setWaterUptake (0);
-			node.setNitrogenUptake(0);
-			node.setFineRootsCost(0);
-			dailyRazRootTopology (topo, node.getNodeColonised());
-		}
-  	} 	
 
-  	
 	/**
-	* ESTIMATION OF PLANT WATER POTENTIAL (at stem base)
+	* Calculation of plant water potentiel at stem base
 	* On the basis of the various resistances in the catenary process
-	*
-	* IN  : potentialWaterDemand = Potential amount of water demand by plant per day (l/m^2 or mm)
-	*
+	* @param potentialWaterDemand Potential amount of water demand by plant per day (l*m-2 or mm)
+	* @param campbellFactor Campbell factor (dimensionless) 
+	* @param halfCurrWaterPotential Water potential where tranpiration demand is half of its potential (mm)
 	*/
-	public void calculatePotential (SafeGeneralParameters settings, double potentialWaterDemand) {
+	public void calculatePotential (double potentialWaterDemand, double campbellFactor, double halfCurrWaterPotential) {
 
-		//***************** PLANT SPECIES PARAMETERS *******************************//
-		// expected resistance between bulk soil in the voxel and the root surfaces
-		
-		double campbellFactor = 0;
-		double halfCurrWaterPotential = 0;
-
-		//Tree species
-  		if (this.getPlant() instanceof SafeTree) {
-			  campbellFactor = ((SafeTree) this.getPlant()).getTreeSpecies().getCampbellFactorIcraf();
-			  halfCurrWaterPotential =  ((SafeTree) this.getPlant()).getTreeSpecies().getHalfCurrWaterPotentialIcraf();
-  		}
-  		//Crop species
-  		if (this.getPlant() instanceof SafeCrop) {
-			  campbellFactor = ((SafeCrop) this.getPlant()).getCell().getCropZone().getCropSpecies().getCampbellFactorIcraf();
-			  halfCurrWaterPotential =  ((SafeCrop) this.getPlant()).getCell().getCropZone().getCropSpecies().getHalfCurrWaterPotentialIcraf();
-  		}
-		
 		setWaterDemandReductionFactor (1d / (1d + Math.pow (getRequiredWaterPotential() / halfCurrWaterPotential, campbellFactor)));
 
-
-		//actualWaterPotential (cm)
 		setActualWaterPotential (getRequiredWaterPotential()
 								- (1-getWaterDemandReductionFactor ())
 								* (getRadialTransportPotential () + getLongitudinalTransportPotential ()));
 
-		setRadialTransportPotential(getRadialTransportPotential()*getWaterDemandReductionFactor());		// gt - 12.11.2009
-		setLongitudinalTransportPotential(getLongitudinalTransportPotential()*getWaterDemandReductionFactor());		// gt - 12.11.2009 desactivï¿½	//GT 20/94/2011	rï¿½activï¿½
 
+		setRadialTransportPotential(getRadialTransportPotential()*getWaterDemandReductionFactor());		
+		setLongitudinalTransportPotential(getLongitudinalTransportPotential()*getWaterDemandReductionFactor());
+		
 		return;
 
 	}
 
+
 	/**
-	* CALCULATION OF PLANT WATER ACTUAL UPTAKE
-	* as the minimum of demand and total supply
-	* and allocate it to voxels on the basis of potential uptake rates and its root density
-	*
-	* OUT : waterUptakeTotal = Total amount of water uptaken by plant per day (liters)
+	* Calculation of plant water uptake and allocate it to voxels on the basis of potential uptake rates and roots density
+	* On the basis of the various resistances in the catenary process
+	* @param stand Reference to the SafeStand object
+	* @param plant Reference to the plant object (SafeTree or SafeCrop)
+	* @param actualWaterDemand Water demand (mm)
+	* @param update 0=no object update just return water uptake value 1=Update object with water uptake  
+	* @return water uptake (mm)
 	*/
+	public double calculateWaterUptake (SafeStand stand, Object plant, double actualWaterDemand, boolean update) {
 
-	public double calculateWaterUptake (SafeStand stand, Object plant, SafeGeneralParameters settings, double actualWaterDemand,int day) {
-
-		
 		double waterUptakeTotal = 0;
 		double waterUptakePotentialTotal  	= this.getWaterUptakePotential ();
 
+		if (this.getRootTopology() == null) return 0;
 
-		if (this.getRootedVoxelMap() == null) return 0;
-
-		Iterator<SafeVoxel> itr = this.getRootedVoxelMap().iterator();
+		Iterator<SafeVoxel> itr = this.getRootTopology().iterator();
+		
 		while (itr.hasNext()) {
 
 			SafeVoxel voxel =  itr.next();
-			SafeCell cell =  voxel.getCell();
-  			SafeRootVoxel rootVoxel = getRootedVoxelMap (voxel);
+			
+  			SafeRootNode rootNode = getRootTopology (voxel);
   			double waterUptake = 0;
-  			double waterUptakePotential = rootVoxel.getWaterUptakePotential();
+  			double waterUptakePotential = rootNode.getWaterUptakePotential();
 
 			//Water uptake potential for this plant in this voxel (liters)
 			if (waterUptakePotentialTotal > actualWaterDemand) {
@@ -265,178 +252,110 @@ public class SafePlantRoot implements   Serializable {
 				waterUptake = waterUptakePotential;
 			}
 
+
+			
 			//cumulation of water uptaken in the voxel for each plant
 			if (waterUptake > 0) {
 
-				//rootVoxel.addWaterUptake (waterUptake);
 				waterUptakeTotal += waterUptake;
 
-				if (this.getPlant() instanceof SafeCrop) {
-					SafeCrop crop = (SafeCrop) (plant) ;
-					voxel.addCropWaterUptake (waterUptake);
-
-					if (crop.getPlantRoots().getRootTopology ().containsKey(voxel)) {
-						SafeRootNode rootNode = crop.getPlantRoots().getRootTopology (voxel);
+				if (update) {
+					
+					SafeCell cell =  voxel.getCell();
+					if (this.getPlant() instanceof SafeCrop) {
+						SafeCrop crop = (SafeCrop) (plant) ;
+						voxel.addCropWaterUptake (waterUptake);
 						rootNode.addWaterUptake (waterUptake);
-					}
-					
-					if(voxel.getIsSaturated())	// gt - 5.02.2009
-						cell.addWaterUptakeInSaturationByCrop(waterUptake/cell.getArea());	//convert liters to mm
-				}
-				else {
-					SafeTree tree = (SafeTree) (plant) ;
-					int treeIndex = tree.getId() - 1;
-					voxel.addTreeWaterUptake  (treeIndex, waterUptake);
-					tree.addWaterUptake (waterUptake);
-					
-					if (tree.getPlantRoots().getRootTopology().containsKey(voxel)) {
-						SafeRootNode node = tree.getPlantRoots().getRootTopology (voxel);
-						node.addWaterUptake (waterUptake);
-					}
-					
-					if(voxel.getIsSaturated())	{
-						cell.addWaterUptakeInSaturationByTrees(waterUptake/cell.getArea());	//convert liters to mm
-						tree.addWaterUptakeInSaturation(waterUptake);	
-					}
-				}
 
+						if(voxel.getIsSaturated())	// gt - 5.02.2009
+							cell.addWaterUptakeInSaturationByCrop(waterUptake/cell.getArea());	//convert liters to mm
+					}
+					else {
+						
+
+						SafeTree tree = (SafeTree) (plant) ;
+						int treeIndex = tree.getId() - 1;
+						voxel.addTreeWaterUptake  (treeIndex, waterUptake);
+						rootNode.addWaterUptake (waterUptake);
+
+						if(voxel.getIsSaturated())	{
+							cell.addWaterUptakeInSaturationByTrees(waterUptake/cell.getArea());	//convert liters to mm
+							tree.addWaterUptakeInSaturation(waterUptake);	
+						}
+					}
+				}
 				
-				// gt - 5.02.2009 - waterStock is reduced only if voxel is not saturated 
-				//if(!voxel.getIsSaturated()) 	{
-				//	voxel.reduceWaterStock  (waterUptake);
-				//}
 			}
 		}
 		return waterUptakeTotal;
 	}
 
+	
 	/**
-	* CALCULATION OF CROP WATER  UPTAKE
-	* only to calculate turfac and senfac
+	* Return nitrogen sink strength (kg N m-1) 
+	* 
+	* @param nitrogenDemand Nitrogen demand (kg N) 
 	*/
-	public double calculateWaterUptake2 (SafeStand stand, Object plant, SafeGeneralParameters settings, double actualWaterDemand,int day) {
+	public void calculateNitrogenSinkStrength (double nitrogenDemand) {
 
-		
-		double waterUptakeTotal = 0;
-		double waterUptakePotentialTotal  	= this.getWaterUptakePotential ();
-
-
-		if (this.getRootedVoxelMap() == null) return 0;
-
-		Iterator<SafeVoxel> itr = this.getRootedVoxelMap().iterator();
-		while (itr.hasNext()) {
-
-			SafeVoxel voxel = itr.next();
-  			SafeRootVoxel rootVoxel = getRootedVoxelMap (voxel);
-  			double waterUptake = 0;
-  			double waterUptakePotential = rootVoxel.getWaterUptakePotential();
-
-			//Water uptake potential for this plant in this voxel (liters)
-			if (waterUptakePotentialTotal > actualWaterDemand) {
-				waterUptake = actualWaterDemand * waterUptakePotential /waterUptakePotentialTotal;
-			}
-			else {
-				waterUptake = waterUptakePotential;
-			}
-
-			//cumulation of water uptaken in the voxel for each plant
-			if (waterUptake > 0) {
-
-				//rootVoxel.addWaterUptake (waterUptake);
-				waterUptakeTotal += waterUptake;
-
-			}
-		}
-		return waterUptakeTotal;
-	}
-	/**
-	* CALCULATION OF PLANT NITROGEN SINK STRENGTH
-	*
-	* OUT : Current demand per unit root lenght (dimensionless, timedependent)
-	*/
-	public void calculateNitrogenSinkStrength (SafeGeneralParameters settings, double nitrogenDemand) {
-
-		
-		double totalRootsLength = this.getTotalRootsLength();		
-		
-		setNitrogenSinkStrength (nitrogenDemand / totalRootsLength);
+		setNitrogenSinkStrength (nitrogenDemand / this.getTotalRootsLength());
 
 	}
 
 	/**
-	* CALCULATION OF PLANT NITROGEN ACTUAL UPTAKE
-	* as the minimum of demand and total supply
-	* and allocate it to voxels on the basis of potential uptake rates and its root density
-	*
-	* OUT : nitrogenUptakeTotal = Total amount of nitrogen uptaken by plant per day (g)
+	* Calculation of plant nitrogen uptake and allocate it to voxels on the basis of potential uptake rates and roots density
+	* On the basis of the various resistances in the catenary process
+	* @param stand Reference to the SafeStand object
+	* @param plant Reference to the plant object (SafeTree or SafeCrop)
+	* @param nitrogenDemand Nitrogen demand (g N)
+	* @return Nitrogen uptake (g N)
 	*/
 
-	public double calculateNitrogenUptake (SafeStand stand, Object plant, SafeGeneralParameters settings, double nitrogenDemand) {
+	public double calculateNitrogenUptake (SafeStand stand, Object plant, double nitrogenDemand) {
 
 
 		double nitrogenUptakeTotal = 0;
 		double nitrogenUptakePotentialTotal  	= this.getNitrogenUptakePotential ();	//g
 
+		if (this.getRootTopology() == null) return 0;
 
-		if (this.getRootedVoxelMap() == null) return 0;
+		Iterator<SafeVoxel> itr = this.getRootTopology().iterator();
 
-		
-		Iterator<SafeVoxel> itr = this.getRootedVoxelMap().iterator();
 		while (itr.hasNext()) {
 
 			SafeVoxel voxel = itr.next();
-  			SafeRootVoxel rootVoxel = getRootedVoxelMap (voxel);
+			SafeRootNode rootNode = getRootTopology (voxel);
 
-			
   			double nitrogenUptake = 0;
-  			double nitrogenUptakePotential = rootVoxel.getNitrogenUptakePotential();	//g
-
-  			
-			//Water uptake potential for this plant in this voxel (liters)
+  			double nitrogenUptakePotential = rootNode.getNitrogenUptakePotential();	//g
+ 
 			if (nitrogenUptakePotentialTotal > nitrogenDemand) {
 				nitrogenUptake = nitrogenDemand * nitrogenUptakePotential /nitrogenUptakePotentialTotal;
-		
-				}
+			}
 			else {
 				nitrogenUptake = nitrogenUptakePotential;
 			}
 
-
-			
 			//cumulation of nitrogen uptaken in the voxel for each plant
 			if (nitrogenUptake > 0) {
 
-				
-				//rootVoxel.addNitrogenUptake (nitrogenUptake);
-				nitrogenUptakeTotal += nitrogenUptake;
+				nitrogenUptakeTotal += nitrogenUptake/1000; //convert g in kg
 				
 				if (this.getPlant() instanceof SafeCrop) {
 					SafeCrop crop = (SafeCrop) (plant) ;
 					voxel.addCropNitrogenUptake (nitrogenUptake);		//g
+					rootNode.addNitrogenUptake (nitrogenUptake); 		//g
 
-					if (crop.getPlantRoots().getRootTopology().containsKey(voxel)) {
-						SafeRootNode node = crop.getPlantRoots().getRootTopology (voxel);
-						node.addNitrogenUptake (nitrogenUptake/1000); //convert g in kg
-					}
-	
 					if(voxel.getIsSaturated())	// gt - 5.02.2009
 						voxel.getCell().addNitrogenUptakeInSaturationByCrop (nitrogenUptake/1000/(voxel.getCell().getArea()/10000));	//convert g in kg ha-1
 				}
-				else {
+				else {	 	
+					
 					SafeTree tree = (SafeTree) (plant) ;
 					int treeIndex = tree.getId() - 1;
 					voxel.addTreeNitrogenUptake  (treeIndex, nitrogenUptake);	//g		
-
-					tree.addNitrogenUptake (nitrogenUptake/1000);		//convert g in kg
-
-
-					if (tree.getPlantRoots().getRootTopology().containsKey(voxel)) {
-						SafeRootNode node = tree.getPlantRoots().getRootTopology (voxel);
-						node.addNitrogenUptake (nitrogenUptake/1000);	
-
-						
-					}
-
+					rootNode.addNitrogenUptake (nitrogenUptake);				//g
+		
 					if(voxel.getIsSaturated())	{
 						voxel.getCell().addNitrogenUptakeInSaturationByTrees (nitrogenUptake/1000/(voxel.getCell().getArea()/10000));	//convert g in kg ha-1
 						tree.addNitrogenUptakeInSaturation (nitrogenUptake/1000);	//convert g in kg
@@ -481,63 +400,19 @@ public class SafePlantRoot implements   Serializable {
 	public void setLongitudinalTransportPotential (double v) {longitudinalTransportPotential =  v;}
 	public void setRequiredWaterPotential (double v) {requiredWaterPotential =  v;}
 	public void setActualWaterPotential (double v) {actualWaterPotential =  v;}
-	public void addUptakeWaterPotential (double v) {waterUptakePotential +=  v;}
-	public void setUptakeWaterPotential (double v) {waterUptakePotential =  v;}
+	public void addWaterUptakePotential (double v) {waterUptakePotential +=  v;}
+	public void setWaterUptakePotential (double v) {waterUptakePotential =  v;}
 	private void  setNitrogenSinkStrength (double v) {nitrogenSinkStrength =  v;}
 	public  void setNitrogenUptakePotential (double v) {nitrogenUptakePotential =  v;}
 	public  void addNitrogenUptakePotential (double v) {nitrogenUptakePotential +=  v;}
 	public void setWaterDemandReductionFactor (double v) {waterDemandReductionFactor=  v;}
 
-
-  	public Collection<SafeVoxel> getRootedVoxelMap () {
-		if (rootedVoxelMap == null) return null;
-		else return rootedVoxelMap.keySet ();
-  	}
-
-  	public SafeRootVoxel getRootedVoxelMap (SafeVoxel v) {
-		return (SafeRootVoxel) rootedVoxelMap.get (v);
-  	}
-
-	//storing water repartition result in rootedVoxelMap
-  	public void addRootedVoxelMap (SafeVoxel v, SafeRootVoxel root) {
-  		
-		if (rootedVoxelMap == null) rootedVoxelMap = new LinkedHashMap<SafeVoxel, SafeRootVoxel>(); // fc+qm-6.8.2014 keep the insertion order (inconsistency tracking)
-		rootedVoxelMap.put (v, root);
-
-	}
-
-
-	/**
-	* cloning root topology hash MAP
-	*/
-  	/*
-  	public void cloneRootTopology (HashMap<SafeVoxel, SafeRootNode> after, Collection<SafeRootNode>  collection) {
-		if (collection == null) return;
-		for (Iterator <SafeRootNode> v = collection.iterator (); v.hasNext ();) {
-			SafeRootNode node =  v.next ();
-			cloneNode(after, node);
-			cloneRootTopology (after, node.getNodeColonised());
-		}
-  	} 	
-    //We have decides that Root node is not cloned
-  	//BUT voxel references have changed because of cells cloning
-  	public void cloneNode (HashMap<SafeVoxel, SafeRootNode> after, SafeRootNode node) {
-		//New voxel reference for the KEY voxel
-		SafeVoxel voxelBefore = node.getVoxelRooted ();
-		SafeVoxel cloningReference = voxelBefore.getCloningReference();
-		node.setVoxelRooted (cloningReference);
-		node.setWaterUptake (0);
-		node.setNitrogenUptake(0);
-		node.setFineRootCost(0);
-
-		
-		//ADD the new SET in the HashMap
-		after.put (cloningReference, node);
-  	} */
-  	
   //ROOT TOPOLOGY
-  	public HashMap<SafeVoxel, SafeRootNode> getRootTopology() {return rootTopology;}
-
+  	public Collection<SafeVoxel> getRootTopology () {
+		if (rootTopology == null) return null;
+		else return rootTopology.keySet ();
+  	}
+  	
   	public SafeRootNode getRootTopology (SafeVoxel voxel) {
   		return (SafeRootNode) (rootTopology.get (voxel));}
 

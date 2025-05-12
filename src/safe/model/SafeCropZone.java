@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -62,56 +68,81 @@ import safe.stics.SafeSticsTransit;
 /**
  * Crop zone description : A collection of cell with the crop species
  *
- * @author Isabelle Lecomte - INRAE Montpellier - September 2022
+ * @author : Isabelle Lecomte - INRA (UMR-SYSTEM), University of Montpellier, France
  */
 
 public class SafeCropZone implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
-	private int id;							//id of the ZONE
-	private String simulationDir;			//name of the simulation directory
-	private double area;					//area of the ZONE
-	private String name;					//name of the ZONE
-	private int itkIndex;					//index of the current itk 
-	private List<SafeCell> cellList;		//List of cells in the ZONE
-	private List<String> itkList;			//List of tec name for the zone 
-	public SafeSticsItk sticsItk;			//Crop intervention in STICS for the current simulation
-	private SafeCropSpecies cropSpecies;	//Crop species for the current simulation
+	/** Crop zone id  */
+	private int id;	
+	/** Name of the ZONE  */
+	private String name;
+	/** Area of the ZONE (m2)  */
+	private double area;
+	/** Path of the simulation directory  */
+	private String simulationPath;			
+	/** List of cells in the ZONE */	
+	private List<SafeCell> cellList;	
+	/** Reference to SafeCropSpecies objet : Crop species parameters for the current simulation*/
+	private SafeCropSpecies cropSpecies;	
+	/** List of itk file name for the ZONE */	
+	private List<String> itkList;			
+	/** Reference to SafeSticsItk objet : Stics crop intervention for the current simulation*/	
+	public SafeSticsItk sticsItk;			
+	/** index of the current itk (crop management) */				
+	private int itkIndex;	
+	/** Simulation day (doy) */	
+	private int simulationDay;				
+	/** Stics simulation day (doy) - can be different of simulationDay */	
+	private int sticsSimulationDay;	
+	/** if TRUE simulation is finish (this crop rotation)  */	
+	private boolean simulationFinished;		
+	/** crop initialization values : Crop stage used at the beginning of simulation (P_stade0)  */	  
+	private int initialCropStage = 1; 							
+	/** crop initialization values : Initial leaf area index (P_lai0) m2 m-2  */	
+	private double initialCropLai = 0;						 	 
+	/** crop initialization values : Initial biomass (P_masec0) t ha-1  */	
+	private double initialCropBiomass = 0; 						 
+	/** crop initialization values : Initial depth of root front  (P_zrac0) m */	
+	private double initialCropRootsDepth = 0; 					
+	/** crop initialization values : Initial grain dry weight (P_magrain0)  g m-2 */	
+	private double initialCropGrainBiomass = 0; 				
+	/** crop initialization values : Initial nitrogen amount in the plant (P_QNplante0) kg ha-1   */	
+	private double initialCropNitrogen = 0; 					
+	/** crop initialization values : Initial reserve biomass (P_resperenne0)  t ha-1  */	
+	private double initialCropReserveBiomass = 0; 					
+	/** crop initialization values : Table of initial root density of the 5 horizons of soil  (P_densinitial)  cm cm-3 */	
+	private double[] initialCropRootsDensity = {0, 0, 0, 0, 0}; 	
 
-	private int simulationDay;				//SIMULATION day index 
-	private int sticsDay;					//STICS day index (can be different of simulation day) 
-	private boolean simulationFinished;		//if TRUE simulation is finish (this crop rotation) 
-	
-	// crop initialization values (for perenial crops) 
-	private int initialCropStage = 1; 								// Crop stage used at the beginning of simulation (P_stade0) 
-	private double initialCropLai = 0;						 		// Initial leaf area index (P_lai0) m2 m-2 
-	private double initialCropBiomass = 0; 							// Initial biomass (P_masec0) t ha-1
-	private double initialCropRootsDepth = 0; 						// Initial depth of root front  (P_zrac0) m
-	private double initialCropGrainBiomass = 0; 					// Initial grain dry weight (P_magrain0)  g m-2
-	private double initialCropNitrogen = 0; 						// Initial nitrogen amount in the plant (P_QNplante0) kg ha-1 
-	private double initialCropReserveBiomass = 0; 					// Initial reserve biomass (P_resperenne0)  t ha-1
-	private double[] initialCropRootsDensity = {0, 0, 0, 0, 0}; 	// Table of initial root density of the 5 horizons of soil for fine earth (P_densinitial)  cm cm-3
-
-
+	/**
+	 * Constructor
+	 * @param id Id of the crop zone
+	 * @param name Name of the crop zone
+	 **/
 	public SafeCropZone (int id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 	/**
-	 * Crop zone creation
+	 * Constructor
+	 * @param id Id of the crop zone
+	 * @param name Name of the crop zone
+	 * @param ep reference to SafeEvolutionParameters object 
+	 * @param cells List of cells composing the crop zone 
+	 * @param itk List of itk (crop management) for the crop zone  
+	 * @param cellSurface Cell surface (m2)
 	 **/
-	public SafeCropZone (SafeEvolutionParameters ep, int id, String name, List<SafeCell> cells, List<String> itk, double cellSurface) {
+	public SafeCropZone (int id, String name, SafeEvolutionParameters ep, List<SafeCell> cells, List<String> itk, double cellSurface) {
 		this.id = id;
 		this.name = name;
 		this.cellList = cells;
 		this.area = cells.size() * cellSurface;
 		this.itkIndex = 0;
-		this.simulationDir = ep.simulationDir;
+		this.simulationPath = ep.simulationPath;
 		this.simulationFinished = false; 
 		itkList = new ArrayList<String>();
 		for (Iterator<String> i = itk.iterator(); i.hasNext();) {
 			String c = (String) i.next();
-			c = this.simulationDir + "/cropInterventions/" + c;
+			c = this.simulationPath + "/cropInterventions/" + c;
 			itkList.add(c);
 		}
 	}
@@ -126,6 +157,10 @@ public class SafeCropZone implements Serializable {
 	}
 	/**
 	 * Check if a date is the first day of the current crop itk
+	 * @param year Year of the date to check 
+	 * @param month Month of the date to check 
+	 * @param day Day of the date to check   
+	 * @return true or false 
 	 **/
 	public boolean isDayStart (int year, int month, int day) {
 		if (this.getSticsItk().getYearstart() == year && this.getSticsItk().getMonthstart() == month && this.getSticsItk().getDaystart() == day) return true;
@@ -133,14 +168,21 @@ public class SafeCropZone implements Serializable {
 	}
 	/**
 	 * Check if a date is the last day of the current crop itk
+	 * @param year Year of the date to check 
+	 * @param month Month of the date to check 
+	 * @param day Day of the date to check   
+	 * @return true or false 
 	 **/
 	public boolean isDayEnd (int year, int month, int day) {
 		if (this.getSticsItk().getYearend() == year && this.getSticsItk().getMonthend() == month && this.getSticsItk().getDayend() == day) return true;
 		return false;
 	}
+
 	/**
 	 * Return the first day (julian day) of the current crop itk
-	 **/
+	 * @param year Year of the current simulation
+	 * @return the julian day
+	 **/	
 	public int getJulianDayStart (int year) {
 	
 		int day = this.getSticsItk().getDaystart();
@@ -153,6 +195,8 @@ public class SafeCropZone implements Serializable {
 	}
 	/**
 	 * Return the last day (julian day) of the current crop itk
+	 * @param year Year of the current simulation
+	 * @return the julian day
 	 **/
 	public int getJulianDayEnd (int year) {
 
@@ -173,7 +217,8 @@ public class SafeCropZone implements Serializable {
 	}
 	
 	/**
-	 * Load the FIRST itk file and the crop species file for the zone
+	 * Load the FIRST itk and crop species file for the zone
+	 * @param year Year of the current simulation
 	 **/
 	public void loadFirstItk (int year) {
 
@@ -200,15 +245,14 @@ public class SafeCropZone implements Serializable {
 
 		// Loading crop species file attached to this itk
 		try {
-			cropSpeciespathName = this.simulationDir + "/cropSpecies/" + cropSpeciesfileName;
+			cropSpeciespathName = this.simulationPath + "/cropSpecies/" + cropSpeciesfileName;
 			this.cropSpecies = new SafeCropSpecies();
 			SafeCrop crop = new SafeCrop(firstCell);	
-			
 			String cropSpeciesName = new SafeSticsCropFormat (cropSpeciespathName).load (cropSpecies, crop.getSticsCrop());
 			this.cropSpecies.setFileName(cropSpeciesfileName);
 			crop.setCropSpeciesName(cropSpeciesName);
+			//Initialization for first cell of the zone
 			firstCell.setCrop(crop);
-	
 
 		} catch (Exception e1) {
 
@@ -218,7 +262,8 @@ public class SafeCropZone implements Serializable {
 		simulationFinished=false;
 	}
 	/**
-	 * Load the NEXT itk file and the crop species file for the zone
+	 * Load the NEXT itk and the crop species file for the zone
+	 * @param year Year of the current simulation
 	 **/
 	public void loadNextItk (int year) {
 		
@@ -243,25 +288,22 @@ public class SafeCropZone implements Serializable {
 			
 		} catch (Exception e2) {
 			System.out.println("CROP ZONE "+this.name+" ITK "+(itkIndex+1)+" initialisation problem... simulation is canceled !");
-
 			System.exit(1);
 		}
-
 
 		// Loading crop species file attached to this itk
 		try {
 	
-			//STICS initialisation for first cell
+			//Initialization for the first cell of the zone
 			SafeCrop firstCrop = firstCell.getCrop();
-			cropSpeciespathName = this.simulationDir + "/cropSpecies/" + cropSpeciesfileName;
+			cropSpeciespathName = this.simulationPath + "/cropSpecies/" + cropSpeciesfileName;
 			this.cropSpecies = new SafeCropSpecies();
 			String cropSpeciesName = new SafeSticsCropFormat (cropSpeciespathName).load (cropSpecies, firstCrop.getSticsCrop());
 			this.cropSpecies.setFileName(cropSpeciesfileName);
 			firstCrop.setCropSpeciesName(cropSpeciesName);
 			firstCell.setCrop(firstCrop);
 	
-		
-			//STICS initialisation for each cell
+			//Initialization for each cell
 			for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
 				SafeCell cell = (SafeCell) c.next ();
 				SafeCrop crop = cell.getCrop();
@@ -277,14 +319,20 @@ public class SafeCropZone implements Serializable {
 		}
 		simulationFinished=false;
 	}
-	
 	/**
-	 * STICS crop initialization (First simulation) 
-	 */
+	 * STICS crop first initialization with the first crop species 
+	 * @param jna Reference on SafeTestJNA object
+	 * @param sticsParam Reference on SafeSticsParameters object
+	 * @param sticsTransit Reference on SafeSticsTransit object
+	 * @param generalParameters Reference on SafeGeneralParameters object 
+	 * @param plotSettings Reference on SafePlotSettings object 
+	 * @param evolutionParameters Reference on SafeEvolutionParameters object
+	 * @param soil Reference on SafeSoil object
+	 */	
     public void initialiseSticsCrop (SafeTestJNA jna, 
 									SafeSticsParameters sticsParam, 
 									SafeSticsTransit sticsTransit, 
-    								SafeGeneralParameters safeSettings, 
+    								SafeGeneralParameters generalParameters, 
     								SafePlotSettings plotSettings, 
     								SafeEvolutionParameters evolutionParameters,  
     								SafeSoil  soil) throws Exception {
@@ -300,8 +348,8 @@ public class SafeCropZone implements Serializable {
 											soil, 
 											this, 
 											plotSettings,
-											evolutionParameters.exportDir,											 
-											safeSettings.laiFileName);
+											evolutionParameters.outputPath,											 
+											evolutionParameters.laiPath);
 			}
 			// Copy of STICS initialisation in other cells of the zone
 			else {
@@ -337,12 +385,16 @@ public class SafeCropZone implements Serializable {
     
     /**
 	 * STICS crop initialization (other simulation, NOT THE FIRST) 
+	 * @param jna Reference on SafeTestJNA object
+	 * @param sticsParam Reference on SafeSticsParameters object
+	 * @param sticsTransit Reference on SafeSticsTransit object
+	 * @param evolutionParameters Reference on SafeEvolutionParameters object
+	 * @param soil Reference on SafeSoil object
 	 */
     public void reinitialiseSticsCrop (SafeTestJNA jna, 
 									SafeSticsParameters sticsParam, 
 									SafeSticsTransit sticsTransit, 
     								SafeGeneralParameters safeSettings, 
-    								SafePlotSettings plotSettings, 
     								SafeEvolutionParameters evolutionParameters,
     								SafeSoil  soil) throws Exception {
 
@@ -358,7 +410,7 @@ public class SafeCropZone implements Serializable {
 						sticsParam, 
 						sticsTransit, 
 						this,
-						evolutionParameters.exportDir);				
+						evolutionParameters.outputPath);				
 			}
 			else {
 
@@ -367,7 +419,7 @@ public class SafeCropZone implements Serializable {
 						sticsTransit, 
 						soil,
 						this,
-						evolutionParameters.exportDir);
+						evolutionParameters.outputPath);
 			}
 
 			//IL 25-04-2018
@@ -421,9 +473,9 @@ public class SafeCropZone implements Serializable {
 	public void setSimulationDay(int d){simulationDay=d;}
 	public void addSimulationDay(){simulationDay+=1;}
 	
-	public int getSticsDay(){return sticsDay;}
-	public void setSticsDay(int d){sticsDay=d;}
-	public void addSticsDay(){sticsDay+=1;}
+	public int getSticsSimulationDay(){return sticsSimulationDay;}
+	public void setSticsSimulationDay(int d){sticsSimulationDay=d;}
+	public void addSticsSimulationDay(){sticsSimulationDay+=1;}
 
 	public boolean getSimulationFinished(){return simulationFinished;}
 	public void setSimulationFinished(boolean d){simulationFinished=d;}
@@ -737,7 +789,7 @@ public class SafeCropZone implements Serializable {
 			SafeCell cell = (SafeCell) c.next();
 			cropLai = cell.getCrop().getLai();
 			if (cropLai != 0) {
-				waterStress += cell.getCrop().getHisafeWaterStress();
+				waterStress += cell.getCrop().getHisafeWaterStomatalStress();
 				count++;
 			}
 		}
@@ -1144,7 +1196,7 @@ public class SafeCropZone implements Serializable {
 		double v = 0;
 		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
 			SafeCell cell = (SafeCell) c.next();
-			v += cell.getCrop().getNitrogenLeachingWaterTable();
+			v += cell.getNitrogenLeachingWaterTable();
 		}
 		return v;//kg N ha-1
 	}
@@ -1154,7 +1206,7 @@ public class SafeCropZone implements Serializable {
 		double v = 0;
 		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
 			SafeCell cell = (SafeCell) c.next();
-			v += cell.getCrop().getNitrogenAddedByWaterTable();
+			v += cell.getNitrogenAddedByWaterTable();
 		}
 		return v;//kg N ha-1
 	}

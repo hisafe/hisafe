@@ -1,20 +1,26 @@
 /** 
  * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
- * Copyright (C) 2000-2025 INRAE 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
- * Authors  
- * C.DUPRAZ       	- INRAE Montpellier France
- * M.GOSME       	- INRAE Montpellier France
- * G.TALBOT       	- INRAE Montpellier France
- * B.COURBAUD      	- INRAE Montpellier France
- * H.SINOQUET		- INRAE Montpellier France
- * N.DONES			- INRAE Montpellier France
- * N.BARBAULT 		- INRAE Montpellier France 
- * I.LECOMTE       	- INRAE Montpellier France
- * M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
- * R.MULIA       	- ICRAF Bogor Indonisia
- * D.HARJA			- ICRAF Bogor Indonisia
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
  * 
  * This file is part of Hi-SAFE  
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
@@ -45,19 +51,23 @@ package safe.model;
 /**
  * Pedotransfer functions for hydraulic properties of soil
  * (adapted from Wosten et al., 1998)
- * @author D.HARJA			- ICRAF Bogor Indonisia - - July 2004
+ * @author : D.HARJA	- ICRAF, Bogor 16001, Indonesia
  */
 public class SafePedotransferUtil {
 
 	/**
 	 * Return ThetaSat (Total saturated porosity) in m3 water m-3 soil
+	 * @param clay Percentage of clay (%)  
+	 * @param bulkDensity  Bulk density (kg m-3)
+	 * @param silt Percentage of silt (%)  
+	 * @param organicMatter Percentage of organicMatter (%)  
+	 * @param topSoil 0=no 1=yes
 	 */
-	public static double getThetaSat (
-		double clay,
-		double bulkDensity,
-		double silt,
-		double organicMatter,
-		double topSoil) {
+	public static double getThetaSat (  double clay,
+										double bulkDensity,
+										double silt,
+										double organicMatter,
+										int topSoil) {
 		return 0.7919
 			+ 0.001691 * clay
 			- 0.29619 * bulkDensity
@@ -74,13 +84,17 @@ public class SafePedotransferUtil {
 
 	/**
 	 * Return Ksat (saturated conductivity)	in	cm d-1
+	 * @param clay Percentage of clay (%)  
+	 * @param bulkDensity  Bulk density (kg m-3)
+	 * @param silt Percentage of silt (%)  
+	 * @param organicMatter Percentage of organicMatter (%)  
+	 * @param topSoil 0=no 1=yes
 	 */
-	public static double getKSat (
-		double clay,
-		double bulkDensity,
-		double silt,
-		double organicMatter,
-		double topSoil) {
+	public static double getKSat (double clay,
+								  double bulkDensity,
+								  double silt,
+								  double organicMatter,
+								  int topSoil) {
 		return Math.exp(
 			7.755
 				+ 0.0352 * silt
@@ -98,13 +112,17 @@ public class SafePedotransferUtil {
 	}
 	/**
 	 * Return alpha
+	 * @param clay Percentage of clay (%)  
+	 * @param bulkDensity  Bulk density (kg m-3)
+	 * @param silt Percentage of silt (%)  
+	 * @param organicMatter Percentage of organicMatter (%)  
+	 * @param topSoil 0=no 1=yes
 	 */
-	public static double getAlpha (
-		double clay,
-		double bulkDensity,
-		double silt,
-		double organicMatter,
-		double topSoil) {
+	public static double getAlpha ( double clay,
+									double bulkDensity,
+									double silt,
+									double organicMatter,
+									int topSoil) {
 		return Math.exp(
 			-14.96
 				+ 0.03135 * clay
@@ -125,12 +143,15 @@ public class SafePedotransferUtil {
 
 	/**
 	 * Return Lambda
+	 * @param clay Percentage of clay (%)  
+	 * @param bulkDensity  Bulk density (kg m-3)
+	 * @param silt Percentage of silt (%)  
+	 * @param organicMatter Percentage of organicMatter (%)  
 	 */
-	public static double getLambda (
-		double clay,
-		double bulkDensity,
-		double silt,
-		double organicMatter) {
+	public static double getLambda (double clay,
+									double bulkDensity,
+									double silt,
+									double organicMatter) {
 		double l =
 			((10
 				* (Math
@@ -159,13 +180,17 @@ public class SafePedotransferUtil {
 
 	/**
 	 * Return n
+	 * @param clay Percentage of clay (%)  
+	 * @param bulkDensity  Bulk density (kg m-3)
+	 * @param silt Percentage of silt (%)  
+	 * @param organicMatter Percentage of organicMatter (%)  
+	 * @param topSoil 0=no 1=yes
 	 */
-	public static double getN (
-		double clay,
-		double bulkDensity,
-		double silt,
-		double organicMatter,
-		double topSoil) {
+	public static double getN ( double clay,
+								double bulkDensity,
+								double silt,
+								double organicMatter,
+								double topSoil) {
 		return Math.exp(
 			-25.23
 				- 0.02195 * clay
@@ -187,16 +212,19 @@ public class SafePedotransferUtil {
 			+ 1;
 	}
 
-
 	/**
 	 * Return BulkDensity
+	 * @param particleSizeSand Particle size of sand (micrometers)
+	 * @param clay Percentage of clay (%)  
+	 * @param silt Percentage of silt (%)  
+	 * @param organicMatter Percentage of organicMatter (%)  
+	 * @param topSoil 0=no 1=yes
 	 */
-	public static double getBulkDensity (
-		double meanParticleSize,
-		double clay,
-		double silt,
-		double organicMatter,
-		double topSoil) {
+	public static double getBulkDensity (double particleSizeSand,
+										 double clay,
+										 double silt,
+										 double organicMatter,
+										 int topSoil) {
 		if ((clay + silt) < 50) {
 			return 1
 				/ (
@@ -204,8 +232,8 @@ public class SafePedotransferUtil {
 					+ 0.01841 * organicMatter
 					+ 0.032 * topSoil
 					+ 0.00003576 * (clay + silt) * (clay + silt)
-					+ 67.5 / meanParticleSize
-					+ 0.424 * Math.log(meanParticleSize));
+					+ 67.5 / particleSizeSand
+					+ 0.424 * Math.log(particleSizeSand));
 		}
 		return 1
 			/ (0.603
@@ -216,11 +244,11 @@ public class SafePedotransferUtil {
 	/**
 	 * Return pf
 	 */
-	public static double getpF(
-		double theta,
-		double thetaSat,
-		double alpha,
-		double n) {
+	public static double getpF( double theta,
+							   	double thetaSat,
+							   	double alpha,
+								double n) {
+		
 		double pF = ((Math.log(1/alpha)*n)
 		+ Math.log(Math.pow(theta/thetaSat, -n / (n - 1)) - 1))
 	   / (n*(Math.log(2) + Math.log(5)));
@@ -231,15 +259,19 @@ public class SafePedotransferUtil {
 	/**
 	 * Return P
 	 */
-	public static double getP (
-		double theta,
-		double thetaSat,
-		double alpha,
-		double n) {
+	public static double getP ( double theta,
+								double thetaSat,
+								double alpha,
+								double n) {
+		
 		double pF = getpF(theta, thetaSat, alpha, n);
 		return getP(pF);
 	}
 
+	/**
+	 * Return P from Pf
+	 * @param pF 
+	 */
 	public static double getP (double pF) {
 		return -Math.pow(10, pF);
 	}
@@ -247,12 +279,11 @@ public class SafePedotransferUtil {
 	/**
 	 * Return conductivity
 	 */
-	public static double getConductivity (
-		double p,
-		double kSat,
-		double alpha,
-		double lambda,
-		double n) {
+	public static double getConductivity (double p,
+										  double kSat,
+										  double alpha,
+										  double lambda,
+										  double n) {
 
 		double conductivity =
 			kSat
@@ -274,12 +305,12 @@ public class SafePedotransferUtil {
 	 * Return the integral of conductivity from 0 to P in cm2 day-1
 	 */
 	public static double getPhi (double pF,
-		double kSat,
-		double alpha,
-		double lambda,
-		double n,
-		double deltaPF,
-		double pFi) {
+								 double kSat,
+								 double alpha,
+								 double lambda,
+								 double n,
+								 double deltaPF,
+								 double pFi) {
 
 		double sum = 0;
 		double p1, p2, k1, k2;
@@ -304,10 +335,10 @@ public class SafePedotransferUtil {
 	 * Return Phi
 	 */
 	public static double getPhi (double pF,
-			double kSat,
-			double alpha,
-			double lambda,
-			double n) {
+								 double kSat,
+								 double alpha,
+								 double lambda,
+								 double n) {
 
 			double deltaPF=0.1;
 			double pFi=6.0;
@@ -331,11 +362,11 @@ public class SafePedotransferUtil {
 	/**
 	 * Return Theta
 	 */
-	public static double getTheta (
-		double p,
-		double thetaSat,
-		double alpha,
-		double n) {
+	public static double getTheta (double p,
+								   double thetaSat,
+								   double alpha,
+								   double n) {
+		
 		return thetaSat / Math.pow(1 + Math.pow(Math.abs(alpha * p), n), 1 - 1 / n);
 	}
 }
