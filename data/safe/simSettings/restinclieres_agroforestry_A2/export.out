@@ -12,15 +12,15 @@
 #  PART 1 : Profile definition						
 #=========================================================================						
 #Profile	Object	Frequency				
-ProfileDef	climate	SafeMacroClimat	1			
-ProfileDef	plot	SafePlot	1			
-ProfileDef	zones	SafeCropZone	1			
+#ProfileDef	climate	SafeMacroClimat	1			
+#ProfileDef	plot	SafePlot	1			
+#ProfileDef	zones	SafeCropZone	1			
 ProfileDef	cells	SafeCell	1	1;46		
 ProfileDef	trees	SafeTree	1			
-ProfileDef	monthCells	SafeCell	30			
-ProfileDef	annualPlot	SafePlot	365			
-ProfileDef	annualCells	SafeCell	365			
-ProfileDef	annualTrees	SafeTree	365			
+#ProfileDef	monthCells	SafeCell	30			
+#ProfileDef	annualPlot	SafePlot	365			
+#ProfileDef	annualCells	SafeCell	365			
+#ProfileDef	annualTrees	SafeTree	365			
 #ProfileDef	voxels	SafeVoxel	1			
 #ProfileDef	voxelsDetail	SafeVoxel	1			
 #ProfileDef	voxelsOptim	SafeVoxel	1			
@@ -39,7 +39,7 @@ annualCells	SafeCell	heightMax	 m	Maximum crop height for the year	2	1
 annualCells	SafeCell	biomassMax	 t.ha-1	Maximum crop biomass for the year	3	1
 annualCells	SafeCell	laiMax	m2 leaf m-2 soil	Maximum crop LAI for the year	4	1
 annualCells	SafeCell	eaiMax	m2 leaf m-2 soil	Maximum crop EAI for the year	5	1
-annualCells	SafeCell	rootsDepthMax	m	Maximum crop roots depth for the year	6	1
+annualCells	SafeCell	rootDepthMax	m	Maximum crop roots depth for the year	6	1
 annualCells	SafeCell	cropMaxTemperature	°C	Crop max temperature	7	1
 annualCells	SafeCell	cropMinTemperature	°C	Crop min temperature	8	1
 annualCells	SafeCell	annualSoilEvaporation	mm	annual evaporation	9	1
@@ -50,29 +50,31 @@ annualCells	SafeCell	annualIrrigation	mm	annual irrigations	13	1
 annualCells	SafeCell	annualRunOff	mm	annual run off	14	1
 annualCells	SafeCell	annualSurfaceRunOff	mm	annual surface run off	15	1
 annualCells	SafeCell	annualWaterDemand	liters	annual water demad	16	1
-annualCells	SafeCell	annualWaterUptake	liters	annual water uptake	17	1
-annualCells	SafeCell	annualWaterUptakeByTrees	liters	annual water uptake by trees	18	1
+annualCells	SafeCell	annualWaterUptakeByTrees	mm	annual water uptake by trees	18	1
+annualCells	SafeCell	annualWaterUptakeByCrop	mm	annual water uptake by crop	18	1
 annualCells	SafeCell	annualNitrogenDemand	kg N ha-1	annual nitrogen demad	19	1
-annualCells	SafeCell	annualNitrogenUptake	kg N ha-1	annual nitrogen extract	20	1
 annualCells	SafeCell	annualNitrogenUptakeByTrees	kg N ha-1	annual nitrogen extract by trees	21	1
+annualCells	SafeCell	annualNitrogenUptakeByCrop	kg N ha-1	annual nitrogen extract by crop	21	1
 annualCells	SafeCell	annualNitrogenLeachingBottom	kg N ha-1	annual nitrogen leached at the base of the soil profile	22	1
 annualCells	SafeCell	annualNitrogenLeachingWaterTable	kg N ha-1	annual nitrogen leached from water table	23	1
-annualCells	SafeCell	annualParIncident	moles PAR m-2	Annual Par Incident	24	1
-annualCells	SafeCell	annualParIntercepted	moles PAR m-2	Annual Par Intercepted	25	1
+annualCells	SafeCell	annualDirectParIncident	moles PAR m-2	Total annual direct PAR incident on the crop	9	1
+annualCells	SafeCell	annualDiffuseParIncident	moles PAR m-2	Total annual diffuse PAR incident on the crop	10	1
+annualCells	SafeCell	annualDirectParIntercepted	moles PAR m-2	Total annual direct PAR intercepted by the crop	7	1
+annualCells	SafeCell	annualDiffuseParIntercepted	moles PAR m-2	Total annual diffuse PAR intercepted by the crop	8	1
 monthCells	SafeCell	monthYield	t.ha-1	month Crop yield	1	1
 monthCells	SafeCell	monthLai	m2.m-2	month Lai	2	1
 monthCells	SafeCell	monthEai	m2.m-2	month Eai	3	1
 monthCells	SafeCell	monthBiomass	t ha-1	month Crop biomass	4	1
-monthCells	SafeCell	monthDirectPar	moles PAR m-2	Mean monthly direct PAR in the sky	5	1
-monthCells	SafeCell	monthDiffusePar	moles PAR m-2	Mean monthly diffuse PAR in the sky	6	1
-monthCells	SafeCell	monthDirectParIntercepted	moles PAR m-2	Mean monthly direct PAR intercepted by the crop	7	1
-monthCells	SafeCell	monthDiffuseParIntercepted	moles PAR m-2	Mean monthly diffuse PAR intercepted by the crop	8	1
-monthCells	SafeCell	monthDirectParIncident	moles PAR m-2	Mean monthly direct PAR incident on the crop	9	1
-monthCells	SafeCell	monthDiffuseParIncident	moles PAR m-2	Mean monthly diffuse PAR incident on the crop	10	1
-monthCells	SafeCell	monthRelativeDirectParIncident	%	Mean monthly relative direct PAR incident on the crop	11	1
-monthCells	SafeCell	monthRelativeDiffuseParIncident	%	Mean monthly relative diffuse PAR incident on the crop	12	1
-monthCells	SafeCell	monthRelativeTotalParIncident	%	Mean monthly relative total PAR incident on the crop	13	1
-monthCells	SafeCell	monthVisibleSky	%	Mean monthly percetage of sky that is unobstructed from the view of the crop	14	1
+monthCells	SafeCell	monthDirectPar	moles PAR m-2	Total monthly direct PAR in the sky	5	1
+monthCells	SafeCell	monthDiffusePar	moles PAR m-2	Total monthly diffuse PAR in the sky	6	1
+monthCells	SafeCell	monthDirectParIntercepted	moles PAR m-2	Total monthly direct PAR intercepted by the crop	7	1
+monthCells	SafeCell	monthDiffuseParIntercepted	moles PAR m-2	Total monthly diffuse PAR intercepted by the crop	8	1
+monthCells	SafeCell	monthDirectParIncident	moles PAR m-2	Total monthly direct PAR incident on the crop	9	1
+monthCells	SafeCell	monthDiffuseParIncident	moles PAR m-2	Total monthly diffuse PAR incident on the crop	10	1
+monthCells	SafeCell	monthRelativeDirectParIncident	%	Total monthly relative direct PAR incident on the crop	11	1
+monthCells	SafeCell	monthRelativeDiffuseParIncident	%	Total monthly relative diffuse PAR incident on the crop	12	1
+monthCells	SafeCell	monthRelativeTotalParIncident	%	Total monthly relative total PAR incident on the crop	13	1
+monthCells	SafeCell	monthVisibleSky	%	Total monthly percetage of sky that is unobstructed from the view of the crop	14	1
 cells	SafeCell	cropSpeciesName	-	Crop species name	1	1
 cells	SafeCell	cropAge	years	Age of crop since sowing	3	1
 cells	SafeCell	phenologicStageVegetative	-	Crop phenologic stage reproductive 1=snu 2=plt 3=dor 4=ger 5=lev 6=amf 7=lax 8=sen 9=lan 10=rec	5	1
@@ -155,18 +157,12 @@ cells	SafeCell	mulchWaterStock	mm	Water stock in the mulch	79	1
 cells	SafeCell	mulchCoverRatio	ratio	Proportion of soil surface covered by mulch	80	1
 cells	SafeCell	mulchBiomass	t.ha-1	Biomass of ALL mulch (accumulated litter from tree foliage, crops, and exogenous material) on the soil surface	81	1
 cells	SafeCell	carbonResidus	kgC.ha-1	carbonResidus	82	1
-cells	SafeCell	cropCarbonLeafLitter	kgC.ha-1	Carbon input to soil from crop aerial litter	83	1
-cells	SafeCell	cropCarbonRootsLitter	kgC.ha-1	Carbon input to soil from crop roots litter	84	1
+cells	SafeCell	carbonMicrobialBiomass	kgC.ha-1	Amount of C in the microbial biomass decomposing organic residues mixed with soil 	93	1
+cells	SafeCell	carbonMicrobialBiomassMulch	kgC.ha-1	Amount of C in the microbial biomass decomposing organic residues at soil surface	94	1
 cells	SafeCell	totalCarbonHumusStock	kgC.ha-1	Total amount of carbon (active + inactive) in the soil humus pool 	85	1
-cells	SafeCell	treeCarbonLeafLitter	kg C ha-1	Carbon input to soil from leaf litter	86	1
-cells	SafeCell	treeCarbonFineRootsLitter	kg C ha-1	Carbon input to soil from fine roots above profhum	87	1
-cells	SafeCell	treeCarbonCoarseRootsLitter	kg C ha-1	Carbon input to soil from coarse roots above profhum	88	1
-cells	SafeCell	treeCarbonFineRootsDeepLitter	kg C ha-1	Carbon input to soil from fine roots below profhum	89	1
-cells	SafeCell	treeCarbonCoarseRootsDeepLitter	kg C ha-1	Carbon input to soil from coarse roots below profhum	90	1
 cells	SafeCell	activeCarbonHumusStock	kg C ha-1	Amount of active carbon in the soil humus pool 	91	1
 cells	SafeCell	inactiveCarbonHumusStock	kg C ha-1	Amount of inactive carbon in the soil humus pool 	92	1
-cells	SafeCell	carbonMicrobes	kgC.ha-1	Amount of C in the microbial biomass decomposing organic residues mixed with soil 	93	1
-cells	SafeCell	carbonMicrobesMulch	kgC.ha-1	Amount of C in the microbial biomass decomposing organic residues at soil surface	94	1
+
 cells	SafeCell	nitrogenDemand	kgN.ha-1	Nitrogen demand of the crop	95	1
 cells	SafeCell	nitrogenUptakeByCrop	kgN.ha-1	Nitrogen uptake by the crop	96	1
 cells	SafeCell	nitrogenUptakeByTrees	kgN.ha-1	Nitrogen uptake by trees	97	1
@@ -190,22 +186,15 @@ cells	SafeCell	nitrogenResiduMineralisation	kg N ha-1	Mineral N input to soil de
 cells	SafeCell	nitrogenImmobilisation	kg N ha-1	Nitrogen from fertilizer that is immobilized by soil bacteria	115	1
 cells	SafeCell	cropNitrogenLeafLitter	kgN.ha-1	Nitrogen input to soil from crop aerial litter	116	1
 cells	SafeCell	cropNitrogenRootsLitter	kgN.ha-1	Nitrogen input to soil from crop roots litter	117	1
-cells	SafeCell	nitrogenMicrobes	kg N ha-1	Amount of N remaining in the biomass decaying organic residues	118	1
-cells	SafeCell	nitrogenMicrobesMulch	kg N ha-1	amount of N in microbial biomass decomposing mulch	119	1
+cells	SafeCell	nitrogenResidus	kg N ha-1	Nitrogen pool in all soil organic residues	124	1
+cells	SafeCell	nitrogenMicrobialBiomass	kg N ha-1	Amount of N remaining in the biomass decaying organic residues	118	1
+cells	SafeCell	nitrogenMicrobialBiomassMulch	kg N ha-1	amount of N in microbial biomass decomposing mulch	119	1
 cells	SafeCell	nitrogenLeachingBottom	kg N ha-1	NO3-N leached at the bottom of the soil profile	120	1
 cells	SafeCell	nitrogenLeachingArtificial	kg N ha-1	N-NO3 leached into artificial drains	121	1
 cells	SafeCell	nitrogenLeachingWaterTable	kg N ha-1	Nitrogen leached into the water table	122	1
 cells	SafeCell	mineralNitrogenStock	kg N ha-1	Soil mineral nitrogen stock (NH4 stock + NO3 stock)	123	1
-cells	SafeCell	nitrogenResidus	kgN.ha-1	Nitrogen pool in all soil organic residues	124	1
-cells	SafeCell	treeNitrogenLeafLitter	kgN.ha-1	Nitrogen input to soil from leaf litter	125	1
-cells	SafeCell	treeNitrogenFineRootsLitter	kgN.ha-1	Nitrogen input to soil from fine roots above humification depth (profhum)	126	1
-cells	SafeCell	treeNitrogenCoarseRootsLitter	kgN.ha-1	Nitrogen input to soil from coarse roots above humification depth (profhum)	127	1
-cells	SafeCell	treeNitrogenFineRootsDeepLitter	kgN.ha-1	Nitrogen input to soil from fine roots below humification depth (profhum)	128	1
-cells	SafeCell	treeNitrogenCoarseRootsDeepLitter	kgN.ha-1	Nitrogen input to soil from coarse roots below humification depth (profhum)	129	1
-cells	SafeCell	nitrogenAddedByWaterTable	kgN.ha-1	Nitrogen input to the soil from the water table	130	1
-cells	SafeCell	nitrogenLossNitrification	kgN.ha-1	cumulated N2O emission	131	1
-cells	SafeCell	nitrogenShallowRootsResidu	kgN.ha-1	Tree shallow root (above P_profhum) nitrogen residus 	132	1
-cells	SafeCell	nitrogenDeepRootsResidu	kgN.ha-1	Tree deep root (under P_profhum) nitrogen residus 	133	1
+cells	SafeCell	nitrogenAddedByWaterTable	kg N ha-1	Nitrogen input to the soil from the water table	130	1
+cells	SafeCell	nitrogenLossNitrification	kg N ha-1	cumulated N2O emission	131	1
 cells	SafeCell	nitrogenHarvested	t.ha-1	Total of exported nitrogen	134	1
 cells	SafeCell	biomassHarvested	t ha-1	Total of exported carbon	135	1
 cells	SafeCell	meanHisafeWaterStressVegetative	-	Mean of hisafe water stress between vegetative stages	136	1
@@ -222,12 +211,18 @@ cells	SafeCell	coeflev	-	Multiplier coefficient of the crop development	153	0
 cells	SafeCell	fruitBiomass	t ha-1	Total fruit biomass	153	1
 cells	SafeCell	isTreeAbove	-	isTreeAbove	25	1
 cells	SafeCell	nbrTreeAbove	-	nbrTreeAbove	25	1
+cells	SafeCell	cropCarbonLeafLitter	kgC.ha-1	Carbon input to soil from crop aerial litter	83	1
+cells	SafeCell	cropCarbonRootsLitter	kgC.ha-1	Carbon input to soil from crop roots litter	84	1
 cells	SafeCell	treeCarbonFoliageLitter	kg C ha-1	treeCarbonFoliageLitter	25	1
 cells	SafeCell	treeCarbonBranchesLitter	kg C ha-1	treeCarbonBranchesLitter	25	1
 cells	SafeCell	treeCarbonFruitLitter	kg C ha-1	treeCarbonFruitLitter	25	1
+cells	SafeCell	treeCarbonFineRootsLitter	kg C ha-1	treeCarbonFineRootsLitter	87	1
+cells	SafeCell	treeCarbonCoarseRootsLitter	kg C ha-1	treeCarbonCoarseRootsLitter	88	1
 cells	SafeCell	treeNitrogenFoliageLitter	kg N ha-1	treeNitrogenFoliageLitter	25	1
 cells	SafeCell	treeNitrogenBranchesLitter	kg N ha-1	treeNitrogenBranchesLitter	25	1
 cells	SafeCell	treeNitrogenFruitLitter	kg N ha-1	treeNitrogenFruitLitter	25	1
+cells	SafeCell	treeNitrogenFineRootsLitter	kg N ha-1	treeNitrogenFineRootsLitter	126	1
+cells	SafeCell	treeNitrogenCoarseRootsLitter	kg N ha-1	treeNitrogenCoarseRootsLitter	127	1
 climate	SafeMacroClimat	minTemperature	°	Minimum temperature of the air	1	1
 climate	SafeMacroClimat	maxTemperature	°	Maximum temperature of the air	2	1
 climate	SafeMacroClimat	minRelativeHumidity	°	Minimum relative humidity of the air	3	1
@@ -351,20 +346,16 @@ plot	SafePlot	totalNitrogenVolatilisationOrganic	kg N ha-1	Total of nitrogen org
 plot	SafePlot	totalBiomassRestitution	t ha-1	Total of biomass restitution in the plot	71	1
 plot	SafePlot	totalCarbonResidus	kgC.ha-1	Total of carbon residus in the plot	72	1
 plot	SafePlot	totalNitrogenResidus	kgN.ha-1	Total of nitrogen residus in the plot	73	1
-plot	SafePlot	totalTreeCarbonLeafLitter	kg C ha-1	Total of carbon from trees leaves litter in the plot	74	1
+plot	SafePlot	totalTreeCarbonFoliageLitter	kg C ha-1	Total of carbon from trees leaves litter in the plot	74	1
 plot	SafePlot	totalTreeCarbonBranchesLitter	kg C ha-1	Total of carbon from trees branches litter in the plot	75	1
 plot	SafePlot	totalTreeCarbonFruitLitter	kg C ha-1	Total of carbon from trees fruits litter in the plot	76	1
 plot	SafePlot	totalTreeCarbonFineRootsLitter	kg C ha-1	Total of carbon from trees fine roots litter in the plot	77	1
 plot	SafePlot	totalTreeCarbonCoarseRootsLitter	kg C ha-1	Total of carbon from trees coarse roots litter in the plot	78	1
-plot	SafePlot	totalTreeCarbonFineRootsDeepLitter	kg C ha-1	Total of carbon from trees deep fine root litter in the plot	79	1
-plot	SafePlot	totalTreeCarbonCoarseRootsDeepLitter	kg C ha-1	Total of carbon from trees deep coarse root litter in the plot	80	1
 plot	SafePlot	totalTreeNitrogenBranchesLitter	kg N ha-1	Total of nitrogen from trees branches litter in the plot	81	1
 plot	SafePlot	totalTreeNitrogenFruitLitter	kg N ha-1	Total of nitrogen from trees fruits litter in the plot	82	1
-plot	SafePlot	totalTreeNitrogenLeafLitter	kg N ha-1	Total of nitrogen from trees leaves litter in the plot	83	1
+plot	SafePlot	totalTreeNitrogenFoliageLitter	kg N ha-1	Total of nitrogen from trees leaves litter in the plot	83	1
 plot	SafePlot	totalTreeNitrogenFineRootsLitter	kg N ha-1	Total of nitrogen from trees fine roots litter in the plot	84	1
 plot	SafePlot	totalTreeNitrogenCoarseRootsLitter	kg N ha-1	Total of nitrogen from trees  coarse roots litter in the plot	85	1
-plot	SafePlot	totalTreeNitrogenFineRootsDeepLitter	kg N ha-1	Total of nitrogen from trees deep fine root litter in the plot	86	1
-plot	SafePlot	totalTreeNitrogenCoarseRootsDeepLitter	kg N ha-1	Total of nitrogen from trees deep coarse root litter in the plot	87	1
 plot	SafePlot	totalCarbonHumusStock	kg C ha-1	Total amount of carbon (active + inactive) in the soil humus pool of the plot	88	1
 plot	SafePlot	totalActiveCarbonHumusStock	kg C ha-1	Total of active carbon in the soil humus pool of the plot	89	1
 plot	SafePlot	totalInactiveCarbonHumusStock	kg C ha-1	Total of inactive carbon in the soil humus pool of the plot	90	1
@@ -473,6 +464,13 @@ trees	SafeTree	nitrogenCoarseRoots	kg N	Nitrogen pool in tree coarse roots	56	1
 trees	SafeTree	nitrogenFineRoots	kg N	Nitrogen pool in tree fine roots	57	1
 trees	SafeTree	nitrogenLabile	kg N	Nitrogen in tree labile pool	58	1
 trees	SafeTree	nitrogenFruit	kg N	Nitrogen in tree fruit pool	58	1
+trees	SafeTree	nitrogenFoliageIncrement	kg C	Nitrogen foliage daily allocated	80	1
+trees	SafeTree	nitrogenBranchesIncrement	kg C	Nitrogen branch daily allocated	81	1
+trees	SafeTree	nitrogenStemIncrement	kg C	Nitrogen stem daily allocated	82	1
+trees	SafeTree	nitrogenStumpIncrement	kg C	Nitrogen stump daily allocated	83	1
+trees	SafeTree	nitrogenCoarseRootsIncrement	kg C	Nitrogen coarse roots daily allocated	84	1
+trees	SafeTree	nitrogenFineRootsIncrement	kg C	Nitrogen fine roots daily allocated	85	1
+trees	SafeTree	nitrogenFruitIncrement	kg C	Nitrogen fruit daily allocated	85	1
 trees	SafeTree	totalNitrogenFoliageSen	kg N	Nitrogen senesced in tree foliage	59	1
 trees	SafeTree	nitrogenCoarseRootsSen	kg N	Nitrogen senesced in tree coarse roots (includes roots above and below the humification depth)	60	1
 trees	SafeTree	nitrogenCoarseRootsSenAnoxia	kg N	Nitrogen senesced in tree coarse roots caused by anoxia (includes roots above and below the humification depth)	61	1
@@ -515,6 +513,7 @@ trees	SafeTree	carbonCoarseRootsSenAnoxia	kg C	Carbon senesced in tree coarse ro
 trees	SafeTree	carbonBranchesExported	kg C	Carbon exported (removed from scene) in branches. Occurs during any tree thinning or branch pruning.	91	1
 trees	SafeTree	carbonFoliageExported	kg C	Carbon exported (removed from scene) in foliage. Occurs during tree thinning or branch pruning when leaves are present.	92	1
 trees	SafeTree	carbonStemExported	kg C	Carbon exported (removed from scene) in stem. Occurs during any tree thinning.	93	1
+trees	SafeTree	carbonStumpExported	kg C	Carbon exported (removed from scene) in stem. Occurs during any tree thinning.	93	1
 trees	SafeTree	carbonFruitExported	kg C	Carbon exported (removed from scene) in fruit.	93	1
 trees	SafeTree	totalCarbonBranchesDeadOnTree 	kg C	Carbon branches dead on tree.	93	1
 trees	SafeTree	nCFoliage	kg N kg C -1	N/C ratio of tree foliage pool	94	1
@@ -528,7 +527,6 @@ trees	SafeTree	nCLabile	kg N kg C -1	N/C ratio of tree labile pool	100	1
 trees	SafeTree	aboveGroundCFraction	ratio	Fraction of woody C located within stem and branches. Woody compartments include stem, branches, stump, and coarse roots. 	101	1
 trees	SafeTree	aboveGroundAllocFrac	ratio	Carbon above ground allocation fraction	100	1
 trees	SafeTree	belowGroundAllocFrac	ratio	Carbon below ground allocation fraction	100	1
-trees	SafeTree	carbonCoarseRootsTarget	kg C	carbonCoarseRootsTarget	100	1
 trees	SafeTree	carbonCoarseRootsImbalance	kg C	carbonCoarseRootsImbalance	100	1
 trees	SafeTree	budburstAccumulatedTemperature	-	budburstAccumulatedTemperature	125	1
 trees	SafeTree	budburstAccumulatedColdTemperature	-	budburstAccumulatedColdTemperature	125	1
@@ -590,31 +588,35 @@ voxels	SafeVoxel	colonisationDirection	-	Colonisation Direction	15	1
 voxels	SafeVoxel	treeRootsDensity	m m-3	Tree fine roots density	16	1
 voxels	SafeVoxel	treeRootsDensitySen	m m-3	Tree fine roots density senescence	16	1
 voxels	SafeVoxel	totalTreeRootsDensity	m roots m-3 soil	Sum of fine roots density from all trees	17	1
+voxels	SafeVoxel	totalTreeRootsDensitySen	kg	totalTreeRootsDensitySen 	38	1
 voxels	SafeVoxel	treeWaterUptake	liters	Tree water uptake	18	1
 voxels	SafeVoxel	totalTreeWaterUptake	liters	Sum of water uptake by all trees	19	1
 voxels	SafeVoxel	treeNitrogenUptake	g N 	Tree nitrogen uptake quantity	20	1
 voxels	SafeVoxel	totalTreeNitrogenUptake	g N 	N uptake by tree 	21	1
-voxels	SafeVoxel	treeCarbonCoarseRoots	kg C	Tree coarse roots biomass	22	1
-voxels	SafeVoxel	treeCarbonCoarseRootsSen	Kg	tree treeCarbonCoarseRootsSen	23	1
-voxels	SafeVoxel	treeNitrogenCoarseRootsSen	Kg	tree treeNitrogenCoarseRootsSen	24	1
-voxels	SafeVoxel	treeCarbonFineRootsSen	Kg	tree treeCarbonFineRootsSen	25	1
-voxels	SafeVoxel	treeNitrogenFineRootsSen	Kg	treeNitrogenFineRootsSen	26	1
 voxels	SafeVoxel	mineralNitrogenStock	g N 	Nitrogen stock No3+Nh4	27	1
-voxels	SafeVoxel	nitrogenRootsResidu	g N 	nitrogenRootsResidu	29	1
+voxels	SafeVoxel	cumulatedTreeNitrogenRootsSen	kg N 	cumulatedTreeNitrogenRootsSen	29	1
+voxels	SafeVoxel	treeDeepRootsMineralisation	kg N 	treeDeepRootsMineralisation	29	1
 voxels	SafeVoxel	nitrogenAvailableForBoth	g N 	nitrogenAvailableForBoth	30	1
 voxels	SafeVoxel	nitrogenAvailableForTrees	g N 	nitrogenAvailableForTrees	31	1
 voxels	SafeVoxel	nitrogenAvailableForCrops	g N 	nitrogenAvailableForCrops	32	1
 voxels	SafeVoxel	saturationDuration	days	Number of days since saturation in this voxel was initiated	33	1
 voxels	SafeVoxel	treeRootsAgeInWater	days	Number of days tree have roots in water table	33	1
-voxels	SafeVoxel	totalTreeCarbonFineRoots	kg C	C total carbon tree fine roots	36	1
-voxels	SafeVoxel	totalTreeCarbonCoarseRoots	kg C	C total carbon tree coarses roots	36	1
-voxels	SafeVoxel	totalTreeCarbonCoarseRootsSen	kg C	C senesced from coarse roots by tree 	34	1
-voxels	SafeVoxel	totalTreeNitrogenCoarseRootsSen	g N 	N senesced from coarse roots by tree 	35	1
-voxels	SafeVoxel	totalTreeCarbonFineRootsSen	kg C	C senesced from fine roots by tree 	36	1
-voxels	SafeVoxel	totalTreeNitrogenFineRootsSen	g N 	N senesced from fine roots by tree 	37	1
+voxels	SafeVoxel	totalTreeCarbonFineRoots	kg C	total carbon tree fine roots	36	1
+voxels	SafeVoxel	totalTreeCarbonCoarseRoots	kg C	total carbon tree coarses roots	36	1
+voxels	SafeVoxel	totalTreeNitrogenFineRoots	kg N	total N tree fine roots	36	1
+voxels	SafeVoxel	totalTreeNitrogenCoarseRoots	kg N	total N tree coarses roots	36	1
+voxels	SafeVoxel	totalTreeCarbonFineRootsSen	kg C	total senescent carbon tree fine roots	36	1
+voxels	SafeVoxel	totalTreeCarbonCoarseRootsSen	kg C	total senescent carbon tree coarses roots	36	1
+voxels	SafeVoxel	totalTreeNitrogenFineRootsSen	kg N	total senescent N tree fine roots	36	1
+voxels	SafeVoxel	totalTreeNitrogenCoarseRootsSen	kg N	total senescent N tree coarses roots	36	1
 voxels	SafeVoxel	totalTreeCarbonCoarseRootsTarget	kg	totalTreeCarbonCoarseRootsTarget 	38	1
 voxels	SafeVoxel	totalTreeCarbonCoarseRootsImbalance	kg	totalTreeCarbonCoarseRootsImbalance 	38	1
-voxels	SafeVoxel	totalTreeRootsDensitySen	kg	totalTreeRootsDensitySen 	38	1
+voxels	SafeVoxel	surfaceCarbonResidues	kg C	surfaceCarbonResidues 	38	1
+voxels	SafeVoxel	deepCarbonResidues	kg C	deepCarbonResidues 	38	1
+voxels	SafeVoxel	rootCarbonResidues	kg C	rootCarbonResidues 	38	1
+voxels	SafeVoxel	surfaceNitrogenResidues	kg N	surfaceNitrogenResidues 	38	1
+voxels	SafeVoxel	deepNitrogenResidues	kg N	deepNitrogenResidues 	38	1
+voxels	SafeVoxel	rootNitrogenResidues	kg N	rootNitrogenResidues 	38	1
 voxelsDetail	SafeVoxel	coefWater0	-	Voxel automata variable	1	1
 voxelsDetail	SafeVoxel	coefNitrogen0	-	Voxel automata variable	2	1
 voxelsDetail	SafeVoxel	coefCost0	-	Voxel automata variable	3	1
@@ -729,20 +731,16 @@ zones	SafeCropZone	totalNitrogenVolatilisationOrganic	kg N ha-1	Total of nitroge
 zones	SafeCropZone	totalBiomassRestitution	t ha-1	Total of biomass restitution in the zone	74	1
 zones	SafeCropZone	totalCarbonResidus	kgC.ha-1	Total of carbon residus in the zone	75	1
 zones	SafeCropZone	totalNitrogenResidus	kgN.ha-1	Total of nitrogen residus in the zone	76	1
-zones	SafeCropZone	totalTreeCarbonLeafLitter	kg C ha-1	Total of carbon from trees leaves litter in the zone	77	1
+zones	SafeCropZone	totalTreeCarbonFoliageLitter	kg C ha-1	Total of carbon from trees leaves litter in the zone	77	1
 zones	SafeCropZone	totalTreeCarbonBranchesLitter	kg C ha-1	Total of carbon from trees branches litter in the zone	78	1
 zones	SafeCropZone	totalTreeCarbonFruitLitter	kg C ha-1	Total of carbon from trees fruits litter in the zone	79	1
 zones	SafeCropZone	totalTreeCarbonFineRootsLitter	kg C ha-1	Total of carbon from trees fine roots litter in the zone	80	1
 zones	SafeCropZone	totalTreeCarbonCoarseRootsLitter	kg C ha-1	Total of carbon from trees coarse roots litter in the zone	81	1
-zones	SafeCropZone	totalTreeCarbonFineRootsDeepLitter	kg C ha-1	Total of carbon from trees deep fine root litter in the zone	82	1
-zones	SafeCropZone	totalTreeCarbonCoarseRootsDeepLitter	kg C ha-1	Total of carbon from trees deep coarse root litter in the zone	83	1
 zones	SafeCropZone	totalTreeNitrogenBranchesLitter	kg N ha-1	Total of nitrogen from trees branches litter in the zone	84	1
 zones	SafeCropZone	totalTreeNitrogenFruitLitter	kg N ha-1	Total of nitrogen from trees fruits litter in the zone	85	1
-zones	SafeCropZone	totalTreeNitrogenLeafLitter	kg N ha-1	Total of nitrogen from trees leaves litter in the zone	86	1
+zones	SafeCropZone	totalTreeNitrogenFoliageLitter	kg N ha-1	Total of nitrogen from trees leaves litter in the zone	86	1
 zones	SafeCropZone	totalTreeNitrogenFineRootsLitter	kg N ha-1	Total of nitrogen from trees fine roots litter in the zone	87	1
 zones	SafeCropZone	totalTreeNitrogenCoarseRootsLitter	kg N ha-1	Total of nitrogen from trees  coarse roots litter in the zone	88	1
-zones	SafeCropZone	totalTreeNitrogenFineRootsDeepLitter	kg N ha-1	Total of nitrogen from trees deep fine root litter in the zone	89	1
-zones	SafeCropZone	totalTreeNitrogenCoarseRootsDeepLitter	kg N ha-1	Total of nitrogen from trees deep coarse root litter in the zone	90	1
 zones	SafeCropZone	totalCarbonHumusStock	kg C ha-1	Total amount of carbon (active + inactive) in the soil humus pool of the zone	91	1
 zones	SafeCropZone	totalActiveCarbonHumusStock	kg C ha-1	Total of active carbon in the soil humus pool of the zone	92	1
 zones	SafeCropZone	totalInactiveCarbonHumusStock	kg C ha-1	Total of inactive carbon in the soil humus pool of the zone	93	1
