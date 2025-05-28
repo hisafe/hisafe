@@ -45,7 +45,8 @@ Installation
 ### Hi-sAFe
 
 The model runs on PC, Mac, and Linux platforms and requires Java Runtime Environment version 1.8 or later.
-For installation refers to the installation guide in the /doc folder
+You can request an installer package (containing all the necessary code and configuration) from the Hi-sAFe website: https://www1.montpellier.inra.fr/wp-inra/hi-safe/demande-login/?redirect_to=%2Fwp-inra%2Fhi-safe%2Fespace-membre%2F
+Alternatively, you can compile the code and create your own installer (this requires good IT skills). For installation refers to the installation guide in the /doc folder
 
 ### hisafer
 
