@@ -74,6 +74,7 @@ public class SafeWaterCompetitionModel  {
 			if (tree.isPlanted() && !tree.isHarvested()) {
 				
 				double treeTotalRootLenght = tree.computeTotalRootLength();
+
 				if (treeTotalRootLenght>0) tree.computePlantWaterPotential();
 				
 				if (tree.getWaterDemand () > 0) {
@@ -124,42 +125,67 @@ public class SafeWaterCompetitionModel  {
 				
 				//for the crop
 				if (voxels[iz].getCropRootsDensity () > 0) {
-					SafeCrop crop = cell.getCrop();
+					SafeCrop crop = cell.getCrop();	
 					voxels[iz].computePlantRhizospherePotential (crop, generalParameters);
-
-					
 				}
 
-				//Same for trees roots
-				for (int t=0; t < voxels[iz].getTreeRootsDensitySize();t++) {
+			}
+		}
 
-					if (voxels[iz].getTheTreeRootsDensity(t) > 0) {
-						int treeId = t+1;
-						SafeTree tree = (SafeTree) (stand.getTree (treeId));
-						if (tree != null) {					//tree can be missing after a thinning intervention
-							voxels[iz].computePlantRhizospherePotential (tree, generalParameters);
-						}
+		//FOR  EACH ROOTED VOXEL BY TREES, CALCULATION OF WATER AND NITROGEN UPTAKE POTENTIAL
+		for (Iterator iter=stand.getTrees().iterator(); iter.hasNext(); ) {
+			SafeTree tree = (SafeTree)iter.next();
+			if (tree.isPlanted() && !tree.isHarvested()) {
+			
+		
+				SafePlantRoot treeRoot = (SafePlantRoot) tree.getPlantRoots();
+				if (treeRoot.getRootTopology() != null) {
+	
+					for (Iterator c = treeRoot.getRootTopology().iterator (); c.hasNext ();) {					
+						SafeVoxel voxel = (SafeVoxel) c.next ();
+						voxel.computePlantRhizospherePotential (tree, generalParameters);
 					}
 				}
 			}
 		}
-
-		//FOR EACH VOXEL, RAZ OF WATER UPTAKE POTENTIAL
+		
+		//FOR EACH VOXEL AND EACH PLANT, RAZ OF WATER UPTAKE POTENTIAL
 		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell theCell	= (SafeCell)iter.next();
 			SafeVoxel voxels[] = theCell.getVoxels();
 			for (int iz=0; iz<voxels.length; iz++) {
-					voxels[iz].razWaterUptakePotential ();
+					voxels[iz].razWaterNitrogenUptakePotential ();
+					voxels[iz].setIsTreated(false);
 			}
 		}	
+		//FOR  EACH ROOTED VOXEL BY TREES, CALCULATION OF WATER AND NITROGEN UPTAKE POTENTIAL
+		for (Iterator iter=stand.getTrees().iterator(); iter.hasNext(); ) {
+			SafeTree tree = (SafeTree)iter.next();
+			if (tree.isPlanted() && !tree.isHarvested()) {
+				
+				SafePlantRoot treeRoot = (SafePlantRoot) tree.getPlantRoots();
+				if (treeRoot.getRootTopology() != null) {
+				
+					for (Iterator c = treeRoot.getRootTopology().iterator (); c.hasNext ();) {					
+						SafeVoxel voxel = (SafeVoxel) c.next ();
+						voxel.countWaterUptakePotential (generalParameters, true); 
+						voxel.countNitrogenUptakePotential (stand, generalParameters);	
+						voxel.setIsTreated(true);
+					}
+				}
+			}
+		}
 		
-		//FOR EACH VOXEL, CALCULATION OF WATER AND NITROGEN UPTAKE POTENTIAL
+		//FOR EACH OTHERS VOXEL, CALCULATION OF WATER AND NITROGEN UPTAKE POTENTIAL
 		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell theCell	= (SafeCell)iter.next();
 			SafeVoxel voxels[] = theCell.getVoxels();
 			for (int iz=0; iz<voxels.length; iz++) {
-					voxels[iz].countWaterUptakePotential (generalParameters); 
+				
+				if (!voxels[iz].getIsTreated()) {
+					voxels[iz].countWaterUptakePotential (generalParameters, false); 
 					voxels[iz].countNitrogenUptakePotential (stand, generalParameters);	
+				}
 			}
 		}
 
@@ -257,7 +283,6 @@ public class SafeWaterCompetitionModel  {
 					double nitrogenUptake = treeRoot.calculateNitrogenUptake (stand, tree,  treeNitrogenDemand);
 					tree.setNitrogenUptake(nitrogenUptake);
 
-
 					//add fixation 
 					if (tree.getTreeSpecies().getNitrogenFixation()) {
 						tree.setNitrogenAvailable (tree.getNitrogenUptake() + tree.getBnfNitrogenFixation());
@@ -307,6 +332,7 @@ public class SafeWaterCompetitionModel  {
 			if (tree.isPlanted() && !tree.isHarvested()) {
 				
 				double treeTotalRootLenght = tree.computeTotalRootLength();
+	
 				if (treeTotalRootLenght>0) tree.computePlantWaterPotential();
 				
 				if (tree.getWaterDemand () > 0) {
@@ -379,16 +405,38 @@ public class SafeWaterCompetitionModel  {
 			SafeCell theCell	= (SafeCell)iter.next();
 			SafeVoxel voxels[] = theCell.getVoxels();
 			for (int iz=0; iz<voxels.length; iz++) {
-				voxels[iz].razWaterUptakePotential ();
+				voxels[iz].razWaterNitrogenUptakePotential ();
+				voxels[iz].setIsTreated(false);
 			}
 		}	
 
-		//FOR EACH VOXEL, CALCULATION OF WATER UPTAKE POTENTIAL
+		//FOR  EACH ROOTED VOXEL BY TREES, CALCULATION OF WATER AND NITROGEN UPTAKE POTENTIAL
+		for (Iterator iter=stand.getTrees().iterator(); iter.hasNext(); ) {
+			SafeTree tree = (SafeTree)iter.next();
+			if (tree.isPlanted() && !tree.isHarvested()) {
+			
+				SafePlantRoot treeRoot = (SafePlantRoot) tree.getPlantRoots();
+				for (Iterator c = treeRoot.getRootTopology().iterator (); c.hasNext ();) {
+					
+					SafeVoxel voxel = (SafeVoxel) c.next ();
+					
+					voxel.countWaterUptakePotential (generalParameters, false); 
+					voxel.countNitrogenUptakePotential (stand, generalParameters);	
+					voxel.setIsTreated(true);
+				}
+			}
+		}
+		
+		//FOR EACH OTHERS VOXEL, CALCULATION OF WATER AND NITROGEN UPTAKE POTENTIAL
 		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
 			SafeCell theCell	= (SafeCell)iter.next();
+
 			SafeVoxel voxels[] = theCell.getVoxels();
 			for (int iz=0; iz<voxels.length; iz++) {
-				voxels[iz].countWaterUptakePotential (generalParameters);
+				if (!voxels[iz].getIsTreated()) {
+					voxels[iz].countWaterUptakePotential (generalParameters, false); 
+					voxels[iz].countNitrogenUptakePotential (stand, generalParameters);	
+				}
 			}
 		}
 			
@@ -471,6 +519,7 @@ public class SafeWaterCompetitionModel  {
 			if (tree.isPlanted() && !tree.isHarvested()) {
 				
 				double treeTotalRootLenght = tree.computeTotalRootLength();
+
 				if (treeTotalRootLenght>0) tree.computePlantWaterPotential();
 
 				if (tree.getWaterDemand () > 0) {
@@ -535,24 +584,44 @@ public class SafeWaterCompetitionModel  {
 		}
 			
 		//FOR EACH VOXEL, RAZ OF WATER UPTAKE POTENTIAL
-		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
-			SafeCell theCell	= (SafeCell)iter.next();
-			cellArea = theCell.getArea();
-			SafeVoxel voxels[] = theCell.getVoxels();
-			for (int iz=0; iz<voxels.length; iz++) {
-					voxels[iz].razWaterUptakePotential ();
-			}
-		}	
+				for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
+					SafeCell theCell	= (SafeCell)iter.next();
+					SafeVoxel voxels[] = theCell.getVoxels();
+					for (int iz=0; iz<voxels.length; iz++) {
+						voxels[iz].razWaterNitrogenUptakePotential ();
+						voxels[iz].setIsTreated(false);
+					}
+				}	
 
-		//FOR EACH VOXEL, CALCULATION OF WATER UPTAKE POTENTIAL
-		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
-			SafeCell theCell	= (SafeCell)iter.next();
-			cellArea = theCell.getArea();
-			SafeVoxel voxels[] = theCell.getVoxels();
-			for (int iz=0; iz<voxels.length; iz++) {
-					voxels[iz].countWaterUptakePotential (generalParameters);
-			}
-		}
+				//FOR  EACH ROOTED VOXEL BY TREES, CALCULATION OF WATER AND NITROGEN UPTAKE POTENTIAL
+				for (Iterator iter=stand.getTrees().iterator(); iter.hasNext(); ) {
+					SafeTree tree = (SafeTree)iter.next();
+					if (tree.isPlanted() && !tree.isHarvested()) {
+
+						SafePlantRoot treeRoot = (SafePlantRoot) tree.getPlantRoots();
+						for (Iterator c = treeRoot.getRootTopology().iterator (); c.hasNext ();) {
+							
+							SafeVoxel voxel = (SafeVoxel) c.next ();
+							
+							voxel.countWaterUptakePotential (generalParameters, false); 
+							voxel.countNitrogenUptakePotential (stand, generalParameters);	
+							voxel.setIsTreated(true);
+						}
+					}
+				}
+				
+				//FOR EACH OTHERS VOXEL, CALCULATION OF WATER AND NITROGEN UPTAKE POTENTIAL
+				for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {
+					SafeCell theCell	= (SafeCell)iter.next();
+			
+					SafeVoxel voxels[] = theCell.getVoxels();
+					for (int iz=0; iz<voxels.length; iz++) {
+						if (!voxels[iz].getIsTreated()) {
+							voxels[iz].countWaterUptakePotential (generalParameters, false); 
+							voxels[iz].countNitrogenUptakePotential (stand, generalParameters);	
+						}
+					}
+				}
 			
 		//FOR EACH CROP, CALCULATION OF WATER UPTAKE AND STRESS
 		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {

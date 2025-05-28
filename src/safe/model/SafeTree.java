@@ -55,7 +55,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 
 import jeeb.lib.defaulttype.SimpleCrownDescription;
@@ -209,13 +208,13 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	/**  Capture factor for diffuse NIR (m2)    */
 	private double	captureFactorForDiffuseNir;		
 	/** Direct PAR intercepted  (Moles PAR)  */
-	private double	directParIntercepted;				
+	private float	directParIntercepted;				
 	/**  Diffuse PAR intercepted  (Moles PAR)   */
-	private double	diffuseParIntercepted;			
+	private float	diffuseParIntercepted;			
 	/**  Global radiation intercepted  (MJ)    */
-	private double	globalRadIntercepted;				
+	private float	globalRadIntercepted;				
 	/**   Infra red intercepted  (Watts)   */
-	private double	infraRedIntercepted;				
+	private float	infraRedIntercepted;				
 	/**  Capture factor for direct Par if the tree were alone    */
 	private double	cFdirectLonelyTree;			
 	/**  Capture factor for diffuse Par if the tree were alone    */
@@ -602,8 +601,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	private double 	carbonFineRootsSenAnoxiaAnnual;
 	/**  Annual carbon coarse roots senescence by anoxia (kg C)   */
 	private double 	carbonCoarseRootsSenAnoxiaAnnual;
-	
 
+	
 	/**
 	 * Constructor for new SafeTree.
 	 * @param stand Reference on GScene object
@@ -811,6 +810,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		this.setCarbonCoarseRootsSenAnoxia (0);
 		this.setNitrogenFineRootsSenAnoxia (0);
 		this.setNitrogenCoarseRootsSenAnoxia (0);
+
 		this.setCarbonStemExported (0);
 		this.setCarbonStumpExported (0);
 		this.setCarbonFoliageExported (0);
@@ -1396,6 +1396,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	*/
 	public void coarseRootsInitialisation (SafePlot plot) throws Exception  {		
 
+
 		PlotOfCells plotc = (PlotOfCells) plot; 
 				
 		//Coarse root topology type defines priority to parent determination
@@ -1411,6 +1412,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		SafeRootNode plantedNode = this.getPlantRoots().getRootTopology (plantedVoxel);
 		this.getPlantRoots().setFirstRootNode (plantedNode);
 
+		
 		//for each voxel of the PLOT
 		for (Iterator c = plot.getCells ().iterator (); c.hasNext ();) {
 			SafeCell cell = (SafeCell) c.next ();
@@ -1422,7 +1424,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 					SafeVoxel parentVoxel = null;
 					int direction = 0;
 					int directionSide = 0;
-					
+
 					//if the voxel is not the voxel reference where the tree is planted
 					if (voxels[i] != plantedVoxel) {
 
@@ -1560,7 +1562,9 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 								SafeRootNode fatherNode = this.getPlantRoots().getRootTopology (parentVoxel);
 								node.setNodeParent(fatherNode);
 								fatherNode.addNodeColonised (node);									
-								node.computeDistanceFromFather(direction);	//calculate distance from father
+								node.computeDistanceFromFather(direction);	//calculate distance from father							
+								node.setTreeDistance (fatherNode.getTreeDistance () + node.getFatherDistance());
+
 								node.computeEffDist(this);
 								voxels[i].setColonisationDirection(treeId, direction);
 						}
@@ -1600,13 +1604,13 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			firstNode.computeCarbonCoarseRootsTarget (this,	
 													  null,
 													  this.getTreeSpecies().getWoodDensity(),
-													  this.getTreeSpecies ().getWoodCarbonContent (),
+													  this.getTreeSpecies().getWoodCarbonContent (),
 													  this.getTreeSpecies().getCRAreaToFRLengthRatio());
 
 			this.setCarbonCoarseRoots (this.getTargetCarbonCoarseRoots());
 
 			double optiNCCoarseRoot = this.getTreeSpecies ().getOptiNCCoarseRoot ();
-			double nitrogenCoarseRootsTarget   = this.getTargetCarbonCoarseRoots() * optiNCCoarseRoot;
+			double nitrogenCoarseRootsTarget = this.getTargetCarbonCoarseRoots() * optiNCCoarseRoot;
 			double totalNodeImbalance = this.getTargetCarbonCoarseRoots(); 
 			
 			//calculation of coarse root  for each root node
@@ -1854,7 +1858,6 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			else 
 				lueStress = Math.min(lueWaterStress, lueNitrogenStress);
 
-
 			//TEMPERATURE STRESS - Nicolas BARBAULT - April 2022
 			double Tmin = this.getTreeSpecies().getLueTemperatureStressTMin();
 			double Tmax = this.getTreeSpecies().getLueTemperatureStressTMax();
@@ -1913,7 +1916,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 							* co2LueEffect
 							* leafLue[index]						// gr C MJ-1 (PAR)
 							/ 1000;									// gr to kg	
-
+	
 				}
 			}
 		}
@@ -1926,16 +1929,20 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		setCo2WueEffect(co2WueEffect);
 		
 		// COARSE ROOTS ANOXIA IF WATER TABLE
-		if (((SafeSoil) stand.getPlot().getSoil()).isWaterTable()) 
-			getPlantRoots().getFirstRootNode().computeCoarseRootsAnoxia(this, 
-																		generalParameters, 
-																		stand.getPlot().getSoil().getHumificationDepth());
+		if (((SafeSoil) stand.getPlot().getSoil()).isWaterTable()) {
+			double humificationDepth = stand.getPlot().getSoil().getHumificationDepth();
+			this.rootAnoxia (humificationDepth);
+		}
 		
 		//FINE ROOT SENESCENCE AFTER BUDBURST ONLY
 		if (isFirstYearStarted ()) {
 			if (getPlantRoots().getFirstRootNode() != null) {
 				
+				double carbonFR = getCarbonFineRoots(); 
+				double nitrogenFR = getNitrogenFineRoots(); 
+
 				this.setTargetCarbonCoarseRoots(0);
+
 				getPlantRoots().getFirstRootNode().computeCarbonCoarseRootsTarget  (this, 
 																					null,
 																					this.getTreeSpecies().getWoodDensity(), 
@@ -1944,7 +1951,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 				getPlantRoots().getFirstRootNode().computeFineRootsSenescence  (this, 
 																				generalParameters, 
-																				stand.getPlot().getSoil().getHumificationDepth());
+																				stand.getPlot().getSoil().getHumificationDepth(),
+																				carbonFR, nitrogenFR);
 			}			
 		}
 
@@ -1974,6 +1982,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		this.computeAllometricGrowth (stand, generalParameters);
 
 		//FINE ROOTS GROWTH
+	
 		if (getPlantRoots().getFirstRootNode() != null && this.getCarbonFineRootsIncrement() > 0) {
 			double [] additionalRootLenght = this.calculateAdditionalRootToVoxels (this.getCarbonFineRootsIncrement());
 			this.fineRootGrowth(simulationDay, additionalRootLenght);
@@ -2859,7 +2868,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 				//sink force computation
 				carbonCoarseRootsSink = Math.max(getTargetCarbonCoarseRoots()-getCarbonCoarseRoots(),0);
 
-				
+
 				if((carbonCoarseRootsSink+carbonFineRootsSink)>this.belowGroundGrowth){
 					belowGroundSink = carbonCoarseRootsSink + carbonFineRootsSink;
 					fineRootsAllocFrac = carbonFineRootsSink/belowGroundSink;
@@ -2868,6 +2877,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 					coarseRootsAllocFrac = 1-fineRootsAllocFrac;
 					coarseRootsGrowth =  this.belowGroundGrowth * coarseRootsAllocFrac;
 					setCarbonCoarseRootsIncrement (coarseRootsGrowth);
+
 				} else {
 					fineRootsGrowth=carbonFineRootsSink;
 					fineRootsAllocFrac=fineRootsGrowth/this.belowGroundGrowth;				
@@ -3349,10 +3359,9 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	private double [] calculateAdditionalRootToVoxels (double carbonFineRootsIncrement) {	
 
 		double  specificRootLength 	= this.getTreeSpecies().getSpecificRootLength ();
-
 		int treeIndex = this.getId()-1;			//index of this tree
 
-		//compute nbr voxel in this plot
+		//compute number of voxels in this plot
 		SafeCell treeCell = (SafeCell) this.getCell();
 		int nbVoxelTot = 0;
 		SafePlot plot = (SafePlot) treeCell.getPlot();
@@ -3361,17 +3370,15 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		//temporary storing tables
 		double [] additionalRootLenght    = new double [nbVoxelTot];	//m
 
-		//convert carbon entry (kg C) in root lenght (m)
+		//convert carbon entry (kg C) in root length (m)
 		double carbonToDryMatter = 1d / this.getTreeSpecies ().getWoodCarbonContent();
 		double frCost = 1/(carbonToDryMatter*1000*specificRootLength); // 1/(Kg.Kg-1*g.Kg-1*m.g-1)=Kg.m-1
 		double additionalRoot = carbonFineRootsIncrement/frCost;	//Kg/Kg.m-1 = m
 		
-		// la methode computeFineRootCost est une methode recursive, qui va calculer le cout en carbone des nouvelles racines fines 
-		//(prenant en compte les besoins en racines de structure) pour l'ensemble des voxels colonises par l'arbre.
-		double rootedVolume = getPlantRoots().getFirstRootNode().computeRootedVolume();
-
+		//computing carbon required for this new additional fine roots 
+		double rootedVolume = getPlantRoots().getFirstRootNode().computeRootedVolume();	//recursive method 
 		getPlantRoots().getFirstRootNode().setFineRootsCost (0);
-		getPlantRoots().getFirstRootNode().computeFineRootsCost(treeIndex,
+		getPlantRoots().getFirstRootNode().computeFineRootsCost(treeIndex,				//recursive method 
 									           additionalRoot,
 									           rootedVolume,
 									           this.getTreeSpecies().getWoodDensity(),
@@ -3405,8 +3412,24 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 				}
 			}
 		 }
-
-			
+		
+		//calculation of water, nitrogen and fine root cost mark for each voxel where there is fine root growth 
+		//Explanation for Water (it is the same for nitrogen) 
+		//waterMark for a voxel is proportional to the water extraction efficiency in that voxel (waterUptake/fineRootLength)
+		//This proportion is defined by a straight line whose origin (value of the mark for efficiency = 0) is equal to the value of the water stress exponent LocalWaterUptakeFactor
+		//and the maximum value (for efficiency=efficiencyMax) is equal to 1+LocalWaterUptakeFactor
+		//if LocalWaterUptakeFactor = 0, the mark is always 1, regardless of stress
+		//if WaterStress = 1 (no water stress) and LocalWaterUptakeFactor>0, the mark varies between 1 and 1+LocalWaterUptakeFactor
+		//this allows more carbon to be allocated in the voxels where water extraction is more efficient, but this does not handicap the others too much 
+		//If WaterStress < 1 and LocalWaterUptakeFactor > 0, the mark varies between WaterStress^LocalWaterUptakeFactor and 1+LocalWaterUptakeFactor. 
+		//The higher the water stress, the more the voxels in which water extraction is inefficient are penalized.
+		//Explanation for costMark
+		//This mark is inversely proportional to the cost of fine roots (fineRootCost)
+		//If fineRootCost=0, the mark is equal to 1+sinkDistanceEffect (parameter)
+		//the mark is equal to 1 for fineRootCost=fineRootCostMax
+		//the global mark of a voxel is proportional to the product of the three marks costMark*nitrogenMark*waterMark
+		//the sum of the marks of all voxels is equal to 1.
+		
 		double  localWaterUptakeFactor = this.getTreeSpecies().getLocalWaterUptakeFactor();
 		double  localNitrogenUptakeFactor = this.getTreeSpecies().getLocalNitrogenUptakeFactor();
 		double  sinkDistanceEffect = this.getTreeSpecies().getSinkDistanceEffect();
@@ -3431,7 +3454,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			coefCost[1] = -sinkDistanceEffect/fineRootsCostMax; 	 
 		 
 		double totalMark = 0; 
-			
+		
+
 		for (Iterator c = getPlantRoots().getRootTopology().iterator (); c.hasNext ();) {
 			SafeVoxel voxel = (SafeVoxel) c.next ();
 			SafeRootNode node = getPlantRoots().getRootTopology (voxel);
@@ -3458,33 +3482,12 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 					voxel.setWaterMark(waterMark);
 					voxel.setNitrogenMark(nitrogenMark);
 					voxel.setCostMark(costMark);	
-
 				}
 			}
 		}
 
-
-		// explication des notes pour l'eau et l'azote :
-		// j'explique pour l'eau, c'est exactement pareil pour l'azote
-		// la note waterMark pour un voxel est proportionnelle a l'efficience d'extraction d'eau dans ce voxel (waterUptake/fineRootLength)
-		// cette proportionnalite est definie par une droite dont l'origine (valeur de la note pour une efficience = 0) est egale a la valeur du stress hydrique exposant LocalWaterUptakeFactor, et la valeur maximale (pour efficience=efficienceMax) est egale a 1+LocalWaterUptakeFactor
-		// grace a ce formalisme, on a le comportement suivant :
-		// si LocalWaterUptakeFactor = 0, la note est toujours 1, independemment du stress
-		// si WaterStress = 1 (pas de stress hydrique) et LocalWaterUptakeFactor>0, la note varie entre 1 et 1+LocalWaterUptakeFactor, cela permet d'allouer plus de carbone dans les voxels ou l'extraction d'eau est plus efficace, mais cela n'handicape pas trop les autres (ce qui permet aux autres notes, nitrogenMark et costMark de s'appliquer)
-		// si WaterStress  < 1 et LocalWaterUptakeFactor>0, la note varie entre WaterStress^LocalWaterUptakeFactor et 1+LocalWaterUptakeFactor. Plus le stress hydrique est fort, plus les voxels dans lesquels l'extraction d'eau est peu efficace sont penalises.
-		
-		// explication de la note costMark :
-		// cette note est inversement proportionnelle au cout des racines fines (fineRootCost)
-		// Si fineRootCost=0, la note est egale a 1+sinkDistanceEffect (parametre)
-		// la note est egale a 1 pour fineRootCost=fineRootCostMax
-		
-		// la note globale d'un voxel est proportionnelle au produit des trois note costMark*nitrogenMark*waterMark
-		// la somme des notes de tous les voxels est egale a 1. C'est pour cela qu'on calcule d'abord la somme de costMark*nitrogenMark*waterMark pour l'ensemble des voxels
-		// on obtient les notes definitives en divisant les notes costMark*nitrogenMark*waterMark par cette somme.
-		
-		//FIRST LOOP - FOR EACH ROOTED VOXEL,
-		//Calculation of carbon allocation
-		//proportionally to water and nitrogen Uptake Efficiency
+		//FOR EACH ROOTED VOXEL, calculation of additional root length (m)
+		//proportionally to water nitrogen and fine root coast marks
 		if (getPlantRoots().getRootTopology() != null) {
 
 			//FOR EACH VOXEL in  root topology map
@@ -3493,6 +3496,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			
 				//if voxel is rooted by this tree
 				double voxelRootDensity =  voxel.getTheTreeRootsDensity (treeIndex);	//m m-3
+
 				if (voxelRootDensity > 0) {
 	
 					int voxelId = voxel.getId()-1;
@@ -3512,11 +3516,11 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 					}
 
 					double voxelAdditionalRoot = additionalRoot * proportion;	    //m
-					additionalRootLenght[voxelId] += voxelAdditionalRoot  ; 		//m;				
+					additionalRootLenght[voxelId] += voxelAdditionalRoot  ; 		//m;	
 				}
 			}
 		}
-		return additionalRootLenght; 
+		return additionalRootLenght; //return the table of additionalRootLenght for each voxel
 	}
 	/**
 	 * Cellular automata for fine roots growth : root colonisation
@@ -3529,8 +3533,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 		int treeIndex = this.getId()-1;			//index of this tree
 
-		System.out.println("=== day ="+simulationDay);
-		
+
 		//compute nbr voxel in this plot
 		SafeCell treeCell = (SafeCell) this.getCell();
 		SafePlot plot = (SafePlot) treeCell.getPlot();
@@ -3631,13 +3634,12 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 					L[1]=coef*L[1];
 					L[2]=coef*L[2];
 		
+					// voxel shape distortion for plagiotropism
+					// voxel is distorted par lambda but total volume is preserved
+					// Si lambda = 0.5, the voxel shape is not distorted
+					// Si lambda <0.5,  voxel is flatten (thickness z is diminished, width x and y are increases)
+					// Si lambda >0.5, it is the contrary
 
-					// voxel dimensions modification for plagiotropism
-					// le voxel est deforme par lambda. 
-					// Si lambda = 0.5, la forme du voxel est conservÃ¯Â¿Â½e
-					// Si lambda <0.5, le voxel est aplati (son epaisseur z est diminuee, ses largeurs x et y sont augmentees)
-					// Si lambda >0.5, c'est le contraire
-					// le volume total du voxel est conserve, c'est le pourquoi des 1/sqrt(2*lambda)
 					
 					L[0]=1/Math.sqrt(2*lambda)*L[0];
 					L[1]=1/Math.sqrt(2*lambda)*L[1];
@@ -3653,11 +3655,6 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 					int neighboursColonisedNumber = 0;
 					boolean[] colonisation = new boolean[6];
 
-					if (cell.getId()==46) {
-					System.out.println("=== day="+simulationDay+" cell="+cell.getId()+" voxel="+voxel.getZ());
-					System.out.println("additionalRootToVoxel="+additionalRootToVoxel+" voxelFilling="+voxelFilling);
-					System.out.println("FRTotalInvest="+getPlantRoots().getRootTopology(voxel).getFineRootsTotalInvestment());
-					}
 					
 					for(int n=0;n<6;n++){
 
@@ -3676,28 +3673,25 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 								// dir = 0 for x, 1 for y and 2 for z
 								// there are three thresholds for colonisation :	
 								// in the smaller direction, threshold is T1=Lmin^3
-								//	in the medium direction, threshold is T2=Lmin*Lmoy^2
-								//	in the larger direction, threshold is T3=Lmin*Lmoy*Lmax
+								// in the medium direction, threshold is T2=Lmin*Lmoy^2
+								// in the larger direction, threshold is T3=Lmin*Lmoy*Lmax
 								
-								// pour bien comprendre le pourquoi de ces trois seuil, il faut imaginer un petit cube dont le volume est egal a voxelFilling, 
-								// et qui grossit au centre du voxel. Lorsque qu'il touche un premier bord (seuil 1), il colonise un premier voxel
-								// ensuite, il continue a se developper mais il n'est plus cubique 
-								// car sa croissance dans la premiere dimension s'est arretee faute de place dans le voxel... 
-								// jusqu'a toucher un second bord (seuil 2)
-								// a la fin, il ne se developpe plus que dans une direction, jusqu'a atteindre le seuil 3.
+								//to fully understand the reason for these three thresholds we must imagine a small cube whose volume is equal to voxelFilling, 
+								//and which grows in the center of the voxel
+								//When it touches a first edge (threshold 1), it colonizes a first voxel
+								//then it continues to expand but it is no longer cubic because its growth in the first dimension stopped due to lack of space in the voxel
+								//until touching a second edge (threshold 2)
+								//In the end, it only develops in one direction, until it reaches threshold 3.
 								double T3threshold = L[0]*L[1]*L[2]*(1+geo);
-								if (cell.getId()==46) System.out.println("n="+n+" T3threshold="+T3threshold);
 								double T2threshold = (Lmin*Math.pow(L[dir],2)*(1-geo))+(L[0]*L[1]*L[2]*geo);
-								if (cell.getId()==46) System.out.println("n="+n+" T2threshold="+T2threshold);
 								double T1threshold = (Math.pow(L[dir],3)*(1-geo))+(L[0]*L[1]*L[2]*geo);
-								if (cell.getId()==46) System.out.println("n="+n+" T1threshold="+T1threshold);
+
 								
 								if(L[dir]>=Lmax){
 
 									if(voxelFilling > T3threshold){												
 										colonisation[n] = true;
 										neighboursColonisedNumber++;	
-										if (cell.getId()==46) System.out.println("===colonisation T3 "+neighbours[n].getCell().getId()+" voxel="+neighbours[n].getZ());
 											
 									} else {
 										colonisation[n]=false;
@@ -3709,8 +3703,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 										if (voxelFilling > T2threshold){
 											colonisation[n] = true;
 											neighboursColonisedNumber++;
-											if (cell.getId()==46) System.out.println("===colonisation T2 "+neighbours[n].getCell().getId()+" voxel="+neighbours[n].getZ());
-											
+												
 										} else {
 											colonisation[n]=false;
 										}
@@ -3720,7 +3713,6 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 										if(voxelFilling > T1threshold){
 											colonisation[n] = true;
 											neighboursColonisedNumber++;
-											if (cell.getId()==46) System.out.println("===colonisation T1 "+neighbours[n].getCell().getId()+" voxel="+neighbours[n].getZ());
 											
 										} else {
 											colonisation[n]=false;
@@ -3731,11 +3723,11 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 						}								
 					}
 
-					//colonisationFraction of AdditionnalRoot for colonisation
-					//(1-colonisationFraction) of AdditionnalRoot for proliferation 
-					// L'idee est d'allouer une faible partie du carbone a la colonisation. 
-					//La colonisation est uniquement une initialisation d'un nouveau SafeRootNode. 
-					// Les pas de temps suivants, les quantites de racines dans ce nouveau voxel seront gerees par la proliferation
+					//NEW VOXELS COLONISATION
+					//The idea is to allocate a small portion of the carbon to colonization.
+					//Colonization is only an initialization of a new SafeRootNode.
+					//In next time steps, the root quantities in this new voxel will be managed by proliferation
+
 					if (neighboursColonisedNumber > 0){
 						for (int n=0; n<6; n++){
 							if (colonisation[n]){
@@ -3743,7 +3735,6 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 								getPlantRoots().addTreeRootTopology (this, neighbours[n], voxel, simulationDay, colonisationRootLength/neighbours[n].getVolume(), n);
 								neighbours[n].setTreeRootsDensity(treeIndex,colonisationRootLength/neighbours[n].getVolume()); 
 								neighbours[n].setColonisationDirection(treeIndex, n);	
-
 							}
 						}
 						additionalRootToVoxel = additionalRootToVoxel * (1-colonisationFraction);
@@ -3753,7 +3744,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 				
 					if(voxelRootDensity > 0){
 						voxel.setTreeRootsDensity (treeIndex, voxelRootDensity);
-						
+
 						getPlantRoots().getRootTopology(voxel).setFineRootsDensity(voxelRootDensity);
 						getPlantRoots().getRootTopology(voxel).addFineRootsTotalInvestment(additionalRootToVoxel/voxel.getVolumeFineSoil());
 
@@ -3783,7 +3774,6 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			}
 		}
 	}
-
 	
 	/**
 	 * Coarse roots growth
@@ -3862,6 +3852,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 		double plantPotential = 0;
 		
+	
+		
 		for (Iterator c = getPlantRoots().getRootTopology().iterator (); c.hasNext ();) {
 			SafeVoxel voxel = (SafeVoxel) c.next ();
 			SafeRootNode node = getPlantRoots().getRootTopology (voxel);
@@ -3878,7 +3870,6 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 													/this.getTreeSpecies().getTreeRootConductivity()	// cm day-1
 													/(this.getTotalRootLength()*100);					// m to cm
 								
-				
 				this.getPlantRoots().setRadialTransportPotential(radialTransportPotential);
 				
 	
@@ -3893,22 +3884,18 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 				// in the model documentation from Meine et al, this term is not divided by totalRootLength... but it leads to very different longitudinal drop potential for small and large trees because of differences in water demand... so...
 				this.getPlantRoots().setLongitudinalTransportPotential(longitudinalTransportPotential);
 				neededPot += longitudinalTransportPotential*node.getTreeDistance();	// topological distance (m) between the voxel and stem base
-	
 				
 				// additional potential to account for voxel depth
 				neededPot -= voxel.getZ()*100;		// from m to cm
-	
-		
+
 				plantPotential += (-node.getFineRootsDensity() * voxel.getVolume()	// m.m-3 * m3 = m
 										/ Math.pow(-neededPot, drySoilFactor));	// cm
 
-				
 			}
 		}
 
-		
 		plantPotential =-Math.pow (-this.getTotalRootLength() /plantPotential , 1/drySoilFactor);
-
+		
 		this.getPlantRoots().setRequiredWaterPotential(plantPotential);
 
 	}
@@ -4059,6 +4046,107 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			return (1);
 
 		}
+	}
+	
+	
+	/**
+	* Tree  roots pruning after soil management - gt-09.07.2009
+	* If soil management depth is below the gravity center of a voxel the coarse root in this voxel and all depending topology are removed
+	* @param cell Reference to SafeCell object where the soilmanagement occurs
+	* @param soilManagementDepth Soil management depth (m)
+	* @param humificationDepth Soil humification depth (m)
+	*/
+	public void soilManagement (SafePlot plot, int simulationJulianDay, double humificationDepth) {
+
+		boolean remove = false; 
+		double carbonFR = getCarbonFineRoots(); 
+		double nitrogenFR = getNitrogenFineRoots(); 
+		double carbonCR = getCarbonCoarseRoots();
+		double nitrogenCR = getNitrogenCoarseRoots();
+		
+		for (Iterator c = getPlantRoots().getRootTopology().iterator (); c.hasNext ();) {
+			SafeVoxel voxel = (SafeVoxel) c.next ();
+			SafeRootNode node = getPlantRoots().getRootTopology (voxel);
+			float voxelSurface = (float)voxel.getSurfaceDepth();
+			float soilManagementDepth = voxel.getCell().getCrop().getSoilManagementDepth(simulationJulianDay);
+			// If soil management depth is below the gravity center of a voxel,
+			// the coarse root in this voxel and all depending topology are removed
+			if (soilManagementDepth > 0 && voxelSurface < soilManagementDepth) {
+
+				float removedProp = 0;
+				boolean testAnoxia = false;
+				if ((float)voxel.getZ() < soilManagementDepth) 
+					removedProp = 1;
+				else 
+					removedProp = (soilManagementDepth-voxelSurface) / (float)voxel.getThickness();
+				
+				remove = true;
+				node.getNodeParent().removeSonsRoots(voxel, this,  removedProp, testAnoxia, humificationDepth, carbonFR, nitrogenFR, carbonCR, nitrogenCR);
+
+			}
+		}
+		
+		if (remove) removeDeadRoots();
+
+	}
+	
+	/**
+	* Tree  roots anoxia 
+	* @param humificationDepth Soil humification depth (m)
+	*/
+	public void rootAnoxia (double humificationDepth) {
+
+		boolean remove = false; 
+		double carbonFR = getCarbonFineRoots(); 
+		double nitrogenFR = getNitrogenFineRoots(); 
+		double carbonCR = getCarbonCoarseRoots();
+		double nitrogenCR = getNitrogenCoarseRoots();
+		int treeIndex = this.getId()-1;
+		
+		for (Iterator c = getPlantRoots().getRootTopology().iterator (); c.hasNext ();) {
+			SafeVoxel voxel = (SafeVoxel) c.next ();
+			SafeRootNode node = getPlantRoots().getRootTopology (voxel);
+
+
+			//if the voxel is saturated 
+			//roots are killed and colonised voxels also 
+			if (voxel.getIsSaturated ()) {
+			
+				if (voxel.getTheTreeRootsAgeInWater (treeIndex) > this.getTreeSpecies ().getCoarseRootAnoxiaResistance ()) {
+					boolean testAnoxia = true;
+					float proportion = 1;
+					remove = true;
+					node.removeSonsRoots (null, this,  proportion, testAnoxia, humificationDepth, carbonFR, nitrogenFR, carbonCR, nitrogenCR); 
+					voxel.setTreeRootsAgeInWater (treeIndex, 0);	
+				}
+			}
+
+		}
+		
+		if (remove) removeDeadRoots();
+
+	}
+	/**
+	* Tree remove dead root from root topology  
+	*/
+	public void removeDeadRoots () {
+
+		for (Iterator c = getPlantRoots().getRootTopology().iterator (); c.hasNext ();) {
+			SafeVoxel voxel = (SafeVoxel) c.next ();
+			SafeRootNode node = getPlantRoots().getRootTopology (voxel);
+			int treeIndex = this.getId()-1;
+			//delete the root node
+			if (voxel.getTheTreeCarbonCoarseRoots(treeIndex) ==  0) {
+			
+				c.remove ();
+				this.getPlantRoots().getRootTopology ().remove (voxel);
+			
+				SafeRootNode nodeParent  = node.getNodeParent ();
+				nodeParent.getNodeColonised().remove (node);
+
+			}		
+		}
+
 	}
 	
 	/**
@@ -4601,49 +4689,58 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	 */	
 	public void rootPruning (SafeStand stand, double rootPruningDistance, double rootPruningDepth) {
 
+
 		double cellWidth = stand.getPlot().getCellWidth();
+		double plotWidth = stand.getPlot().getXSize();
+		
 		double xPruningLeft = this.getX()-rootPruningDistance;
 		double xPruningRight= this.getX()+rootPruningDistance;
+		if (xPruningLeft<0) xPruningLeft = xPruningLeft+plotWidth;
+		if (xPruningRight > plotWidth)  xPruningRight = xPruningRight-plotWidth;
+		
+		double carbonFR = this.getCarbonFineRoots(); 
+		double nitrogenFR = this.getNitrogenFineRoots(); 
+		double carbonCR = this.getCarbonCoarseRoots();
+		double nitrogenCR = this.getNitrogenCoarseRoots();
+		
+		boolean remove = false;
+		
+		
+		for (Iterator c = getPlantRoots().getRootTopology().iterator (); c.hasNext ();) {
+			SafeVoxel voxel = (SafeVoxel) c.next ();
+			SafeRootNode node = getPlantRoots().getRootTopology (voxel);
+			
+			  if (voxel.getSurfaceDepth() < rootPruningDepth) {
+				  //no root pruning in the cell where the tree is planted
+				  if (this.getCell().getId() != voxel.getCell().getId()) {
+					  
+					  double cellXMin = voxel.getCell().getX();
+					  double cellXMax = voxel.getCell().getX()+cellWidth;
 
-		//searching cells at the right root pruning distance
-		for(Iterator it = stand.getPlot().getCells().iterator();it.hasNext();) { 
-		  SafeCell c = (SafeCell) it.next(); 
-		  
-		  //no root pruning in the cell where the tree is planted
-		  if (this.getCell().getId() != c.getId()) {
-			  
-			  double cellXMin = c.getX();
-			  double cellXMax = c.getX()+cellWidth;
-	 
-			  //check if distance is respected
-			  if ( ((cellXMin < xPruningLeft) && (cellXMax > xPruningLeft))  ||  ((cellXMin < xPruningRight) && (cellXMax > xPruningRight))					  
-					 || (cellXMax == xPruningLeft)  || (cellXMin == xPruningRight)) {
-	
-				SafeVoxel voxels [] =  c.getVoxels(); 
-	
-				for (int i=0; i < voxels.length; i++) {
-				  if (voxels[i].getSurfaceDepth() < rootPruningDepth) {
-	
-					  if (getPlantRoots().getRootTopology(voxels[i]) != null) {
-						  if(getPlantRoots().getRootTopology(voxels[i]).getNodeParent() != null) 		{ 
-							  
-								float removedProp = 0;
-								boolean testAnoxia = false;
-								if (voxels[i].getZ() < rootPruningDepth) 
-									removedProp = 1;
-								else 
-									removedProp = (float) ((rootPruningDepth-voxels[i].getSurfaceDepth()) / voxels[i].getThickness());
-	
-								getPlantRoots().getRootTopology(voxels[i]).getNodeParent().removeSonsRoots(voxels[i], this, removedProp, testAnoxia, stand.getPlot().getSoil().getHumificationDepth()); 
-
-						  }
-					  }
+					// If soil management depth is below the gravity center of a voxel,
+					// the coarse root in this voxel and all depending topology are removed
+					  //check if distance is respected
+					  if ( ((cellXMin < xPruningLeft) && (cellXMax > xPruningLeft))  ||  ((cellXMin < xPruningRight) && (cellXMax > xPruningRight))					  
+							 || (cellXMax == xPruningLeft)  || (cellXMin == xPruningRight)) {
+		
+						  float removedProp = 0;
+						  boolean testAnoxia = false;
+						  if (voxel.getZ() < rootPruningDepth) 
+								removedProp = 1;
+						  else 
+								removedProp = (float) ((rootPruningDepth-voxel.getSurfaceDepth()) / voxel.getThickness());
+						
+						remove = true;
+						node.getNodeParent().removeSonsRoots(voxel, this,  removedProp, testAnoxia, stand.getPlot().getSoil().getHumificationDepth(), carbonFR, nitrogenFR, carbonCR, nitrogenCR);
+		
+					}
 				  }
-				}
-			  } 
-		  }
-		} 
+			  }
+		}
+
+		if (remove) removeDeadRoots();
 	}	
+	
 	
 	
 	/**
@@ -4881,18 +4978,17 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		float directProp = dailyDirect/(dailyDirect+dailyDiffuse);
 		float dailyGlobal = dayClimat.getGlobalRadiation();
 		setGlobalRadIntercepted(dailyGlobal*(
-							(captureFactorForDiffuseNir*(1-parProp)+
-							captureFactorForDiffusePar*parProp) * (1-directProp)+
-							(captureFactorForDirectNir*(1-parProp)+
-							captureFactorForDirectPar*parProp) * (directProp)
-							));
+							(getCaptureFactorForDiffuseNir()*(1-parProp)+
+							 getCaptureFactorForDiffusePar()*parProp) * (1-directProp)+
+							(getCaptureFactorForDirectNir()*(1-parProp)+
+							 getCaptureFactorForDirectPar()*parProp) * (directProp)));
 
 
 		
 		//Computation of the competition index
-		if((directParIntercepted+diffuseParIntercepted)>0){		// if there is Par interception
-			setLightCompetitionIndex((directParIntercepted+diffuseParIntercepted)
-					/(dailyDirect*cFdirectLonelyTree + dailyDiffuse*cFdiffuseLonelyTree));
+		if((getDirectParIntercepted()+getDiffuseParIntercepted()) > 0){		// if there is Par interception
+			setLightCompetitionIndex((getDirectParIntercepted()+getDiffuseParIntercepted())
+					/(dailyDirect*getCFdirectLonelyTree() + dailyDiffuse*getCFdiffuseLonelyTree()));
 		}
 
 		//InfraRed Radiation intercepted
@@ -4924,27 +5020,25 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		captureFactorForDiffusePar +=  e;
 	}
 	public void addDirect (double e) {
-		captureFactorForDirectPar +=  e;
+		captureFactorForDirectPar +=   e;
 	}
 	public void addInfraRed (double e) {
-		captureFactorForInfraRed +=  e;
+		captureFactorForInfraRed +=   e;
 	}
 	public void addDirectNir (double e) {
-		captureFactorForDirectNir +=  e;
+		captureFactorForDirectNir +=   e;
 	}
 	public void addDiffuseNir (double e) {
 		captureFactorForDiffuseNir +=  e;
 	}
 	
-	
 	public void addDirectToLonelyTree (double e) {
-		cFdirectLonelyTree += e;
+		cFdirectLonelyTree +=  e;
 	}
 	public void addDiffuseToLonelyTree (double e) {
 		cFdiffuseLonelyTree +=  e;
 	}
 	
-
 	
 	//TREE SPECIES
 	public SafeTreeSpecies getTreeSpecies () {return treeSpecies ;}
@@ -5273,47 +5367,44 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 
 	//ACCESSOR FOR LIGHT MODULE
-	public double getCaptureFactorForDiffusePar () {
-		return  captureFactorForDiffusePar;
+	public float getCaptureFactorForDiffusePar () {
+		return  (float) captureFactorForDiffusePar;
 	}
-	public double getCaptureFactorForDirectPar () {
-		return  captureFactorForDirectPar;	
+	public float getCaptureFactorForDirectPar () {
+		return  (float)captureFactorForDirectPar;	
 		}
-	public double getCaptureFactorForDirectNir () {
-		return  captureFactorForDirectNir;	
+	public float getCaptureFactorForDirectNir () {
+		return  (float)captureFactorForDirectNir;	
 	}
-	public double getCaptureFactorForDiffuseNir () {
-		return  captureFactorForDiffuseNir;
+	public float getCaptureFactorForDiffuseNir () {
+		return  (float)captureFactorForDiffuseNir;
 		}
-	public double getCaptureFactorForInfraRed () {
-		return  captureFactorForInfraRed;	
+	public float getCaptureFactorForInfraRed () {
+		return  (float)captureFactorForInfraRed;	
 		}
-	
-	
 	public double getDiffuseParIntercepted () {
-		return  diffuseParIntercepted;		
+		return  (double)diffuseParIntercepted;		
 	}
 	public double getDirectParIntercepted () {
-		return  directParIntercepted;		
+		return  (double)directParIntercepted;		
 		}
-	
 	public double getTotalParIntercepted () {
-		return  (directParIntercepted+diffuseParIntercepted) ;		
+		return  (double)(directParIntercepted+diffuseParIntercepted) ;		
 		}	
 	public double getGlobalRadIntercepted () {
-		return  globalRadIntercepted;		
+		return  (double)globalRadIntercepted;		
 		}
 	public double getInfraRedIntercepted () {
-		return  infraRedIntercepted;		
+		return  (double)infraRedIntercepted;		
 		}
 	public double getLightCompetitionIndex() {
 		return  lightCompetitionIndex;		
 		}
-	public double getCFdirectLonelyTree() {
-		return  cFdirectLonelyTree;		
+	public float getCFdirectLonelyTree() {
+		return  (float) cFdirectLonelyTree;		
 		}
-	public double getCFdiffuseLonelyTree() {
-		return  cFdiffuseLonelyTree;			
+	public float getCFdiffuseLonelyTree() {
+		return  (float)  cFdiffuseLonelyTree;			
 		}
 	public double getParInterceptedAnnual () {
 		return  (parInterceptedAnnual);		
@@ -5338,19 +5429,19 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		return v;		
 
 	}
-	public void setCaptureFactorForDiffusePar (double e) {captureFactorForDiffusePar =   e;}
-	public void setCaptureFactorForDirectPar (double e) {captureFactorForDirectPar =   e;}
-	public void setCaptureFactorForDirectNir (double e) {captureFactorForDirectNir =   e;}
-	public void setCaptureFactorForDiffuseNir (double e) {captureFactorForDiffuseNir =   e;}
-	public void setCaptureFactorForInfraRed (double e) {captureFactorForInfraRed = e;}
+	public void setCaptureFactorForDiffusePar (double e) {captureFactorForDiffusePar =  (float) e;}
+	public void setCaptureFactorForDirectPar (double e) {captureFactorForDirectPar =   (float) e;}
+	public void setCaptureFactorForDirectNir (double e) {captureFactorForDirectNir =   (float) e;}
+	public void setCaptureFactorForDiffuseNir (double e) {captureFactorForDiffuseNir =   (float) e;}
+	public void setCaptureFactorForInfraRed (double e) {captureFactorForInfraRed = (float) e;}
 	
-	public void setDiffuseParIntercepted (double e) {diffuseParIntercepted = e;}
-	public void setDirectParIntercepted (double e) {directParIntercepted = e;}
-	public void setGlobalRadIntercepted (double e) {globalRadIntercepted = e;}
-	public void setInfraRedIntercepted (double e) {infraRedIntercepted = e;}
-	public void setLightCompetitionIndex (double e){lightCompetitionIndex = e;}
-	public void setCFdiffuseLonelyTree (double e){cFdiffuseLonelyTree = e;}
-	public void setCFdirectLonelyTree (double e){cFdirectLonelyTree = e;}
+	public void setDiffuseParIntercepted (double e) {diffuseParIntercepted = (float) e;}
+	public void setDirectParIntercepted (double e) {directParIntercepted =  (float)e;}
+	public void setGlobalRadIntercepted (double e) {globalRadIntercepted =  (float)e;}
+	public void setInfraRedIntercepted (double e) {infraRedIntercepted =  (float)e;}
+	public void setLightCompetitionIndex (double e){lightCompetitionIndex =  (float)e;}
+	public void setCFdiffuseLonelyTree (double e){cFdiffuseLonelyTree =  (float)e;}
+	public void setCFdirectLonelyTree (double e){cFdirectLonelyTree =  (float)e;}
 
 
 	//ACCESSOR FOR C AND N ALLOCATION MODULE
@@ -6145,6 +6236,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	}	
 	//for annual export 
 	//return the distance between trunk and most far rooted voxel on tree line
+	//can be false because of toric symetry 
 	public double getMaxRootDistanceOnTreeLine(){
 		double distance = 0;
 	
@@ -6153,11 +6245,13 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			for (Iterator c = getPlantRoots().getRootTopology().iterator (); c.hasNext ();) {
 				SafeVoxel voxel = (SafeVoxel) c.next ();
 				//IL 28-11-2017
-				//je prends la partie entiÃ¯Â¿Â½re car si l'arbre se trouve sur le bord de la cellule le test ne marche plus
+				//rounding to integer to avoid tree on edge effect 
 				if ((int)voxel.getX() == (int)this.getX()) {	
+
 					double ecart = voxel.getY() - this.getY();	
 					if (ecart < 0) ecart = ecart * -1.0d;				
-					distance = Math.max(distance,ecart);	
+					distance = Math.max(distance,ecart);
+					
 				}
 			}	
 		}
@@ -6166,6 +6260,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 	//for annual export 
 	//return the distance between trunk and most far rooted voxel on crop line
+	//can be false because of toric symetry 
 	public double getMaxRootDistanceOnCropLine(){
 		double distance = 0;
 	
@@ -6174,7 +6269,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			for (Iterator c = getPlantRoots().getRootTopology().iterator (); c.hasNext ();) {
 				SafeVoxel voxel = (SafeVoxel) c.next ();		
 				//IL 28-11-2017
-				//je prends la partie entiere car si l'arbre se trouve sur le bord de la cellule le test ne marche plus
+				//rounding to integer to avoid tree on edge effect 
 				if ((int)voxel.getY() == (int)this.getY()) {	
 					double ecart = voxel.getX() - this.getX();
 					if (ecart < 0) ecart = ecart * -1.0d;

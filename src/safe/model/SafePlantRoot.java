@@ -195,7 +195,7 @@ public class SafePlantRoot implements   Serializable {
   	} 
 
 	/**
-	* Calculation of plant water potentiel at stem base
+	* Calculation of plant water potential at stem base
 	* On the basis of the various resistances in the catenary process
 	* @param potentialWaterDemand Potential amount of water demand by plant per day (l*m-2 or mm)
 	* @param campbellFactor Campbell factor (dimensionless) 
@@ -209,12 +209,10 @@ public class SafePlantRoot implements   Serializable {
 								- (1-getWaterDemandReductionFactor ())
 								* (getRadialTransportPotential () + getLongitudinalTransportPotential ()));
 
-
 		setRadialTransportPotential(getRadialTransportPotential()*getWaterDemandReductionFactor());		
 		setLongitudinalTransportPotential(getLongitudinalTransportPotential()*getWaterDemandReductionFactor());
 		
 		return;
-
 	}
 
 
@@ -251,9 +249,7 @@ public class SafePlantRoot implements   Serializable {
 			else {
 				waterUptake = waterUptakePotential;
 			}
-
-
-			
+	
 			//cumulation of water uptaken in the voxel for each plant
 			if (waterUptake > 0) {
 
@@ -272,7 +268,6 @@ public class SafePlantRoot implements   Serializable {
 					}
 					else {
 						
-
 						SafeTree tree = (SafeTree) (plant) ;
 						int treeIndex = tree.getId() - 1;
 						voxel.addTreeWaterUptake  (treeIndex, waterUptake);
@@ -290,7 +285,6 @@ public class SafePlantRoot implements   Serializable {
 		return waterUptakeTotal;
 	}
 
-	
 	/**
 	* Return nitrogen sink strength (kg N m-1) 
 	* 
@@ -313,9 +307,8 @@ public class SafePlantRoot implements   Serializable {
 
 	public double calculateNitrogenUptake (SafeStand stand, Object plant, double nitrogenDemand) {
 
-
 		double nitrogenUptakeTotal = 0;
-		double nitrogenUptakePotentialTotal  	= this.getNitrogenUptakePotential ();	//g
+		double nitrogenUptakePotentialPlant  	= this.getNitrogenUptakePotential ();	//g
 
 		if (this.getRootTopology() == null) return 0;
 
@@ -326,47 +319,47 @@ public class SafePlantRoot implements   Serializable {
 			SafeVoxel voxel = itr.next();
 			SafeRootNode rootNode = getRootTopology (voxel);
 
-  			double nitrogenUptake = 0;
-  			double nitrogenUptakePotential = rootNode.getNitrogenUptakePotential();	//g
+  			double nitrogenUptakeNode = 0;
+  			double nitrogenUptakePotentialNode = rootNode.getNitrogenUptakePotential();	//g
  
-			if (nitrogenUptakePotentialTotal > nitrogenDemand) {
-				nitrogenUptake = nitrogenDemand * nitrogenUptakePotential /nitrogenUptakePotentialTotal;
+			if (nitrogenUptakePotentialPlant > nitrogenDemand) {
+				nitrogenUptakeNode = nitrogenDemand * nitrogenUptakePotentialNode /nitrogenUptakePotentialPlant;
 			}
 			else {
-				nitrogenUptake = nitrogenUptakePotential;
+				nitrogenUptakeNode = nitrogenUptakePotentialNode;
 			}
 
+			
 			//cumulation of nitrogen uptaken in the voxel for each plant
-			if (nitrogenUptake > 0) {
+			if (nitrogenUptakeNode > 0) {
 
-				nitrogenUptakeTotal += nitrogenUptake/1000; //convert g in kg
+				nitrogenUptakeTotal += nitrogenUptakeNode; 
 				
 				if (this.getPlant() instanceof SafeCrop) {
 					SafeCrop crop = (SafeCrop) (plant) ;
-					voxel.addCropNitrogenUptake (nitrogenUptake);		//g
-					rootNode.addNitrogenUptake (nitrogenUptake); 		//g
+					voxel.addCropNitrogenUptake (nitrogenUptakeNode);		//g
+					rootNode.addNitrogenUptake (nitrogenUptakeNode); 		//g
 
 					if(voxel.getIsSaturated())	// gt - 5.02.2009
-						voxel.getCell().addNitrogenUptakeInSaturationByCrop (nitrogenUptake/1000/(voxel.getCell().getArea()/10000));	//convert g in kg ha-1
+						voxel.getCell().addNitrogenUptakeInSaturationByCrop (nitrogenUptakeNode/1000/(voxel.getCell().getArea()/10000));	//convert g in kg ha-1
 				}
 				else {	 	
-					
+
 					SafeTree tree = (SafeTree) (plant) ;
 					int treeIndex = tree.getId() - 1;
-					voxel.addTreeNitrogenUptake  (treeIndex, nitrogenUptake);	//g		
-					rootNode.addNitrogenUptake (nitrogenUptake);				//g
+					voxel.addTreeNitrogenUptake  (treeIndex, nitrogenUptakeNode);	//g		
+					rootNode.addNitrogenUptake (nitrogenUptakeNode);				//g
 		
 					if(voxel.getIsSaturated())	{
-						voxel.getCell().addNitrogenUptakeInSaturationByTrees (nitrogenUptake/1000/(voxel.getCell().getArea()/10000));	//convert g in kg ha-1
-						tree.addNitrogenUptakeInSaturation (nitrogenUptake/1000);	//convert g in kg
+						voxel.getCell().addNitrogenUptakeInSaturationByTrees (nitrogenUptakeNode/1000/(voxel.getCell().getArea()/10000));	//convert g in kg ha-1
+						tree.addNitrogenUptakeInSaturation (nitrogenUptakeNode/1000);	//convert g in kg
 					}
 				}
 			}
 		}
 
-		return nitrogenUptakeTotal;
+		return nitrogenUptakeTotal/1000; //convert g in kg
 	}
-	
 
 	//ACCESSORS FOR PLANT WATER POTENTIALS
 	public Object getPlant () {return immutable.plant;}
@@ -374,13 +367,11 @@ public class SafePlantRoot implements   Serializable {
 		String ret = "";
 		if (this.getPlant() instanceof SafeCrop) {
 			SafeCrop crop = (SafeCrop) (getPlant ()) ;
-			ret=crop.getCell().getId()+" "+crop.getCell().getCropZone().getCropSpecies().getName();
-			
+			ret=crop.getCell().getId()+" "+crop.getCell().getCropZone().getCropSpecies().getName();	
 		}
 		if (this.getPlant() instanceof SafeTree) {
 			SafeTree tree = (SafeTree) (getPlant ()) ;
 			ret=tree.getId()+" "+tree.getTreeSpecies().getName();
-			
 		}
 		return ret;
 	}
@@ -394,7 +385,6 @@ public class SafePlantRoot implements   Serializable {
 	public double getNitrogenSinkStrength () {return nitrogenSinkStrength;}
 	public double getNitrogenUptakePotential () {return nitrogenUptakePotential;}
 
-	
 	public void setTotalRootsLength (double v) {totalRootsLength =  v;}
 	public void setRadialTransportPotential (double v) {radialTransportPotential =  v;}
 	public void setLongitudinalTransportPotential (double v) {longitudinalTransportPotential =  v;}
@@ -432,7 +422,7 @@ public class SafePlantRoot implements   Serializable {
 		if (parentVoxel != null)
 			parentNode = getRootTopology (parentVoxel);
 		
-		SafeRootNode node = new SafeRootNode (this, voxel, parentNode, day, fineRootDensity, tree, direction);
+		SafeRootNode node = new SafeRootNode (this, voxel, parentNode, tree, fineRootDensity, day, direction);
 		rootTopology.put (voxel, node);
   		//no parent = this node is the first one
   		if (parentVoxel == null)
@@ -446,7 +436,7 @@ public class SafePlantRoot implements   Serializable {
 		if (parentVoxel != null)
 			parentNode = getRootTopology (parentVoxel);
 		
-		SafeRootNode node = new SafeRootNode (this, voxel, parentNode, day, fineRootDensity);
+		SafeRootNode node = new SafeRootNode (this, voxel, parentNode, fineRootDensity, day);
 		rootTopology.put (voxel, node);
   		//no parent = this node is the first one
   		if (parentVoxel == null)
@@ -456,6 +446,6 @@ public class SafePlantRoot implements   Serializable {
   	//Add a new  root in a parent voxel (direction = 4 always from the top) 
   	public void addEmptyRootTopology (SafeVoxel voxel) {
 		if (rootTopology == null) rootTopology = new LinkedHashMap<SafeVoxel, SafeRootNode> ();
-  		rootTopology.put (voxel, new SafeRootNode (this, voxel, null, 0, 0, null, 4));
+  		rootTopology.put (voxel, new SafeRootNode (this, voxel, null, null, 0, 0, 4));
   	}
 }

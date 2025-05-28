@@ -344,18 +344,23 @@ public class SafeStand extends TreeList implements Serializable {
 					double treeY = tree.getY ();
 					double crownRadiusTreeLine = tree.getCrownRadiusTreeLine ();
 					double crownRadiusInterRow = tree.getCrownRadiusInterRow ();
-		
 
+					//correction for toric symetry (IL 16/05/2025)
+					double distX = Math.abs (treeX - cellX) ;
+					double distY = Math.abs (treeY - cellY) ;
+					distX = Math.min(distX, Math.abs(distX - this.getPlot().getXSize()));
+					distY = Math.min(distY, Math.abs(distY - this.getPlot().getYSize()));
+					
+					
 					// The cell gravity center is in the crown shape projection
-					if ((Math.pow(cellX - treeX ,2) / Math.pow(crownRadiusInterRow,2))
-						+ (Math.pow (cellY - treeY ,2) / Math.pow(crownRadiusTreeLine,2))
+					if ((Math.pow(distX ,2) / Math.pow(crownRadiusInterRow,2))
+						+ (Math.pow (distY ,2) / Math.pow(crownRadiusTreeLine,2))
 					< 1 ) {
 						
 						cell.setIsTreeAbove (true);
 						cell.addTreeAbove (tree);
 						cell.addLaiTree (tree.getLai());
 						tree.addNbCellsBellow (1);
-					
 					}
 				}
 				
@@ -363,49 +368,7 @@ public class SafeStand extends TreeList implements Serializable {
 		}
 
 	}	
-   /**
-	* Tree  roots pruning after soil management - gt-09.07.2009
-	* If soil management depth is below the gravity center of a voxel the coarse root in this voxel and all depending topology are removed
-	* @param cell Reference to SafeCell object where the soilmanagement occurs
-	* @param soilManagementDepth Soil management depth (m)
-	*/
-	public void treeRootSoilManagement (SafeCell cell, float soilManagementDepth) {
-		
-		SafePlot initPlot = (SafePlot) this.getPlot();
-		
-		for (Iterator it = this.getTrees().iterator(); it.hasNext();) {
-			SafeTree t = (SafeTree) it.next();
-			//if tree has roots
-			if (t.getPlantRoots().getFirstRootNode() != null) {
-				int i = 0;
-				SafeVoxel voxel = cell.getVoxels()[i];
-				float voxelSurface = (float)voxel.getSurfaceDepth();
-
-				
-				while (voxelSurface < soilManagementDepth) {
-					if ((t.getCell().getId() != cell.getId()) && (t.getPlantRoots().getRootTopology(voxel) != null)) {
-
-						if (t.getPlantRoots().getRootTopology(voxel).getNodeParent() != null) {
-							float removedProp = 0;
-							boolean testAnoxia = false;
-
-							
-							if ((float)voxel.getZ() < soilManagementDepth) 
-								removedProp = 1;
-							else 
-								removedProp = (soilManagementDepth-voxelSurface) / (float)voxel.getThickness();
-
-							
-							t.getPlantRoots().getRootTopology(voxel).getNodeParent().removeSonsRoots(voxel, t,  removedProp, testAnoxia, initPlot.getSoil().getHumificationDepth());
-						}
-					}
-					i++;
-					voxel = cell.getVoxels()[i];
-					voxelSurface = (float) voxel.getSurfaceDepth();
-				}
-			}
-		}
-	}
+   
 	
  	
     /**

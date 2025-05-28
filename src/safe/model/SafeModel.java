@@ -1240,11 +1240,18 @@ public class SafeModel extends GModel {
 				newPlot.computeWaterTable(waterTableDepth);
 		}
 
-
-
 		//MINERALISATION of deep root and deep stump (bellow ProfHum) 
 		newPlot.deepSenescentRootsMineralization(getSettings() , newPlot.getSoil().getHumificationDepth());
 	
+		
+		// In case of soil management, some fine roots are removed from trees. // gt-09.07.2009
+		double humificationDepth = newPlot.getSoil().getHumificationDepth();
+		for (Iterator i = newStand.getTrees().iterator(); i.hasNext();) {
+			SafeTree tree = (SafeTree) i.next();
+			if (tree.getPlantRoots().getFirstRootNode() != null) 
+				tree.soilManagement (newPlot, simulationJulianDay, humificationDepth);
+		}
+		
 		// 1) Process growth for the crop on each cell (part I) before water competition	
 		for (Iterator c = newPlot.getCells().iterator(); c.hasNext();) {
 
@@ -1273,12 +1280,9 @@ public class SafeModel extends GModel {
 			int flagFirst = 0;
 			if (cell.getId() == cell.getCropZone().getFirstCellId()) flagFirst = 1;
 
-			// In case of soil management, some fine roots are removed from trees. // gt-09.07.2009
-			// If soil management depth is below the gravity center of a voxel,
-			// the coarse root in this voxel and all depending topology are removed
-			float soilManagementDepth = cell.getCrop().getSoilManagementDepth(simulationJulianDay);
-			if (soilManagementDepth > 0) 
-				newStand.treeRootSoilManagement (cell, soilManagementDepth);	
+
+	
+
 
 			//if automatic irrigation 
 			// the fist cell result has to be copy in other cells of the same ZONE	
@@ -1324,22 +1328,19 @@ public class SafeModel extends GModel {
 
 			SafeTree tree = (SafeTree) i.next();
 
-			if (tree.isPlanted() &&  (!tree.getHarvested())) {
 
-			//	tree.drawRootTopology ();
+
+			
+			if (tree.isPlanted() &&  (!tree.getHarvested())) {
 
 				tree.processGrowth1 (newStand, 
 								    dayClimat, 
 								    climat,
 								    getSettings(),
 								    isDebugMode); 		
-				
 			}
 		}
 
-		
-
-		
 		// Water repartition between trees and crop in each soil voxel
 		if (!getSettings().sticsWaterExtractionForCrop)  {
 			//Compute water stress turfac 
@@ -1481,13 +1482,13 @@ public class SafeModel extends GModel {
 		SafeStand stand = (SafeStand) step.getScene();
 		int day = stand.getWeatherDay();
 		int month = stand.getWeatherMonth();
-
+		int year = stand.getWeatherYear();
 			
 		for (Iterator<SafeExportProfile> c = exports.iterator(); c.hasNext();) {
 			SafeExportProfile p = c.next();
 			int exportFrequency = p.getFrequency();
 			boolean export = false;
-			
+		
 			//pour que l'export tous les 365 jours tombe tjrs le 31/12
 			if (exportFrequency == 365)  {
 				if ((day == 31) && (month == 12)) export = true;
@@ -1496,7 +1497,7 @@ public class SafeModel extends GModel {
 			//tombe tjrs quand le jour suivant est le 1er 
 			else if (exportFrequency == 30)  {
 				try {
-					int year = stand.getWeatherYear();
+				
 					int julian = stand.getJulianDay();
 					julian++;
 					
@@ -1520,15 +1521,19 @@ public class SafeModel extends GModel {
 			else {
 				if (date % exportFrequency == 0) export = true; 
 			}
-			
-			if ((exportFrequency > 0) && (export)) {
 
-				SafeExportNew exp = new SafeExportNew();
-				exp.export(this, step, p);
-				exp.save(p.getFileName(), true);
+	
+
+			if ((exportFrequency > 0) && (export)) {
+		
+					SafeExportNew exp = new SafeExportNew();
+					exp.export(this, step, p);
+					exp.save(p.getFileName(), true);
 
 			}
+
 		}
+
 	}
 	
 	/**

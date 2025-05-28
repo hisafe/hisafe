@@ -177,7 +177,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 	/** Fine root cost mark for colonization calculation */
 	private double costMark;
 
-
+	private boolean isTreated;
 	/** Store value for stress calculation (turfac senfac) */
 	private double waterStockSave;			// liters
 	
@@ -349,9 +349,9 @@ public class SafeVoxel implements Serializable, Identifiable {
 		nitrogenAvailableForCrops = 0;
 	}
 	/**
-	 * RAZ water uptake potential
+	 * RAZ water and nitrogen uptake potential
 	 */
-	public void razWaterUptakePotential () {
+	public void razWaterNitrogenUptakePotential () {
 		if (getRootMap() == null) return;
 		List<SafeRootNode> rootMap = (List<SafeRootNode>) getRootMap();
 		Iterator<SafeRootNode> itr = rootMap.iterator();
@@ -722,7 +722,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 	* @param generalParameters Reference to SafeGeneralParameters object
 	*/
 
-	public void countWaterUptakePotential  (SafeGeneralParameters generalParameters) {
+	public void countWaterUptakePotential  (SafeGeneralParameters generalParameters, boolean debug) {
 
 		//Sorting root map on PHIPF ASC
 		if (getRootMap() == null) return;
@@ -737,10 +737,9 @@ public class SafeVoxel implements Serializable, Identifiable {
 		double rootVGnt = 0;
 		double nextPhiPF = 0;
 		double nextPotential = 0;
-
 		double phiPFSoil = this.getPhi (generalParameters);
 
-
+		
 		//for each plant rooted in this voxel
 		//order by PHIPF
 		Iterator<SafeRootNode> itr = sortedRootMap.iterator();
@@ -749,8 +748,8 @@ public class SafeVoxel implements Serializable, Identifiable {
 			SafeRootNode voxelRoot = itr.next();
 			SafePlantRoot plantRoot  = voxelRoot.getPlantRoots ();
 			double phiPF   = voxelRoot.getPhiPf();
-			double phiPFCrop = phiPF;
-			
+
+
 			if((phiPF > lastPhiPFForRootTotalComputation) && (phiPF<phiPFSoil)){
 				double potWaterUpPerFrd = 0;
 
@@ -760,6 +759,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 				while (itr2.hasNext() && (otherPhiPF==phiPF)) {
 					SafeRootNode otherVoxelRoot = itr2.next();
 					otherPhiPF   = otherVoxelRoot.getPhiPf();
+
 					
 					if (otherPhiPF == phiPF) {
 						double dens = otherVoxelRoot.getFineRootsDensity()/generalParameters.MM3_TO_CMCM3;
@@ -788,7 +788,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 					//SET Stone option : here we can extact water only in voxel fine soil
 					//nextPotential = this.getWaterPotentialTheta();
 					nextPotential = this.getWaterPotentialThetaFineSoil();
-
 				}
 				
 				
@@ -799,7 +798,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 						* this.getThickness()*100		//m to cm
 						* phiRange						//cm2 day-1
 						/ rootVGnt;						// unitless
-
 
 				// calculer la quantite d'eau fournissable par le sol dans cette gamme de phi. 
 				//En deduire alors un vrai uptake potential qui prend ca en compte
@@ -818,12 +816,12 @@ public class SafeVoxel implements Serializable, Identifiable {
 				double waterUptakePotential = potWaterUpPerFrd			// mm.(m.m-3)-1
 										   * density					// cm cm-3
 										   * this.getCell().getArea();	// m2
-				
+
+
 				if (waterUptakePotential > 0) {
 					voxelRoot.addWaterUptakePotential (waterUptakePotential);
-					plantRoot.addWaterUptakePotential (waterUptakePotential);
+					plantRoot.addWaterUptakePotential (waterUptakePotential);			
 				}
-
 			}
 		}
 	}
@@ -968,6 +966,8 @@ public class SafeVoxel implements Serializable, Identifiable {
 
 			//Sum of solo uptake potentials
 			nitrogenZeroSinkTotal += nitrogenZeroSinkPotential;
+
+			
 		}
 
 
@@ -1002,6 +1002,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 			if (nitUptakePot > 0) {
 				voxelRoot.addNitrogenUptakePotential (nitUptakePot);	//g
 				plantRoot.addNitrogenUptakePotential (nitUptakePot);
+
 			}
 		}
 	}
@@ -2264,6 +2265,14 @@ public class SafeVoxel implements Serializable, Identifiable {
  		return waterStockSenfac;
  		
  	}
+ 	
+ 	public void setIsTreated (boolean b) {
+ 		isTreated = b;
+ 	}
+ 	public boolean getIsTreated () {
+ 		return isTreated;
+ 	}
+ 	
 	/**
 	 * Save waterStock
 	 */

@@ -214,6 +214,7 @@ public class SafeLightModel {
 					skyDiffuseMask += energyConvFactor * diffuseEnergy;
 
 					SafeBeam b = new SafeBeam (azimut, heightAngle, diffuseEnergy, 0, 0, (float) energyConvFactor);
+
 					float infraRedEnergy = (float) (2 * Math.sin (heightAngle) * Math.cos (heightAngle)
 							* Math.sin (angleStep) / meridianNb); // Lambertian emmisivity
 
@@ -642,8 +643,6 @@ public class SafeLightModel {
 			// For each beam of discretization of the sky
 			for (SafeBeam beam : (Collection<SafeBeam>) beamSet.getBeams ()) {
 
-
-			
 				double azimut = beam.getAzimut_rad ();
 				double heightAngle = beam.getHeightAngle_rad ();
 				double slopeBeam = -slope * Math.cos (bottomAzimut - azimut); // slope in beam
@@ -667,6 +666,7 @@ public class SafeLightModel {
 																						// with
 																						// trees
 
+		
 					for (Iterator i = beam.getShadingMasks ().iterator (); i.hasNext ();) { // competcell
 						// Vertex3d impact = (Vertex3d) i.next ();
 						SafeShadingMask shadingMask = (SafeShadingMask) i.next ();
@@ -685,7 +685,7 @@ public class SafeLightModel {
 							ShiftItem shift = neighbour.shift; // the shift manages the torus
 																// approaches to work on virtual
 																// infinite plots
-
+			
 							if (!cCell.isEmpty ()) {
 
 								// For each tree in the concurrent cells
@@ -698,6 +698,7 @@ public class SafeLightModel {
 										// tree)
 										SafeInterceptionItem item;
 										item = intercept (plotSettings, cell, tree, beam, impact, shift);
+										
 										if (item != null) {
 											vctI.add (item);								
 										}
@@ -826,7 +827,6 @@ public class SafeLightModel {
 										* (Math.sqrt (leafNirAbsorption) * leafDensity) * pathLength)) * (1 - leafNirReflection);
 								
 
-								
 								// giving energy to the tree
 								// cold deciduous - if leafFall began, Energy is no more given to the tree gt - 01.10.2009 
 								if ((t.getTreeSpecies().getPhenologyType() == 1 && t.getPhenologicalStage () != 3)
@@ -844,13 +844,11 @@ public class SafeLightModel {
 										t.addInfraRed (currentInfraRed * (interceptedInfraRed) * beamInfraRedEnergy
 												* energyConvFactor * impactSize);
 									}
-
 									
+
 									t.addDirect (currentPar * (interceptedPar) * beamDirectEnergy * energyConvFactor
 											* impactSize);
-									
-									
-									
+
 									t.addDirectToLonelyTree ((interceptedPar) * beamDirectEnergy * energyConvFactor
 											* impactSize);
 									t.addDirectNir (currentNir * (interceptedNir) * beamDirectEnergy * energyConvFactor
@@ -925,9 +923,6 @@ public class SafeLightModel {
 			
 		} // end of cells
 	}
-
-
-	
 
 	/**
 	 * Returns the characteristics of an interception for a target cell, a given beam and a given
@@ -1431,8 +1426,8 @@ public class SafeLightModel {
 	 */
 	public static class SafeInterceptionItem implements Comparable {
 
-		private double lEnter;
-		private double pathLength;
+		private float lEnter;
+		private float pathLength;
 		private SafeTree tree;
 		private boolean trunk; // gt 28/05/2010
 		private SafeCell cell;
@@ -1440,8 +1435,8 @@ public class SafeLightModel {
 
 		public SafeInterceptionItem (double le, double pl, SafeCell c, SafeTree t, ShiftItem s, boolean tr) { // gt
 																												// 28/05/2010
-			lEnter = le;
-			pathLength = pl;
+			lEnter = (float) le;
+			pathLength = (float) pl;
 			cell = c;
 			tree = t;
 			shift = s;
@@ -1462,11 +1457,11 @@ public class SafeLightModel {
 		}
 
 		protected double getLEnter () {
-			return lEnter;
+			return (double) lEnter;
 		}
 
 		public double getPathLength () {
-			return pathLength;
+			return (double) pathLength;
 		}
 
 		public SafeCell getCell () {
@@ -1486,7 +1481,11 @@ public class SafeLightModel {
 		} // gt 28/05/2010
 
 		public String toString () {
-			return "cell=" + cell.toString () + "tree=" + tree.toString () + " pathLength=" + pathLength + " lEnter="
+			int idcell = 0;
+			if (cell !=null) idcell = cell.getId();
+			int idtree = 0;
+			if (tree !=null) idtree = tree.getId();
+			return "cell=" + idcell + "tree=" + idtree + " pathLength=" + pathLength + " lEnter="
 					+ lEnter + "trunk = " + trunk; // gt 28/05/2010
 		}
 
