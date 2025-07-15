@@ -488,6 +488,7 @@ public class SafeModel extends GModel {
 				month++;
 				int day = simulationDate.get(GregorianCalendar.DAY_OF_MONTH);
 
+
 				//Daily RAZ 
 				for (Iterator j = initStand.getTrees().iterator(); j.hasNext();) {
 					SafeTree t = (SafeTree) j.next();
@@ -572,14 +573,15 @@ public class SafeModel extends GModel {
 						//FIRST SIMULATION
 						if (year == simulationYearStart && julianDay == dayStart) {
 
-							System.out.println("=========== Simulation year = "+year+" Zone = "+zone.getName()+" ===================");
-
 							if (!isReStart) {	
 								
 								zone.loadFirstItk(year);
 								
 								sticsParam.P_codeinitprec = 1;		//enchainement=Non
 									
+								int julianDayStart = zone.getJulianDayStart(year);
+								int julianDayEnd = zone.getJulianDayEnd (year);
+								
 								//first initialisation of crops in STICS
 								//Stics objects are initialised with initial values			
 								zone.initialiseSticsCrop (safeJNA, 
@@ -588,7 +590,8 @@ public class SafeModel extends GModel {
 										getSettings(), 
 										initPlot.getPlotSettings(), 
 										evolutionParameters,
-										initPlot.getSoil());
+										initPlot.getSoil(),
+										julianDayStart, julianDayEnd);
 								
 								zone.setSimulationDay(julianDay);
 								zone.setSticsSimulationDay(1);
@@ -599,11 +602,16 @@ public class SafeModel extends GModel {
 								
 								initStand.reloadTreeSpecies(evolutionParameters, getSettings());
 
+							 	String previousSpeciesName = "";
+							 	
 								zone.loadNextItk(year);
 								
 								zone.setSticsSimulationDay(1);
 								
 								sticsParam.P_codeinitprec = 2;		//enchainement=Oui
+								
+								int julianDayStart = zone.getJulianDayStart(year);
+								int julianDayEnd = zone.getJulianDayEnd (year);
 								
 								//Re-initialisation of crops in STICS
 								//Stics objects are initialised with last day of previous simulation
@@ -612,21 +620,26 @@ public class SafeModel extends GModel {
 										sticsTransit, 
 										getSettings(), 
 										evolutionParameters,
-										initPlot.getSoil());
+										initPlot.getSoil(),
+										julianDayStart, julianDayEnd,
+										previousSpeciesName);
 
 							}
-
+				
 						}
 						//OTHER SIMULATIONS 
 						else {
 											
 							if (zone.getSimulationFinished()) {							
 
-								System.out.println("=========== Simulation year = "+year+" Zone = "+zone.getName()+" ===================");
+								String previousSpeciesName = zone.getCropSpecies().getName();
 								
 								zone.loadNextItk(year);
 								zone.setSticsSimulationDay(1);
 
+								int julianDayStart = zone.getJulianDayStart(year);
+								int julianDayEnd = zone.getJulianDayEnd (year);
+								
 								sticsParam.P_codeinitprec = 2;		//enchainement=Oui
 								
 								//Re-initialisation of crops in STICS
@@ -636,20 +649,24 @@ public class SafeModel extends GModel {
 										sticsTransit, 
 										getSettings(), 
 										evolutionParameters,
-										initPlot.getSoil());
+										initPlot.getSoil(),
+										julianDayStart, julianDayEnd,
+										previousSpeciesName);
 							}
 						}
 
 						//INIT ANNUAL LOOP 
 						if (zone.isDayStart(year, month, day)) {
 
-							int juliandayStart = zone.getJulianDayStart(year);
-							int juliandayEnd = zone.getJulianDayEnd (year);
+							int julianDayStart = zone.getJulianDayStart(year);
+							int julianDayEnd = zone.getJulianDayEnd (year);
+							
+							System.out.println("==== Simulation year="+year+" month="+month+" day="+day+" julianDay="+julianDay+" zone="+zone.getName()+" crop="+zone.getCropSpecies().getName()+" ====");
 
 							//STICS climat initialisation (365 days max)  
 							SafeSticsClimat sticsClimat = new SafeSticsClimat();
 							
-							climat.loadClimate (sticsClimat, year, juliandayStart, juliandayEnd);
+							climat.loadClimate (sticsClimat, year, julianDayStart, julianDayEnd);
 
 							SafeTestJNA.initClimat(sticsParam, sticsTransit, sticsStation, sticsClimat);
 
@@ -657,7 +674,7 @@ public class SafeModel extends GModel {
 							// Optimization of nbImpactMultiplication for small trees
 							int nbImpactMultiplication = SafeLightModel.nbImpactOptimization(initStand);				
 							SafeLightModel.initialiseBeamSet(initPlot.getPlotSettings(), getSettings(), climat, nbImpactMultiplication);
-
+							
 							for (Iterator c = zone.getCellList().iterator(); c.hasNext();) {
 								SafeCell cell = (SafeCell) c.next();
 
@@ -671,15 +688,15 @@ public class SafeModel extends GModel {
 															cell.getCrop().sticsSoil,
 															cell.getCrop().sticsCrop,
 															cell.getCropZone().getSticsItk(),
-															juliandayStart, 
-															juliandayEnd, 
+															julianDayStart, 
+															julianDayEnd, 
 															cell.getId(),
 															evolutionParameters.outputPath,
 															evolutionParameters.sticsReport);
 								
 								//force LAI 					
 								if (cell.getCrop().sticsCommun.P_codesimul==2) 
-									cell.getCrop().forceLai(year,juliandayStart,juliandayEnd,this.climat.isLeapYear(year));
+									cell.getCrop().forceLai(year,julianDayStart,julianDayEnd,this.climat.isLeapYear(year));
 								
 							}	
 							
@@ -1131,8 +1148,7 @@ public class SafeModel extends GModel {
 					}
 					else {
 						if (zone.isDayEnd(year, month, day)) {
-							
-	
+
 							for (Iterator c = zone.getCellList().iterator(); c.hasNext();) {
 								SafeCell cell = (SafeCell) c.next();
 			
@@ -1146,15 +1162,10 @@ public class SafeModel extends GModel {
 															cell.getId());	
 								
 								cell.getCrop().storeValues(zone.getSticsSimulationDay());
-								
-								
-								
+
 								zone.setSimulationFinished(true);	
 
-								
-								
 							}
-
 
 						}
 						else {
@@ -1249,7 +1260,7 @@ public class SafeModel extends GModel {
 		for (Iterator i = newStand.getTrees().iterator(); i.hasNext();) {
 			SafeTree tree = (SafeTree) i.next();
 			if (tree.getPlantRoots().getFirstRootNode() != null) 
-				tree.soilManagement (newPlot, simulationJulianDay, humificationDepth);
+				tree.soilManagement (newPlot, simulationJulianDay, humificationDepth);	
 		}
 		
 		// 1) Process growth for the crop on each cell (part I) before water competition	
@@ -1281,8 +1292,6 @@ public class SafeModel extends GModel {
 			if (cell.getId() == cell.getCropZone().getFirstCellId()) flagFirst = 1;
 
 
-	
-
 
 			//if automatic irrigation 
 			// the fist cell result has to be copy in other cells of the same ZONE	
@@ -1310,11 +1319,12 @@ public class SafeModel extends GModel {
 										cellVisibleSky,
 										flagFirst);
 
+			
 			// Compute agregation results from STICS mini-couches to voxels
 			// Crop root density, water content, nitrogen concentration
 			cell.miniCouchesToVoxelsAfterStics1 (sticsParam,  waterTableDepth, simulationJulianDay, cell.getCropZone().getSticsSimulationDay());
 
-
+			
 			//After STICS crop root growth 
 			//Recalculation of crop root topology
 			cell.computeCropRootsTopology (simulationJulianDay);
@@ -1440,6 +1450,7 @@ public class SafeModel extends GModel {
 											cell.getTreeNitrogenFruitLitter());
 
 			//STICS PART II
+	
 			cell.getCrop().processGrowth2(safeJNA, 
 										sticsParam, 
 										sticsTransit, 
@@ -1456,6 +1467,8 @@ public class SafeModel extends GModel {
 			// Crop transpiration (if no competition)
 			if (getSettings().sticsWaterExtractionForCrop) 
 				cell.miniCouchesToVoxelsAfterSticsWaterExtraction (getSettings());
+
+			
 			
 		}
 	}
@@ -1483,7 +1496,7 @@ public class SafeModel extends GModel {
 		int day = stand.getWeatherDay();
 		int month = stand.getWeatherMonth();
 		int year = stand.getWeatherYear();
-			
+
 		for (Iterator<SafeExportProfile> c = exports.iterator(); c.hasNext();) {
 			SafeExportProfile p = c.next();
 			int exportFrequency = p.getFrequency();

@@ -637,7 +637,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 			SafeTree t = ((SafeTree)plant);
 			if (t.getPlantRoots().getRootTopology() != null) {
 				plantRoots = t.getPlantRoots();
-				rootDistance = t.getPlantRoots().getRootTopology(this).getEffectiveDistance();
+				rootDistance = plantRoots.getRootTopology(this).getEffectiveDistance();
 				density = this.getTheTreeRootsDensity(t.getId()-1);
 			}
 		}

@@ -80,35 +80,11 @@ public class SafeCropSpecies implements Serializable, Cloneable {
 	/** Relative influence of dry voxels on the calculation of the averaged soil water potential perceived by the plant
 	* When = 1, we use a harmonic average (unitless) */
 	public  double cropHarmonicWeightedMean ;
-	/** Store value P_stamflax from STICS to avoid lost of value when chaining years */
-	public float[] P_stamflax;   
-	/** Store value P_stlevamf from STICS to avoid lost of value when chaining years */
-	public float[] P_stlevamf;   
-	/** Store value P_stlevdrp from STICS to avoid lost of value when chaining years */
-	public float[] P_stlevdrp;     
-	/** Store value P_stflodrp from STICS to avoid lost of value when chaining years */
-	public float[] P_stflodrp;      
-	/** Store value P_stlaxsen from STICS to avoid lost of value when chaining years */
-	public float[] P_stlaxsen;     
-	/** Store value P_stsenlan from STICS to avoid lost of value when chaining years */
-	public float[] P_stsenlan;    
-	/** Store value P_stdrpmat from STICS to avoid lost of value when chaining years */
-	public float[] P_stdrpmat;   
-	/** Store value P_stdrpdes from STICS to avoid lost of value when chaining years */
-	public float[] P_stdrpdes;      
+	
 	
 	/**	Constructor
 	*/
-	public SafeCropSpecies ()   {
-		P_stamflax= new float[30];      
-		P_stlevamf= new float[30];     
-		P_stlevdrp= new float[30];      
-		P_stflodrp= new float[30];      
-		P_stlaxsen= new float[30];      
-		P_stsenlan= new float[30];     
-		P_stdrpmat= new float[30];          
-		P_stdrpdes= new float[30]; 
-	}
+	public SafeCropSpecies ()   {}
 
 	/**
 	 * return Campbell factor (dimensionless) - ICRAF method

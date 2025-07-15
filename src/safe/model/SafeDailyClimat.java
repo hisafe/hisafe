@@ -268,7 +268,7 @@ public class SafeDailyClimat implements  Serializable {
 	/**
 	 * Calculation of rain transformed in snow of the day
 	 * @author Christian DUPRAZ - INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
-	 * @param generalParameters Reference to SafeGeneralParameters object
+	 * @param settings Reference to SafeGeneralParameters object
 	 * @param yesterday Reference on SafeDailyClimat objet : climatic data of the day before today 
 	*/
 	public void calculateSnow (SafeGeneralParameters settings, SafeDailyClimat yesterday) {

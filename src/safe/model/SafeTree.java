@@ -69,7 +69,7 @@ import capsis.kernel.GScene;
 
 /**
  * Safe tree object
- * @author : Christian DUPRAZ - INRA Montpellier France - 2002 
+ * @author : Christian DUPRAZ - INRA Montpellier France - 2002 : initialization - phenology - pruning - root pruning - trimming
  * @author : Grégoire VINCENT - IRD  Montpellier France - 2003 : C allocation and allometric growth
  * @author : Rachmat MULIA    - ICRAF Bogor Indonesia   - 2004 : fine root cellular automata 
  * @author : Grégoire TALBOT  - INRA Montpellier France - 2009 : C allocation - allometric growth - root growth modification 
@@ -610,7 +610,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	 * @param treeSpeciesName Name of the tree species
 	 * @param x X coordinate of the tree on the plot
 	 * @param y Y coordinate of the tree on the plot
-	 * @param z Z coordinate of the tree on the plot (>0 if slope) 
+	 * @param z Z coordinate of the tree on the plot (positive if slope) 
 	 */
 	public SafeTree (	GScene 	stand,
 						int 	id, 					
@@ -765,98 +765,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	/**
 	 * Clone a SafeTree: first calls super.clone (), then clone the SafeTree instance variables.
 	 */
-	public Object clone () {
-
-		SafeTree newTree = (SafeTree) super.clone ();
-
-		return newTree;
-	}
+	public Object clone () {return (SafeTree) super.clone ();}
 	
-	/**
-	 * Reset or add daily results 
-	 */
-	public void razDaily () {
-
-		this.setDirectParIntercepted (0);
-		this.setDiffuseParIntercepted (0);
-		this.setGlobalRadIntercepted (0);
-		this.setInfraRedIntercepted (0);
-		this.setWaterDemand (0);
-		this.setWaterDemandReduced (0);
-		this.setWaterUptake (0);		
-		this.setWaterUptakeInSaturation (0);
-		this.setFloweringHeatStress(1); 
-		this.setFloweringFrostStress(1); 
-		this.setNitrogenDemandAfterFixation (0);
-		this.setNitrogenDemandBeforeFixation(0);
-		this.setNitrogenUptake(0);
-		this.setNitrogenAvailable (0);
-		this.setNitrogenUptakeInSaturation (0);
-		this.setInterceptedRain (0);	
-		this.setStemflow (0);		
-		this.setEvaporatedRain (0);	
-		this.setCarbonFineRootsIncrement(0);
-		this.setCarbonFoliageSen(0);
-		this.setCarbonBranchesSen(0);
-		this.setCarbonFruitSen(0);
-		this.setNitrogenFoliageSen(0);
-		this.setNitrogenBranchesSen(0);
-		this.setNitrogenFruitSen(0);
-		this.setCarbonFineRootsSen (0);
-		this.setCarbonCoarseRootsSen (0);
-		this.setNitrogenFineRootsSen (0);
-		this.setNitrogenCoarseRootsSen (0);	
-		this.setCarbonFineRootsSenAnoxia (0);
-		this.setCarbonCoarseRootsSenAnoxia (0);
-		this.setNitrogenFineRootsSenAnoxia (0);
-		this.setNitrogenCoarseRootsSenAnoxia (0);
-
-		this.setCarbonStemExported (0);
-		this.setCarbonStumpExported (0);
-		this.setCarbonFoliageExported (0);
-		this.setCarbonBranchesExported (0);
-		this.setCarbonFruitExported (0);		 
-		this.setNitrogenStemExported (0);
-		this.setNitrogenStumpExported (0);
-		this.setNitrogenFoliageExported (0);
-		this.setNitrogenBranchesExported (0);	
-		this.setNitrogenFruitExported (0);	
-		this.setNbCellsBellow (0);
-		this.setFruitThinning(0);
-		
-		//litters
-		setCarbonFoliageLitterUnderTree (0);
-		setCarbonBranchesLitterUnderTree (0);
-		setCarbonFruitLitterUnderTree (0);
-		setNitrogenFoliageLitterUnderTree (0);
-		setNitrogenBranchesLitterUnderTree (0);
-		setNitrogenFruitLitterUnderTree (0);
-		setCarbonFoliageLitterAllPlot(0);
-		setCarbonBranchesLitterAllPlot(0);
-		setCarbonFruitLitterAllPlot (0);
-		setNitrogenFoliageLitterAllPlot (0);
-		setNitrogenBranchesLitterAllPlot (0);
-		setNitrogenFruitLitterAllPlot(0);
-		
-		Arrays.fill(this.leafLue, 0);
-		
-		this.nbrDaysSinceLastIrrigation = this.nbrDaysSinceLastIrrigation + 1;
-		this.nbrDaysSinceLastFertilization = this.nbrDaysSinceLastFertilization + 1;
-
-		//store total carbon Pool J-1
-		this.carbonTotalBefore = this.getTotalCarbonFoliage()+ 
-									carbonBranches + 
-									carbonStem + 
-									carbonStump + 
-									carbonFruit+
-									carbonCoarseRoots + 
-									carbonFineRoots+ 
-									carbonLabile; 
-		
-		if (plantRoots != null) plantRoots.razDaily();
-		
-	}
-
 	/**
 	 * Reload the tree species parameter file used when we reopen a project and changing some tree parameters 
 	 * @param evolutionParameters Reference on SafeEvolutionParameters object
@@ -1109,172 +1019,11 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	}
 
 	/**
-	 * Harvesting a SafeTree.
-	 * @param initPlot Reference on SafePlot object
-	 * @param year Harvest year
-	 * @param day Harvest day
-	 */
-	public void harvest (SafePlot initPlot, int year, int day) {
-
-		SafeCell cellPlanted = (SafeCell) this.getCell();
-		cellPlanted.setIdTreePlanted(0); 
-		this.setHarvested(true);
-		this.setHarvestingYear (year);
-		this.setHarvestingDay  (day);
-
-		//Keep carbon pool values exported in the tree
-		this.setCarbonStemExported(this.getCarbonStem());
-		this.setCarbonFoliageExported(this.getTotalCarbonFoliage());
-		this.setCarbonBranchesExported(this.getCarbonBranches());
-		this.setCarbonFruitExported(this.getCarbonFruit());
-		this.setNitrogenStemExported(this.getNitrogenStem());
-		this.setNitrogenFoliageExported(this.getTotalNitrogenFoliage());
-		this.setNitrogenBranchesExported(this.getNitrogenBranches());
-		this.setNitrogenFruitExported(this.getNitrogenFruit());
-
-		//stump is removed or not 
-		this.setCarbonStumpExported(this.getCarbonStump());
-		this.setNitrogenStumpExported(this.getNitrogenStump());
-
-		this.setCarbonStem(0);
-		this.setCarbonBranches(0);
-		this.setCarbonFruit(0);
-		this.setNitrogenStem(0);
-		this.setNitrogenBranches(0);
-		this.setNitrogenFruit(0);
-		this.setCarbonStump(0);
-		this.setNitrogenStump(0);
-		this.setHeight(0);
-		this.setDbh(0);
-		this.setCrownBaseHeight(0);
-		this.setCrownRadiusInterRow(0);
-		this.setCrownRadiusTreeLine(0);
-		this.setCrownRadiusVertical(0);
-		this.setCrownVolume(0);
-		
-		for (int index = 0; index < this.getTreeSpecies().getNbCohortMax(); index++) {
-			this.setLeafArea(0, index);
-			this.setCarbonFoliage(0, index);
-			this.setNitrogenFoliage(0, index);
-		}
-		
-		// root senescence 
-		int treeIndex = this.getId()-1;
-		if (getPlantRoots().getRootTopology() != null) {
-
-			//FOR EACH VOXEL in  root topology map
-			for (Iterator c = getPlantRoots().getRootTopology().iterator (); c.hasNext ();) {
-				SafeVoxel voxel = (SafeVoxel) c.next ();
-				double voxelBottom = voxel.getZ()+(voxel.getThickness()/2);
-		
-				voxel.addTreeCarbonFineRootsSen (treeIndex, voxel.getTheTreeCarbonFineRoots(treeIndex));
-				voxel.setTreeCarbonFineRoots(treeIndex, 0);
-				voxel.addTreeCarbonCoarseRootsSen (treeIndex, voxel.getTheTreeCarbonCoarseRoots(treeIndex));
-				voxel.setTreeCarbonCoarseRoots(treeIndex, 0);			
-				
-				//for deep roots mineralization 
-				if (voxelBottom > initPlot.getSoil().getHumificationDepth()) {
-					voxel.addCumulatedTreeNitrogenRootsSen (voxel.getTheTreeNitrogenFineRoots(treeIndex));//kg 
-					voxel.addCumulatedTreeNitrogenRootsSen (voxel.getTheTreeNitrogenCoarseRoots(treeIndex));//kg 
-				}
-				
-				voxel.addTreeNitrogenFineRootsSen (treeIndex, voxel.getTheTreeNitrogenFineRoots(treeIndex));
-				voxel.setTreeNitrogenFineRoots(treeIndex, 0);
-				voxel.addTreeNitrogenCoarseRootsSen (treeIndex, voxel.getTheTreeNitrogenCoarseRoots(treeIndex));
-				voxel.setTreeNitrogenCoarseRoots(treeIndex, 0);	
-				voxel.addTreeRootsDensitySen(treeIndex, 	voxel.getTheTreeRootsDensity(treeIndex));
-				voxel.setTreeRootsDensity(treeIndex, 0);
-			}
-		}
-		
-		//RAZ root system
-		this.plantRoots = null;
-		this.plantRoots = new SafePlantRoot (this);	
-		this.setCarbonFineRootsSen(this.getCarbonFineRoots());
-		this.setNitrogenFineRootsSen(this.getNitrogenFineRoots());
-		this.setCarbonCoarseRootsSen(this.getCarbonCoarseRoots());
-		this.setNitrogenCoarseRootsSen(this.getNitrogenCoarseRoots());
-		this.setCarbonFineRoots(0);
-		this.setCarbonCoarseRoots(0);
-		this.setNitrogenFineRoots(0);
-		this.setNitrogenCoarseRoots(0);
-	}
-	
-	/**
-	 * Calculate totals for annual Export 
-	 */	
-	public void processTotal () {
-
-		if (this.getTotalLeafArea() > this.leafAreaMax) this.leafAreaMax = this.getTotalLeafArea(); 
-		if (this.getTotalCarbonFoliage() > this.carbonFoliageMax) this.carbonFoliageMax = this.getTotalCarbonFoliage(); 
-		this.waterUptakeAnnual += this.getWaterUptake();
-		this.nitrogenUptakeAnnual += this.getNitrogenUptake();
-		this.parInterceptedAnnual +=  this.directParIntercepted + this.diffuseParIntercepted;
-		this.interceptedRainAnnual +=  this.interceptedRain;	
-		this.carbonAllocToGrowthAnnual +=  this.carbonAllocToGrowth;
-		this.carbonFoliageSenAnnual +=  this.carbonFoliageSen;
-		this.carbonFineRootsSenAnnual +=  this.carbonFineRootsSen;
-		this.carbonCoarseRootsSenAnnual +=  this.carbonCoarseRootsSen;
-		this.carbonFineRootsSenAnoxiaAnnual +=  this.carbonFineRootsSenAnoxia;
-		this.carbonCoarseRootsSenAnoxiaAnnual +=  this.carbonCoarseRootsSenAnoxia;
-	}
-	
-	/**
-	 * Reset annual totals 
-	 */
-	public void razTotalAnnual() {
-
-		waterStressSpring = 1 ;
-		waterStressSummer = 1 ;
-		nitrogenStressSpring = 1 ;
-		nitrogenStressSummer = 1 ;
-		waterUptakeAnnual = 0; 
-		nitrogenUptakeAnnual = 0; 
-		leafAreaMax= 0;
-		carbonFoliageMax = 0;
-		parInterceptedAnnual = 0;
-		interceptedRainAnnual = 0;	
-		carbonAllocToGrowthAnnual = 0;
-		carbonFoliageSenAnnual = 0;
-		carbonFineRootsSenAnnual = 0;
-		carbonCoarseRootsSenAnnual = 0;
-		carbonFineRootsSenAnoxiaAnnual = 0;
-		carbonCoarseRootsSenAnoxiaAnnual = 0;
-		
-		if (isPlanted()) {
-			this.addYear();
-			//for evergreen trees 
-			//each year cohort N go to cohort N+1 and first cohort is set to 0 
-			if (this.getTreeSpecies ().getPhenologyType() == 2)  {
-				int index = this.getTreeSpecies().getNbCohortMax()-1; 
-	        	this.carbonFoliageSen = this.carbonFoliage[index];
-	        	this.nitrogenFoliageSen = this.nitrogenFoliage[index];
-		        while (index > 0) {
-		        	this.leafArea[index] = this.leafArea[index-1];
-		        	this.leafAge[index] = this.leafAge[index-1];
-		        	this.carbonFoliage[index] = this.carbonFoliage[index-1];
-		        	this.nitrogenFoliage[index] = this.nitrogenFoliage[index-1];
-		        	index --;
-		        }
-		        this.leafArea[0] = 0;
-		        this.leafAge[0] = 0;
-		        this.leafLue[0] = 0;
-		        this.carbonFoliage[0] = 0;
-		        this.nitrogenFoliage[0] = 0;
-		        setNbrDaysInShade(0);
-			}
-		}
-		
-		this.setPhenologicalStage(0); 	
-		setBudburstAccumulatedTemperatureStarted(false);
-		setBudburstAccumulatedTemperature(0);			
-		this.setFruitPhenologicalStage(0);
-		setHeatAccumulatedTemperatureStarted(false);
-	}
-	
-	/**
 	* Tree fine roots initialization (Done before coarse roots)
-	* @author Rachmat MULIA (ICRAF) - August 2004
+	* Available root shapes for initialization are : 1- Spherical 2- Elipsoidal 3- Conic	
+	* Available carbon repartitions in root shape are : 1- Uniform  2- Reverse to the tree distance 3- Negative exponential
+	* These parameters are read in treeItk parameter file
+	* @author Christian DUPRAZ - August 2004
 	* @param plot Reference on SafePlot object
     * @param evolutionParameters Reference on SafeEvolutionParameters object
 	*/
@@ -1393,9 +1142,9 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	* Tree coarse roots initialization 
 	* @author Rachmat MULIA (ICRAF) - August 2004
 	* @param plot Reference on SafePlot object
+	* Available preferences for coarse roots initialization are : 1- Horizontal 2- Vertical	
 	*/
 	public void coarseRootsInitialisation (SafePlot plot) throws Exception  {		
-
 
 		PlotOfCells plotc = (PlotOfCells) plot; 
 				
@@ -1412,7 +1161,6 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		SafeRootNode plantedNode = this.getPlantRoots().getRootTopology (plantedVoxel);
 		this.getPlantRoots().setFirstRootNode (plantedNode);
 
-		
 		//for each voxel of the PLOT
 		for (Iterator c = plot.getCells ().iterator (); c.hasNext ();) {
 			SafeCell cell = (SafeCell) c.next ();
@@ -1576,7 +1324,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		
 		//recursive algorithme for updating distances and carbon
 		if (plantedNode != null) {
-			plantedNode.setDistances(0);
+			plantedNode.setDistance(0);
 			//Initialise carbon coarse root 
 			this.carbonCoarseRootsInitialisation (plot);	
 		}
@@ -4052,8 +3800,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	/**
 	* Tree  roots pruning after soil management - gt-09.07.2009
 	* If soil management depth is below the gravity center of a voxel the coarse root in this voxel and all depending topology are removed
-	* @param cell Reference to SafeCell object where the soilmanagement occurs
-	* @param soilManagementDepth Soil management depth (m)
+	* @param plot Reference to SafePlot object 
+	* @param simulationJulianDay Simulation julain day
 	* @param humificationDepth Soil humification depth (m)
 	*/
 	public void soilManagement (SafePlot plot, int simulationJulianDay, double humificationDepth) {
@@ -4081,7 +3829,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 					removedProp = (soilManagementDepth-voxelSurface) / (float)voxel.getThickness();
 				
 				remove = true;
-				node.getNodeParent().removeSonsRoots(voxel, this,  removedProp, testAnoxia, humificationDepth, carbonFR, nitrogenFR, carbonCR, nitrogenCR);
+				if (node.getNodeParent()!= null) 
+					node.getNodeParent().removeSonsRoots(voxel, this,  removedProp, testAnoxia, humificationDepth, carbonFR, nitrogenFR, carbonCR, nitrogenCR);
 
 			}
 		}
@@ -4731,7 +4480,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 								removedProp = (float) ((rootPruningDepth-voxel.getSurfaceDepth()) / voxel.getThickness());
 						
 						remove = true;
-						node.getNodeParent().removeSonsRoots(voxel, this,  removedProp, testAnoxia, stand.getPlot().getSoil().getHumificationDepth(), carbonFR, nitrogenFR, carbonCR, nitrogenCR);
+						if (node.getNodeParent()!= null)
+							node.getNodeParent().removeSonsRoots(voxel, this,  removedProp, testAnoxia, stand.getPlot().getSoil().getHumificationDepth(), carbonFR, nitrogenFR, carbonCR, nitrogenCR);
 		
 					}
 				  }
@@ -4995,6 +4745,253 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		float dailyInfraRed = dayClimat.getInfraRedRadiation();
 		setInfraRedIntercepted(captureFactorForInfraRed*dailyInfraRed);
 
+	}
+	
+	/**
+	 * Harvesting a SafeTree.
+	 * @param initPlot Reference on SafePlot object
+	 * @param year Harvest year
+	 * @param day Harvest day
+	 */
+	public void harvest (SafePlot initPlot, int year, int day) {
+
+		SafeCell cellPlanted = (SafeCell) this.getCell();
+		cellPlanted.setIdTreePlanted(0); 
+		this.setHarvested(true);
+		this.setHarvestingYear (year);
+		this.setHarvestingDay  (day);
+
+		//Keep carbon pool values exported in the tree
+		this.setCarbonStemExported(this.getCarbonStem());
+		this.setCarbonFoliageExported(this.getTotalCarbonFoliage());
+		this.setCarbonBranchesExported(this.getCarbonBranches());
+		this.setCarbonFruitExported(this.getCarbonFruit());
+		this.setNitrogenStemExported(this.getNitrogenStem());
+		this.setNitrogenFoliageExported(this.getTotalNitrogenFoliage());
+		this.setNitrogenBranchesExported(this.getNitrogenBranches());
+		this.setNitrogenFruitExported(this.getNitrogenFruit());
+
+		//stump is removed or not 
+		this.setCarbonStumpExported(this.getCarbonStump());
+		this.setNitrogenStumpExported(this.getNitrogenStump());
+
+		this.setCarbonStem(0);
+		this.setCarbonBranches(0);
+		this.setCarbonFruit(0);
+		this.setNitrogenStem(0);
+		this.setNitrogenBranches(0);
+		this.setNitrogenFruit(0);
+		this.setCarbonStump(0);
+		this.setNitrogenStump(0);
+		this.setHeight(0);
+		this.setDbh(0);
+		this.setCrownBaseHeight(0);
+		this.setCrownRadiusInterRow(0);
+		this.setCrownRadiusTreeLine(0);
+		this.setCrownRadiusVertical(0);
+		this.setCrownVolume(0);
+		
+		for (int index = 0; index < this.getTreeSpecies().getNbCohortMax(); index++) {
+			this.setLeafArea(0, index);
+			this.setCarbonFoliage(0, index);
+			this.setNitrogenFoliage(0, index);
+		}
+		
+		// root senescence 
+		int treeIndex = this.getId()-1;
+		if (getPlantRoots().getRootTopology() != null) {
+
+			//FOR EACH VOXEL in  root topology map
+			for (Iterator c = getPlantRoots().getRootTopology().iterator (); c.hasNext ();) {
+				SafeVoxel voxel = (SafeVoxel) c.next ();
+				double voxelBottom = voxel.getZ()+(voxel.getThickness()/2);
+		
+				voxel.addTreeCarbonFineRootsSen (treeIndex, voxel.getTheTreeCarbonFineRoots(treeIndex));
+				voxel.setTreeCarbonFineRoots(treeIndex, 0);
+				voxel.addTreeCarbonCoarseRootsSen (treeIndex, voxel.getTheTreeCarbonCoarseRoots(treeIndex));
+				voxel.setTreeCarbonCoarseRoots(treeIndex, 0);			
+				
+				//for deep roots mineralization 
+				if (voxelBottom > initPlot.getSoil().getHumificationDepth()) {
+					voxel.addCumulatedTreeNitrogenRootsSen (voxel.getTheTreeNitrogenFineRoots(treeIndex));//kg 
+					voxel.addCumulatedTreeNitrogenRootsSen (voxel.getTheTreeNitrogenCoarseRoots(treeIndex));//kg 
+				}
+				
+				voxel.addTreeNitrogenFineRootsSen (treeIndex, voxel.getTheTreeNitrogenFineRoots(treeIndex));
+				voxel.setTreeNitrogenFineRoots(treeIndex, 0);
+				voxel.addTreeNitrogenCoarseRootsSen (treeIndex, voxel.getTheTreeNitrogenCoarseRoots(treeIndex));
+				voxel.setTreeNitrogenCoarseRoots(treeIndex, 0);	
+				voxel.addTreeRootsDensitySen(treeIndex, 	voxel.getTheTreeRootsDensity(treeIndex));
+				voxel.setTreeRootsDensity(treeIndex, 0);
+			}
+		}
+		
+		//RAZ root system
+		this.plantRoots = null;
+		this.plantRoots = new SafePlantRoot (this);	
+		this.setCarbonFineRootsSen(this.getCarbonFineRoots());
+		this.setNitrogenFineRootsSen(this.getNitrogenFineRoots());
+		this.setCarbonCoarseRootsSen(this.getCarbonCoarseRoots());
+		this.setNitrogenCoarseRootsSen(this.getNitrogenCoarseRoots());
+		this.setCarbonFineRoots(0);
+		this.setCarbonCoarseRoots(0);
+		this.setNitrogenFineRoots(0);
+		this.setNitrogenCoarseRoots(0);
+	}
+	
+	/**
+	 * Calculate totals for annual Export 
+	 */	
+	public void processTotal () {
+
+		if (this.getTotalLeafArea() > this.leafAreaMax) this.leafAreaMax = this.getTotalLeafArea(); 
+		if (this.getTotalCarbonFoliage() > this.carbonFoliageMax) this.carbonFoliageMax = this.getTotalCarbonFoliage(); 
+		this.waterUptakeAnnual += this.getWaterUptake();
+		this.nitrogenUptakeAnnual += this.getNitrogenUptake();
+		this.parInterceptedAnnual +=  this.directParIntercepted + this.diffuseParIntercepted;
+		this.interceptedRainAnnual +=  this.interceptedRain;	
+		this.carbonAllocToGrowthAnnual +=  this.carbonAllocToGrowth;
+		this.carbonFoliageSenAnnual +=  this.carbonFoliageSen;
+		this.carbonFineRootsSenAnnual +=  this.carbonFineRootsSen;
+		this.carbonCoarseRootsSenAnnual +=  this.carbonCoarseRootsSen;
+		this.carbonFineRootsSenAnoxiaAnnual +=  this.carbonFineRootsSenAnoxia;
+		this.carbonCoarseRootsSenAnoxiaAnnual +=  this.carbonCoarseRootsSenAnoxia;
+	}
+	/**
+	 * Reset or add daily results 
+	 */
+	public void razDaily () {
+
+		this.setDirectParIntercepted (0);
+		this.setDiffuseParIntercepted (0);
+		this.setGlobalRadIntercepted (0);
+		this.setInfraRedIntercepted (0);
+		this.setWaterDemand (0);
+		this.setWaterDemandReduced (0);
+		this.setWaterUptake (0);		
+		this.setWaterUptakeInSaturation (0);
+		this.setFloweringHeatStress(1); 
+		this.setFloweringFrostStress(1); 
+		this.setNitrogenDemandAfterFixation (0);
+		this.setNitrogenDemandBeforeFixation(0);
+		this.setNitrogenUptake(0);
+		this.setNitrogenAvailable (0);
+		this.setNitrogenUptakeInSaturation (0);
+		this.setInterceptedRain (0);	
+		this.setStemflow (0);		
+		this.setEvaporatedRain (0);	
+		this.setCarbonFineRootsIncrement(0);
+		this.setCarbonFoliageSen(0);
+		this.setCarbonBranchesSen(0);
+		this.setCarbonFruitSen(0);
+		this.setNitrogenFoliageSen(0);
+		this.setNitrogenBranchesSen(0);
+		this.setNitrogenFruitSen(0);
+		this.setCarbonFineRootsSen (0);
+		this.setCarbonCoarseRootsSen (0);
+		this.setNitrogenFineRootsSen (0);
+		this.setNitrogenCoarseRootsSen (0);	
+		this.setCarbonFineRootsSenAnoxia (0);
+		this.setCarbonCoarseRootsSenAnoxia (0);
+		this.setNitrogenFineRootsSenAnoxia (0);
+		this.setNitrogenCoarseRootsSenAnoxia (0);
+
+		this.setCarbonStemExported (0);
+		this.setCarbonStumpExported (0);
+		this.setCarbonFoliageExported (0);
+		this.setCarbonBranchesExported (0);
+		this.setCarbonFruitExported (0);		 
+		this.setNitrogenStemExported (0);
+		this.setNitrogenStumpExported (0);
+		this.setNitrogenFoliageExported (0);
+		this.setNitrogenBranchesExported (0);	
+		this.setNitrogenFruitExported (0);	
+		this.setNbCellsBellow (0);
+		this.setFruitThinning(0);
+		
+		//litters
+		setCarbonFoliageLitterUnderTree (0);
+		setCarbonBranchesLitterUnderTree (0);
+		setCarbonFruitLitterUnderTree (0);
+		setNitrogenFoliageLitterUnderTree (0);
+		setNitrogenBranchesLitterUnderTree (0);
+		setNitrogenFruitLitterUnderTree (0);
+		setCarbonFoliageLitterAllPlot(0);
+		setCarbonBranchesLitterAllPlot(0);
+		setCarbonFruitLitterAllPlot (0);
+		setNitrogenFoliageLitterAllPlot (0);
+		setNitrogenBranchesLitterAllPlot (0);
+		setNitrogenFruitLitterAllPlot(0);
+		
+		Arrays.fill(this.leafLue, 0);
+		
+		this.nbrDaysSinceLastIrrigation = this.nbrDaysSinceLastIrrigation + 1;
+		this.nbrDaysSinceLastFertilization = this.nbrDaysSinceLastFertilization + 1;
+
+		//store total carbon Pool J-1
+		this.carbonTotalBefore = this.getTotalCarbonFoliage()+ 
+									carbonBranches + 
+									carbonStem + 
+									carbonStump + 
+									carbonFruit+
+									carbonCoarseRoots + 
+									carbonFineRoots+ 
+									carbonLabile; 
+		
+		if (plantRoots != null) plantRoots.razDaily();
+		
+	}
+	/**
+	 * Reset annual totals 
+	 */
+	public void razTotalAnnual() {
+
+		waterStressSpring = 1 ;
+		waterStressSummer = 1 ;
+		nitrogenStressSpring = 1 ;
+		nitrogenStressSummer = 1 ;
+		waterUptakeAnnual = 0; 
+		nitrogenUptakeAnnual = 0; 
+		leafAreaMax= 0;
+		carbonFoliageMax = 0;
+		parInterceptedAnnual = 0;
+		interceptedRainAnnual = 0;	
+		carbonAllocToGrowthAnnual = 0;
+		carbonFoliageSenAnnual = 0;
+		carbonFineRootsSenAnnual = 0;
+		carbonCoarseRootsSenAnnual = 0;
+		carbonFineRootsSenAnoxiaAnnual = 0;
+		carbonCoarseRootsSenAnoxiaAnnual = 0;
+		
+		if (isPlanted()) {
+			this.addYear();
+			//for evergreen trees 
+			//each year cohort N go to cohort N+1 and first cohort is set to 0 
+			if (this.getTreeSpecies ().getPhenologyType() == 2)  {
+				int index = this.getTreeSpecies().getNbCohortMax()-1; 
+	        	this.carbonFoliageSen = this.carbonFoliage[index];
+	        	this.nitrogenFoliageSen = this.nitrogenFoliage[index];
+		        while (index > 0) {
+		        	this.leafArea[index] = this.leafArea[index-1];
+		        	this.leafAge[index] = this.leafAge[index-1];
+		        	this.carbonFoliage[index] = this.carbonFoliage[index-1];
+		        	this.nitrogenFoliage[index] = this.nitrogenFoliage[index-1];
+		        	index --;
+		        }
+		        this.leafArea[0] = 0;
+		        this.leafAge[0] = 0;
+		        this.leafLue[0] = 0;
+		        this.carbonFoliage[0] = 0;
+		        this.nitrogenFoliage[0] = 0;
+		        setNbrDaysInShade(0);
+			}
+		}
+		
+		this.setPhenologicalStage(0); 	
+		setBudburstAccumulatedTemperatureStarted(false);
+		setBudburstAccumulatedTemperature(0);			
+		this.setFruitPhenologicalStage(0);
+		setHeatAccumulatedTemperatureStarted(false);
 	}
 	/**
 	* Reset energy for the tree

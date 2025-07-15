@@ -311,7 +311,7 @@ public class SafeStand extends TreeList implements Serializable {
 
 	/**
 	 * Reload the tree species file in case of reopening a project 
-	 * @param evolutionParameters Reference to SafeEvolutionParameters object
+	 * @param ep Reference to SafeEvolutionParameters object
 	 * @param generalParameters Reference to SafeGeneralParameters object
 	 */
 	public void reloadTreeSpecies (SafeEvolutionParameters ep, SafeGeneralParameters generalParameters) throws Exception {
@@ -516,8 +516,6 @@ public class SafeStand extends TreeList implements Serializable {
 		}
 		return max;
 	}	
-	
-
 
 	public Date getStartDate () {return startDate;}
 	

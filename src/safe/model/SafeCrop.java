@@ -49,6 +49,7 @@
 package safe.model;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -393,7 +394,7 @@ import safe.stics.*;
 	}
 
 	/**
-	 * RAZ of annual values razTotalWater
+	 * RAZ of annual values 
 	 **/
 	public void razTotalAnnual () {
 		this.annualCapillaryRise = 0;
@@ -416,6 +417,7 @@ import safe.stics.*;
 		this.rootsDepthMax = 0;
 		this.biomassMax = 0;
 		this.heightMax = 0;
+
 	}
 	
 	/**
@@ -434,7 +436,9 @@ import safe.stics.*;
 									SafeSticsTransit sticsTransit, 
 									SafeSoil soil, 
 									SafeCropZone zone,
-									SafePlotSettings plotSettings,									
+									SafePlotSettings plotSettings,		
+									int julianDayStart,
+									int julianDayEnd,
 									String exportDir,
 									String laiFileName)  throws Exception {
 
@@ -479,19 +483,11 @@ import safe.stics.*;
 		sticsCrop.P_densinitial[3] = (float) zone.getInitialCropRootsDensity(3);
 		sticsCrop.P_densinitial[4] = (float) zone.getInitialCropRootsDensity(4);
 
-		//SAVE some STICS values that can be erased in perenial chaining years
-		System.arraycopy(this.sticsCrop.P_stamflax	, 0, zone.getCropSpecies().P_stamflax	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stlevamf	, 0, zone.getCropSpecies().P_stlevamf	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stlevdrp	, 0, zone.getCropSpecies().P_stlevdrp	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stflodrp	, 0, zone.getCropSpecies().P_stflodrp	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stlaxsen	, 0, zone.getCropSpecies().P_stlaxsen	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stsenlan	, 0, zone.getCropSpecies().P_stsenlan	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stdrpmat	, 0, zone.getCropSpecies().P_stdrpmat	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stdrpdes	, 0, zone.getCropSpecies().P_stdrpdes	, 0, 	30);
+		
 		
 		//JNA NATIVE method to check plant and itk parameters
 		//result is in output/initialisation.sti
-		SafeTestJNA.verifPlant(sticsParam, sticsTransit, this.sticsCommun, zone.getSticsItk(), this.sticsCrop, zone.getId(), exportDir);
+		SafeTestJNA.verifPlant(sticsParam, sticsTransit, this.sticsCommun, zone.getSticsItk(), this.sticsCrop, zone.getId(), julianDayStart, julianDayEnd, exportDir);
 	    
 		return;
 	}
@@ -510,6 +506,8 @@ import safe.stics.*;
 			SafeSticsTransit sticsTransit, 
 			SafeSoil soil, 
 			SafeCropZone zone,
+			int julianDayStart,
+			int julianDayEnd,
 			String exportDir)  throws Exception {
 
 		//put soil initial values = current values (for STICS REPORT) 
@@ -533,16 +531,8 @@ import safe.stics.*;
 	    sticsCommun.napNini[0] = zone.getSticsItk().napN;
 	    sticsCommun.nbjresini[0] = zone.getSticsItk().P_nbjres;
 	   
-		//SAVE some STICS values that can be erased in perenial chaining years
-		System.arraycopy(this.sticsCrop.P_stamflax	, 0, zone.getCropSpecies().P_stamflax	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stlevamf	, 0, zone.getCropSpecies().P_stlevamf	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stlevdrp	, 0, zone.getCropSpecies().P_stlevdrp	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stflodrp	, 0, zone.getCropSpecies().P_stflodrp	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stlaxsen	, 0, zone.getCropSpecies().P_stlaxsen	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stsenlan	, 0, zone.getCropSpecies().P_stsenlan	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stdrpmat	, 0, zone.getCropSpecies().P_stdrpmat	, 0, 	30); 
-		System.arraycopy(this.sticsCrop.P_stdrpdes	, 0, zone.getCropSpecies().P_stdrpdes	, 0, 	30);
-		
+
+    	
 	    //Restore CROP initial values if PERENIAL 
 	    if (this.sticsCrop.P_codeperenne == 2) {
 
@@ -559,7 +549,7 @@ import safe.stics.*;
 			this.sticsCrop.P_densinitial[2] = (float) zone.getInitialCropRootsDensity(2);
 			this.sticsCrop.P_densinitial[3] = (float) zone.getInitialCropRootsDensity(3);
 			this.sticsCrop.P_densinitial[4] = (float) zone.getInitialCropRootsDensity(4);
-
+	    	
 	    }
 	    else {
 			this.sticsCrop.P_stade0 	 =  1; 
@@ -586,9 +576,10 @@ import safe.stics.*;
 
 	    }
 
+	
 		//JNA NATIVE method to check plant and itk parameters
 		//result is in output/initialisation.sti
-	    SafeTestJNA.verifPlant(sticsParam, sticsTransit, this.sticsCommun, zone.getSticsItk(), this.sticsCrop, zone.getId(), exportDir);
+	    SafeTestJNA.verifPlant(sticsParam, sticsTransit, this.sticsCommun, zone.getSticsItk(), this.sticsCrop, zone.getId(), julianDayStart, julianDayEnd, exportDir);
 		
 		//reset cropAge
 		this.cropAge = 0;
@@ -607,10 +598,12 @@ import safe.stics.*;
 	 * @param exportDir Name of the export files directory
 	 */
 	public  void cropPerenialReload (SafeTestJNA jna, 
-			SafeSticsParameters sticsParam, 
-			SafeSticsTransit sticsTransit, 
-			SafeCropZone zone, 
-			String exportDir)  throws Exception {
+									SafeSticsParameters sticsParam, 
+									SafeSticsTransit sticsTransit, 
+									SafeCropZone zone, 
+									int julianDayStart,
+									int julianDayEnd,
+									String exportDir)  throws Exception {
 			
 		//put soil initial values = current values (for STICS REPORT) 
 		this.sticsSoil.reinitialise (); 
@@ -620,20 +613,10 @@ import safe.stics.*;
 
 		//Parameter for number of crop in STICS = 1
 		sticsCommun.numcult = 1;
-		    
-		//RESTORE some STICS values that can be erased in chaining years
-		System.arraycopy(zone.getCropSpecies().P_stamflax	, 0, this.sticsCrop.P_stamflax	, 0, 	30); 
-		System.arraycopy(zone.getCropSpecies().P_stlevamf	, 0, this.sticsCrop.P_stlevamf	, 0, 	30); 
-		System.arraycopy(zone.getCropSpecies().P_stlevdrp	, 0, this.sticsCrop.P_stlevdrp	, 0, 	30); 
-		System.arraycopy(zone.getCropSpecies().P_stflodrp	, 0, this.sticsCrop.P_stflodrp	, 0, 	30); 
-		System.arraycopy(zone.getCropSpecies().P_stlaxsen	, 0, this.sticsCrop.P_stlaxsen	, 0, 	30); 
-		System.arraycopy(zone.getCropSpecies().P_stsenlan	, 0, this.sticsCrop.P_stsenlan	, 0, 	30); 
-		System.arraycopy(zone.getCropSpecies().P_stdrpmat	, 0, this.sticsCrop.P_stdrpmat	, 0, 	30); 
-		System.arraycopy(zone.getCropSpecies().P_stdrpdes	, 0, this.sticsCrop.P_stdrpdes	, 0, 	30); 
-
+		
 		//JNA NATIVE method to check plant and itk parameters
 		//result is in output/initialisation.sti
-		SafeTestJNA.verifPlant(sticsParam, sticsTransit, this.sticsCommun, zone.getSticsItk(), this.sticsCrop, zone.getId(), exportDir);
+		SafeTestJNA.verifPlant(sticsParam, sticsTransit, this.sticsCommun, zone.getSticsItk(), this.sticsCrop, zone.getId(), julianDayStart, julianDayEnd, exportDir);
 		
 		//update cropAge
 		this.cropAge++;
@@ -747,8 +730,7 @@ import safe.stics.*;
 									int simulationJulianDay, 
 									int sticsJulianDay,	
 									int hisafeWaterExtraction,
-								    double cellVisibleSky
-									) {
+								    double cellVisibleSky) {
 
 		//call JNA native method	
 		SafeTestJNA.dailyLoopPart2 (sticsParam, 
@@ -906,6 +888,26 @@ import safe.stics.*;
 				sumHisafeWaterStressVegetative=0;
 				sumHisafeNitrogenStressVegetative=0;
 			}
+			//rajouté IL 11/06/2025
+			//sinon bug sol nu après récolte 
+			Arrays.fill(this.sticsCrop.ep	, 0);
+			Arrays.fill(this.sticsCrop.eop	, 0);
+			this.sticsCrop.mafruit = 0;
+			this.sticsCrop.matuber = 0;
+			this.sticsCrop.pgrain[1] = 0;
+			this.sticsCrop.dltags[1] = 0;
+			this.sticsCrop.QNgrain[1] = 0;
+			this.sticsCrop.densite = 0;
+			this.sticsCrop.sla[1] = 0;
+			this.sticsCrop.inn[1]= 1;
+			this.sticsCrop.innlai[1]= 1;
+			this.sticsCrop.inns[1]= 1;
+			this.sticsCrop.innsenes[1]= 1;
+			this.sticsCrop.teturg= 0;
+			this.sticsCrop.tetstomate= 0;
+			sumHisafeWaterStressReproductive=0;
+			sumHisafeNitrogenStressReproductive=0;
+
 		}
 		//YIELD for PERENIAL CROPS 
 		//we took the day before because masec of the day is AFTER the cut 

@@ -57,6 +57,7 @@ import jeeb.lib.util.Vertex3d;
 
 /**
  * SafeRootNode is used to build tree coarse roots topology
+ * Each node is liked to its parent node and to its colonised nodes to design a tree-like topology
  * 
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  * @author : Grégoire Talbot  - INRAE (UMR-SYSTEM), University of Montpellier, France
@@ -126,7 +127,7 @@ public class SafeRootNode implements Serializable, Comparable {
 						 int day, 
 						 int direction) {
 
-		this.planteType = 2; //tree
+		this.planteType = 2; 		//2=tree
 		this.plantRoots = root;
 		this.voxelRooted = voxelRooted;
 		this.nodeParent = nodeParent;
@@ -225,7 +226,7 @@ public class SafeRootNode implements Serializable, Comparable {
 	 * And in this case, the effective distance is the sum of the Euclidean distance between the present node and the node N, 
 	 * and the effective distance from node N to the tree 
 	 * @author Gregoire Talbot. September 2008
-	 * @param tree Reference to the Safetree object
+	 * @param tree Reference to the SafeTree object
 	 */
 	public void computeEffDist (SafeTree tree) {
 		if ((tree != null) && (getNodeParent () != null)) {
@@ -309,17 +310,18 @@ public class SafeRootNode implements Serializable, Comparable {
 	}
 
 	/**
-	 * Set the node distance with a tree
+	 * Set the node distance with a tree origin
 	 * @author Gregoire Talbot. September 2008
+     * @param d distance (m) 
 	 */
-	public void setDistances (double d) {
+	public void setDistance (double d) {
 		double distance = d + getFatherDistance ();
 		setTreeDistance (distance);
 		// here recursitity stops because there is no more colonised voxels bellow
 		if (nodeColonised != null) {
 			for (Iterator<SafeRootNode> v = this.getNodeColonised ().iterator (); v.hasNext ();) {
 				SafeRootNode nodeColonised = v.next ();
-				nodeColonised.setDistances (distance); // recursivity
+				nodeColonised.setDistance (distance); // recursivity
 			}
 		}
 	}
@@ -475,9 +477,22 @@ public class SafeRootNode implements Serializable, Comparable {
 	 * the rest of the method calculates the investment needed in structural roots to put these fine roots in place
 	 * for this calculation, we will assume that the new fine roots (addFineRootLength) will be distributed uniformly 
 	 * over the entire volume rooted by the tree (rootedVolume)
+	 * @author Gregoire Talbot. September 2008
+	 * @param treeIndex index odf the tree on the plot 
+	 * @param addFineRootLength lenght of fine roots added (m)
+	 * @param rootedVolume  (m3)
+	 * @param woodDensity Wood density tree species parameter 
+	 * @param woodCarbonContent Wood carbon content tree species parameter 
+	 * @param cRAreaToFRLengthRatio Coarse root area to fine root length ratio  tree species parameter 
+	 * @param frCost Fine roots cost 
 	 */
-	public double[] computeFineRootsCost (int treeIndex, double addFineRootLength, double rootedVolume,
-			double cRWoodDensity, double cRWoodCarbonContent, double cRAreaToFRLengthRatio, double frCost) {
+	public double[] computeFineRootsCost (int treeIndex, 
+										  double addFineRootLength, 
+										  double rootedVolume,
+										  double woodDensity, 
+										  double woodCarbonContent, 
+										  double cRAreaToFRLengthRatio, 
+										  double frCost) {
 
 		//Cost of fine roots 
 		//This cost will then be increased to take into account the investment they imply in terms of structural roots.
@@ -493,7 +508,7 @@ public class SafeRootNode implements Serializable, Comparable {
 			for (Iterator<SafeRootNode>  v = this.getNodeColonised ().iterator (); v.hasNext ();) {
 				SafeRootNode nodeColonised = v.next ();
 				double[] toAdd = nodeColonised
-						.computeFineRootsCost (treeIndex, addFineRootLength, rootedVolume, cRWoodDensity, cRWoodCarbonContent, cRAreaToFRLengthRatio, frCost);		// recursivite : la methode renvoie les valeurs de fineRootLength pour le noeud enfant
+						.computeFineRootsCost (treeIndex, addFineRootLength, rootedVolume, woodDensity, woodCarbonContent, cRAreaToFRLengthRatio, frCost);		// recursivite : la methode renvoie les valeurs de fineRootLength pour le noeud enfant
 				fineRootLength[0] += toAdd[0];
 				fineRootLength[1] += toAdd[1];
 			}
@@ -515,8 +530,11 @@ public class SafeRootNode implements Serializable, Comparable {
 		// For the present node, we calculate the necessary increase in structural root biomass to support all the fine roots
 		// we consider that the coarse root is a cylinder connecting the present node to its parent,
 		// and whose section must be proportional to the length of fine roots which depend on it.
-		double totalCost = Math.max (0, (fineRootLength[0] + fineRootLength[1]) * cRAreaToFRLengthRatio
-				* getFatherDistance () * cRWoodDensity * cRWoodCarbonContent - voxelRooted.getTheTreeCarbonCoarseRoots(treeIndex));		 
+		double totalCost = Math.max (0, (fineRootLength[0] + fineRootLength[1]) 
+										* cRAreaToFRLengthRatio
+										* getFatherDistance () 
+										* woodDensity * woodCarbonContent 
+										- voxelRooted.getTheTreeCarbonCoarseRoots(treeIndex));		 
 																							
 		// the cost of this coarse root increase must be distributed among all the nodes which depend on the present node 	
 		this.costDispatching (treeIndex, totalCost, localNewFineRoots, fineRootLength[1], newFineRootsDensity);	
@@ -525,11 +543,15 @@ public class SafeRootNode implements Serializable, Comparable {
 	}
 
 	/**
-	 * methode dont l'objet est, connaissant le besoin total d'investissement dans la racine de structure du noeud present, 
-	 * de repercuter ce cout sur l'ensemble des noeuds qui en dependent.	
-	 * cette methode incremente la variable fineRootCost 
-	 * (qui represente l'investissement total en carbone pour mettre en place des nouvelles racines fines dans un noeud donne) 
-	 * pour l'ensemble des noeuds qui dependent du noeud present
+	 * Repercussion of the total carbon requirement for a node to all dependent nodes
+	 * This method increments the fineRootCost variable 
+	 * which represents the total carbon investment to establish new fine roots in a given node
+	 * @author Gregoire Talbot. September 2008
+	 * @param treeIndex index of the tree on the plot 
+	 * @param totalCost 
+	 * @param localFineRoots
+	 * @param totalFineRoots 
+	 * @param newFineRootsDensity
 	 */
 	public void costDispatching (int treeIndex, double totalCost, double localFineRoots, double totalFineRoots,
 								double newFineRootsDensity) {
@@ -547,7 +569,7 @@ public class SafeRootNode implements Serializable, Comparable {
 		}
 	}
 	/**
-	 * Get the deeper son node
+	 * Get the deeper son node of the root topology
 	 */
 	public double getDeeperSonDepth () {
 
@@ -571,7 +593,9 @@ public class SafeRootNode implements Serializable, Comparable {
 	 * @param carbonFR Tree carbon fine roots
 	 * @param nitrogenFR Tree nitrogen fine roots
 	 */
-	public void computeFineRootsSenescence (SafeTree tree, SafeGeneralParameters generalParameters, double humificationDepth,
+	public void computeFineRootsSenescence (SafeTree tree, 
+											SafeGeneralParameters generalParameters, 
+											double humificationDepth,
 											double carbonFR, double nitrogenFR) {
 	
 
@@ -631,8 +655,6 @@ public class SafeRootNode implements Serializable, Comparable {
 			}
 		}
 	}
-
-	
 
 	/**
 	 * Compute the total rooted volume from this root node 

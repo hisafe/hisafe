@@ -229,7 +229,7 @@ public class SafeCropZone implements Serializable {
 		SafeCell firstCell = this.getFirstCell();
 
 		// Loading crop intervention file 
-		try {
+	try {
 			this.sticsItk = new SafeSticsItk();
 			cropSpeciesfileName = new SafeSticsItkFormat (itkFileName).load (this, sticsItk, year);
 			this.sticsItk.setYearstart(year);
@@ -239,7 +239,7 @@ public class SafeCropZone implements Serializable {
 				this.sticsItk.setYearend(year+1);
 			
 		} catch (Exception e2) {
-			System.out.println("CROP ZONE "+this.name+" ITK "+(itkIndex+1)+" initialisation problem... simulation is canceled !");
+			System.out.println("CROP ZONE "+this.name+" ITK "+itkFileName+" initialisation problem... simulation is canceled !");
 			System.exit(1);
 		}
 
@@ -287,7 +287,7 @@ public class SafeCropZone implements Serializable {
 				this.sticsItk.setYearend(year+1);
 			
 		} catch (Exception e2) {
-			System.out.println("CROP ZONE "+this.name+" ITK "+(itkIndex+1)+" initialisation problem... simulation is canceled !");
+			System.out.println("CROP ZONE "+this.name+" ITK "+itkFileName+" initialisation problem... simulation is canceled !");
 			System.exit(1);
 		}
 
@@ -335,7 +335,9 @@ public class SafeCropZone implements Serializable {
     								SafeGeneralParameters generalParameters, 
     								SafePlotSettings plotSettings, 
     								SafeEvolutionParameters evolutionParameters,  
-    								SafeSoil  soil) throws Exception {
+    								SafeSoil  soil,
+									int julianDayStart,
+									int julianDayEnd) throws Exception {
 
 		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
 			SafeCell cell = (SafeCell) c.next ();
@@ -348,8 +350,10 @@ public class SafeCropZone implements Serializable {
 											soil, 
 											this, 
 											plotSettings,
+											julianDayStart, julianDayEnd,
 											evolutionParameters.outputPath,											 
 											evolutionParameters.laiPath);
+
 			}
 			// Copy of STICS initialisation in other cells of the zone
 			else {
@@ -396,20 +400,22 @@ public class SafeCropZone implements Serializable {
 									SafeSticsTransit sticsTransit, 
     								SafeGeneralParameters safeSettings, 
     								SafeEvolutionParameters evolutionParameters,
-    								SafeSoil  soil) throws Exception {
+    								SafeSoil  soil,
+									int julianDayStart,
+									int julianDayEnd,
+									String previousSpeciesName) throws Exception {
 
-    	String cropSpeciesName = this.getCropSpecies().getName();
- 
 		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
 			SafeCell cell = (SafeCell) c.next ();
 
 			//if it is perenial crop and the same species 
-			if (this.getCropSpecies().getName().equals(cropSpeciesName) && cell.getCrop().isPerennial ()) {
+			if (this.getCropSpecies().getName().equals(previousSpeciesName) && cell.getCrop().isPerennial ()) {
 
 				cell.getCrop().cropPerenialReload (jna,
 						sticsParam, 
 						sticsTransit, 
 						this,
+						julianDayStart, julianDayEnd,
 						evolutionParameters.outputPath);				
 			}
 			else {
@@ -419,6 +425,7 @@ public class SafeCropZone implements Serializable {
 						sticsTransit, 
 						soil,
 						this,
+						julianDayStart, julianDayEnd,
 						evolutionParameters.outputPath);
 			}
 

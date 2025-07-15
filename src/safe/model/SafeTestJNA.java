@@ -125,8 +125,14 @@ public class SafeTestJNA implements  Serializable {
 						    		SafeSticsCommun commun, 
 						    		SafeSticsItk itk, 
 						    		SafeSticsCrop plant, 
+								     int julianDayStart, 
+								     int julianDayEnd, 
 						    		int zoneId,
 						    		String exportDir) { 
+
+    	commun.P_iwater = julianDayStart;	
+    	commun.P_ifwater = julianDayEnd;
+
     	
    	 	TestJNA.INSTANCE_STICS.verifPlant (param, transit, commun, itk, plant, zoneId, exportDir.length(), exportDir);
 
@@ -175,20 +181,20 @@ public class SafeTestJNA implements  Serializable {
     								     SafeSticsSoil soil,
     								     SafeSticsCrop plant, 
     								     SafeSticsItk itk,
-    								     int dayStart, 
-    								     int dayEnd, 
+    								     int julianDayStart, 
+    								     int julianDayEnd, 
     								     int cellId,
     								     String exportDir,
     								     boolean sticsReport
     								     ) { 
+
+    	commun.P_iwater = julianDayStart;	
+    	commun.P_ifwater = julianDayEnd;	
     	
-    	commun.P_iwater = dayStart;	
-    	commun.P_ifwater = dayEnd;	
-    	
-    	commun.ifwater_courant =  dayEnd; 
+    	commun.ifwater_courant =  julianDayEnd; 
     	commun.P_culturean = 1;
     	//culture sur 2 ans
-    	if ((dayStart>1) && (dayStart+dayEnd>366)) commun.P_culturean = 0;
+    	if ((julianDayStart>1) && (julianDayStart+julianDayEnd>366)) commun.P_culturean = 0;
     	
     	//pas de sorties BILAN STICS par defaut 
     	param.P_flagEcriture = 0;

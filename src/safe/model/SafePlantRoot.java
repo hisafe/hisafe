@@ -49,13 +49,10 @@
 package safe.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 
 /**
@@ -177,7 +174,7 @@ public class SafePlantRoot implements   Serializable {
 
 	/**
 	* Cloning root topology node : SafeRootNode is not cloned BUT voxel references have changed because of SafeVoxel cloning
-	 * @param collection The collection of SafeRootNode original
+	 * @param node Reference to the SafeRootNode original
 	 * @param after The collection of SafeRootNode cloned
 	*/
   	public void cloneNode (SafeRootNode node, HashMap<SafeVoxel, SafeRootNode> after) {

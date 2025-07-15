@@ -55,7 +55,6 @@ import java.util.List;
 
 import jeeb.lib.util.Log;
 import jeeb.lib.util.Vertex3d;
-import safe.model.SafeVoxel.Immutable;
 import capsis.defaulttype.plotofcells.RectangularPlot;
 import capsis.kernel.GScene;
 
@@ -442,6 +441,11 @@ public class SafePlot extends RectangularPlot implements Serializable {
 			t.razTotalAnnual();
 		}
 
+		for (Iterator j = this.getCells().iterator(); j.hasNext();) {
+			SafeCell cell = (SafeCell) j.next();
+			cell.razTotalAnnual();
+		}
+		
 		annualParIncident = 0; 
 		annualParInterceptedByTrees = 0;	
 		annualParInterceptedByCrops = 0;
