@@ -48,6 +48,7 @@
 
 package safe.stics;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -131,6 +132,25 @@ public class SafeSticsCropFormat extends RecordSet {
 			
 			int nbVarieties = 0;
 			String speciesName = ""; 
+			crop.nbVariete = 0;
+			Arrays.fill(crop.P_codevar 	, 0);
+			Arrays.fill(crop.P_stamflax 	, 0);
+			Arrays.fill(crop.P_stlevamf 	, 0);
+			Arrays.fill(crop.P_stlevdrp 	, 0);
+			Arrays.fill(crop.P_stflodrp 	, 0);
+			Arrays.fill(crop.P_pgrainmaxi 	, 0);
+			Arrays.fill(crop.P_adens 	, 0);
+			Arrays.fill(crop.P_croirac 	, 0);
+			Arrays.fill(crop.P_durvieF 	, 0);
+			Arrays.fill(crop.P_jvc 	, 0);
+			Arrays.fill(crop.P_nbgrmax 	, 0);
+			Arrays.fill(crop.P_stlaxsen 	, 0);
+			Arrays.fill(crop.P_stsenlan 	, 0);
+			Arrays.fill(crop.P_stdrpmat 	, 0);
+			Arrays.fill(crop.P_sensiphot 	, 0);
+			Arrays.fill(crop.P_afruitpot 	, 0);
+			Arrays.fill(crop.P_dureefruit 	, 0);
+
 			
 			for (Iterator i = this.iterator (); i.hasNext ();) {
 

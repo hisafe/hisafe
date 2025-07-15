@@ -1559,7 +1559,6 @@ public class SafeSticsCommun extends Structure implements Serializable {
 	public void reinitialise () {
 		
 		//RAZ
-		
 	    this.Nb0 = this.Nb;
 	    this.Cb0 = this.Cb;
 	    this.Nr0 = this.Nr;
@@ -1709,8 +1708,8 @@ public class SafeSticsCommun extends Structure implements Serializable {
 		//this.Nmulchnd    = 0.0f;
 		//this.Cmulch0   = 0.0f;
 		//this.Nmulch0   = 0.0f;
-		this.xmlch1 = 0.0f;
-		this.xmlch2 = 0.0f;
+		//this.xmlch1 = 0.0f;
+		//this.xmlch2 = 0.0f;
 		this.supres = 0.0f;
 		this.stoc = 0.0f;
 		this.cestout = 0.0f;
@@ -1727,9 +1726,9 @@ public class SafeSticsCommun extends Structure implements Serializable {
 		this.effamm = 0.0f;
 		this.azsup = 0.0f;
 		this.smes02 = 0.0f;
-		this.sumes0 = 0.0f;
-		this.sumes1 = 0.0f;
-		this.sumes2 = 0.0f;
+		//this.sumes0 = 0.0f;
+		//this.sumes1 = 0.0f;
+		//this.sumes2 = 0.0f;
 		this.sesj0 = 0.0f;
 		this.ses2j0 = 0.0f;
 		this.sum2 = 0.0f;
