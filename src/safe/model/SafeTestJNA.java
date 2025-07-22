@@ -166,8 +166,8 @@ public class SafeTestJNA implements  Serializable {
 	 * @param soil Reference on SafeSticsSoil object
 	 * @param plant Reference on SafeSticsCrop object
 	 * @param itk Reference on SafeSticsItk object
-	 * @param dayStart Julian day start of simulation
-	 * @param dayEnd Julian day end of simulation
+	 * @param julianDayStart Julian day start of simulation
+	 * @param julianDayEnd Julian day end of simulation
 	 * @param cellId ID of the cell
 	 * @param exportDir Name of the export folder
 	 * @param sticsReport true if report generation

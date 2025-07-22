@@ -57,7 +57,7 @@ import capsis.kernel.GModel;
 import capsis.kernel.GScene;
 
 /**
- * STAND description 
+ * STAND description (collection of trees)
  *
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
@@ -128,9 +128,7 @@ public class SafeStand extends TreeList implements Serializable {
 		int nbVoxels = soil.getNbVoxels();
 		int nbLayerCreated = soil.getNbLayers();
 
-
-		//2. Cells creation depending of
-		//   ne sert que pour amorcer l'EXPORT CropZone
+		//2. First crop zone creation
 		plot.initialiseCropZone ();
 		
 		//3. Cells creation depending of
@@ -162,14 +160,12 @@ public class SafeStand extends TreeList implements Serializable {
 			double zTree =  zCoordinate(xTree, yTree, this.getPlot().getPlotSettings());	//GT 2007 slope
 			String treeSpeciesName = this.getPlot().getPlotSettings().treeSpecies[i];
 
-			
 			try {
 					SafeTree tree = new SafeTree (this, 
 											idTree,  
 											treeSpeciesName,
 											xTree, yTree, zTree, //GT 2007 slope
 											generalParameters);
-	
 					this.addTree (tree);
 					idTree++;
 			}
@@ -178,12 +174,10 @@ public class SafeStand extends TreeList implements Serializable {
 			}
 		}
 
-
 		//5. Voxels creation for each cell of the plot
 		int voxelID = 1;
 		for (Iterator c = plot.getCells ().iterator (); c.hasNext ();) {
 			SafeCell cell = (SafeCell) c.next ();
-
 			int voxelIndex = 0;
 			double voxelDepth = 0;
 
@@ -201,7 +195,6 @@ public class SafeStand extends TreeList implements Serializable {
 							nbTrees);
 				
 					cell.addVoxel(voxelIndex, voxel);
-					
 					voxelID++;
 					voxelIndex++;
 					voxelDepth += layerThickness;
@@ -228,9 +221,7 @@ public class SafeStand extends TreeList implements Serializable {
 						SafeVoxel voxel = new SafeVoxel (voxelID, voxelIndex, layer, cell,
 														voxelThickness, voxelDepth,
 														nbTrees);
-
 						cell.addVoxel(voxelIndex, voxel);
-
 						voxelID++;
 						voxelIndex++;
 						voxelDepth += voxelThickness;
@@ -250,7 +241,6 @@ public class SafeStand extends TreeList implements Serializable {
 													);
 					
 					cell.addVoxel(voxelIndex, voxel);
-
 					voxelID++;
 					voxelIndex++;
 					voxelDepth += reste;
@@ -261,8 +251,6 @@ public class SafeStand extends TreeList implements Serializable {
 		}
 
 		soil.setNbVoxels(nbVoxels);
-
-		
 	}
 
 	/**
@@ -281,11 +269,9 @@ public class SafeStand extends TreeList implements Serializable {
 				System.exit(1);
 			}
 		}
-		
-		
 	}
 	/**
-	 * Initialization of the stand 
+	 * Initialization of the soil voxels 
 	 */
 	public void initialisation () {
 
@@ -306,7 +292,6 @@ public class SafeStand extends TreeList implements Serializable {
 													initPlot.getPlotSettings().layerNh4Content[nbLayer]*nProp);		
 			}
 		}
-
 	}
 
 	/**
@@ -321,6 +306,7 @@ public class SafeStand extends TreeList implements Serializable {
 			tree.reloadSpecies(ep, generalParameters, tree.getTreeSpecies().getFileName());
 		}
 	}
+	
 	/**
 	 * Search all cells with trees above and calculate lai of tree above each cell
 	 **/
@@ -329,7 +315,6 @@ public class SafeStand extends TreeList implements Serializable {
 		for (Iterator iter=this.getPlot().getCells().iterator(); iter.hasNext(); ) {
 			
 			SafeCell cell = (SafeCell) iter.next();
-
 			double cellX = cell.getXCenter();		//Gravity center of the cell
 			double cellY = cell.getYCenter();
 			cell.setIsTreeAbove (false);
@@ -351,7 +336,6 @@ public class SafeStand extends TreeList implements Serializable {
 					distX = Math.min(distX, Math.abs(distX - this.getPlot().getXSize()));
 					distY = Math.min(distY, Math.abs(distY - this.getPlot().getYSize()));
 					
-					
 					// The cell gravity center is in the crown shape projection
 					if ((Math.pow(distX ,2) / Math.pow(crownRadiusInterRow,2))
 						+ (Math.pow (distY ,2) / Math.pow(crownRadiusTreeLine,2))
@@ -362,15 +346,11 @@ public class SafeStand extends TreeList implements Serializable {
 						cell.addLaiTree (tree.getLai());
 						tree.addNbCellsBellow (1);
 					}
-				}
-				
+				}	
 			}
 		}
-
 	}	
    
-	
- 	
     /**
 	 * Check if a tree roots have colonized the all scene (at least one voxel for each cell) 
 	* @param treeID Id of the tree 
@@ -400,6 +380,7 @@ public class SafeStand extends TreeList implements Serializable {
 		}
 		return total;
 	}
+	
    /**
 	* Tree foliage Nitrogen Litter spread on all plot(kg) 
 	*/
@@ -412,7 +393,6 @@ public class SafeStand extends TreeList implements Serializable {
 		return total;
 	}
 
-	
    /**
 	* Tree branches Carbon Litter spread on all plot (kg) 
 	*/
@@ -424,6 +404,7 @@ public class SafeStand extends TreeList implements Serializable {
 		}
 		return total;
 	}
+	
    /**
 	* Tree branches Nitrogen Litter spread on all plot (kg) 
 	*/
@@ -447,6 +428,7 @@ public class SafeStand extends TreeList implements Serializable {
 		}
 		return total;
 	}
+	
    /**
 	* Tree fine roots  Nitrogen Litter (kg) 
 	*/
@@ -481,6 +463,7 @@ public class SafeStand extends TreeList implements Serializable {
 		}
 		return total;
 	}
+	
    /**
 	* Tree fruit Carbon Litter (kg) 
 	*/
@@ -492,6 +475,7 @@ public class SafeStand extends TreeList implements Serializable {
 		}
 		return total;
 	}
+	
    /**
 	* Tree fruit Nitrogen litter (kg) 
 	*/
@@ -502,8 +486,7 @@ public class SafeStand extends TreeList implements Serializable {
 			total += t.getNitrogenFruitLitterAllPlot();
 		}
 		return total;
-	}
-		
+	}		
 		
    /**
 	* Tree max root depth
@@ -518,7 +501,6 @@ public class SafeStand extends TreeList implements Serializable {
 	}	
 
 	public Date getStartDate () {return startDate;}
-	
 	public int getWeatherDay () {return weatherDay;}
 	public int getWeatherMonth () {return weatherMonth;}
 	public int getWeatherYear () {return weatherYear;}
@@ -532,12 +514,10 @@ public class SafeStand extends TreeList implements Serializable {
 	}
 
 	public void setStartDate (Date d) {startDate = d;}
-
 	public void setJulianDay (int d) {julianDay = d;}
 	public void setWeatherDay (int d) {weatherDay = d;}
 	public void setWeatherMonth (int d) {weatherMonth = d;}
 	public void setWeatherYear (int d) {weatherYear = d;}
-
 
 	/**
 	* Compute z coordinate of a point (x,y).

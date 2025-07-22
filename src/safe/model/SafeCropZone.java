@@ -66,7 +66,9 @@ import safe.stics.SafeSticsParameters;
 import safe.stics.SafeSticsTransit;
 
 /**
- * Crop zone description : A collection of cell with the crop species
+ * Crop zone description : A collection of SafeCell with the same crop species SafeCropSpecies
+ * The list of itk file name (containing crop intervention calendar) is read in the sim file
+ * 
  *
  * @author : Isabelle Lecomte - INRA (UMR-SYSTEM), University of Montpellier, France
  */
@@ -84,11 +86,11 @@ public class SafeCropZone implements Serializable {
 	private List<SafeCell> cellList;	
 	/** Reference to SafeCropSpecies objet : Crop species parameters for the current simulation*/
 	private SafeCropSpecies cropSpecies;	
-	/** List of itk file name for the ZONE */	
+	/** List of itk file name (containing crop intervention calendar) for the ZONE */	
 	private List<String> itkList;			
-	/** Reference to SafeSticsItk objet : Stics crop intervention for the current simulation*/	
+	/** Reference to SafeSticsItk objet : Stics crop intervention calendar for the current simulation*/	
 	public SafeSticsItk sticsItk;			
-	/** index of the current itk (crop management) */				
+	/** index of the current itk (crop intervention) */				
 	private int itkIndex;	
 	/** Simulation day (doy) */	
 	private int simulationDay;				
@@ -229,7 +231,7 @@ public class SafeCropZone implements Serializable {
 		SafeCell firstCell = this.getFirstCell();
 
 		// Loading crop intervention file 
-	try {
+		try {
 			this.sticsItk = new SafeSticsItk();
 			cropSpeciesfileName = new SafeSticsItkFormat (itkFileName).load (this, sticsItk, year);
 			this.sticsItk.setYearstart(year);
@@ -430,7 +432,7 @@ public class SafeCropZone implements Serializable {
 			}
 
 			//IL 25-04-2018
-			//repris de STICS verifPlante (si on le zappe ben ça marche plus) 
+			//do not remove this !
 			cell.getCrop().sticsCrop.ipl = 1;
 	
 		}

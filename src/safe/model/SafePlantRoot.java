@@ -54,7 +54,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-
 /**
  * PLANT (Tree of crop) roots system
  *
@@ -65,9 +64,6 @@ import java.util.LinkedHashMap;
 
 public class SafePlantRoot implements   Serializable {
 
-	/**
-	 * This class contains immutable instance variables for a SafeFineRoot
-	 */
 	public static class Immutable implements  Cloneable, Serializable {
 		/** Reference on plant object (SafeTree or SafeCrop)   */
 		private Object plant;			
@@ -181,12 +177,10 @@ public class SafePlantRoot implements   Serializable {
 
 		SafeVoxel voxelBefore = node.getVoxelRooted ();
 		node.setVoxelRooted (voxelBefore);
-
 		node.setWaterUptake (0);
 		node.setNitrogenUptake(0);
 		node.setFineRootsCost(0);
 
-		
 		//ADD the new SET in the HashMap
 		after.put (voxelBefore, node);
   	} 
@@ -211,7 +205,6 @@ public class SafePlantRoot implements   Serializable {
 		
 		return;
 	}
-
 
 	/**
 	* Calculation of plant water uptake and allocate it to voxels on the basis of potential uptake rates and roots density
@@ -301,7 +294,6 @@ public class SafePlantRoot implements   Serializable {
 	* @param nitrogenDemand Nitrogen demand (g N)
 	* @return Nitrogen uptake (g N)
 	*/
-
 	public double calculateNitrogenUptake (SafeStand stand, Object plant, double nitrogenDemand) {
 
 		double nitrogenUptakeTotal = 0;
@@ -326,7 +318,6 @@ public class SafePlantRoot implements   Serializable {
 				nitrogenUptakeNode = nitrogenUptakePotentialNode;
 			}
 
-			
 			//cumulation of nitrogen uptaken in the voxel for each plant
 			if (nitrogenUptakeNode > 0) {
 

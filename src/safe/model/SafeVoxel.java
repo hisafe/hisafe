@@ -59,16 +59,12 @@ import jeeb.lib.util.Identifiable;
 import jeeb.lib.util.Vertex3d;
 import safe.stics.SafeSticsSoil;
 /**
- * 3D voxel of soil attached to a cell
+ * 3D voxel of soil attached to a SafeCell
  *
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
 public class SafeVoxel implements Serializable, Identifiable {
 
-
-	/**
-	 * This class contains immutable instance variables for a Voxel
-	 */
 	public static class Immutable implements  Cloneable, Serializable  {
 		/** Voxel id  */
 		private int 	 	id;	
@@ -126,9 +122,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 	private double   cumulatedTreeNitrogenRootsSen;	 
 	/** Tree deep fine roots mineralisation (cumulation all trees) (Kg N)  */
 	private double   treeDeepRootsMineralisation;	
-	
 
-		
 	/** Water stock (liters) */
 	private double 	 waterStock;		
 	/** Trees water uptake (liters) */
@@ -220,9 +214,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 			double y = cell.getOrigin().y + (cell.getWidth()/2);
 			double z = surfaceDepth +(thickness/2);
 			z =  (Math.round (z * Math.pow (10,2)) ) / (Math.pow (10,2));//rounding
-
 			immutable.gravityCenter = new Vertex3d (x,y,z);
-
 		}
 		else
 		{
@@ -230,9 +222,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 			double y = 0;
 			double z = surfaceDepth +(thickness/2);
 			z= ((Math.round (z * Math.pow (10,3)) ) / (Math.pow (10,3)));		//rounding
-
 			immutable.gravityCenter = new Vertex3d (x,y,z);
-
 		}
 
 		this.cropRootsDensity = 0;
@@ -244,17 +234,13 @@ public class SafeVoxel implements Serializable, Identifiable {
 			treeNitrogenUptake = new double[nbTrees];
 			colonisationDirection = new int[nbTrees];
 			treeRootsAgeInWater = new int[nbTrees];
-			
 			treeRootsDensity = new double[nbTrees];
 			treeRootsDensitySen = new double[nbTrees];
-			
 			treeCarbonFineRoots = new double[nbTrees];
 			treeCarbonFineRootsSen = new double[nbTrees];
-			
 			treeCarbonCoarseRoots = new double[nbTrees];
 			treeCarbonCoarseRootsTarget = new double[nbTrees];
 			treeCarbonCoarseRootsSen = new double[nbTrees];
-			
 			treeNitrogenFineRoots = new double[nbTrees];
 			treeNitrogenCoarseRoots = new double[nbTrees];
 			treeNitrogenFineRootsSen = new double[nbTrees];
@@ -276,7 +262,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 			Arrays.fill(this.treeNitrogenCoarseRoots, 0);
 			Arrays.fill(this.treeNitrogenFineRootsSen, 0);
 			Arrays.fill(this.treeNitrogenCoarseRootsSen, 0);
-
 			
 		} else {
 			this.treeRootsDensity = null;
@@ -294,7 +279,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 			this.treeWaterUptake = null;
 			this.treeNitrogenUptake = null;
 			this.colonisationDirection = null;
-	
 		}
 
 		//WATER REPARTITION
@@ -315,7 +299,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 
 		//TEMPERATURE
 		this.soilTemperature = 0;
-
 	}
 
 	/**
@@ -436,7 +419,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 						           + Math.pow((virtualOriginBelow.z - shapeOrigin.z),2)
 		               			, 0.5);
 
-		
 		//the voxel to test is the one closest to the shape center
 		double distance = distanceCurrent; 
 		if (evolutionParameters.toricXp > 0) distance = Math.min (distanceCurrent,distanceRight);
@@ -447,19 +429,14 @@ public class SafeVoxel implements Serializable, Identifiable {
 		Vertex3d originForTest = null;
 		if (distance == distanceCurrent)
 			originForTest = immutable.gravityCenter;
-
 		if (distance == distanceRight)
 			originForTest = virtualOriginRight;
-
 		if (distance == distanceLeft)
 			originForTest = virtualOriginLeft;
-
 		if (distance == distanceAbove)
 			originForTest = virtualOriginAbove;
-
 		if (distance == distanceBelow)
 			originForTest = virtualOriginBelow;
-
 
 		//Spheric shape
 		//the voxel is in the shape if it's distance to the center of the sphere is < sphere radius (param1)
@@ -547,7 +524,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 		setTreeRootsDensity (treeIndex, rootDensity);
 		
 		return rootDensity;
-
 	}
  	
 	/**
@@ -614,13 +590,13 @@ public class SafeVoxel implements Serializable, Identifiable {
 	/**
 	* Compute Pressure head in soil at plant root surface (cm)
 	* and the associated matrix flux potentials phi_pF (cm-2 day-1)
+	* 
 	* @author Meine Van Noordwijk (ICRAF) - September 2004
 	* @param plant Reference to the plant object (crop or tree) 
 	* @param generalParameters Reference to SafeGeneralParameters object
 	*/
 	public void computePlantRhizospherePotential (Object plant, SafeGeneralParameters generalParameters){
 		
-
 		double rootDepth = this.getZ();
 		double rootDistance = 0;
 		double density = 0;
@@ -642,10 +618,8 @@ public class SafeVoxel implements Serializable, Identifiable {
 			}
 		}
 
-		//IL 30/04/2025
-		//on remet le waterUptakePotentiel = 0 
+		//if actualWaterPotential > 0 => End of the process
 		double actualWaterPotential = plantRoots.getActualWaterPotential();
-
 		if(actualWaterPotential >= 0) {
 			if(plant instanceof SafeTree){
 				SafeTree tree = (SafeTree) plant;
@@ -654,7 +628,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 					SafeRootNode node = tree.getPlantRoots().getRootTopology(this);
 					node.setWaterUptakePotential(0);
 					node.setNitrogenUptakePotential(0);
-
 				}
 			}
 			else {
@@ -739,7 +712,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 		double nextPotential = 0;
 		double phiPFSoil = this.getPhi (generalParameters);
 
-		
 		//for each plant rooted in this voxel
 		//order by PHIPF
 		Iterator<SafeRootNode> itr = sortedRootMap.iterator();
@@ -784,13 +756,12 @@ public class SafeVoxel implements Serializable, Identifiable {
 				
 				if(nextPhiPF <= phiPF){
 					nextPhiPF = phiPFSoil;		//PhiPF of the soil
-					//MODIF IL 22/01/2015 
+					//IL 22/01/2015 
 					//SET Stone option : here we can extact water only in voxel fine soil
 					//nextPotential = this.getWaterPotentialTheta();
 					nextPotential = this.getWaterPotentialThetaFineSoil();
 				}
-				
-				
+							
 				double phiRange = nextPhiPF-phiPF;
 				potWaterUpPerFrd =
 						10								// conversion from cm to mm
@@ -805,18 +776,15 @@ public class SafeVoxel implements Serializable, Identifiable {
 								      * this.getThickness()		// m
 								      * 1000;					// from m to mm
 				
-				
 				if(((potWaterUpPerFrd* rootDensityCum) > waterAvailable)||(this.getIsSaturated())){
 					potWaterUpPerFrd = waterAvailable/(rootDensityCum);
 				}
 				lastPhiPFForRootTotalComputation = phiPF;
 
-				
 				double density = voxelRoot.getFineRootsDensity() / generalParameters.MM3_TO_CMCM3; //convert m m-3 in cm cm-3
 				double waterUptakePotential = potWaterUpPerFrd			// mm.(m.m-3)-1
 										   * density					// cm cm-3
 										   * this.getCell().getArea();	// m2
-
 
 				if (waterUptakePotential > 0) {
 					voxelRoot.addWaterUptakePotential (waterUptakePotential);
@@ -828,15 +796,15 @@ public class SafeVoxel implements Serializable, Identifiable {
 
 	/**
 	* Calculation of total nitrogen potential
+	* from a general equation for zero-sink uptake (De Willigen and Van Noordwijk, 1994)
+	* on the basis of the total root length in that cell, and allocated to each component
+	* proportional to its effective root length
+	*
 	* @author Meine Van Noordwijk (ICRAF) - January 2005
 	* @param stand Reference to SafeStand object
 	* @param generalParameters Reference to SafeGeneralParameters object
 	*/
 	public void countNitrogenUptakePotential (SafeStand stand, SafeGeneralParameters generalParameters) {
-
-	// from a general equation for zero-sink uptake (De Willigen and Van Noordwijk, 1994)
-	// on the basis of the total root length in that cell, and allocated to each component
-	// proportional to its effective root length
 
 		double nitrogenDiffusionConstant 	= generalParameters.nitrogenDiffusionConstant;
 		double nitrogenEffectiveDiffusionA0 = generalParameters.nitrogenEffectiveDiffusionA0;
@@ -845,23 +813,20 @@ public class SafeVoxel implements Serializable, Identifiable {
 		double nh4AbsorptionConstant 		= generalParameters.nh4AbsorptionConstant;
 		double no3Fraction 					= generalParameters.no3Fraction;
 
-		//MODIF IL 05/04/2018
-		//correction bug when stone is included in soil
+		//IL 05/04/2018
+		//bud fixed when stone is included in soil
 		//double theta = this.getTheta();
 		//double volume = this.getVolume();
 		double theta = this.getThetaFineSoil();
 		double volume = this.getVolumeFineSoil();
 		
 		double rootDiameterTotal = this.getRootsDiameterTotal (stand);
-
-
 		double nitrogenDiffusionFactor = nitrogenDiffusionConstant		//cm2 d-1
 									* theta								//m3 m-3
 									* Math.max (theta,					//m3 m-3
 											   (theta*nitrogenEffectiveDiffusionA1 +nitrogenEffectiveDiffusionA0));
 
 		setNitrogenDiffusionFactor (nitrogenDiffusionFactor); 		  // cm-2 d-1
-
 
 		double absorptionConstant = ((no3AbsorptionConstant + theta) * (nh4AbsorptionConstant + theta))
 								  / (no3AbsorptionConstant + theta + no3Fraction  * (nh4AbsorptionConstant - no3AbsorptionConstant))
@@ -875,8 +840,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 		if (getRootMap() == null) return;
 	
 		Iterator<SafeRootNode> itr = getRootMap().iterator();
-
-
 		double totalSinkStrengthLrv = 0;
 		double totalDensity = 0;
 
@@ -892,21 +855,16 @@ public class SafeVoxel implements Serializable, Identifiable {
 			double density = voxelRoot.getFineRootsDensity() / generalParameters.MM3_TO_CMCM3;
 			totalSinkStrengthLrv += nitrogenSinkStrength * density;		//somme sur les deux plantes!!!!     kg/m*cm/cm3
 			totalDensity += density;
-
-		
 		}
 
 		double availableNitrogen = 0; 
 		if (totalDensity > 0)  {
 			double rhoCombined = 1 / (0.5 * rootDiameterTotal * Math.sqrt (Math.PI * totalDensity) );
 			
-			
 			double gModCombined = -3d/8d
 								+ (1 / (4 * Math.pow (rhoCombined,2)))
 								+ (1d/2d * (Math.pow (rhoCombined,2)/(Math.pow (rhoCombined,2)-1)) * Math.log (rhoCombined));
 	
-
-
 			//Potential zero-sink supply for all plant (g d-1)
 			double zeroSinkCombined = ((Math.PI * getNitrogenConcentration() * getNitrogenDiffusionFactor())
 										/ gModCombined)
@@ -914,9 +872,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 										* generalParameters.M3_TO_CM3;
 	
 			availableNitrogen = Math.min (zeroSinkCombined, (this.getNitrogenNo3Stock() + this.getNitrogenNh4Stock()));
-			
-
-
 		}
 
 		this.nitrogenAvailableForBoth=availableNitrogen;
@@ -931,10 +886,8 @@ public class SafeVoxel implements Serializable, Identifiable {
 			SafeRootNode voxelRoot = itr2.next();
 			SafePlantRoot plantRoot  = voxelRoot.getPlantRoots ();
 			
-
 			//For each PLANT rooted in this voxel
 			//Calculation of relative sink strenght
-
 			//Each plant share in combined uptake
 			double nitrogenSinkStrength   = plantRoot.getNitrogenSinkStrength ();
 			double density = voxelRoot.getFineRootsDensity() / generalParameters.MM3_TO_CMCM3;
@@ -953,8 +906,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 						  + (1 / (4 * Math.pow (rho,2)))
 						  + (1d/2d * (Math.pow (rho,2)/(Math.pow (rho,2)-1)) * Math.log (rho));
 
-
-			
 			//Potential zero-sink supply per voxel (g d-1)
 			double nitrogenZeroSinkPotential = ((Math.PI * getNitrogenConcentration() *  getNitrogenDiffusionFactor())
 												/ gMod)
@@ -966,10 +917,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 
 			//Sum of solo uptake potentials
 			nitrogenZeroSinkTotal += nitrogenZeroSinkPotential;
-
-			
 		}
-
 
 		//For each component the potential uptake is at least the combined uptake potential minus the mon uptake of all others,
 		//and at most equal to its own 'mono' potential uptake.
@@ -1002,7 +950,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 			if (nitUptakePot > 0) {
 				voxelRoot.addNitrogenUptakePotential (nitUptakePot);	//g
 				plantRoot.addNitrogenUptakePotential (nitUptakePot);
-
 			}
 		}
 	}
@@ -1096,7 +1043,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 			double fh = 0.80*((this.getTheta()-getLayer().getWiltingPoint())/(getLayer().getFieldCapacity()-getLayer().getWiltingPoint()))+0.20;
 			
 			//température factor (fth - ftr in STICS) 
-			//Aspect à revoir donc pour le moment pas de paramètres
 			double soilTemp = Math.max(-1,this.getSoilTemperature());		// to avoid Nan in the following calculation
 			double ft = Math.pow((-0.566+0.62*Math.exp(0.9125*soilTemp/15)),1.026);
 		
@@ -1161,8 +1107,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 		return (getThetaFineSoil() * alpha);	   
 	}	
 
-
-		
 	/**
 	* Return waterPotential in m3 m-3
 	*/

@@ -57,8 +57,8 @@ import java.util.Map;
 import safe.stics.*;
 
 /**
- * SafeCrop represent the crop sowed on this cell (can be baresoil)
- * Only one SafeCrop is created by cell (state variables of the crop are homogenous)
+ * SafeCrop represent the crop sowed on a SafeCell (can be baresoil)
+ * Only one SafeCrop is created by SafeCell (state variables of the crop are homogenous)
  * Crop model is implemented by STICS (calling fortran native method) 
  *
  * @author : Isabelle Lecomte - INRA (UMR-SYSTEM), University of Montpellier, France
@@ -417,7 +417,6 @@ import safe.stics.*;
 		this.rootsDepthMax = 0;
 		this.biomassMax = 0;
 		this.heightMax = 0;
-
 	}
 	
 	/**
@@ -442,7 +441,6 @@ import safe.stics.*;
 									String exportDir,
 									String laiFileName)  throws Exception {
 
-		
 		//soil initialisation
 		this.sticsSoil 		= new SafeSticsSoil (soil);
 		this.sticsSoil.initialise (soil, plotSettings); 
@@ -483,8 +481,7 @@ import safe.stics.*;
 		sticsCrop.P_densinitial[3] = (float) zone.getInitialCropRootsDensity(3);
 		sticsCrop.P_densinitial[4] = (float) zone.getInitialCropRootsDensity(4);
 
-		
-		
+
 		//JNA NATIVE method to check plant and itk parameters
 		//result is in output/initialisation.sti
 		SafeTestJNA.verifPlant(sticsParam, sticsTransit, this.sticsCommun, zone.getSticsItk(), this.sticsCrop, zone.getId(), julianDayStart, julianDayEnd, exportDir);
@@ -530,9 +527,7 @@ import safe.stics.*;
 	    sticsCommun.napini[0] = zone.getSticsItk().nap;
 	    sticsCommun.napNini[0] = zone.getSticsItk().napN;
 	    sticsCommun.nbjresini[0] = zone.getSticsItk().P_nbjres;
-	   
 
-    	
 	    //Restore CROP initial values if PERENIAL 
 	    if (this.sticsCrop.P_codeperenne == 2) {
 
@@ -573,10 +568,8 @@ import safe.stics.*;
 			this.sumHisafeWaterStressReproductive = 0;
 			this.sumHisafeNitrogenStressReproductive = 0;
 			this.yield = 0;
-
 	    }
 
-	
 		//JNA NATIVE method to check plant and itk parameters
 		//result is in output/initialisation.sti
 	    SafeTestJNA.verifPlant(sticsParam, sticsTransit, this.sticsCommun, zone.getSticsItk(), this.sticsCrop, zone.getId(), julianDayStart, julianDayEnd, exportDir);

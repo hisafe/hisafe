@@ -60,6 +60,8 @@ import safe.stics.*;
 
 /**
  * SafeCell is a square spatial division of a SafePlot  
+ * A collection of SafeVoxel is composing the SafeCell soil 
+ * A SafeCrop related to a SafeCropZone is attached to each SafeCell
  *
  * @author : Isabelle Lecomte - INRA (UMR-SYSTEM), University of Montpellier, France
  */
@@ -82,7 +84,7 @@ public class SafeCell extends SquareCell {
 	private SafeCropZone cropZone;			
 	/** Reference of the crop object  */
 	private SafeCrop crop;						
-	/** References of voxels objects attached to this cell  */
+	/** References of soil voxels objects attached to this cell  */
 	private SafeVoxel [] voxels;				
 	/** ID of tree if planted in this cell   */
 	private int idTreePlanted;					
@@ -272,9 +274,7 @@ public class SafeCell extends SquareCell {
 		this.setStemFlowByTrees (0); 
 		this.setNitrogenLeachingWaterTable(0);	
 		this.setNitrogenAddedByWaterTable(0);
-		
 		this.getCrop().razDaily();
-
 	}
 	
 	/**
@@ -286,7 +286,6 @@ public class SafeCell extends SquareCell {
 		monthDirectParIncident = 0; 
 		monthDiffuseParIncident = 0;
 		monthVisibleSky = 0;
-
 		this.getCrop().razTotalMonth();
 	}
 	/**
@@ -295,7 +294,6 @@ public class SafeCell extends SquareCell {
 	public void razTotalAnnual () {
 		annualWaterUptakeByTrees = 0;				
 		annualNitrogenUptakeByTrees = 0;
-		
 		this.getCrop().razTotalAnnual();
 	}
 	
@@ -500,8 +498,7 @@ public class SafeCell extends SquareCell {
 						cropNitrogenUptake += sticsCommun.absz[z];			    // voxel crop nitrogen uptake kg N ha-1		
 					}
 				}
-
-					
+				
 				//if pure crop, water and nitrogen extraction is done in STICS		
 				voxels[i].setCropWaterUptake  (cropWaterUptake * cellArea);				// convert mm in liters
 				voxels[i].setCropNitrogenUptake ((cropNitrogenUptake / 10) * cellArea );// convert kg ha-1 in g
@@ -550,7 +547,8 @@ public class SafeCell extends SquareCell {
 	/**
 	 * Desaggregation of Hi-sAFe voxels values in STICS mini-layers (crop and tree water and nitrogen uptake) 
 	*  Called after water and nitrogen competition calculation
-	*  @param generalParameters SafeGeneralParameters
+	*  @param generalParameters Reference to SafeGeneralParameters object
+	*  @param plotSettigs Reference to SafePlotSettings object
 	*  @param isDebugMode (0/1) to report errors
 	*/
 	public void voxelsToMiniCouches (SafeGeneralParameters generalParameters, SafePlotSettings plotSettigs, boolean isDebugMode) {
@@ -717,10 +715,10 @@ public class SafeCell extends SquareCell {
 		
 		//Si après exploration de tous les voxels il reste des choses à extraire 
 		//Qu'est ce qu'on fait ???? 
-	if (isDebugMode) {
-		if (reportWaterTree > 0.000001)  System.out.println("cell="+this.getId()+"  reportWaterTree="+reportWaterTree);
-		if (reportWaterCrop > 0.000001) System.out.println("cell="+this.getId()+"  reportWaterCrop="+reportWaterCrop);
-	}
+		if (isDebugMode) {
+			if (reportWaterTree > 0.000001)  System.out.println("cell="+this.getId()+"  reportWaterTree="+reportWaterTree);
+			if (reportWaterCrop > 0.000001) System.out.println("cell="+this.getId()+"  reportWaterCrop="+reportWaterCrop);
+		}
 
 		
 		
