@@ -62,7 +62,7 @@ import jeeb.lib.util.Record;
 import jeeb.lib.util.RecordSet;
 
 /**
- * A loader for an HiSAFE BATCH simulation.
+ * SIM file loader for Hi-sAFe BATCH simulation.
  * 
  * @author Isabelle Lecomte - INRAE Montpellier - july 2009 
  */

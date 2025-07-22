@@ -71,6 +71,20 @@ import safe.model.*;
 /**
  * A Capsis script to run Hisafe simulation in BATCH MODE
  * 
+ * DOS command example to run the script 
+ * capsis -p script safe.pgms.ScriptGen  C:/Projets/capsis4/data/safe/simSettings/exemple/exemple.sim
+ * 
+ * Read the sim file
+ * Create output folder
+ * Open an existing project with projectFileName or create a new one
+ * Load export file
+ * Load weather file
+ * Load LAI forcing file
+ * Create output session.txt
+ * Run the simulation  
+ * Save project if option is activated
+ * 
+ * 
  * @author Isabelle Lecomte - INRAE Montpellier - july 2009 
  */
 public class ScriptGen {
@@ -101,29 +115,30 @@ public class ScriptGen {
 			System.out.println("Parameter needed: missing simulation file");
 		}
 		else {
-			// Check the simulation file
+			// Check the simulation file name
 			String simulationFileName = args[1];
 			if (!Check.isFile(simulationFileName)) {
 				System.out.println("Wrong simulation file name: " + simulationFileName);
 			}
 			else {
-				// project name
+				// project name = name of the simulation file 
 				String projectName = new File(simulationFileName).getName();
 				projectName = projectName.replace(".sim", "");
 
-				// Set the simulationDir
+				// Set the simulation path
 				simulationPath = new File(simulationFileName).getParentFile().getAbsolutePath();
 
-				// outputDir
-				outputPath = simulationPath + "/output-" + projectName;
-				File mydir = new File(outputPath);
-		 	    mydir.delete();
-				mydir.mkdir();
-
 				try {
+					// read the sim file
 					SafeSimulationLoader loader = new SafeSimulationLoader(simulationFileName);
 					loader.load();
 				
+					// Create output folder
+					outputPath = simulationPath + "/output-" + projectName;
+					File mydir = new File(outputPath);
+			 	    mydir.delete();
+					mydir.mkdir();
+					
 					// Open an existing project with projectFileName
 					C4Script script;
 					SafeGeneralParameters ip;
@@ -232,10 +247,12 @@ public class ScriptGen {
 			
 					SafeStand stand = (SafeStand) (step.getScene());
 
-					model.loadWeather(stand.getPlot().getPlotSettings().latitude, 
-									  stand.getPlot().getPlotSettings().elevation, 
-									  ep.weatherPath, ep.simulationDateStart, ep.simulationDateEnd);
+					//load weather file
+					model.loadWeather(ep.weatherPath, ep.simulationDateStart, ep.simulationDateEnd,
+									  stand.getPlot().getPlotSettings().latitude, 
+									  stand.getPlot().getPlotSettings().elevation);
 
+					
 					model.initExport(stand);
 					
 					//RUN the simulation

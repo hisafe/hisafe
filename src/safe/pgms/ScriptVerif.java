@@ -64,6 +64,17 @@ import safe.model.*;
 /**
  * A Capsis script to check Hisafe simulation parameters before running
  * 
+ * DOS command example to run the script 
+ * capsis -p script safe.pgms.ScriptVerif  C:/Projets/capsis4/data/safe/simSettings/exemple/exemple.sim
+ * 
+ * Read the sim file
+ * Create output folder
+ * Open an existing project with projectFileName or create a new one
+ * Load export file
+ * Load weather file
+ * Create output session.txt
+ * Run the verification  
+ * 
  * 
  * @author Isabelle Lecomte - INRAE Montpellier - January 2024 
  */
@@ -104,19 +115,20 @@ public class ScriptVerif {
 				String projectName = new File(simulationFileName).getName();
 				projectName = projectName.replace(".sim", "");
 				
-				// Set the simulationDir
+				// Set the simulation path
 				simulationPath = new File(simulationFileName).getParentFile().getAbsolutePath();
 
-				// outputDir
-				outputPath = simulationPath + "/output-" + projectName;
-				File mydir = new File(outputPath);
-		 	    mydir.delete();
-				mydir.mkdir();
-
 				try {
+					// read the sim file
 					SafeSimulationLoader loader = new SafeSimulationLoader(simulationFileName);
 					loader.load();
 				
+					// Create output folder
+					outputPath = simulationPath + "/output-" + projectName;
+					File mydir = new File(outputPath);
+			 	    mydir.delete();
+					mydir.mkdir();
+					
 					// Open an existing project with projectFileName
 					C4Script script;
 					SafeGeneralParameters ip;
@@ -127,8 +139,7 @@ public class ScriptVerif {
 						if (!Check.isFile(projectFileName)) {
 								throw new Exception("Wrong project file name: " + projectFileName);			
 						}
-			
-			
+	
 						script = C4Script.openProject(projectFileName);
 						ip = (SafeGeneralParameters) script.getModel().getSettings();
 						ip.setDataPath(simulationPath);
@@ -223,14 +234,15 @@ public class ScriptVerif {
 			
 					SafeStand stand = (SafeStand) (step.getScene());
 
-					model.loadWeather(stand.getPlot().getPlotSettings().latitude, 
-							  stand.getPlot().getPlotSettings().elevation, 
-							  ep.weatherPath, ep.simulationDateStart, ep.simulationDateEnd);
+					//load weather file
+					model.loadWeather(ep.weatherPath, ep.simulationDateStart, ep.simulationDateEnd,
+							  stand.getPlot().getPlotSettings().latitude, 
+							  stand.getPlot().getPlotSettings().elevation);
 
 
 					model.initExport(stand);
 					
-					model.verifSimulation(stand, ip, ep, monFichierVerif);
+					model.verifSimulation(stand, ep, monFichierVerif);
 			
 					script.closeProject(script.getProject());
 
