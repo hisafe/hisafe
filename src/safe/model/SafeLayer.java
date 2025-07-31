@@ -51,7 +51,7 @@ package safe.model;
 import java.io.Serializable;
 
 /**
- * Pedologic soil layers description
+ * Pedologic SOIL LAYERS description
  *
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */

@@ -53,7 +53,7 @@ import java.io.Serializable;
 import capsis.defaulttype.Species;
 
 /**
- * Properties for tree species.
+ * TREE SPECIES parameters
  *
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */

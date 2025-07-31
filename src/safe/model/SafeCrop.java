@@ -57,7 +57,7 @@ import java.util.Map;
 import safe.stics.*;
 
 /**
- * SafeCrop represent the crop sowed on a SafeCell (can be baresoil)
+ * CROP represent the crop sowed on a SafeCell (can be baresoil)
  * Only one SafeCrop is created by SafeCell (state variables of the crop are homogenous)
  * Crop model is implemented by STICS (calling fortran native method) 
  *

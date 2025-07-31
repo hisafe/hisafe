@@ -51,7 +51,7 @@ package safe.model;
 import capsis.lib.samsaralight.SLBeamSet;
 
 /**
- * A light beam set composed of direct or diffuse beams.
+ * A light BEAM SET composed of direct or diffuse beams.
  *
  * @see SafeBeam
  * @author : B. Courbaud CEMAGREF Grenoble - January 2000 - Benoit.Courbaud@grenoble.cemagref.fr

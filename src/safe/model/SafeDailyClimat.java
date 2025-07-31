@@ -51,7 +51,7 @@ package safe.model;
 import java.io.Serializable;
 
 /**
- * Climatic entries for one day
+ * CLIMATIC entries for one day
  *
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  * @author : Hervé SINOQUET - INRA (UMR-PIAF), University of Clermont-Ferrand, France

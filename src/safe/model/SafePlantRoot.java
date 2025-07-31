@@ -55,7 +55,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 /**
- * PLANT (Tree of crop) roots system
+ * PLANT ROOTS system  (Tree of crop) 
  *
  * @author : Degi HARJA       - ICRAF, Bogor 16001, Indonesia
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France

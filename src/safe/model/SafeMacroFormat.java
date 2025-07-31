@@ -62,6 +62,9 @@ import jeeb.lib.util.RecordSet;
 public class SafeMacroFormat extends RecordSet {
 
 	@Import
+	/**
+	 * First type of climate record
+	 */
 	static public class ClimatRecord extends Record {
 		public ClimatRecord () {super ();}
 		public ClimatRecord (String line) throws Exception {super (line);}
@@ -97,6 +100,9 @@ public class SafeMacroFormat extends RecordSet {
 	}
 
 	@Import
+	/**
+	 * Second type of climate record
+	 */
 	static public class ClimatRecord2 extends Record {
 		public ClimatRecord2 () {super ();}
 		public ClimatRecord2 (String line) throws Exception {super (line);}
@@ -133,7 +139,6 @@ public class SafeMacroFormat extends RecordSet {
 	 * Constructor
 	 * @param climatFileName Name of the climate entry file
 	 */
-	
 	public SafeMacroFormat (String climatFileName) throws Exception {prepareImport (climatFileName);}
 
 	/**

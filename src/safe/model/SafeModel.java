@@ -79,7 +79,7 @@ import capsis.kernel.Step;
 
 
 /**
- * SafeModel is the main class for Hi-sAFe 
+ * MAIN CLASS for Hi-sAFe 
  * 
  * List of main methods 
  * loadInitStand : load the pld file 
@@ -1317,7 +1317,7 @@ public class SafeModel extends GModel {
 				
 				// Water and nitrogen extraction results desagreggation 
 				// from voxels to STICS mini-couches
-				cell.voxelsToMiniCouches(getSettings() , newPlot.getPlotSettings(), isDebugMode);
+				cell.voxelsToMiniCouches(getSettings() , newPlot.getPlotSettings());
 				
 				hisafeWaterExtraction = 1;
 			}

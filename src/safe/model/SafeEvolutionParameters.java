@@ -55,7 +55,7 @@ import jeeb.lib.util.CancellationException;
 import safe.pgms.SafeSimulationLoader;
 
 /**
- * Evolution parameters   
+ * EVOLUTION parameters   
  * 
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */

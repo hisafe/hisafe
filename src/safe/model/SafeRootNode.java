@@ -56,7 +56,7 @@ import java.math.BigDecimal;
 import jeeb.lib.util.Vertex3d;
 
 /**
- * SafeRootNode is used to build tree and crop coarse roots topology
+ * NODE to build tree and crop coarse roots topology
  * Each node is liked to its parent node and to its colonized nodes to design a tree-like topology
  * 
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France

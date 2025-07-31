@@ -60,7 +60,7 @@ import capsis.kernel.GScene;
 
 
 /**
- * SafePlot represent the spatial desagregation of the SafeStand on a grid 
+ * PLOT representing the spatial desagregation of the SafeStand on a grid 
  * 
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */

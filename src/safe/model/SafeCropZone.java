@@ -66,9 +66,7 @@ import safe.stics.SafeSticsParameters;
 import safe.stics.SafeSticsTransit;
 
 /**
- * Crop zone description : A collection of SafeCell with the same crop species SafeCropSpecies
- * The list of itk file name (containing crop intervention calendar) is read in the sim file
- * 
+ * CROP ZONE description : A collection of SafeCell with the same crop species SafeCropSpecies
  *
  * @author : Isabelle Lecomte - INRA (UMR-SYSTEM), University of Montpellier, France
  */

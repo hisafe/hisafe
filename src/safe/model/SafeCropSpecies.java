@@ -51,7 +51,7 @@ package safe.model;
 import java.io.Serializable;
 
 /**
- * Crop species parameters Hi-sAFe specific
+ * CROP SPECIES parameters Hi-sAFe specific
  * STICS usual parameters are in safe.stics.SafeSticsCrop
  *
  * @author : Isabelle Lecomte - INRA (UMR-SYSTEM), University of Montpellier, France

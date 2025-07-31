@@ -59,7 +59,7 @@ import jeeb.lib.util.Identifiable;
 import jeeb.lib.util.Vertex3d;
 import safe.stics.SafeSticsSoil;
 /**
- * 3D voxel of soil attached to a SafeCell
+ * 3D VOXEL of soil attached to a SafeCell
  *
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */

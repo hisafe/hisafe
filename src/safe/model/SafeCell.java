@@ -59,9 +59,7 @@ import capsis.defaulttype.plotofcells.SquareCell;
 import safe.stics.*;
 
 /**
- * SafeCell is a square spatial division of a SafePlot  
- * A collection of SafeVoxel is composing the SafeCell soil 
- * A SafeCrop related to a SafeCropZone is attached to each SafeCell
+ * CELL is a square spatial division of a SafePlot  
  *
  * @author : Isabelle Lecomte - INRA (UMR-SYSTEM), University of Montpellier, France
  */
@@ -192,6 +190,7 @@ public class SafeCell extends SquareCell {
 	private double  treeNitrogenFineRootsLitter;	
 	/** Nitrogen litter from tree coarse roots residues (kg N)   */
 	private double  treeNitrogenCoarseRootsLitter;
+
 	
 	/**	
 	 *	Constructor 
@@ -549,9 +548,9 @@ public class SafeCell extends SquareCell {
 	*  Called after water and nitrogen competition calculation
 	*  @param generalParameters Reference to SafeGeneralParameters object
 	*  @param plotSettigs Reference to SafePlotSettings object
-	*  @param isDebugMode (0/1) to report errors
+
 	*/
-	public void voxelsToMiniCouches (SafeGeneralParameters generalParameters, SafePlotSettings plotSettigs, boolean isDebugMode) {
+	public void voxelsToMiniCouches (SafeGeneralParameters generalParameters, SafePlotSettings plotSettigs) {
 
 		SafeSticsCrop sticsCrop = this.getCrop().sticsCrop;
 		SafeSticsCommun sticsCommun = this.getCrop().sticsCommun;
@@ -568,18 +567,11 @@ public class SafeCell extends SquareCell {
 			sticsCrop.epz[indice] = 0;
 			sticsCommun.absz[i]=0;
 		}
-		//il correction 16/02/2017
 		for (int i=0; i<generalParameters.STICS_MINI_LAYERS; i++) {	
 			sticsCommun.treeWaterUptake [i] =0;
 			sticsCommun.treeNitrogenUptake [i] =0;
-
 		}
-	
-		// if (tree+crop water uptake + soil evaporation) > (waterStock-ha) in a miniCouche
-		// ha is residual water. 
-		// In that case, tree and crop water  uptake are affected to the next miniCouche
-		double reportWaterTree = 0;	
-		double reportWaterCrop = 0;	
+
 
 		//FOR EACH VOXEL
 		for (int i=0; i < this.voxels.length; i++) {
@@ -589,139 +581,78 @@ public class SafeCell extends SquareCell {
 				//number of miniCouches in this voxel
 				int miniCoucheMin = voxels[i].getMiniCoucheMin();		//starting  miniCouches  for current voxel
 				int miniCoucheMax = voxels[i].getMiniCoucheMax();	   //ending    miniCouches  for current voxel
-				int miniCoucheNumber = voxels[i].getMiniCoucheNumber();	   //number    miniCouches  for current voxel
-	
+
 				//Grab voxel values for WATER and NITROGEN UPTAKE
-				double cropWaterUptake = 0;
-				double treeWaterUptake = 0;
-				double cropNitrogenUptake = 0;
-				double treeNitrogenUptake = 0;
-	
-				cropWaterUptake = voxels[i].getCropWaterUptake ();					//liters
-				cropNitrogenUptake = voxels[i].getCropNitrogenUptake ();			//g N
-				
+				double voxelCropWaterUptake  = voxels[i].getCropWaterUptake ();					//liters
+				double voxelCropNitrogenUptake = voxels[i].getCropNitrogenUptake ();			//g N
+				double voxelTreeWaterUptake = 0;
+				double voxelTreeNitrogenUptake = 0;
 				for (int t=0; t < plotSettigs.nbTrees; t++) {
-					treeWaterUptake += voxels[i].getTheTreeWaterUptake (t);			//liters
-					treeNitrogenUptake += voxels[i].getTheTreeNitrogenUptake (t);	//g N
+					voxelTreeWaterUptake += voxels[i].getTheTreeWaterUptake (t);			//liters
+					voxelTreeNitrogenUptake += voxels[i].getTheTreeNitrogenUptake (t);		//g N
 				}
 				
 				//if no extraction, no need to continue
-				if ((treeWaterUptake > 0) || (treeNitrogenUptake > 0) || (cropWaterUptake > 0) || (cropNitrogenUptake > 0)) {
+				if ((voxelTreeWaterUptake > 0) || (voxelTreeNitrogenUptake > 0) || (voxelCropWaterUptake > 0) || (voxelCropNitrogenUptake > 0)) {
 	
-					//Compute nitrogen total (no3+nh4) in this voxel
+					//Compute water (HUR) and nitrogen total (no3+nh4) in this voxel
+					float waterTotal = 0;
+					float cropWaterTotal = 0;
 					float nitrogenTotal = 0;
 					float cropNitrogenTotal = 0;
 					for (int z=miniCoucheMin; z <= miniCoucheMax; z++) {
-						if (sticsSoil.nit[z+1] > 0) {
+						if (sticsCommun.HUR[z] > 0) {
+							waterTotal += sticsCommun.HUR[z];
+							if  (cropRootDepth >= miniCoucheMin) {
+								cropWaterTotal += sticsCommun.HUR[z];		//only for crop
+							}
+						}
+						if (sticsSoil.nit[z+1] > 0) {  //indice of nit is different (+1)
 							nitrogenTotal += sticsSoil.nit[z+1];
 							if  (cropRootDepth >= miniCoucheMin) {
-								cropNitrogenTotal +=sticsSoil.nit[z+1];	
+								cropNitrogenTotal +=sticsSoil.nit[z+1];	 	//only for crop
 							}
 						}
 						if (sticsSoil.amm[z] > 0) {
-							//il correction 16/02/2017
-							//nitrogenTotal += sticsSoil.amm[z+1];
 							nitrogenTotal += sticsSoil.amm[z];
 							if (cropRootDepth >= miniCoucheMin)  {
-								cropNitrogenTotal +=sticsSoil.amm[z];									
+								cropNitrogenTotal +=sticsSoil.amm[z];		//only for crop							
 							}
 						}
 					}
-					
-					//Passage dans STICS de l'extraction en eau des arbres dans les minicouches 
+
+					//Water and nitrogen are share in mini-layer in proportion of humidity or nitrogen content 
 					for (int z=miniCoucheMin; z <= miniCoucheMax; z++) {
+						int indice     = (z*3)+1;	
+						//Water extraction in mini-layers  in proportion of humidity 			  				
+						if (sticsCommun.HUR[z] > 0) {	
+							if  (voxelTreeWaterUptake > 0) {	
+								sticsCommun.treeWaterUptake[z] = (float) ((voxelTreeWaterUptake  / cellArea))
+										 								*(sticsCommun.HUR[z]/waterTotal);
+							}
+
+							if  (voxelCropWaterUptake > 0) {	
+										//Variable sticsCrop.epz(0:2,1000)
+								sticsCrop.epz[indice] = (float) ((voxelCropWaterUptake  / cellArea))
+										                       *(sticsCommun.HUR[z]/cropWaterTotal);	
+							}	
+					   }
 						
-	//IL 16/02/2017 Je ne comprends pas ce code, je l'enlève					
-	/*					if (voxels[i].getIsSaturated() && (reportWaterTree > 0)) {	// gt - 5.02.2009 - if we have to report waterExtraction in a saturated voxel
-							//sticsCommun.treeWaterUptake [z] = 0;
-							sticsCommun.treeWaterUptake [z] = (float) reportWaterTree;	//il 05.07.2017 je pense c'est plus cohérent
-							this.addWaterExtractedInSaturationByTrees(reportWaterTree);
-							reportWaterTree = 0;
-						} else {*/
-							if ((sticsCommun.HUR[z]								// water content
-								-sticsCommun.esz[z]								// soil evaporation
-								-(treeWaterUptake/miniCoucheNumber/cellArea) 	// tree water uptake
-								-(cropWaterUptake/miniCoucheNumber/cellArea)	// crop water uptake
-								-reportWaterTree								// tree report from above
-								-reportWaterCrop) 								// crop report from above
-									< ha) {										// gt - 05.02.2009 - residual humidity
-	
-								sticsCommun.treeWaterUptake[z] = (float) Math.max(sticsCommun.HUR[z]
-																	-sticsCommun.esz[z]
-																	-cropWaterUptake/cellArea/miniCoucheNumber
-																	-ha
-																	-reportWaterCrop
-															,0);
-								reportWaterTree += treeWaterUptake/cellArea/miniCoucheNumber 
-												- sticsCommun.treeWaterUptake[z];
-	
-							} else {
-								sticsCommun.treeWaterUptake [z] = (float) ((treeWaterUptake/cellArea/miniCoucheNumber)	//convert liters in mm
-																			+reportWaterTree);
-								reportWaterTree = 0;
-
-							}
-					//	}
-		
-					
-						int indice     = (z*3)+1;				//Variable sticsCrop.epz(0:2,1000) 
-						//IL 16/02/2017 Je ne comprends pas ce code, je l'enlève
-	/*					if (voxels[i].getIsSaturated() && (reportWaterCrop > 0)) {
-							//sticsCrop.epz[indice]=0;
-							sticsCrop.epz[indice] = (float) reportWaterCrop;		//il 05.07.2017 je pense c'est plus cohérent				
-							this.addWaterExtractedInSaturationByCrops(reportWaterCrop);
-							reportWaterCrop = 0;
-	
-						} else {*/
-							if((sticsCommun.HUR[z]
-								-sticsCommun.esz[z]
-								-cropWaterUptake/cellArea/miniCoucheNumber
-								-reportWaterCrop) < ha) {
-					
-								sticsCrop.epz[indice] = (float) Math.max((sticsCommun.HUR[z]-sticsCommun.esz[z]-ha),0);
-								
-								reportWaterCrop += (cropWaterUptake/cellArea/miniCoucheNumber) 
-											   - sticsCrop.epz[indice];
-
-	
-							} else {
-								sticsCrop.epz[indice] 	= (float) ((cropWaterUptake/cellArea/miniCoucheNumber) 		//convert liters in mm
-																+reportWaterCrop);
-								reportWaterCrop = 0;
-							}
-					//	}
-	
-
-						//Passage dans STICS de l'extraction en AZOTE des arbres et de la culture dans les minicouches 			  				
+						//Nitrogen extraction in mini-layers  in proportion of nitrogen content  		  				
 						if ( (sticsSoil.nit[z+1] > 0 ) && (sticsSoil.amm[z] >= 0)) {	
-							if  (treeNitrogenUptake > 0) {	
-								sticsCommun.treeNitrogenUptake [z] = (float) ((treeNitrogenUptake  / cellArea) * 10)
-															 *(sticsSoil.nit[z+1]+sticsSoil.amm[z])/nitrogenTotal;	
-
+							if  (voxelTreeNitrogenUptake > 0) {	
+								sticsCommun.treeNitrogenUptake [z] = (float) ((voxelTreeNitrogenUptake  / cellArea) * 10)
+															                 *(sticsSoil.nit[z+1]+sticsSoil.amm[z])/nitrogenTotal;	
 							}
-	
-							if  (cropNitrogenUptake > 0) {	
-								//IL 16/02/2017 On enleve ce test pour autoriser l'extraction dans TOUTES les mini-couches du voxel
-								//if (z<=cropRootDepth) {	
-									sticsCommun.absz[z] = (float) ((cropNitrogenUptake  / cellArea) * 10)
-											*(sticsSoil.nit[z+1]+sticsSoil.amm[z])/cropNitrogenTotal;	
-								//}
+							if  (voxelCropNitrogenUptake > 0) {	
+								sticsCommun.absz[z] = (float) ((voxelCropNitrogenUptake  / cellArea) * 10)
+										                       *(sticsSoil.nit[z+1]+sticsSoil.amm[z])/cropNitrogenTotal;	
 							}		
 					   }
 					}			
-				}	
-			}	//if (!voxels[i].getIsSaturated()) 
+				} //if no extraction
+			}	//IF voxel is SATURATED 
 		}	//FOR EACH VOXEL
-		
-		//Si après exploration de tous les voxels il reste des choses à extraire 
-		//Qu'est ce qu'on fait ???? 
-		if (isDebugMode) {
-			if (reportWaterTree > 0.000001)  System.out.println("cell="+this.getId()+"  reportWaterTree="+reportWaterTree);
-			if (reportWaterCrop > 0.000001) System.out.println("cell="+this.getId()+"  reportWaterCrop="+reportWaterCrop);
-		}
-
-		
-		
 	}
 	/**
 	 * Desaggregation of hisafe voxels values in STICS mini-layers (water and nitrogen content) 
@@ -1435,7 +1366,7 @@ public class SafeCell extends SquareCell {
 			   
 		return (nitrogenRootResidu / (this.getArea() / 10000));		 //convert kg in kg ha-1 
 	}
-	
+
 	//Total for export
 	public float getAnnualWaterUptakeByTrees() { return annualWaterUptakeByTrees;}
 	public float getAnnualNitrogenUptakeByTrees() { return annualNitrogenUptakeByTrees;}

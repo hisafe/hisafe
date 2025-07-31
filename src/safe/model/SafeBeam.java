@@ -54,7 +54,7 @@ import capsis.lib.samsaralight.SLBeam;
 
 
 /**
- * A light beam (direct or diffuse used in the tree light interception process )
+ * A light BEAM (direct or diffuse used in the tree light interception process )
  *
  * @see SafeBeamSet
  * @author : B. Courbaud CEMAGREF Grenoble - January 2000 - Benoit.Courbaud@grenoble.cemagref.fr

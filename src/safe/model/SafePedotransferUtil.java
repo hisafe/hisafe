@@ -49,7 +49,7 @@
 package safe.model;
 
 /**
- * Pedotransfer functions for hydraulic properties of soil
+ * PEDOTRANSFERT functions for hydraulic properties of soil
  * (adapted from Wosten et al., 1998)
  * @author : D.HARJA	- ICRAF, Bogor 16001, Indonesia
  */

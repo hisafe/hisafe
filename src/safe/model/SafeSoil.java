@@ -53,7 +53,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * Soil general description
+ * SOIL general description
  *
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */

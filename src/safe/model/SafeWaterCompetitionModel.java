@@ -50,14 +50,18 @@ package safe.model;
 
 import java.util.Iterator;
 
+/**
+ * WATER and NITROGEN COMPETITION 
+ * 
+ * @author : M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
+ * @author : D.HARJA          - ICRAF Bogor Indonisia
+ * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
+ * 
+ **/
 public class SafeWaterCompetitionModel  {
 	
 	/**
-	 * WATER AND NITROGEN REPARTITION PROCESS
-	 * 
-	 * @author : M.Van NOORDWIJK  - ICRAF Bogor Indonisia 
-	 * @author : D.HARJA          - ICRAF Bogor Indonisia
-	 * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
+	 * Water and Nitrogen repartition process
 	 * 
 	 * @param stand Reference to SafeStand object
 	 * @param generalParameters Reference to SafeGeneralParameters object
@@ -310,7 +314,6 @@ public class SafeWaterCompetitionModel  {
 	 **/	
 	public static void computeWaterStressTurfac  (SafeStand stand,
 														SafeGeneralParameters generalParameters) {
-
 
 		//FOR EACH VOXEL, CALCULATION OF WATER STOCK REDUICED OF 20%
 		for (Iterator iter=stand.getPlot().getCells().iterator(); iter.hasNext();) {

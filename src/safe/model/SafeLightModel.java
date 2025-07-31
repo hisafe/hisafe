@@ -61,7 +61,7 @@ import capsis.defaulttype.plotofcells.Neighbour;
 import capsis.util.Point2D;
 
 /**
- * LIGHT MODEL PROCESS
+ * LIGHT model process
  * 
  * @author : B. Courbaud CEMAGREF Grenoble - January 2000 - Benoit.Courbaud@grenoble.cemagref.fr
  * 
@@ -1419,8 +1419,7 @@ public class SafeLightModel {
 	
 	
 	/**
-	 * SafeInterceptionItem : Interception characteristics for a target cell, a given beam and a
-	 * given tree.
+	 * INTERCEPTION characteristics for a target cell, a given beam and a given tree.
 	 * 
 	 * @author B. Courbaud - March 2000
 	 */

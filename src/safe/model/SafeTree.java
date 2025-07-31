@@ -68,7 +68,7 @@ import capsis.defaulttype.plotofcells.PlotOfCells;
 import capsis.kernel.GScene;
 
 /**
- * Safe tree object
+ * TREE object
  * @author : Christian DUPRAZ - INRA Montpellier France - 2002 : initialization - phenology - pruning - root pruning - trimming
  * @author : Grégoire VINCENT - IRD  Montpellier France - 2003 : C allocation and allometric growth
  * @author : Rachmat MULIA    - ICRAF Bogor Indonesia   - 2004 : fine root cellular automata 

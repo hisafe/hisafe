@@ -56,7 +56,7 @@ import java.util.Map;
 import capsis.kernel.AbstractSettings;
 
 /**
- * TREE SPECIES parameters
+ * TREE SPECIES collection
  *
  * @author : Isabelle Lecomte - INRAE (UMR-SYSTEM), University of Montpellier, France
  */
