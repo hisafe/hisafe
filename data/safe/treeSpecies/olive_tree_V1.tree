@@ -1,0 +1,202 @@
+###################################################
+## OLIVE TREE V0
+## Created by Nicolas BARBAULT 
+## 
+## OLIVE TREE V1
+## Updated 10/11/2022 by Christian DUPRAZ
+## Adding new parameters for rs stress calculation
+##
+###################################################
+
+##General
+treeSpecies = olive-tree
+woodAreaDensity = 0.026
+woodCarbonContent = 0.5
+woodDensity = 800
+
+##Biomass
+leafCarbonContent = 0.5
+leafMassArea = 0.23
+
+##Geometry
+crownShape = 1
+ellipsoidTruncationRatio = 0
+
+##Phenology
+phenologyType = 2
+nbCohortMax = 3
+budBurstTempAccumulationDateStart = 1
+budBurstTempThreshold = 10
+budBurstTriggerTemp = 32.3
+budBurstDelayMaxAfterPollaring = 28
+budBurstDelayMinAfterPollaring = 14
+leafExpansionDuration = 70
+budBurstToLeafFallDuration = 791
+leafFallDuration = 60
+leafFallFrostThreshold = -11.8
+coldRequirement = 1
+coldTempAccumulationDateStart = 244
+coldTempThreshold = 20
+coldBudBurstTriggerTemp = 185
+coldBudBurstTriggerParamA = 0.023
+coldBudBurstTriggerParamB = -1.74
+coldBudBurstTriggerParamC = 0.24
+coldBudBurstTriggerParamE = 8.47
+
+##Allometry
+branchVolumeRatio = 0.001
+crownDbhAllometricCoeffA = 51.7253
+crownDbhAllometricCoeffB = 0.6942
+dcbFromDbhAllometricCoeff = 2.14
+heightDbhAllometricCoeffA = 9.21164
+heightDbhAllometricCoeffB = 0.3434
+leafAreaCrownVolCoefA = 3
+leafAreaCrownVolCoefB = 0.66
+stemDbhAllometricCoeffA = -1.27
+stemDbhAllometricCoeffB = 1.22
+stemDbhAllometricCoeffC = 0.99
+maxCrownRadiusInc = 0.02
+maxHeightInc = 0.02
+maxDbhInc = 0.005
+
+##Functional Equilibrium
+## Updated 10/11/2022 by Christian DUPRAZ
+## Adding new parameters for rs stress calculation
+rsBelowGroundStressActivation = 1
+rsLightStressActivation = 0
+rsNitrogenExcessStressActivation = 1
+rsBelowGroundStressMethod = 1
+cRAreaToFRLengthRatio = 4e-08
+imbalanceThreshold = 0.1
+initialTargetLfrRatio = 0.5
+maxTargetLfrRatio = 0.6
+maxTargetLfrRatioDailyVariation = 0.002
+minTargetLfrRatio = 0.3
+rsNitrogenStressResponsiveness = 0.1
+rsNoStressResponsiveness = 0.02
+rsWaterStressResponsiveness = 1.2
+stumpToStemBiomassRatio = 1e-13
+targetLfrRatioUpperDrift = 0.3
+
+##Carbon Labile
+maxNSCUseFoliageFraction = 0.8
+maxNSCUseFraction = 0.1
+targetNSCFraction = 0.05
+
+##Leaf area
+clumpingCoef = 1
+
+##Photosynthesis
+leafLueMax = 0.98
+leafAgeForLueMax = 60
+leafNirAbsorption = 0.15
+leafParAbsorption = 0.85
+leafSenescenceRate = 0
+leafPhotosynthesisEfficiencyTimeConstant = 0.0000078
+lueStressMethod = 1
+lueWaterStressResponsiveness = 1.1
+lueTemperatureStressTMin = 0
+lueTemperatureStressTMax = 35
+lueTemperatureStressTOptMin = 15
+lueTemperatureStressTOptMax = 25
+leafFrostStressTemperatureMin = -10
+leafFrostStressTemperatureMax = -20
+leafNRemobFraction = 0.5
+localNitrogenUptakeFactor = 50
+lueNitrogenStressResponsiveness = 0.1
+lightCompetitionIndexMin = 0.3
+
+##Nitrogen
+luxuryNCoefficient = 2
+optiNCBranch = 0.023
+optiNCCoarseRoot = 0.015
+optiNCFineRoot = 0.015
+optiNCFoliage = 0.015
+optiNCStem = 0.008
+optiNCStump = 0.008
+optiNCFruit = 0.015
+rootNRemobFraction = 0.226
+targetNCoefficient = 1.2
+
+##Roots
+coarseRootAnoxiaResistance = 60
+coarseRootTopologyType = 1
+colonisationFraction = 0.3
+colonisationThreshold = 2000
+fineRootAnoxiaLifespan = 50
+fineRootLifespan = 140
+geotropismFactor = 0.5
+horizontalPreference = 0.8
+sinkDistanceEffect = 50
+specificRootLength = 8.17
+localWaterUptakeFactor = 50
+
+##Water
+stemFlowCoefficient = 1
+stemFlowMax = 0.01
+transpirationCoefficient = 0.85
+treeAlpha = 0.1
+treeBufferPotential = 0.05
+treeHarmonicWeightedMean = 1
+treeLongitudinalResistantFactor = 2000
+treeMaxTranspirationPotential = -15000
+treeMinTranspirationPotential = -60000
+treeRootConductivity = 1e-05
+treeRootDiameter = 0.05
+wettability = 0.045
+senWaterStressResponsiveness = 1
+senNitrogenStressResponsiveness = 1
+
+##Fruits
+fruitCompartment = 1
+fruitFirstYear = 3
+floweringTempAccumulationDateStart = 1
+floweringTempThreshold = 10
+floweringTriggerTemp = 302
+fruitSettingTriggerTemp = 380
+fruitGrowthTriggerTemp = 546
+fruitVeraisonTriggerTemp = 1492
+fruitHeatStressTemperatureMin = 35
+fruitHeatStressTemperatureMax = 45
+fruitFrostStressTemperatureMin = -0.5
+fruitFrostStressTemperatureMax = -3
+fruitAllocationFraction = 0.35
+fruitCarbonStressDayStart = 92
+fruitMaxDryMatterAllocation = 7.3e-06
+fruitDryToFreshMatterWeight = 1.72
+fruitDryMaterDensity = 0.8
+fruitOilConversionCoeffA = 18.20
+fruitOilConversionCoeffB = 0.78
+fruitOilConversionCoeffC = 1.31
+fruitOilDensity = 0.92
+fruitLeafArea = 1400
+fruitOptimalLoadLeafArea = 1000
+fruitThinningDelayAfterSetting = 10
+fruitingConfortThreshold = 0.1
+fruitingTotalStressThreshold = 0.5
+fruitLueMax = 0.65
+fruitAgeForLueMax = 120
+
+
+##BNF
+nitrogenFixation = 0
+bnfTempAccumulationDateStart = 61
+bnfTempThreshold = 0
+bnfStartTriggerTemp = 612
+bnfExpansionDuration = 76
+bnfStartToEndDuration = 184
+bnfMaxDepth = 5
+bnfFullNoduleActivityThreshold = 0.04
+bnfNullNoduleActivityThreshold = 2.75
+bnfNodulationInhibitionThreshold = 6
+bnfCardinalTemp1 = 0
+bnfCardinalTemp2 = 15
+bnfCardinalTemp3 = 25
+bnfCardinalTemp4 = 35
+bnfAirTemperatureThreshold = 3
+bnfOptimalTemperatureDifference = 10
+bnfFixMaxNod = 0.15
+bnfNodMaxStart = 1e-04
+bnfNoduleMaxAllocRate = 0.3
+bnfBasalNoduleAlloc = 1
+bnfNoduleLifespan = 113.95572

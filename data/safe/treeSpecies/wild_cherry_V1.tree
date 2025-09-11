@@ -1,0 +1,193 @@
+###################################################
+## WILD CHERRY V0
+## Created by Grégoire TALBOT 
+##
+## WILD CHERRY V1
+## Updated 23/03/2021 by Nicolas BARBAULT and Tristan GERAULT
+## Adding new parameters for fruit Phenology and carbone allocation
+## Adding new parameters for BNF Phenology and Nitrogen Fixation
+##
+###################################################
+
+## GENERIC
+treeSpecies = wild-cherry
+
+## ALLOMETRY
+crownShape = 1
+ellipsoidTruncationRatio = 0
+
+# Height vs. dbh
+heightDbhAllometricCoeffA = 22
+heightDbhAllometricCoeffB = 0.494
+
+# Crown area vs. dcb
+crownDbhAllometricCoeffA = 15.8
+crownDbhAllometricCoeffB = 1.19
+
+# Volume vs. height & dbh
+stemDbhAllometricCoeffA = -1.41
+stemDbhAllometricCoeffB = 1.92
+stemDbhAllometricCoeffC = 1.02
+
+# dcb vs. dbh
+dcbFromDbhAllometricCoeff = 2.14
+
+# Leaf area vs. crown volume
+leafAreaCrownVolCoefA = 4.33
+leafAreaCrownVolCoefB = -0.32
+
+stumpToStemBiomassRatio = 0.25
+maxCrownRadiusInc = 0.01
+maxHeightInc = 0.01
+branchVolumeRatio =  0.0005
+
+## PHENOLOGY
+phenologyType = 1
+budBurstTempAccumulationDateStart = 1
+budBurstTempThreshold = 10
+budBurstAccumulatedTemp = 110 
+budBurstDelayMinAfterPollaring = 14
+budBurstDelayMaxAfterPollaring = 28
+leafExpansionDuration = 91
+budBurstToLeafFallDuration = 180
+leafFallDuration = 15
+leafFallFrostThreshold = 0
+
+## LIGHT
+woodAreaDensity = 0.05
+leafParAbsorption = 0.85
+leafNirAbsorption = 0.15
+clumpingCoef = 1
+
+## MICROCLIMATE
+stemFlowCoefficient = 1
+stemFlowMax = 0
+wettability = 0.1
+transpirationCoefficient = 1
+
+## C ALLOCATION
+lueMax = 0.6
+leafAgeForLueMax = 60
+leafSenescenceTimeConstant = 0.0000781
+lueStressMethod = 1
+lueWaterStressResponsiveness = 1
+lueNitrogenStressResponsiveness = 1
+woodCarbonContent = 0.5
+leafCarbonContent = 0.5
+leafMassArea = 0.07	
+woodDensity = 500			
+imbalanceThreshold = 0.7
+rsStressMethod = 1
+rsWaterStressResponsiveness = 0.5
+rsNitrogenStressResponsiveness = 0
+rsNoStressResponsiveness = 1
+maxTargetLfrRatioDailyVariation = 0.005
+targetLfrRatioUpperDrift = 1
+minTargetLfrRatio = 0.45
+maxTargetLfrRatio = 0.75
+initialTargetLfrRatio = 0.5
+optiNCBranch = 0.01
+optiNCCoarseRoot = 0.01
+optiNCFineRoot = 0.03
+optiNCFoliage = 0.04
+optiNCStem = 0.01
+optiNCStump = 0.01
+targetNCoefficient = 1.2
+luxuryNCoefficient = 2
+maxNSCUseFoliageFraction = 0.005
+maxNSCUseFraction = 0.02
+targetNSCFraction = 0.1
+leafNRemobFraction = 0.5
+rootNRemobFraction = 0.5
+leafSenescenceRate = 0
+
+## ROOTS
+cRAreaToFRLengthRatio = 0.0000001
+coarseRootAnoxiaResistance = 60
+specificRootLength = 5.0
+fineRootLifespan  = 180
+fineRootAnoxiaLifespan = 30
+colonisationThreshold = 500	
+colonisationFraction = 0.1
+horizontalPreference = 0.5
+geotropismFactor = 1.0
+localWaterUptakeFactor = 50
+sinkDistanceEffectWater = 50
+localNitrogenUptakeFactor = 50
+coarseRootTopologyType = 3
+
+## WATER REPARTITION MODULE
+treeRootDiameter = 0.05
+treeRootConductivity = 0.00001 
+treeAlpha = 0.1
+treeMinTranspirationPotential = -30000
+treeMaxTranspirationPotential = -10000
+treeBufferPotential = 0.05 
+treeLongitudinalResistantFactor = 50
+treeHarmonicWeightedMean = 1
+
+
+
+## Updated 23/03/2021 by Nicolas BARBAULT 
+## Adding new parameters for leaves senescence on water and nitrogen stress
+
+senWaterStressResponsiveness = 1
+senNitrogenStressResponsiveness = 1
+
+## Updated 23/03/2021 by Nicolas BARBAULT 
+## Adding new parameters for fruit Phenology and carbone allocation
+
+fruitCompartment = 0
+floweringTempAccumulationDateStart = 0
+floweringTempThreshold = 0
+floweringTriggerTemp = 0
+fruitSettingTriggerTemp = 0
+fruitGrowthTriggerTemp = 0
+fruitVeraisonTriggerTemp = 0
+fruitHeatStressTemperatureMin = 0
+fruitHeatStressTemperatureMax = 0
+fruitMaxDryMatterAllocation = 0
+fruitAllocationFraction = 0
+fruitCarbonStressDayStart = 0
+fruitDryToFreshMatterWeight = 0
+fruitOilConversionCoeffA = 0
+fruitOilConversionCoeffB = 0
+fruitOilConversionCoeffC = 0
+fruitOilDensity = 0
+fruitLeafArea = 0
+fruitingConfortThreshold = 0
+fruitingTotalStressThreshold = 0
+
+##Fruit Photosynthesis
+fruitLueMax = 0
+fruitAgeForLueMax = 0
+
+##COLD TEMPERATURE REQUIREMENT
+coldRequirement = 0
+coldTempAccumulationDateStart = 0
+coldTempThreshold = 0
+coldBudBurstTriggerTemp = 0
+coldBudBurstTriggerParamA = 0
+coldBudBurstTriggerParamB = 0
+coldBudBurstTriggerParamC = 0
+coldBudBurstTriggerParamE = 0
+
+## Updated 23/03/2021 by Tristan GERAULT
+## Adding new parameters for BNF Phenology and Nitrogen Fixation
+
+nitrogenFixation = 0
+bnfTempAccumulationDateStart = 61
+bnfTempThreshold = 0
+bnfStartTriggerTemp = 612
+bnfSteadyStateTriggerTemp = 91
+bnfEndTriggerTemp = 180
+
+##Nitrogen Fixation
+bnfMaxDepth = 0
+fullNoduleActivityThreshold = 0
+nullNoduleActivityThreshold = 0
+nodulationInhibitionThreshold = 0	
+bnfCardinalTemp1 = 0
+bnfCardinalTemp2 = 0
+bnfCardinalTemp3 = 0		 
+bnfCardinalTemp4 = 0

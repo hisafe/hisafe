@@ -1,0 +1,120 @@
+###################################################
+## WALNUT HYBRID V0
+## Updated 18/12/2020
+## Back to Grégoire TALBOT values
+##
+###################################################
+
+##General
+treeSpecies = walnut-hybrid
+woodAreaDensity = 0.026
+woodCarbonContent = 0.5
+woodDensity = 616
+
+##Biomass
+leafCarbonContent = 0.5
+leafMassArea = 0.1
+
+##Geometry
+crownShape = 1
+ellipsoidTruncationRatio = 0
+
+##Phenology
+budBurstAccumulatedTemp = 612
+budBurstDelayMaxAfterPollaring = 28
+budBurstDelayMinAfterPollaring = 14
+budBurstTempAccumulationDateStart = 61
+budBurstTempThreshold = 0
+budBurstToLeafFallDuration = 180
+leafExpansionDuration = 91
+leafFallDuration = 15
+leafFallFrostThreshold = 0
+phenologyType = 1
+
+##Allometry
+branchVolumeRatio = 0.0006
+crownDbhAllometricCoeffA = 887.4
+crownDbhAllometricCoeffB = 1.95
+dcbFromDbhAllometricCoeff = 2.14
+heightDbhAllometricCoeffA = 30.96
+heightDbhAllometricCoeffB = 0.718
+leafAreaCrownVolCoefA = 5.34
+leafAreaCrownVolCoefB = 0.61
+maxCrownRadiusInc = 100
+maxHeightInc = 100
+stemDbhAllometricCoeffA = -1.27
+stemDbhAllometricCoeffB = 1.75
+stemDbhAllometricCoeffC = 0.86
+
+##Functional Equilibrium
+cRAreaToFRLengthRatio = 0.000000018
+imbalanceThreshold = 0.1
+initialTargetLfrRatio = 0.5
+maxTargetLfrRatio = 0.75
+maxTargetLfrRatioDailyVariation = 0.002
+minTargetLfrRatio = 0.45
+rsNitrogenStressResponsiveness = 0.7
+rsNoStressResponsiveness = 0.02
+rsStressMethod = 1
+rsWaterStressResponsiveness = 1.2
+stumpToStemBiomassRatio = 0.2
+targetLfrRatioUpperDrift = 0.3
+
+##Carbon Labile
+maxNSCUseFoliageFraction = 0.1
+maxNSCUseFraction = 0.2
+targetNSCFraction = 0.1
+
+##Leaf area
+clumpingCoef = 1
+
+##Photosynthesis
+leafAgeForLueMax = 60
+leafNirAbsorption = 0.15
+leafParAbsorption = 0.85
+leafSenescenceRate = 0
+leafSenescenceTimeConstant = 0.0000781
+lueMax = 0.65
+lueStressMethod = 1
+lueWaterStressResponsiveness = 7.8
+
+##Nitrogen
+leafNRemobFraction = 0.2
+localNitrogenUptakeFactor = 50
+lueNitrogenStressResponsiveness = 0.7
+luxuryNCoefficient = 2
+optiNCBranch = 0.015
+optiNCCoarseRoot = 0.015
+optiNCFineRoot = 0.03
+optiNCFoliage = 0.055
+optiNCStem = 0.015
+optiNCStump = 0.015
+rootNRemobFraction = 0.2
+targetNCoefficient = 1.2
+
+##Roots
+coarseRootAnoxiaResistance = 60
+coarseRootTopologyType = 1
+colonisationFraction = 0.1
+colonisationThreshold = 1500
+fineRootAnoxiaLifespan = 50
+fineRootLifespan = 113.95572
+geotropismFactor = 0.5
+horizontalPreference = 0.8
+sinkDistanceEffect = 50
+specificRootLength = 8.17
+
+##Water
+localWaterUptakeFactor = 50
+stemFlowCoefficient = 1
+stemFlowMax = 0.01
+transpirationCoefficient = 1
+treeAlpha = 0.1
+treeBufferPotential = 0.05
+treeHarmonicWeightedMean = 1
+treeLongitudinalResistantFactor = 2000
+treeMaxTranspirationPotential = -15000
+treeMinTranspirationPotential = -60000
+treeRootConductivity = 0.00001
+treeRootDiameter = 0.05
+wettability = 0.1
