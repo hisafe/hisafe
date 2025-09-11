@@ -1,0 +1,72 @@
+## AGROFORESTRY PLOT EXEMPLE
+
+## PLOT
+latitude = 43.7
+elevation = 62
+cellWidth = 1
+northOrientation = 80.5
+plotHeight = 3
+plotWidth = 7
+slopeIntensity = 0
+slopeAspect = 0
+
+## SOIL
+voxelThicknessMax = 0.4
+humificationDepth = 0.4
+albedo = 0.2
+cropRootObstruction = 5
+ph = 8.1
+swellingClaySoil = 0
+macroporosity = 0
+soilCrustRainMin = 50.0
+soilCrustDepth = 0.50
+roughnessLength = 0.01
+soilHumusCN = 12.2
+
+## WATER
+waterTable = 0
+evaporationValue = 9
+evaporationMaxDepth = 60.00
+evaporationDepthContribution = 5.00
+runOffCoefPlantMulch = 0.33
+rainRunOffFraction = 0.2
+capillary = 0
+capillaryUptake = 1
+capillaryUptakeMinWater = 0.3
+artificialDrainage = 0
+drainagePipesSpacing = 0
+drainagePipesDepth = 0
+waterConductivity = 0
+impermeableLayerDepth = 0
+
+## NITROGEN
+organicNitrogen = 0.10
+minNh4Concentration = 0
+nitrification = 1
+denitrification = 0
+denitrificationDepth = 20.0
+denitrificationRate = 16.0
+no3ConcentrationInWaterTable = 9e-06
+nh4ConcentrationInWaterTable = 0.000168
+
+## LAYERS DEFINITION
+#	thick	sand 	clay	limeStone	organicMatter	partSizeSand	stone	stoneType	infiltrability
+#	(m)	%	%	%		%		µm	%	1-10		mm j-1
+LAYER	0.4	37.61	16.37	45.7	1.81	290	0	6	50
+LAYER	0.4	26.92	23.11	49.1	1.09	290	0	6	50
+LAYER	0.6	13.36	29.94	47.1	0.91	290	0	6	50
+LAYER	1	8.64	32.45	50.4	0.94	290	0	6	50
+LAYER	1	8.64	32.45	52.1	0.94	290	0	6	50
+
+## LAYERS INITIALIZATION
+#	waterContent	no3Concentration	nh4concentration
+#	%		kg ha-1			kg ha-1
+LAYERINIT	0.20	30	0
+LAYERINIT	0.30	14	0
+LAYERINIT	0.30	5	0
+LAYERINIT	0.30	2	0
+LAYERINIT	0.30	0	0
+
+## TREES POSITION
+#	speciesName	treeX	treeY
+TREE	poplar_V3	0	0
