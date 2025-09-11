@@ -1,0 +1,191 @@
+## STICS V8 GENERAL PARAMETERS
+# Updated 11/02/2021 by C.DUPRAZ
+# SET swfacmin from 0.1 to  0 
+# Updated 11/03/2021 by I.LECOMTE
+# MOVE codecalferti ratiolN = dosimxN = codetesthumN  .itk file 
+codeinnact = 1
+codeh2oact = 1
+codeminopt = 2
+iniprofil = 2
+codeprofmes = 1
+codeinitprec = 1
+codemsfinal = 1
+codeactimulch = 1
+codefrmur = 1
+codemicheur = 1
+codeoutscient = 2
+codeseprapport = 1
+codesensibilite = 2
+flagEcriture = 31
+parsurrg = 0.48
+coefb = 0.0815
+proprac = 0.2
+y0msrac = 0.7
+khaut = 0.7
+dacohes = 0.7
+daseuilbas = 1.4
+daseuilhaut = 2
+beta = 1.4
+lvopt = 0.5
+rayon = 0.02
+difN = 0.045
+concrr = 0.02
+plNmin = 10
+irrlev = 20
+QNpltminINN = 0
+codesymbiose = 2
+codefxn = 2
+FTEMh = 0.12
+FTEMha = 25
+TREFh = 15
+FTEMr = 0.103
+FTEMra = 12
+TREFr = 15
+FINERT = 0.65
+FMIN1 = 6e-04
+FMIN2 = 0.0272
+FMIN3 = 0.0167
+Wh = 0.105
+pHminvol = 5.5
+pHmaxvol = 8.5
+Vabs2 = 2
+Xorgmax = 400
+hminm = 0.25
+hoptm = 0.9
+hminn = 0.67
+hoptn = 1
+Fnx = 0.8
+pHminnit = 3
+pHmaxnit = 5.5
+tnitmin = 5
+tnitopt = 15
+tnitopt2 = 20
+tnitmax = 30
+rationit = 0.0016
+ratiodenit = 0.1
+alphaph = 0.005
+dphvolmax = 1
+phvols = 8.6
+fhminsat = 0.5
+fredkN = 0.25
+fredlN = 0.5
+fNCbiomin = 0.04
+fredNsup = 0.5
+Primingmax = 3
+pminruis = 5
+diftherm = 0.00537
+bformnappe = 0.77
+rdrain = 1
+psihumin = -1.50000
+psihucc = -0.03000
+prophumtasssem = 1.2
+prophumtassrec = 1
+codhnappe = 1
+distdrain = 1000
+proflabour = 15
+proftravmin = 5
+codetycailloux = 2
+codetypeng = 1
+codetypres = 21
+codetempfauche = 1
+codepluiepoquet = 2
+nbjoursrrversirrig = 15
+#Updated 11/02/2021
+#swfacmin = 0.1
+swfacmin = 0
+codetranspitalle = 2
+code_adapt_MO_CC = 1
+periode_adapt_CC = 10
+an_debut_serie_histo = 1950
+an_fin_serie_histo = 1970
+param_tmoy_histo = 10
+code_adaptCC_miner = 2
+code_adaptCC_nit = 2
+code_adaptCC_denit = 2
+TREFdenit1 = 11
+TREFdenit2 = 20
+nbj_pr_apres_semis = 3
+eau_mini_decisemis = 10
+humirac_decisemis = 0.75
+codeNmindec = 2
+rapNmindec = 0.001
+fNmindecmin = 0.1
+codetrosee = 1
+codeSWDRH = 2
+codedate_irrigauto = 2
+datedeb_irrigauto = 0
+datefin_irrigauto = 0
+codemortalracine = 1
+type_project = 1
+rules_sowing_AgMIP = 2
+Flag_Agmpip_rap = 5
+option_thinning = 2
+option_engrais_multiple = 2
+option_pasture = 2
+coderes_pature = 3
+pertes_restit_ext = 0.2
+Crespc_pature = 7.4
+Nminres_pature = 0.045
+eaures_pature = 87
+coef_calcul_qres = 7.53
+engrais_pature = 3
+coef_calcul_doseN = 16.25
+coefracoupe1 = 0.5
+coefracoupe2 = 0.5
+codedyntalle1 = 2
+codedyntalle2 = 2
+SigmaDisTalle1 = 0.1
+SigmaDisTalle2 = 0
+SurfApex1 = 5e-06
+SurfApex2 = 0
+SeuilMorTalle1 = 0.02
+SeuilMorTalle2 = 0
+VitReconsPeupl1 = 1e-05
+VitReconsPeupl2 = 0
+SeuilReconsPeupl1 = 800
+SeuilReconsPeupl2 = 0
+MaxTalle1 = 4000
+MaxTalle2 = 0
+SeuilLAIapex1 = 1
+SeuilLAIapex2 = 1
+tigefeuilcoupe1 = 5
+tigefeuilcoupe2 = 5
+resplmax1 = 0.66
+resplmax2 = 0.66
+codemontaison1 = 2
+codemontaison2 = 2
+
+## FERTILIZATION PARAMETERS
+#engamm	orgeng	deneng	voleng
+FERTILPARAM	0.5	46	0.15	0.15
+FERTILPARAM	0.75	42	0.13	0.3
+FERTILPARAM	1	38	0.1	0.35
+FERTILPARAM	1	38	0.1	0.35
+FERTILPARAM	1	38	0.1	0.25
+FERTILPARAM	1	38	0.1	0.25
+FERTILPARAM	0	25	0.2	0
+FERTILPARAM	0.5	0.2	0.05	0.05
+
+## RESIDUE PARAMETERS
+#CroCo	akres	bkres	awb	bwb	cwb	ahres	bhres	kbio	yres	CNresmin	CNresmax	qmulchruis0	mouillabilmulch	kcouvmlch	albedomulchresidus	Qmulchdec
+RESIDUEPARAM	1	0.1	0.76	15.35	-76	7.8	0.73	10.2	0.01	0.62	8	100	1	0.4	0.37	0.1	100
+RESIDUEPARAM	1	0.1	0.76	15.35	-76	7.8	0.73	10.2	0.01	0.62	8	100	1	0.4	0.37	0.1	100
+RESIDUEPARAM	1	0.064	-0.26	28.8	-228	11.5	36.5	1305	0.003	0.9	12	27	1	0.4	0.37	0.1	100
+RESIDUEPARAM	1	0.08	-0.48	33	-400	9.5	1	29.4	0.002	0.82	17	19	1	0.4	0.37	0.1	100
+RESIDUEPARAM	1	0.064	0.05	12.7	-58	6.2	10	329	0.003	0.62	6	20	1	0.4	0.37	0.1	100
+RESIDUEPARAM	1	0.7	0	5.45	0	5.45	0.18	0	0.01	0.42	5.8	7.8	1	0.4	0.37	0.1	100
+RESIDUEPARAM	1	0.14	0	5.5	0	5.5	0.05	0	0	0.54	3.2	4	1	0.4	0.37	0.1	100
+RESIDUEPARAM	1	0.14	0	5.5	0	5.5	0.05	0	0	0.54	3.2	4	1	0.4	0.37	0.1	100
+RESIDUEPARAM	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+RESIDUEPARAM	1	0.1	0.76	15.35	-76	7.8	0.73	10.2	0.01	0.62	8	100	1	0.4	0.37	0.1	100
+RESIDUEPARAM	1	0.1	0.76	15.35	-76	7.8	0.73	10.2	0.01	0.62	8	100	0	0	0	0	0
+RESIDUEPARAM	1	0.1	0.76	15.35	-76	7.8	0.73	10.2	0.01	0.62	8	100	0	0	0	0	0
+RESIDUEPARAM	1	0.06	-0.26	28.8	-228	11.5	36.5	1305	0	0.9	12	27	0	0	0	0	0
+RESIDUEPARAM	1	0.08	-0.48	33	-400	9.5	1	29.4	0	0.82	17	18.5	0	0	0	0	0
+RESIDUEPARAM	1	0.06	0.05	12.7	-58	6.2	10	329	0	0.62	6	20	0	0	0	0	0
+RESIDUEPARAM	1	0.7	0	5.45	0	5.45	0.18	0	0.01	0.42	5.8	7.8	0	0	0	0	0
+RESIDUEPARAM	1	0.14	0	5.5	0	5.5	0.05	0	0	0.54	3.2	4	0	0	0	0	0
+RESIDUEPARAM	1	0.14	0	5.5	0	5.5	0.05	0	0	0.54	3.2	4	0	0	0	0	0
+RESIDUEPARAM	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+RESIDUEPARAM	1	0.1	0.76	15.35	-76	7.8	0.73	10.2	0.01	0.62	8	100	0	0	0	0	0
+RESIDUEPARAM	1	0.1	0.76	15.35	-76	7.8	0.73	10.2	0.01	0.62	8	100	0	0	0	0	0
