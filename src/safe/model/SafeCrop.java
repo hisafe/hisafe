@@ -679,8 +679,7 @@ import safe.stics.*;
 		if (this.startDay == 0) this.startDay = simulationJulianDay;
 
 		if (this.sticsCrop.zrac == 0) this.rootsDepth = 0;
-		if (this.rootsDepth < (this.sticsCrop.zrac / 100))
-			this.rootsDepth = this.sticsCrop.zrac / 100;			//convert cm in m
+		else this.rootsDepth = this.sticsCrop.zrac / 100;			//convert cm in m
 			
 		//real      :: lai(0:2,0:365) 0=shade+sun 1=sun 2=shade (in case of associated crops) 365=nbr days
 		int indice          = (sticsJulianDay*3)+1;
@@ -742,9 +741,10 @@ import safe.stics.*;
 		this.harvestDay = 0;
 		if (this.sticsCrop.nrec > 0)
 			this.harvestDay = this.sticsCrop.nrec + this.startDay;	
+
 		if (this.sticsCrop.zrac == 0) this.rootsDepth = 0;
-		if (this.rootsDepth < (this.sticsCrop.zrac / 100))
-			this.rootsDepth = this.sticsCrop.zrac / 100;			//convert cm in m
+		else this.rootsDepth = this.sticsCrop.zrac / 100;			//convert cm in m
+		
 		this.soilManagementDepth = (float) this.getSoilManagementDepth(simulationJulianDay);
 		
 		//real      :: eai(0:2) 0=shade+sun 1=sun 2=shade (in case of associated crops) 

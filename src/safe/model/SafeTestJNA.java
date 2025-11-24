@@ -83,7 +83,7 @@ public class SafeTestJNA implements  Serializable {
 		 void verifParam (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsSoil soil, SafeSticsCommun commun, int lg, String outputDir);
 		 void verifPlant (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsCommun commun,  SafeSticsItk itk, SafeSticsCrop plant, int zoneId, int lg, String outputDir);
 		 void initClimat (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat);
-		 void annualLoopStart (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, int cellId, int lg, String outputDir);
+		 void annualLoopStart (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, int perenialRepetition, int cellId, int lg, String outputDir);
 		 void addLitterInSoil (SafeSticsParameters param,  SafeSticsSoil soil, SafeSticsCommun commun, SafeSticsCrop plant, SafeSticsItk itk, float profmax, float carbonLitter, float cnLitter, float cfeupc, float waterLitter, int typeLitter);
 		 void dailyLoopPart1 (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, float cellVisibleSky, int flagFirst);
 		 void dailyLoopPart2 (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, int hisafeWaterExtraction, float cellVisibleSky);
@@ -181,6 +181,7 @@ public class SafeTestJNA implements  Serializable {
     								     SafeSticsSoil soil,
     								     SafeSticsCrop plant, 
     								     SafeSticsItk itk,
+    								     int perenialRepetition,
     								     int julianDayStart, 
     								     int julianDayEnd, 
     								     int cellId,
@@ -200,7 +201,7 @@ public class SafeTestJNA implements  Serializable {
     	param.P_flagEcriture = 0;
     	if (sticsReport) param.P_flagEcriture = 31;
 
-    	TestJNA.INSTANCE_STICS.annualLoopStart (param, transit, sta, climat, commun, soil, plant, itk, cellId, exportDir.length(), exportDir);
+    	TestJNA.INSTANCE_STICS.annualLoopStart (param, transit, sta, climat, commun, soil, plant, itk, perenialRepetition, cellId, exportDir.length(), exportDir);
 	  
 		return;     
    } 

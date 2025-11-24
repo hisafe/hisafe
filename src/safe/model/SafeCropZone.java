@@ -112,7 +112,8 @@ public class SafeCropZone implements Serializable {
 	private double initialCropReserveBiomass = 0; 					
 	/** crop initialization values : Table of initial root density of the 5 horizons of soil  (P_densinitial)  cm cm-3 */	
 	private double[] initialCropRootsDensity = {0, 0, 0, 0, 0}; 	
-
+	/** Perennial crop repetition (same perennial crop species) */
+	private boolean perenialRepetition;
 	/**
 	 * Constructor
 	 * @param id Id of the crop zone
@@ -121,6 +122,7 @@ public class SafeCropZone implements Serializable {
 	public SafeCropZone (int id, String name) {
 		this.id = id;
 		this.name = name;
+		this.perenialRepetition = false;
 	}
 	/**
 	 * Constructor
@@ -139,6 +141,7 @@ public class SafeCropZone implements Serializable {
 		this.itkIndex = 0;
 		this.simulationPath = ep.simulationPath;
 		this.simulationFinished = false; 
+		this.perenialRepetition = false;
 		itkList = new ArrayList<String>();
 		for (Iterator<String> i = itk.iterator(); i.hasNext();) {
 			String c = (String) i.next();
@@ -265,11 +268,12 @@ public class SafeCropZone implements Serializable {
 	 * Load the NEXT itk and the crop species file for the zone
 	 * @param year Year of the current simulation
 	 **/
-	public void loadNextItk (int year) {
+	public void loadNextItk (int year, boolean reStart) {
 		
 		//if itk missing, we restart from the first one
 		itkIndex++;
 		if (itkIndex>itkList.size()-1) itkIndex = 0;
+		if (reStart)itkIndex = 0;
 
 		String itkFileName = itkList.get(itkIndex);
 		String cropSpeciespathName="";
@@ -279,7 +283,8 @@ public class SafeCropZone implements Serializable {
 		// Loading crop intervention file 
 		try {
 			this.sticsItk = new SafeSticsItk();
-			cropSpeciesfileName = new SafeSticsItkFormat (itkFileName).load (this, sticsItk, year);			
+			cropSpeciesfileName = new SafeSticsItkFormat (itkFileName).load (this, sticsItk, year);	
+			System.out.println("NEXT CROP ZONE "+this.name+" ITK "+itkFileName);
 			this.sticsItk.setYearstart(year);
 			this.sticsItk.setYearend(year);
 			if (this.sticsItk.getMonthend()<this.sticsItk.getMonthstart()) this.sticsItk.setYearend(year+1);
@@ -287,34 +292,40 @@ public class SafeCropZone implements Serializable {
 				this.sticsItk.setYearend(year+1);
 			
 		} catch (Exception e2) {
-			System.out.println("CROP ZONE "+this.name+" ITK "+itkFileName+" initialisation problem... simulation is canceled !");
+			System.out.println("NEXT CROP ZONE "+this.name+" ITK "+itkFileName+" initialisation problem... simulation is canceled !");
 			System.exit(1);
 		}
 
 		// Loading crop species file attached to this itk
 		try {
-	
+			SafeCrop firstCrop = firstCell.getCrop();			
+			String previous = firstCrop.getCropSpeciesName();
+			//repetition of a perenial crop we don't need to reinit the crop 
+			if (previous.equals(cropSpeciesfileName) && firstCrop.isPerennial ()) {
+				this.perenialRepetition = true;
+			}
 			//Initialization for the first cell of the zone
-			SafeCrop firstCrop = firstCell.getCrop();
-			cropSpeciespathName = this.simulationPath + "/cropSpecies/" + cropSpeciesfileName;
-			this.cropSpecies = new SafeCropSpecies();
-			String cropSpeciesName = new SafeSticsCropFormat (cropSpeciespathName).load (cropSpecies, firstCrop.getSticsCrop());
-			this.cropSpecies.setFileName(cropSpeciesfileName);
-			firstCrop.setCropSpeciesName(cropSpeciesName);
-			firstCell.setCrop(firstCrop);
-	
-			//Initialization for each cell
-			for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
-				SafeCell cell = (SafeCell) c.next ();
-				SafeCrop crop = cell.getCrop();
-				crop.setCropSpeciesName(cropSpeciesName);
-				crop.sticsCrop 		= new SafeSticsCrop(firstCrop.sticsCrop);
-				crop.setCropSpeciesName(firstCrop.getCropSpeciesName());
+			else {
+				this.perenialRepetition = false;
+				cropSpeciespathName = this.simulationPath + "/cropSpecies/" + cropSpeciesfileName;
+				this.cropSpecies = new SafeCropSpecies();
+				String cropSpeciesName = new SafeSticsCropFormat (cropSpeciespathName).load (cropSpecies, firstCrop.getSticsCrop());
+				this.cropSpecies.setFileName(cropSpeciesfileName);
+				firstCrop.setCropSpeciesName(cropSpeciesName);
+				firstCell.setCrop(firstCrop);
+				//Initialization for each cell
+				for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
+					SafeCell cell = (SafeCell) c.next ();
+					SafeCrop crop = cell.getCrop();
+					crop.setCropSpeciesName(cropSpeciesName);
+					crop.sticsCrop 		= new SafeSticsCrop(firstCrop.sticsCrop);
+					crop.setCropSpeciesName(firstCrop.getCropSpeciesName());
+				}
 			}
 
 		} catch (Exception e1) {
 
-			System.out.println("CROP SPECIES PARAMETERS  "+cropSpeciesfileName+" problem... simulation is canceled !");
+			System.out.println("NEXT CROP SPECIES PARAMETERS  "+cropSpeciesfileName+" problem... simulation is canceled !");
 			System.exit(1);
 		}
 		simulationFinished=false;
@@ -479,14 +490,11 @@ public class SafeCropZone implements Serializable {
 	public int getSimulationDay(){return simulationDay;}
 	public void setSimulationDay(int d){simulationDay=d;}
 	public void addSimulationDay(){simulationDay+=1;}
-	
 	public int getSticsSimulationDay(){return sticsSimulationDay;}
 	public void setSticsSimulationDay(int d){sticsSimulationDay=d;}
 	public void addSticsSimulationDay(){sticsSimulationDay+=1;}
-
 	public boolean getSimulationFinished(){return simulationFinished;}
 	public void setSimulationFinished(boolean d){simulationFinished=d;}
-
 	public int getInitialCropStage(){return initialCropStage;}
 	public void setInitialCropStage(int d){initialCropStage=d;}
 	public double getInitialCropLai(){return initialCropLai;}
@@ -503,7 +511,10 @@ public class SafeCropZone implements Serializable {
 	public void setInitialCropReserveBiomass (double d){initialCropReserveBiomass =d;}	
 	public double getInitialCropRootsDensity(int i){return initialCropRootsDensity[i] ;}
 	public void setInitialCropRootsDensity (int i, double d){initialCropRootsDensity[i] =d;}
-	
+	public int getPerenialRepetition(){
+		if (perenialRepetition) return 1;
+		else return 0;
+	}
 	//****************************************
 	//Total and mean values for EXPORT
 	//****************************************

@@ -56,7 +56,7 @@ package safe.model;
 public class SafePedotransferUtil {
 
 	/**
-	 * Return ThetaSat (Total saturated porosity) in m3 water m-3 soil
+	 * Return ThetaSat (Saturated water content) in m3 water m-3 soil
 	 * @param clay Percentage of clay (%)  
 	 * @param bulkDensity  Bulk density (kg m-3)
 	 * @param silt Percentage of silt (%)  
@@ -83,7 +83,7 @@ public class SafePedotransferUtil {
 	}
 
 	/**
-	 * Return Ksat (saturated conductivity)	in	cm d-1
+	 * Return Ksat (Saturated hydraulic conductivity)	(cm·day-1) 
 	 * @param clay Percentage of clay (%)  
 	 * @param bulkDensity  Bulk density (kg m-3)
 	 * @param silt Percentage of silt (%)  
@@ -111,7 +111,7 @@ public class SafePedotransferUtil {
 				- 0.03305 * topSoil * silt);
 	}
 	/**
-	 * Return alpha
+	 * Return alpha (van Genuchten parameter) (cm-1)
 	 * @param clay Percentage of clay (%)  
 	 * @param bulkDensity  Bulk density (kg m-3)
 	 * @param silt Percentage of silt (%)  
@@ -142,7 +142,7 @@ public class SafePedotransferUtil {
 	}
 
 	/**
-	 * Return Lambda
+	 * Return Lambda (Mualem pore connectivity parameter) NA
 	 * @param clay Percentage of clay (%)  
 	 * @param bulkDensity  Bulk density (kg m-3)
 	 * @param silt Percentage of silt (%)  
@@ -179,7 +179,7 @@ public class SafePedotransferUtil {
 	}
 
 	/**
-	 * Return n
+	 * Return n (van Genuchten parameter) NA
 	 * @param clay Percentage of clay (%)  
 	 * @param bulkDensity  Bulk density (kg m-3)
 	 * @param silt Percentage of silt (%)  
@@ -242,7 +242,7 @@ public class SafePedotransferUtil {
 				+ 0.01781 * Math.log(organicMatter));
 	}
 	/**
-	 * Return pf
+	 * Return Water potential
 	 */
 	public static double getpF( double theta,
 							   	double thetaSat,
@@ -332,7 +332,7 @@ public class SafePedotransferUtil {
 	}
 
 	/**
-	 * Return Phi
+	 * Return Cumulative conductivity 
 	 */
 	public static double getPhi (double pF,
 								 double kSat,

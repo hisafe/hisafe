@@ -599,7 +599,7 @@ public class SafeModel extends GModel {
 								
 								initStand.reloadTreeSpecies(evolutionParameters, getSettings());
 							 	String previousSpeciesName = "";						 	
-								zone.loadNextItk(year);
+							 	zone.loadNextItk(year, true);
 								zone.setSticsSimulationDay(1);
 								
 								//STICS parameters for chaining years (second year and others = Yes) 
@@ -628,7 +628,7 @@ public class SafeModel extends GModel {
 							if (zone.getSimulationFinished()) {							
 
 								String previousSpeciesName = zone.getCropSpecies().getName();							
-								zone.loadNextItk(year);
+								zone.loadNextItk(year, false);
 								zone.setSticsSimulationDay(1);
 								int julianDayStart = zone.getJulianDayStart(year);
 								int julianDayEnd = zone.getJulianDayEnd (year);
@@ -678,6 +678,7 @@ public class SafeModel extends GModel {
 															cell.getCrop().sticsSoil,
 															cell.getCrop().sticsCrop,
 															cell.getCropZone().getSticsItk(),
+															cell.getCropZone().getPerenialRepetition(),
 															julianDayStart, 
 															julianDayEnd, 
 															cell.getId(),
@@ -1420,30 +1421,9 @@ public class SafeModel extends GModel {
 			if (exportFrequency == 365)  {
 				if ((day == 31) && (month == 12)) export = true;
 			}	
-			//pour que l'export tous les 30 jours 
-			//tombe tjrs quand le jour suivant est le 1er 
+			//pour que l'export tous les 30 jours tombe tjrs le 28
 			else if (exportFrequency == 30)  {
-				try {
-				
-					int julian = stand.getJulianDay();
-					julian++;
-					
-					// leap year
-					int nbDayMax = 365;
-					if (climat.isLeapYear(year)) {
-						nbDayMax = 366;
-					}
-					if (julian > nbDayMax) {
-						julian = julian - nbDayMax;
-						year = year + 1;
-					}
-
-					SafeDailyClimat nextDay = climat.getDailyWeather (year, julian);
-					if (nextDay.getDay() == 1) export = true;
-				
-				} catch (Exception exc) {
-					export = true;
-				}
+				if (day == 28) export = true;		
 			}
 			else {
 				if (date % exportFrequency == 0) export = true; 
@@ -1455,6 +1435,8 @@ public class SafeModel extends GModel {
 				exp.save(p.getFileName(), true);
 			}
 		}
+
+
 	}
 	
 	/**
@@ -1522,7 +1504,7 @@ public class SafeModel extends GModel {
 			zone.printVerif (myfile); 
 			
 			for (int itkIndex=1; itkIndex<itkList.size();itkIndex++) {
-				zone.loadNextItk(year);
+				zone.loadNextItk(year, false);
 				julianDayStart = zone.getJulianDayStart(year);
 				if (julianDayStart != julianDayEnd) {
 					System.out.println("SIMULATION DAYS PROBLEM BETWEEN "+itkList.get(itkIndex-1)+" AND "+itkList.get(itkIndex));

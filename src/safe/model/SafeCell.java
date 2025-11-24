@@ -293,6 +293,8 @@ public class SafeCell extends SquareCell {
 	public void razTotalAnnual () {
 		annualWaterUptakeByTrees = 0;				
 		annualNitrogenUptakeByTrees = 0;
+		annualDirectParIncident = 0; 
+		annualDiffuseParIncident = 0;
 		this.getCrop().razTotalAnnual();
 	}
 	
@@ -722,11 +724,13 @@ public class SafeCell extends SquareCell {
 	* @param simulationDay Hi-sAfe simulation day  
 	*/
 	public void computeCropRootsTopology (int simulationDay) {
-	
+		
 		//FOR EACH VOXEL
 		for (int i = 0; i < this.voxels.length; i++) {
 	
 			double cropRootDensity = voxels[i].getCropRootsDensity();
+			SafeRootNode cropNode = this.getCrop().getPlantRoots().getRootTopology (voxels[i]);
+			
 			if (cropRootDensity > 0) {
 				
 				//ADD NEW TOPOLOGY NODE
@@ -740,6 +744,15 @@ public class SafeCell extends SquareCell {
 				//UPDATE fine root density in the TOPOLOGY NODE
 				if (this.getCrop().getPlantRoots().getRootTopology (voxels[i]) != null) 
 					this.getCrop().getPlantRoots().setFineRootTopology (voxels[i], cropRootDensity);
+			}
+			//REMOVE TOPOLOGY NODE (in case of cuttong grass) 
+			else {
+				if (cropNode != null) {
+					this.getCrop().getPlantRoots().getRootTopology ().remove (voxels[i]);
+					SafeRootNode nodeParent  = cropNode.getNodeParent ();
+					if (nodeParent!= null) nodeParent.getNodeColonised().remove (cropNode);
+					
+				}
 			}
 		}
 	}
@@ -830,7 +843,13 @@ public class SafeCell extends SquareCell {
 
 		//month total 
 		monthDirectPar += dailyDirect;					
-		monthDiffusePar += dailyDiffuse;					
+		monthDiffusePar += dailyDiffuse;	
+		monthDirectParIncident += getRelativeDirectParIncident();					
+		monthDiffuseParIncident += getRelativeDiffuseParIncident();
+		
+		//annual total
+		annualDirectParIncident += getRelativeDirectParIncident();					
+		annualDiffuseParIncident += getRelativeDiffuseParIncident();
 	}
 
 
@@ -1250,21 +1269,22 @@ public class SafeCell extends SquareCell {
 	public float getMonthDirectPar() { return monthDirectPar;}
 	public float getMonthDiffusePar () {return monthDiffusePar;}
 
+	
 	public float getMonthRelativeDirectParIncident () {
-		if (monthDirectPar > 0) 
-			return monthDirectParIncident/monthDirectPar;
+		if (getMonthDirectPar() > 0) 
+			return getMonthDirectParIncident ()/getMonthDirectPar();
 		else return 0;
 	}
 	public float getMonthRelativeDiffuseParIncident () {
-		if (monthDiffusePar > 0)   
-			return monthDiffuseParIncident/monthDiffusePar;
+		if (getMonthDiffusePar () > 0)   
+			return getMonthDiffuseParIncident ()/getMonthDiffusePar ();
 		else return 0;
 	}
 	public float getMonthRelativeTotalParIncident () {
-		if (monthDirectPar+monthDiffusePar > 0)   return (monthDirectParIncident + monthDiffuseParIncident)/(monthDirectPar+monthDiffusePar);
+		if (getMonthDirectPar()+getMonthDiffusePar () > 0)   return (getMonthDirectParIncident () + getMonthDiffuseParIncident ())/(getMonthDirectPar()+getMonthDiffusePar ());
 		else return 0;
 	}
-	
+
 	public String getCropSpeciesName () {
 		if (this.getCropZone() == null) return "";
 		if (this.getCropZone().getCropSpecies() == null) return "";
