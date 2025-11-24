@@ -28,8 +28,8 @@ nbjmaxapressemis = 30
 nbjseuiltempref = 15
 
 ## STAGE FORCING
-codestade = 2
-ilev = 01-12
+codestade = 1
+ilev = 999
 iamf = 999
 ilax = 999
 isen = 999
@@ -38,7 +38,7 @@ iflo = 999
 idrp = 999
 imat = 999
 irec = 999
-irecbutoir = 03-16
+irecbutoir = 999
 
 ## IRRIGATIONS
 effirr = 1.00000

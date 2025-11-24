@@ -28,9 +28,9 @@ nbjmaxapressemis = 30
 nbjseuiltempref = 15
 
 ## STAGE FORCING
-codestade = 2
-ilev = 04-06
-iamf = 05-13
+codestade = 1
+ilev = 999
+iamf = 999
 ilax = 999
 isen = 999
 ilan = 999

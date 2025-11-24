@@ -38,7 +38,7 @@ iflo = 999
 idrp = 999
 imat = 999
 irec = 999
-irecbutoir = 12-31
+irecbutoir = 999
 
 ## IRRIGATIONS
 effirr = 0.80000
