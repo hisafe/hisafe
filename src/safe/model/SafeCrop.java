@@ -1,0 +1,1960 @@
+/** 
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
+ * 
+ * Copyright (C) 2000-2025 INRAE - CC-BY License
+ * 
+ * LIST OF AUTHORS
+ * --------------- 
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
+ * Meine Van Noordwijk 3, Benoit Courbaud 8
+ *
+ * 1 INRA (UMR-ABSYS), University of Montpellier, 34090 Montpellier, France
+ * 2 IRD (UMR-AMAP), University of Montpellier, 34090 Montpellier, France
+ * 3 ICRAF, Bogor 16001, Indonesia
+ * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
+ * 5 CEH, NERC,Wallingford OX10 8BB, UK
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ *
+ *----------------------------------------------------------------------------------------------
+ * 
+ * This file is part of Hi-SAFE  
+ * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
+ *
+ * You are free to:
+ *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
+ *		The licensor cannot revoke these freedoms as long as you follow the license terms.
+ * 
+ * Under the following terms:
+ * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+ *               
+ * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ *               
+ * Notices:
+ * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
+ *      by an applicable exception or limitation .
+ *		No warranties are given. The license may not give you all of the permissions necessary for your intended use. 
+ *		For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.  
+ *
+ * For more details see <https://creativecommons.org/licenses/by/4.0/>.
+ *
+ */
+
+package safe.model;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+
+import safe.stics.*;
+
+/**
+ * CROP represent the crop sowed on a SafeCell (can be baresoil)
+ * Only one SafeCrop is created by SafeCell (state variables of the crop are homogenous)
+ * Crop model is implemented by STICS (calling fortran native method) 
+ *
+ * @author : Isabelle Lecomte - INRA (UMR-SYSTEM), University of Montpellier, France
+ */
+
+ public class SafeCrop  implements Serializable {
+
+	 /** Crop species name  */
+	private String cropSpeciesName;				
+	/** Reference of the cell object  */
+ 	private SafeCell cell;						
+	/** Age of the crop since sowing (days) */
+ 	private int cropAge;						
+	/** First day of simulation (doy)  */
+	private int startDay;					
+	/** First day of sowing (doy)  */
+	private int sowingDay;						
+	/** First day of harvest (doy)  */
+	private int harvestDay;								
+	/** Crop lai (sticsCrop.lai) (m2.m-2)  */
+ 	private float lai;	
+	/** Crop lai MAX during the plant cycle (m2.m-2)  */
+ 	private float laiMax;	
+	/** Total month crop lai (m2.m-2)  */
+	private float monthLai;
+	/** Crop eai (sticsCrop.eai) (m2.m-2)  */
+ 	private float eai;	
+	/** Crop eai MAX during the plant cycle (m2.m-2)  */
+ 	private float eaiMax;	
+	/** Crop total month eai(m2.m-2)  */
+	private float monthEai;
+	/** Crop aboveground dry matter (sticsCrop.masec) (t.ha-1)  */
+ 	private float biomass;	
+	/** Crop aboveground dry matter MAX during the plant cycle  (t.ha-1)  */
+ 	private float biomassMax;	
+	/** Crop total month  aboveground dry matter   (t.ha-1)  */
+	private float monthBiomass;
+ 	/** Crop grain dry matter (sticsCrop.magrain) (t.ha-1)  */
+ 	private float grainBiomass;										
+ 	/** Crop growth rate  (sticsCrop.dltams) (t ha-1.j-1)  */
+ 	private float biomassIncrement;			
+	/** Crop aboveground dry matter harvested (sticsCrop.MSexporte) (t.ha-1)  */
+ 	private float biomassHarvested;	
+	/** Crop aboveground dry matter harvested of the previous day (t.ha-1)  */
+	private float biomassHarvestedPrev;
+	/** Crop Yield (t.ha-1)  */
+ 	private float yield;
+	/** Crop Yield MAX during the plant cycle (t.ha-1)   */
+ 	private float yieldMax;
+	/** Crop total month  Yield (t.ha-1)  */
+	private float monthYield;
+	/** Height of canopy (sticsCrop.hauteur) (mm)  */
+ 	private float height;
+	/** Height of canopy MAX during the plant cycle (mm)  */
+ 	private float heightMax;			
+	/** Crop roots depth (sticsCrop.zrac) (m)  */
+ 	private float rootsDepth;	
+	/**  Crop roots depth MAX during the plant cycle  (m)  */
+ 	private float rootsDepthMax;				
+	/** Soil management depth  (m)  */
+ 	private float soilManagementDepth;	
+	/** Amount of nitrogen taken up by the crop   (kgN.ha-1)   */
+	private float qNplante;							
+ 	
+ 	/** Crop phenological stage vegetative
+		1=snu SOL NU		
+		2=plt PLANTATION ou SEMIS		
+		3=dor DORMANCE (ou DEBDORM et FINDORM pour les ligneux)	
+		4=ger GERMINATION	
+		5=lev LEVEE		
+		6=amf accélération maximale de croissance foliaire		
+		7=lax indice foliaire maxi, fin de croissance foliaire nette ou brute selon l’option.		
+		8=sen début sénescence nette (option LAInet)		
+		9=lan indice foliaire nul (option LAInet)		
+		10=rec RECOLTE
+	*/
+	private int phenologicStageVegetative;		
+	/** Computing days between 2 stages vegetative */
+	private int cptDaysStageVegetative;		
+	
+	/** Crop Phenological stage reproductive
+		1=snu SOL NU
+		2=flo Floraison		
+		3=drp début remplissage des organes récoltés		
+		4=nou Nouaison (Fin de la nouaison, pour les plantes indéterminées)		
+		5=des début dessication des organes récoltés	
+		6=mat maturité physiologique	
+		7=rec Récolte
+	*/
+	private int phenologicStageReproductive;
+	/** Computing days between 2 stages reproductive */
+	private int cptDaysStageReproductive;		
+				
+	//LIGHT
+	/** Direct PAR intercepted by the crop (moles PAR m-2)  */
+	private float directParIntercepted;	
+	/** Diffuse PAR intercepted by the crop (moles PAR m-2)  */
+	private float diffuseParIntercepted;			
+	/** Total month direct PAR intercepted by the crop (moles PAR m-2)  */
+	private float monthDiffuseParIntercepted;
+	/** Total month diffuse PAR intercepted by the crop (moles PAR m-2)  */
+	private float monthDirecParIntercepted;
+	/** Total annual direct PAR intercepted by the crop (moles PAR m-2)  */
+	private float annualDirectParIntercepted;				
+	/** Total annual diffuse PAR intercepted by the crop (moles PAR m-2)  */
+	private float annualDiffuseParIntercepted;			
+	/** PAR extinction coefficient for the crop  */
+	private float parExtinctionCoef;			
+	
+	private float captureFactorForDiffusePar;		// m2 m-2 
+	private float captureFactorForDirectPar;		// m2 m-2 
+	private float competitionIndexForTotalPar;	// unitless
+	
+	//WATER
+	/** Crop water demand  (sticsCrop.eop) (mm) */
+ 	private float waterDemand;
+ 	/** Crop total annual water demand   (mm) */
+ 	private float annualWaterDemand;				
+	/** Crop water demand reduced (mm) */
+ 	private float waterDemandReduced;	
+	/** Crop total annual water demand reduced (mm) */
+ 	private float annualWaterDemandReduced;			
+	/** Crop water uptake (mm) */
+	private float waterUptake;
+	/** Water stomatal stress (swfac) calculated by hi-sAFe */
+	private float hisafeWaterStomatalStress;				
+	/** Water turgescence stress (turfac) calculated by hi-sAFe  */
+	private float hisafeWaterTurgescenceStress;					
+	/** Water senescence stress (senfac) calculated by hi-sAFe */
+	private float hisafeWaterSenescenceStress ;		
+	/** Sum of water stress between 2 vegetative stages */
+	private float sumHisafeWaterStressVegetative;	
+	/** Sum of water stress between 2 reproductive stages */
+	private float sumHisafeWaterStressReproductive;
+	/** Water entry by capillary rise (sticsSoil.remontee) (mm) */
+	private float capillaryRise;
+	/** Water entry by capillary rise from the previous day (mm) */
+	private float capillaryRisePrev;
+	/** Total annual of water entry by water capillary rise  (mm) */
+	private float annualCapillaryRise;				
+	/** Water entry by irrigation (sticsCommun.airg) (mm) */
+	private float irrigation;
+	/** Total annual of water entry by water irrigation (mm) */
+	private float annualIrrigation;	
+	/** Total annual of soil evaporation  (mm) */
+	private float annualSoilEvaporation;		
+	/** Total annual of runoff   (mm) */
+	private float annualRunOff;					
+	/** Total annual of surface runoff  (mm) */
+	private float annualSurfaceRunOff;				
+	/** Total annual of drainage bottom (mm) */
+	private float annualDrainageBottom;				
+	/** Total annual of artificial drainage  (mm) */
+	private float annualDrainageArtificial;			
+	/** Total annual rain  (mm) */
+	private float annualRain;						
+	
+	//NITROGEN
+	/** Crop nitrogen demand (sticsCrop.demande) (kg N ha-1) */
+	private float nitrogenDemand;
+	/** Crop total annual nitrogen demand (kg N ha-1) */
+	private float annualNitrogenDemand;			
+	/** Crop nitrogen uptake (kg N ha-1) */
+	private float nitrogenUptake;			
+	/** Nitrogen senescence stress calculated by hi-sAFe */
+	private float hisafeNitrogenStress;				
+	/** Sum of nitrogen stress between 2 vegetative stages */
+	private float sumHisafeNitrogenStressVegetative;
+	/** Sum of nitrogen stress between 2 reproductive stages */
+	private float sumHisafeNitrogenStressReproductive; 
+	/** Nitrogen entry by irrigation (kg N ha-1) */
+	private float nitrogenIrrigation;	
+	/** Nitrogen entry by irrigation of the previous day (kg N ha-1) */
+	private float nitrogenIrrigationPrev; 
+	/** Nitrogen entry by mineral fertilization (kg N ha-1) */
+	private float nitrogenFertilisationMineral;		
+	/** Nitrogen entry by organic fertilization (kg N ha-1) */
+	private float nitrogenFertilisationOrganic;	
+	/** Nitrogen entry by mineral fertilization of the previous day (kg N ha-1) */
+	private float nitrogenFertilisationMineralPrev;	
+	/** Nitrogen entry by organic fertilization of the previous day (kg N ha-1) */
+	private float nitrogenFertilisationOrganicPrev;
+	/** Nitrogen entry by crop harvest (kg N ha-1) */
+	private float nitrogenHarvested;
+	/** Nitrogen entry by crop harvest of the previous day  */
+	private float nitrogenHarvestedPrev;
+	/** Total annual of nitrogen leaching (kg N ha-1) */
+	private float annualNitrogenLeachingBottom;		
+
+	//CARBON AND NITROGEN CROP LITTER AND RESIDUES  //AQ - 05.2011
+	/** Amount of C in fallen leaves (QCplantetombe+QCrogne+QCressuite) (kg C ha-1)  */
+	private float cropCarbonLeafLitter;		
+	/** Amount of N in fallen leaves (QNplantetombe+QNrogne+QNressuite) (kg N ha-1)  */
+	private float cropNitrogenLeafLitter;	 
+	/** Amount of C in dead roots added to soil (QCrac)  (kg C ha-1)  */
+	private float cropCarbonRootsLitter;	 
+	/** Amount of N in dead roots added to soil (QNrac)  (kg N ha-1 )  */
+	private float cropNitrogenRootsLitter;	
+	/** Amount of C in fallen leaves of the previous day (kg C ha-1)  */
+	private float cropCarbonLeafLitterPrev;		
+	/** Amount of N in fallen leaves of the previous day (kg N ha-1)  */
+	private float cropNitrogenLeafLitterPrev;	 
+	/** Amount of C in dead roots added to soil of the previous day (kg C ha-1)  */
+	private float cropCarbonRootsLitterPrev;	 
+	/** Amount of N in dead roots added to soil of the previous day (kg N ha-1 )  */
+	private float cropNitrogenRootsLitterPrev;
+
+ 	/** Reference to the stics object for plant variables   */
+	public SafeSticsCrop sticsCrop;			
+	/** Reference to the stics object for soil variables   */
+	public SafeSticsSoil sticsSoil;				
+	/** Reference to the stics object for climate variables   */
+	public SafeSticsClimat sticsClimat;	
+	/** Reference to the stics object for common variables   */
+	public SafeSticsCommun sticsCommun;	
+	/** Reference to the  plant root topology object  */
+	private SafePlantRoot plantRoots;	
+	/** Map of values for lai observed (if lai forced option)  */
+	public Map<String, SafeSticsLai> laiObservedMap;	
+
+	/**	
+	 *Constructor 
+	 * @param cell the SafeCell where the crop is sown
+	 */
+ 	public SafeCrop (SafeCell cell) {
+
+ 		this.cell 			= cell;
+ 		this.sticsSoil 		= null;	
+		this.sticsCommun 	= new SafeSticsCommun();	
+		this.sticsCrop 		= new SafeSticsCrop();
+		this.plantRoots     = new SafePlantRoot (this);
+		
+ 		this.cropAge = 0;
+ 		this.lai = 0;
+ 		this.eai = 0;
+ 		this.biomass = 0;
+ 		this.rootsDepth = 0;
+ 		this.height = 0;
+		this.yield = 0;
+ 		this.parExtinctionCoef = 0;
+		this.sowingDay = 0;
+		this.harvestDay = 0;
+		this.waterDemand = 0;
+		this.waterDemandReduced = 0;
+		this.waterUptake = 0;
+		this.hisafeWaterStomatalStress = 1;
+		this.hisafeWaterTurgescenceStress = 1;
+		this.hisafeWaterSenescenceStress = 1;
+		this.nitrogenDemand = 0;
+		this.nitrogenUptake = 0;
+		this.hisafeNitrogenStress = 1;
+		this.phenologicStageVegetative= 1;
+		this.phenologicStageReproductive= 1;
+		this.cptDaysStageVegetative = 0;
+		this.cptDaysStageReproductive = 0;
+		this.sumHisafeWaterStressVegetative = 0;
+		this.sumHisafeNitrogenStressVegetative = 0;
+		this.sumHisafeWaterStressReproductive = 0;
+		this.sumHisafeNitrogenStressReproductive = 0;
+		this.captureFactorForDiffusePar= 0;
+		this.captureFactorForDirectPar= 0;
+		this.directParIntercepted= 0;
+		this.diffuseParIntercepted= 0;
+		this.competitionIndexForTotalPar= 1;
+		this.startDay = 0;
+	}
+	 	
+
+	/**
+	 * Reset or add daily results on this cell
+	 */
+ 	public void razDaily () {
+ 		
+		//To get daily values from STICS cumulated data
+		this.nitrogenIrrigationPrev 			= nitrogenIrrigation; 
+		this.nitrogenFertilisationMineralPrev 	= nitrogenFertilisationMineral;  
+		this.nitrogenFertilisationOrganicPrev 	= nitrogenFertilisationOrganic; 
+		this.capillaryRisePrev 					= capillaryRise;
+		this.cropCarbonLeafLitterPrev 			= cropCarbonLeafLitter;		
+		this.cropNitrogenLeafLitterPrev 		= cropNitrogenLeafLitter;	
+		this.cropCarbonRootsLitterPrev 			= cropCarbonRootsLitter;		
+		this.cropNitrogenRootsLitterPrev 		= cropNitrogenRootsLitter;	
+		this.nitrogenHarvestedPrev 				= nitrogenHarvested;		
+		this.biomassHarvestedPrev 				= biomassHarvested;	
+		
+		//Monthly values for EXPORT
+		this.monthBiomass = this.monthBiomass + this.biomass;
+		this.monthYield = this.monthYield + this.yield;
+		this.monthEai 	= this.monthEai + this.eai;
+		this.monthLai	= this.monthLai + this.lai;
+		this.monthDiffuseParIntercepted = this.monthDiffuseParIntercepted + this.diffuseParIntercepted;
+		this.monthDirecParIntercepted 	= this.monthDirecParIntercepted + this.directParIntercepted;	
+ 
+							
+		//Annual values for EXPORT
+		if (this.lai > this.laiMax) 
+			this.laiMax = this.lai ; 	
+		if (this.eai > this.eaiMax) 
+			this.eaiMax = this.eai ; 	
+		if (this.rootsDepth > this.rootsDepthMax) 
+			this.rootsDepthMax = this.rootsDepth ; 	
+		if (this.yield > this.yieldMax) 
+			this.yieldMax = this.yield ; 	
+		if (this.biomass > this.biomassMax) 
+			this.biomassMax = this.biomass ; 	
+		if (this.height > this.heightMax) 
+			this.heightMax = this.height ; 	
+				
+		//raz daily		
+		this.waterUptake		= 0;
+		this.waterDemandReduced = 0;
+		this.captureFactorForDiffusePar	= 0;
+		this.captureFactorForDirectPar	= 0;
+		this.directParIntercepted		= 0;
+		this.diffuseParIntercepted		= 0;
+		this.competitionIndexForTotalPar= 1;
+		this.yield = 0;
+
+		this.getPlantRoots().razDaily();
+		
+ 	}
+	
+	/**
+	* RAZ of month values
+	*/
+	public void razTotalMonth () {
+		monthBiomass = 0; 
+		monthYield = 0;
+		monthEai = 0;
+		monthLai = 0;
+		monthDiffuseParIntercepted = 0;
+		monthDirecParIntercepted = 0;
+	}
+
+	/**
+	 * RAZ of annual values 
+	 **/
+	public void razTotalAnnual () {
+		this.annualCapillaryRise = 0;
+		this.annualIrrigation = 0;
+		this.annualWaterDemand = 0;
+		this.annualWaterDemandReduced= 0;
+		this.annualNitrogenDemand = 0;
+		this.annualSoilEvaporation = 0;
+		this.annualRunOff = 0;
+		this.annualSurfaceRunOff = 0;
+		this.annualDrainageBottom = 0;
+		this.annualDrainageArtificial = 0;
+		this.annualRain = 0;
+		this.annualNitrogenLeachingBottom = 0;
+		this.annualDirectParIntercepted = 0;	
+		this.annualDiffuseParIntercepted = 0;
+		this.laiMax = 0; 
+		this.eaiMax = 0;
+		this.yieldMax = 0;
+		this.rootsDepthMax = 0;
+		this.biomassMax = 0;
+		this.heightMax = 0;
+	}
+	
+	/**
+	 * STICS crop first initialization with the first crop species (Soil has to be initialized)
+	 * @param jna Reference on SafeTestJNA object
+	 * @param sticsParam Reference on SafeSticsParameters object
+	 * @param sticsTransit Reference on SafeSticsTransit object
+	 * @param soil Reference on SafeSoil object 
+	 * @param zone Reference on SafeCropZone object 
+	 * @param plotSettings Reference on SafePlotSettings object 
+	 * @param exportDir Name of the export files directory
+	 * @param laiFileName File name containing lai values observed in case of forcing LAI option 
+	 */
+	public  void cropInitialisation (SafeTestJNA jna, 
+									SafeSticsParameters sticsParam, 
+									SafeSticsTransit sticsTransit, 
+									SafeSoil soil, 
+									SafeCropZone zone,
+									SafePlotSettings plotSettings,		
+									int julianDayStart,
+									int julianDayEnd,
+									String exportDir,
+									String laiFileName)  throws Exception {
+
+		//soil initialisation
+		this.sticsSoil 		= new SafeSticsSoil (soil);
+		this.sticsSoil.initialise (soil, plotSettings); 
+
+		//JNA NATIVE method to check general parameters and soil
+		//result is in output/initialisation.sti
+		SafeTestJNA.verifParam (sticsParam, sticsTransit, this.sticsSoil, this.sticsCommun, exportDir);
+
+		//Parameter for chaining simulations in STICS = NO
+		sticsCommun.P_codesuite = 0;
+
+		//Parameter for number of crop in STICS = 1
+		sticsCommun.numcult = 1;
+		
+		//LAI forcing with a file entry 
+		sticsCommun.P_codesimul=1;
+		if (laiFileName != "") {
+			new SafeSticsLaiFormat (laiFileName).load (this);
+			sticsCommun.P_codesimul=2;
+		}
+
+	    //if we remove this, fertilization and irrigation will be erased in STICS
+	    sticsCommun.napini[0] = zone.getSticsItk().nap;
+	    sticsCommun.napNini[0] = zone.getSticsItk().napN;
+	    sticsCommun.nbjresini[0] = zone.getSticsItk().P_nbjres;
+	    
+	    //Initial values (for perenial crops) 
+		sticsCrop.P_stade0 =  zone.getInitialCropStage(); 
+		sticsCrop.P_lai0 = (float) zone.getInitialCropLai();
+		sticsCrop.P_masec0 = (float) zone.getInitialCropBiomass();
+		sticsCrop.P_zrac0 = (float) (zone.getInitialCropRootsDepth() * 100);	//convert in cm
+		sticsCrop.P_magrain0 = (float) zone.getInitialCropGrainBiomass();
+		sticsCrop.P_QNplante0 = (float) zone.getInitialCropNitrogen();
+		sticsCrop.P_resperenne0 = (float) zone.getInitialCropReserveBiomass();
+		sticsCrop.P_densinitial[0] = (float) zone.getInitialCropRootsDensity(0);
+		sticsCrop.P_densinitial[1] = (float) zone.getInitialCropRootsDensity(1);
+		sticsCrop.P_densinitial[2] = (float) zone.getInitialCropRootsDensity(2);
+		sticsCrop.P_densinitial[3] = (float) zone.getInitialCropRootsDensity(3);
+		sticsCrop.P_densinitial[4] = (float) zone.getInitialCropRootsDensity(4);
+
+
+		//JNA NATIVE method to check plant and itk parameters
+		//result is in output/initialisation.sti
+		SafeTestJNA.verifPlant(sticsParam, sticsTransit, this.sticsCommun, zone.getSticsItk(), this.sticsCrop, zone.getId(), julianDayStart, julianDayEnd, exportDir);
+	    
+		return;
+	}
+
+	/**
+	 * STICS initialization reload with a new crop species (Soil is already initialized)
+	 * @param jna Reference on SafeTestJNA object
+	 * @param sticsParam Reference on SafeSticsParameters object
+	 * @param sticsTransit Reference on SafeSticsTransit object
+	 * @param soil Reference on SafeSoil object 
+	 * @param zone Reference on SafeCropZone object 
+	 * @param exportDir Name of the export files directory
+	 */
+	public  void cropReload (SafeTestJNA jna, 
+			SafeSticsParameters sticsParam, 
+			SafeSticsTransit sticsTransit, 
+			SafeSoil soil, 
+			SafeCropZone zone,
+			int julianDayStart,
+			int julianDayEnd,
+			String exportDir)  throws Exception {
+
+		//put soil initial values = current values (for STICS REPORT) 
+		this.sticsSoil.reinitialise (); 
+
+		//RAZ CROP data
+		this.sticsCommun.reinitialise (); 
+		this.sticsCrop.reinitialise();
+
+		//RAZ CROP roots informations
+		this.plantRoots = new SafePlantRoot (this);	
+		
+		//Parameter for chaining simulations in STICS = YES
+		sticsCommun.P_codesuite = 1;		
+
+		//Parameter for number of crop in STICS = 1
+		sticsCommun.numcult = 1;
+		
+	    //if we remove this, fertilization and irrigation will be erased in STICS
+	    sticsCommun.napini[0] = zone.getSticsItk().nap;
+	    sticsCommun.napNini[0] = zone.getSticsItk().napN;
+	    sticsCommun.nbjresini[0] = zone.getSticsItk().P_nbjres;
+
+	    //Restore CROP initial values if PERENIAL 
+	    if (this.sticsCrop.P_codeperenne == 2) {
+
+		    //Initial values  
+			this.sticsCrop.P_stade0 =  zone.getInitialCropStage(); 
+			this.sticsCrop.P_lai0 = (float) zone.getInitialCropLai();
+			this.sticsCrop.P_masec0 = (float) zone.getInitialCropBiomass();
+			this.sticsCrop.P_zrac0 = (float) (zone.getInitialCropRootsDepth() * 100);	//convert in cm
+			this.sticsCrop.P_magrain0 = (float) zone.getInitialCropGrainBiomass();
+			this.sticsCrop.P_QNplante0 = (float) zone.getInitialCropNitrogen();
+			this.sticsCrop.P_resperenne0 = (float) zone.getInitialCropReserveBiomass();
+			this.sticsCrop.P_densinitial[0] = (float) zone.getInitialCropRootsDensity(0);
+			this.sticsCrop.P_densinitial[1] = (float) zone.getInitialCropRootsDensity(1);
+			this.sticsCrop.P_densinitial[2] = (float) zone.getInitialCropRootsDensity(2);
+			this.sticsCrop.P_densinitial[3] = (float) zone.getInitialCropRootsDensity(3);
+			this.sticsCrop.P_densinitial[4] = (float) zone.getInitialCropRootsDensity(4);
+	    	
+	    }
+	    else {
+			this.sticsCrop.P_stade0 	 =  1; 
+			this.sticsCrop.P_lai0 		 =  0;
+			this.sticsCrop.P_masec0 	 =  0;
+			this.sticsCrop.P_zrac0 		 =  0;	
+			this.sticsCrop.P_magrain0 	 =  0;	
+			this.sticsCrop.P_resperenne0 =  0;
+			this.sticsCrop.P_QNplante0   =  0;	
+			this.sticsCrop.P_densinitial[0] =  0;
+			this.sticsCrop.P_densinitial[1] =  0;
+			this.sticsCrop.P_densinitial[2] =  0;
+			this.sticsCrop.P_densinitial[3] =  0;
+			this.sticsCrop.P_densinitial[4] =  0;
+			this.phenologicStageReproductive = 1;
+			this.phenologicStageVegetative = 1;
+			this.cptDaysStageVegetative = 0;
+			this.cptDaysStageReproductive = 0;
+			this.sumHisafeWaterStressVegetative = 0;
+			this.sumHisafeNitrogenStressVegetative = 0;
+			this.sumHisafeWaterStressReproductive = 0;
+			this.sumHisafeNitrogenStressReproductive = 0;
+			this.yield = 0;
+	    }
+
+		//JNA NATIVE method to check plant and itk parameters
+		//result is in output/initialisation.sti
+	    SafeTestJNA.verifPlant(sticsParam, sticsTransit, this.sticsCommun, zone.getSticsItk(), this.sticsCrop, zone.getId(), julianDayStart, julianDayEnd, exportDir);
+		
+		//reset cropAge
+		this.cropAge = 0;
+		this.sowingDay = 0;
+		this.harvestDay = 0;
+
+		return;
+	}
+	
+	/**
+	 * STICS initialization reload with the same perenial crop species (Soil and crop are already initialized)
+	 * @param jna Reference on SafeTestJNA object
+	 * @param sticsParam Reference on SafeSticsParameters object
+	 * @param sticsTransit Reference on SafeSticsTransit object 
+	 * @param zone Reference on SafeCropZone object 
+	 * @param exportDir Name of the export files directory
+	 */
+	public  void cropPerenialReload (SafeTestJNA jna, 
+									SafeSticsParameters sticsParam, 
+									SafeSticsTransit sticsTransit, 
+									SafeCropZone zone, 
+									int julianDayStart,
+									int julianDayEnd,
+									String exportDir)  throws Exception {
+			
+		//put soil initial values = current values (for STICS REPORT) 
+		this.sticsSoil.reinitialise (); 
+		
+		//Parameter for chaining simulations in STICS = YES
+		sticsCommun.P_codesuite = 1;		
+
+		//Parameter for number of crop in STICS = 1
+		sticsCommun.numcult = 1;
+		
+		//JNA NATIVE method to check plant and itk parameters
+		//result is in output/initialisation.sti
+		SafeTestJNA.verifPlant(sticsParam, sticsTransit, this.sticsCommun, zone.getSticsItk(), this.sticsCrop, zone.getId(), julianDayStart, julianDayEnd, exportDir);
+		
+		//update cropAge
+		this.cropAge++;
+		
+		return;
+	}
+	
+	/**
+	* STICS initialization copy for all cells with the same crop species
+	* @param initialCrop Reference on SafeCrop object to be copied 
+	*/
+	public void cropInitialisationCopy (SafeCrop initialCrop) {
+				
+		this.sticsSoil 		= new SafeSticsSoil(initialCrop.sticsSoil);
+		this.sticsCommun 	= new SafeSticsCommun(initialCrop.sticsCommun);	
+		this.sticsCrop 		= new SafeSticsCrop(initialCrop.sticsCrop);
+		this.setCropSpeciesName(initialCrop.getCropSpeciesName());
+	}
+
+	/**
+	 * STICS CROP process growth part I (before water repartition)
+	 * @param safeJNA Reference on SafeTestJNA object
+	 * @param sticsParam Reference on SafeSticsParameters object
+	 * @param sticsTransit Reference on SafeSticsTransit object 
+	 * @param sticsStation Reference on SafeSticsStation object 
+	 * @param generalParameters Reference on SafeGeneralParameters object 
+	 * @param simulationJulianDay Julian day of the simulation (1 to 365) 
+	 * @param sticsJulianDay Julian day of STICS simulation (1 to 365) 
+	 * @param cellRad Radiation incident of the cell (after tree interception)  
+	 * @param cellRain Rain incident of the cell (after tree interception)  
+	 * @param cellEtp Cell ETP calculated  
+	 * @param cellVisibleSky Cell visible sky in % 
+	 * @param flagFirst If this cell the first cell for the same crop zone (0=No 1=Yes)  
+	 **/
+	public void processGrowth1 (SafeTestJNA safeJNA, 
+								SafeSticsParameters sticsParam, 
+								SafeSticsTransit sticsTransit, 
+								SafeSticsStation sticsStation, 
+							    SafeGeneralParameters generalParameters,
+								int simulationJulianDay, 
+								int sticsJulianDay,
+							    double cellRad, 
+							    double cellRain,
+							    double cellEtp,
+							    double cellVisibleSky,
+							    int flagFirst
+								) {
+		
+		//call JNA native method
+		SafeTestJNA.dailyLoopPart1(sticsParam, 
+							sticsTransit, 
+							sticsStation, 
+							this.sticsClimat,
+							this.sticsCommun, 
+							this.sticsSoil,
+							this.sticsCrop,
+							this.getCell().getCropZone().getSticsItk(),
+							simulationJulianDay,
+							sticsJulianDay, 						
+							cellRad,
+							cellRain,
+							cellEtp,
+							cellVisibleSky,
+							flagFirst);
+
+		//variable storage
+		if (this.startDay == 0) this.startDay = simulationJulianDay;
+
+		if (this.sticsCrop.zrac == 0) this.rootsDepth = 0;
+		else this.rootsDepth = this.sticsCrop.zrac / 100;			//convert cm in m
+			
+		//real      :: lai(0:2,0:365) 0=shade+sun 1=sun 2=shade (in case of associated crops) 365=nbr days
+		int indice          = (sticsJulianDay*3)+1;
+		this.lai 			= this.sticsCrop.lai[indice]; 
+		this.biomass 		= this.sticsCrop.masec[indice];			//t ha-1		
+		this.grainBiomass 	= this.sticsCrop.magrain[indice]/100;	//convert g m-2 in t ha-1
+		//real      :: eop(0:2) 0=shade+sun 1=sun 2=shade  (in case of associated crops)
+		this.waterDemand 	= this.sticsCrop.eop[1];				//mm
+		this.nitrogenDemand = this.sticsCrop.demande[1];			//kg ha-1;
+
+		//Nitrogen sink strength with nitrogen demand of the day before
+		if (nitrogenDemand > 0)
+			this.getPlantRoots().calculateNitrogenSinkStrength (nitrogenDemand);
+
+		//cumulation of Rain transmitted on the crop
+		this.annualRain		+= cellRain;
+		
+		//store QNplante in kgN.ha-1
+		int indice2          = ((sticsJulianDay-1)*3)+1;
+		this.qNplante 		= this.sticsCrop.QNplante[indice2];		
+		
+		return;
+	}
+
+	/**
+	 * STICS CROP process growth part II (after water repartition)
+	 * @param safeJNA Reference on SafeTestJNA object
+	 * @param sticsParam Reference on SafeSticsParameters object
+	 * @param sticsTransit Reference on SafeSticsTransit object 
+	 * @param sticsStation Reference on SafeSticsStation object 
+	 * @param simulationJulianDay Julian day of the simulation (1 to 365) 
+	 * @param sticsJulianDay Julian day of STICS simulation (1 to 365) 
+	 * @param hisafeWaterExtraction If waterRepartion have been calculated by Hi-sAFe (0=No 1=Yes)  
+	 * @param cellVisibleSky Cell visible sky in % 
+	 **/
+	public void processGrowth2 (SafeTestJNA safeJNA, 
+									SafeSticsParameters sticsParam, 
+									SafeSticsTransit sticsTransit, 
+									SafeSticsStation sticsStation, 				
+									int simulationJulianDay, 
+									int sticsJulianDay,	
+									int hisafeWaterExtraction,
+								    double cellVisibleSky) {
+
+		//call JNA native method	
+		SafeTestJNA.dailyLoopPart2 (sticsParam, 
+							sticsTransit, 
+							sticsStation, 
+							this.sticsClimat,
+							this.sticsCommun, 
+							this.sticsSoil,
+							this.sticsCrop,
+							this.getCell().getCropZone().getSticsItk(),
+							hisafeWaterExtraction,
+							cellVisibleSky
+						);
+					
+		//important variable storage
+		this.harvestDay = 0;
+		if (this.sticsCrop.nrec > 0)
+			this.harvestDay = this.sticsCrop.nrec + this.startDay;	
+
+		if (this.sticsCrop.zrac == 0) this.rootsDepth = 0;
+		else this.rootsDepth = this.sticsCrop.zrac / 100;			//convert cm in m
+		
+		this.soilManagementDepth = (float) this.getSoilManagementDepth(simulationJulianDay);
+		
+		//real      :: eai(0:2) 0=shade+sun 1=sun 2=shade (in case of associated crops) 
+		this.eai			= this.sticsCrop.eai[1];		  
+		this.height 		= this.sticsCrop.hauteur[1];
+
+		//real      :: lai(0:2,0:366) 0=shade+sun 1=sun 2=shade (in case of associated crops) 
+		int indice          = (sticsJulianDay*3)+1;
+		this.lai 			= this.sticsCrop.lai[indice]; 
+		this.biomass 		= this.sticsCrop.masec[indice];			//t ha-1		
+		this.grainBiomass 	= this.sticsCrop.magrain[indice]/100;	//convert g m-2 in t ha-1
+		this.biomassIncrement 	= this.sticsCrop.dltams[indice];	//t ha-1
+		int indice2          = ((sticsJulianDay-1)*3)+1;
+		this.qNplante 		= this.sticsCrop.QNplante[indice2];		//kgN.ha-1
+		
+		//in STICS remontee is negative
+		if (this.sticsSoil.remontee!=0) this.capillaryRise	 = -(this.sticsSoil.remontee);			    // mm;
+		this.irrigation 	 = this.sticsCommun.airg[sticsJulianDay-1] + this.sticsCommun.airgTree[sticsJulianDay-1];		// mm
+	
+		//NITROGEN ENTRIES (cumulated values in kg ha-1 )
+		this.nitrogenIrrigation 			= this.sticsCommun.irrigN;			
+		this.nitrogenFertilisationMineral 	= this.sticsCommun.totapN;	
+		this.nitrogenFertilisationOrganic 	= this.sticsCommun.QNresorg;
+		this.nitrogenHarvested = this.sticsCrop.Nexporte ;		
+		this.biomassHarvested = this.sticsCrop.MSexporte; 
+		
+		//residus
+		this.cropCarbonLeafLitter = this.sticsCrop.QCplantetombe[1] + this.sticsCrop.QCrogne + this.sticsCrop.QCressuite;
+		this.cropNitrogenLeafLitter = this.sticsCrop.QNplantetombe[1] + this.sticsCrop.QNrogne + this.sticsCrop.QNressuite;
+		this.cropCarbonRootsLitter = this.sticsCrop.QCrac;
+		this.cropNitrogenRootsLitter = this.sticsCrop.QNrac;
+
+        //SET phenologicStageVegetative
+		if  (this.getCell().getCropZone().getSticsItk().P_iplt0 == simulationJulianDay) {		//plt
+			phenologicStageVegetative = 2;
+			this.sowingDay = simulationJulianDay;
+			this.sticsCrop.densite = this.getCell().getCropZone().getSticsItk().P_densitesem;			//on remet la densite de semis
+		}	
+		if  ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.ndebdorm > 0) && (phenologicStageVegetative < 3))	{		//debdorm
+			phenologicStageVegetative = 3;
+			cptDaysStageVegetative=0;
+			sumHisafeWaterStressVegetative=0;
+			sumHisafeNitrogenStressVegetative=0;
+		}	
+		if  ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.nger > 0)&& (phenologicStageVegetative < 4))	{		//ger
+			phenologicStageVegetative = 4;
+			cptDaysStageVegetative=0;
+			sumHisafeWaterStressVegetative=0;
+			sumHisafeNitrogenStressVegetative=0;			
+		}	
+		if  ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.nlev > 0)&& (phenologicStageVegetative < 5))	{		//lev
+			phenologicStageVegetative = 5;
+			cptDaysStageVegetative=0;
+			sumHisafeWaterStressVegetative=0;
+			sumHisafeNitrogenStressVegetative=0;	
+		}		
+		if  ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.namf > 0)&& (phenologicStageVegetative < 6))	{		//amf
+			phenologicStageVegetative = 6;		
+			cptDaysStageVegetative=0;
+			sumHisafeWaterStressVegetative=0;
+			sumHisafeNitrogenStressVegetative=0;			
+		}		
+		if ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.nlax > 0)&& (phenologicStageVegetative < 7))	{		//lax
+			phenologicStageVegetative = 7;	
+			cptDaysStageVegetative=0;
+			sumHisafeWaterStressVegetative=0;
+			sumHisafeNitrogenStressVegetative=0;			
+		}	
+		if ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.nsen > 0)&& (phenologicStageVegetative < 8))	{		//sen
+			phenologicStageVegetative = 8;		
+			cptDaysStageVegetative=0;
+			sumHisafeWaterStressVegetative=0;
+			sumHisafeNitrogenStressVegetative=0;			
+		}
+		//sometimes SEN is not SET by STICS, we force it by testing dltaisen >0 after LAX
+		if ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.nlax > 0) && (this.sticsCrop.dltaisen[1] > 0) && (cptDaysStageVegetative>0) && (phenologicStageVegetative < 8))	{		//sen
+			phenologicStageVegetative = 8;		
+			cptDaysStageVegetative=0;
+			sumHisafeWaterStressVegetative=0;
+			sumHisafeNitrogenStressVegetative=0;			
+		}
+		if ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.nlan > 0)&& (phenologicStageVegetative < 9))	{		//lan
+			phenologicStageVegetative = 9;		
+			cptDaysStageVegetative=0;
+			sumHisafeWaterStressVegetative=0;
+			sumHisafeNitrogenStressVegetative=0;			
+		}	
+		//sometimes LAN is not SET by STICS, we force it by testing lai = 0 after SEN
+		if ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.nsen > 0) &&  (this.getLai() == 0) && (phenologicStageVegetative < 9))	{		//lan
+			phenologicStageVegetative = 9;		
+			cptDaysStageVegetative=0;
+			sumHisafeWaterStressVegetative=0;
+			sumHisafeNitrogenStressVegetative=0;			
+		}
+	    //SET phenologicStageReproductive
+		if ((this.sticsCrop.nrec == 0) && (this.sticsCrop.nflo > 0))	{		//flo
+			phenologicStageReproductive = 2;			
+		}		
+		if ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.ndrp > 0) && (phenologicStageReproductive < 3))	{		//drp
+			phenologicStageReproductive = 3;			
+			cptDaysStageReproductive=0;
+			sumHisafeWaterStressReproductive=0;
+			sumHisafeNitrogenStressReproductive=0;			
+		}		
+		if ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.nnou > 0) && (phenologicStageReproductive < 4))	{		//nou
+			phenologicStageReproductive = 4;	
+			cptDaysStageReproductive=0;
+			sumHisafeWaterStressReproductive=0;
+			sumHisafeNitrogenStressReproductive=0;				
+		}
+		if ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.ndebdes > 0) && (phenologicStageReproductive < 5))	{		//debdes
+			phenologicStageReproductive = 5;
+			cptDaysStageReproductive=0;
+			sumHisafeWaterStressReproductive=0;
+			sumHisafeNitrogenStressReproductive=0;				
+		}	
+		if ((this.sticsCrop.nrec == 0) &&(this.sticsCrop.nmat > 0) && (phenologicStageReproductive < 6))	{		//mat
+			phenologicStageReproductive = 6;
+			cptDaysStageReproductive=0;
+			sumHisafeWaterStressReproductive=0;
+			sumHisafeNitrogenStressReproductive=0;				
+		}
+	    //HARVEST 
+		if (this.sticsCrop.nrec > 0) {		//rec
+			if (phenologicStageVegetative == 10)	{	//back to 1 the day after rec 	
+				phenologicStageVegetative = 1;	
+				phenologicStageReproductive = 1;
+			}
+			else if (phenologicStageVegetative > 1){
+				phenologicStageVegetative = 10;	
+				phenologicStageReproductive = 7;
+				this.yield  		= this.sticsCrop.magrain[indice]/100;
+				cptDaysStageVegetative=0;
+				sumHisafeWaterStressVegetative=0;
+				sumHisafeNitrogenStressVegetative=0;
+			}
+			//rajouté IL 11/06/2025
+			//sinon bug sol nu après récolte 
+			Arrays.fill(this.sticsCrop.ep	, 0);
+			Arrays.fill(this.sticsCrop.eop	, 0);
+			this.sticsCrop.mafruit = 0;
+			this.sticsCrop.matuber = 0;
+			this.sticsCrop.pgrain[1] = 0;
+			this.sticsCrop.dltags[1] = 0;
+			this.sticsCrop.QNgrain[1] = 0;
+			this.sticsCrop.densite = 0;
+			this.sticsCrop.sla[1] = 0;
+			this.sticsCrop.inn[1]= 1;
+			this.sticsCrop.innlai[1]= 1;
+			this.sticsCrop.inns[1]= 1;
+			this.sticsCrop.innsenes[1]= 1;
+			this.sticsCrop.teturg= 0;
+			this.sticsCrop.tetstomate= 0;
+			sumHisafeWaterStressReproductive=0;
+			sumHisafeNitrogenStressReproductive=0;
+
+		}
+		//YIELD for PERENIAL CROPS 
+		//we took the day before because masec of the day is AFTER the cut 
+		if ((this.isPerennial()) && (this.sticsCrop.sioncoupe)) {
+			int indicePrev      = ((sticsJulianDay-1)*3)+1;
+			this.yield  		= this.sticsCrop.masec[indicePrev];
+		}
+		//After planting we start compting stress days 
+		if ((phenologicStageVegetative > 1) && (phenologicStageVegetative < 10)){
+			cptDaysStageVegetative++;
+			sumHisafeWaterStressVegetative+=hisafeWaterStomatalStress;
+			sumHisafeNitrogenStressVegetative+=hisafeNitrogenStress;
+			cptDaysStageReproductive++;
+			sumHisafeWaterStressReproductive+=hisafeWaterStomatalStress;
+			sumHisafeNitrogenStressReproductive+=hisafeNitrogenStress;
+		}
+
+		if ((this.sowingDay > 0) && (this.harvestDay == 0)) this.cropAge = this.cropAge+1; 
+		
+		//TOTALS ANNUAL
+		this.annualIrrigation 		+= this.irrigation;
+		this.annualWaterDemand 		+= this.waterDemand;
+		this.annualWaterDemandReduced += this.waterDemandReduced;
+		this.annualNitrogenDemand	+= this.getNitrogenDemand();
+		this.annualSoilEvaporation 	+= this.getSoilEvaporation();
+		this.annualRunOff 			+= this.getRunOff();
+		this.annualSurfaceRunOff 	+= this.getSurfaceRunOff();
+		this.annualDrainageBottom 	+= this.sticsCommun.drain;
+		this.annualDrainageArtificial += this.sticsSoil.qdrain;
+		this.annualCapillaryRise 	+= this.capillaryRise;
+		this.annualNitrogenLeachingBottom += this.sticsCommun.lessiv;
+	}
+	
+	/**
+	 * Tree litter soil incorporation calling STICS method addLitter via JNA 
+	 * @param safeJNA Reference on SafeTestJNA object
+	 * @param sticsParam Reference on SafeSticsParameters object
+	 * @param cell Reference on SafeCell object 
+	 * @param simulationJulianDay Simulation julian day
+	 * @param humificationDepth Humification depth (m) 
+	 * @param treeCarbonFoliageLitter Tree carbon foliage litter for soil incorporation (kg)
+	 * @param treeNitrogenFoliageLitter Tree nitrogen foliage litter for soil incorporation (kg)
+	 * @param treeCarbonBranchesLitter Tree carbon branches litter for soil incorporation (kg)
+	 * @param treeNitrogenBranchesLitter Tree nitrogen branches litter for soil incorporation (kg)
+	 * @param treeCarbonFruitLitter Tree carbon fruit litter for soil incorporation (kg)
+	 * @param treeNitrogenFruitLitter Tree nitrogen fruit litter for soil incorporation (kg)
+	 **/
+	public void soilIncorporation (SafeTestJNA safeJNA, 
+								SafeSticsParameters sticsParam, 
+								SafeCell cell,		
+								int simulationJulianDay,
+							    double humificationDepth, 
+							    double treeRootsDepth,
+							    double treeCarbonFoliageLitter, 
+							    double treeNitrogenFoliageLitter,
+							    double treeCarbonBranchesLitter, 
+							    double treeNitrogenBranchesLitter,
+							    double treeCarbonFruitLitter, 
+							    double treeNitrogenFruitLitter) {
+
+		//TREE FOLIAGE LITTER INCORPORTION 
+		if (treeCarbonFoliageLitter > 0) {
+
+			int typeLitter = 10;
+			float waterLitter = (float) -1.e-10;
+			//0.5 is forced carbon content just to provide STICS with a value of fresh matter
+			float cfeupc = 0.5f;	
+			float freshMatterLitter = (float) (treeCarbonFoliageLitter / 1000 / cfeupc);	//convert kg C ha-1 in T MS ha-1
+			float cnLitter = (float) (treeCarbonFoliageLitter/ treeNitrogenFoliageLitter);
+			float profMax = 1.0f;	//1cm  (leaves are on the flour) 
+			
+			//if soil management the same day = litter goes deeper 
+			if (this.getSoilManagementDepth(simulationJulianDay) != 0) {
+				typeLitter = 20;
+				profMax = (float) (Math.min(this.getSoilManagementDepth(simulationJulianDay),humificationDepth)*100);
+			}
+
+			//CALL STICS METHOD TO ADD LITTER INTO THE SOIL MINERALISATION
+			SafeTestJNA.addLitterInSoil(sticsParam, 
+					this.sticsSoil,
+					this.sticsCommun, 
+					this.sticsCrop,
+					this.getCell().getCropZone().getSticsItk(),
+					profMax,
+					freshMatterLitter, 	//Fresh matter (FM) added from residue ires  t.ha-1
+					cnLitter,			//C/N ratio of residue
+					cfeupc * 100,		//C content of residue  (% MF)
+					waterLitter,		//Water content of residue   %FM
+					typeLitter			//litter type
+					);
+			
+			//STICS CUMULATION FOR BILAN
+			this.sticsCommun.treeCarbonFoliageLitter = this.sticsCommun.treeCarbonFoliageLitter + (float) treeCarbonFoliageLitter;      
+			this.sticsCommun.treeNitrogenFoliageLitter = this.sticsCommun.treeNitrogenFoliageLitter + (float) treeNitrogenFoliageLitter; 
+		      		      
+		}
+		
+		
+		//TREE BRANCHES LITTER INCORPORTION 		
+		if (treeCarbonBranchesLitter > 0) {
+	
+			int typeLitter = 8;		//grapevine shoots on surface
+			float waterLitter = (float) -1.e-10;
+			//0.5 is forced carbon content just to provide STICS with a value of fresh matter
+			float cfeupc = 0.5f;	
+			float freshMatterLitter = (float) (treeCarbonBranchesLitter / 1000 / cfeupc);	//convert kg C ha-1 in T MS ha-1
+			float cnLitter = (float) (treeCarbonBranchesLitter/ treeNitrogenBranchesLitter);
+			float profMax = 1.0f;	//1cm  (branches are on the flour) 
+				
+			//if soil management the same day = litter goes deeper 
+			if (this.getSoilManagementDepth(simulationJulianDay) != 0) {
+				typeLitter = 18;
+				profMax = (float) (Math.min(this.getSoilManagementDepth(simulationJulianDay),humificationDepth)*100);
+			}
+			
+			//CALL STICS METHOD TO ADD LITTER INTO THE SOIL MINERALISATION
+			SafeTestJNA.addLitterInSoil(sticsParam, 
+					this.sticsSoil,
+					this.sticsCommun, 
+					this.sticsCrop,
+					this.getCell().getCropZone().getSticsItk(),
+					profMax,
+					freshMatterLitter, 	//Fresh matter (FM) added from residue ires  T MS ha-1
+					cnLitter,			//C/N ratio of residu
+					cfeupc * 100,		//C content of residu  (% MF)
+					waterLitter,		//Water content of residue   %FM
+					typeLitter			//litter type
+					);
+			
+			//STICS CUMULS FOR BILAN
+			this.sticsCommun.treeCarbonBranchesLitter = this.sticsCommun.treeCarbonBranchesLitter + (float) treeCarbonBranchesLitter;      
+			this.sticsCommun.treeNitrogenBranchesLitter = this.sticsCommun.treeNitrogenBranchesLitter + (float) treeNitrogenBranchesLitter; 			
+		}
+					
+		//TREE FRUIT LITTER INCORPORTION 
+		if (treeCarbonFruitLitter > 0) {
+
+			int typeLitter = 6;		//vinasse on surface
+			float waterLitter = (float) -1.e-10;
+			//0.5 is forced carbon content just to provide STICS with a value of fresh matter
+			float cfeupc = 0.5f;	
+			float freshMatterLitter = (float) (treeCarbonFruitLitter / 1000 / cfeupc);	//convert kg C ha-1 in T MS ha-1
+			float cnLitter = (float) (treeCarbonFruitLitter/ treeNitrogenFruitLitter);
+			float profMax = 1.0f;	//1cm  (fruits are on the flour) 
+				
+			//if soil management the same day = litter goes deeper 
+			if (this.getSoilManagementDepth(simulationJulianDay) != 0) {
+				typeLitter = 16;
+				profMax = (float) (Math.min(this.getSoilManagementDepth(simulationJulianDay),humificationDepth)*100);
+			}
+			
+			//CALL STICS METHOD TO ADD LITTER INTO THE SOIL MINERALISATION
+			SafeTestJNA.addLitterInSoil(sticsParam, 
+					this.sticsSoil,
+					this.sticsCommun, 
+					this.sticsCrop,
+					this.getCell().getCropZone().getSticsItk(),
+					profMax,
+					freshMatterLitter, 	//Fresh matter (FM) added from residue ires  t.ha-1
+					cnLitter,			//C/N ratio of residu
+					cfeupc * 100,		//C content of residu  (% MF)
+					waterLitter,		//Water content of residue   %FM
+					typeLitter			//litter type
+					);
+			
+			//STICS CUMULS FOR BILAN
+			this.sticsCommun.treeCarbonFruitLitter = this.sticsCommun.treeCarbonFruitLitter + (float) treeCarbonFruitLitter;      
+			this.sticsCommun.treeNitrogenFruitLitter = this.sticsCommun.treeNitrogenFruitLitter + (float) treeNitrogenFruitLitter; 			
+		}
+		
+		//FINE ROOTS AND COARSE LITTER INCORPORTION 
+		double treeCarbonFineRootsLitter = 0;
+		double treeNitrogenFineRootsLitter = 0;
+		double treeCarbonCoarseRootsLitter = 0;
+		double treeNitrogenCoarseRootsLitter = 0;
+
+		//FOR EACH VOXEL
+		SafeVoxel [] voxels = cell.getVoxels();
+		for (int i = 0; i < voxels.length; i++) {
+			
+			SafeVoxel v = voxels[i];
+			double voxelBottom = v.getZ()+(v.getThickness()/2);
+			
+			//VOXEL ABOVE PROFHUM 
+			if (voxelBottom <= humificationDepth) {
+				treeCarbonCoarseRootsLitter += (v.getTotalTreeCarbonCoarseRootsSen());//in kg
+				treeNitrogenCoarseRootsLitter +=(v.getTotalTreeNitrogenCoarseRootsSen());
+				treeCarbonFineRootsLitter += (v.getTotalTreeCarbonFineRootsSen());
+				treeNitrogenFineRootsLitter += (v.getTotalTreeNitrogenFineRootsSen());
+			}
+		}	
+
+		//ROOT LITTERS
+		treeCarbonFineRootsLitter = treeCarbonFineRootsLitter  / (cell.getArea() / 10000); // convert kg C in kg C ha-1	
+		treeCarbonCoarseRootsLitter = treeCarbonCoarseRootsLitter  / (cell.getArea() / 10000); // convert kg C in kg C ha-1		
+		treeNitrogenCoarseRootsLitter = treeNitrogenCoarseRootsLitter  / (cell.getArea() / 10000); // convert kg C in kg C ha-1		
+		treeNitrogenFineRootsLitter = treeNitrogenFineRootsLitter  / (cell.getArea() / 10000); // convert kg C in kg C ha-1		
+		this.getCell().setTreeCarbonFineRootsLitter (treeCarbonFineRootsLitter);		
+		this.getCell().setTreeCarbonCoarseRootsLitter (treeCarbonCoarseRootsLitter);
+		this.getCell().setTreeNitrogenFineRootsLitter (treeNitrogenFineRootsLitter);
+		this.getCell().setTreeNitrogenCoarseRootsLitter (treeNitrogenCoarseRootsLitter);		
+	
+		//TREE FINE ROOTS LITTER INCORPORTION 
+		if (treeCarbonFineRootsLitter > 0) {
+
+			int typeLitter = 21;
+			float waterLitter = (float) -1.e-10;
+			//0.5 is forced carbon content just to provide STICS with a value of fresh matter
+			float cfeupc = 0.5f;
+			float freshMatterLitter = (float) (treeCarbonFineRootsLitter / 1000/ cfeupc); //convert kg C ha-1 in T MS ha-1
+			float cnLitter = (float) (treeCarbonFineRootsLitter/treeNitrogenFineRootsLitter);	
+			float profMax = (float) (humificationDepth * 100);
+
+			//CALL STICS METHOD TO ADD LITTER INTO THE SOIL MINERALISATION
+			SafeTestJNA.addLitterInSoil(sticsParam, 
+					this.sticsSoil,
+					this.sticsCommun,
+					this.sticsCrop,
+					this.getCell().getCropZone().getSticsItk(),
+					profMax,
+					freshMatterLitter, 	//Fresh matter (FM) added from residue ires  t.ha-1
+					cnLitter,			//C/N ratio of residu
+					cfeupc * 100,		//C content of residu  (% MF)
+					waterLitter,		//Water content of residue   %FM
+					typeLitter			//litter type
+					);
+
+			
+			//STICS CUMULS FOR BILAN
+			this.sticsCommun.treeCarbonFineRootsLitter = this.sticsCommun.treeCarbonFineRootsLitter + (float) treeCarbonFineRootsLitter;      
+			this.sticsCommun.treeNitrogenFineRootsLitter = this.sticsCommun.treeNitrogenFineRootsLitter + (float) treeNitrogenFineRootsLitter; 
+			
+		}
+		
+		//TREE COARSE ROOTS LITTER INCORPORTION 
+		if (treeCarbonCoarseRootsLitter > 0) {
+
+			int typeLitter = 21;			
+			float waterLitter = (float) -1.e-10;
+			//0.5 is forced carbon content just to provide STICS with a value of fresh matter
+			float cfeupc = 0.5f;
+			float freshMatterLitter = (float) (treeCarbonCoarseRootsLitter/ 1000 / cfeupc); //convert kg C ha-1 in T MS ha-1
+			float cnLitter = (float) (treeCarbonCoarseRootsLitter/ treeNitrogenCoarseRootsLitter);
+			float profMax = (float) humificationDepth;	
+			
+			//call JNA native method
+			SafeTestJNA.addLitterInSoil(sticsParam, 
+					this.sticsSoil,
+					this.sticsCommun, 
+					this.sticsCrop,
+					this.getCell().getCropZone().getSticsItk(),
+					profMax,
+					freshMatterLitter, 	//Fresh matter (FM) added from residue ires  t.ha-1
+					cnLitter,			//C/N ratio of residu
+					cfeupc * 100,		//C content of residu  (% MF)
+					waterLitter,		//Water content of residue   %FM
+					typeLitter			//litter type
+					);
+					
+			//STICS TOTAL FOR BILAN
+			this.sticsCommun.treeCarbonFineRootsLitter = this.sticsCommun.treeCarbonFineRootsLitter + (float) treeCarbonCoarseRootsLitter;      
+			this.sticsCommun.treeNitrogenFineRootsLitter = this.sticsCommun.treeNitrogenFineRootsLitter + (float) treeCarbonCoarseRootsLitter; 
+		}	
+
+	}
+	/**
+	 * Store values at the end of a rotation
+	 * These values will be used to initialized the next rotation
+	 * @param sticsJulianDay Stics simulation julian day
+	 **/
+	public void storeValues (int sticsJulianDay) {
+		
+		double QNplante_fin;
+		int indice  = (sticsJulianDay*3)+1;
+		QNplante_fin = this.sticsCrop.QNplante[indice];
+        if (this.sticsCrop.P_codebfroid == 3 &&  this.sticsCrop.P_codedormance == 3) {
+            QNplante_fin = this.sticsCrop.QNplante[(this.sticsCrop.ntaille-1*3) + this.sticsCommun.AOAS]    
+                    - (this.sticsCrop.mabois[this.sticsCommun.AS] * 0.5 * 10.0)              
+                    - (this.sticsCrop.mabois[this.sticsCommun.AO] * 0.5 * 10.0)              
+                    - this.sticsCrop.Qngrain_ntailleveille;
+        }
+
+		this.sticsCrop.P_lai0 = this.sticsCrop.lai[indice];
+		this.sticsCrop.P_masec0 = this.sticsCrop.masec[indice];
+		this.sticsCrop.P_zrac0 = this.sticsCrop.zrac;
+		this.sticsCrop.P_QNplante0 = (float) QNplante_fin;
+		for (int iz=0; iz<5; iz++) {
+			this.sticsCrop.P_densinitial[iz] = this.sticsCrop.LRACH[iz];
+		}
+	
+		this.sticsCrop.P_resperenne0 = this.sticsCrop.resperenne[this.sticsCommun.AOAS];
+		this.sticsCommun.cu0[0] = this.sticsCrop.cu[sticsJulianDay];
+		this.sticsCommun.somelong0[0] = this.sticsCrop.somelong;
+        if (this.sticsCommun.cu0[0] == 0) 
+        	this.sticsCommun.nfindorm0[0] = this.sticsCrop.nfindorm;
+        else
+        	this.sticsCommun.nfindorm0[0] = 0;
+        
+        this.sticsCommun.Nb0 = this.sticsCommun.Nb;
+        this.sticsCommun.Cb0 = this.sticsCommun.Cb;
+        this.sticsCommun.Nr0 = this.sticsCommun.Nr;
+        this.sticsCommun.Cr0 = this.sticsCommun.Cr;
+        this.sticsCommun.Cmulch0 = this.sticsCommun.Cmulchdec + this.sticsCommun.Cmulchnd;
+        this.sticsCommun.Nmulch0 = this.sticsCommun.Nmulchdec + this.sticsCommun.Nmulchnd;
+        this.sticsCommun.Cbmulch0 = this.sticsCommun.Cbmulch;
+        this.sticsCommun.Nbmulch0 = this.sticsCommun.Nbmulch;
+        
+        this.sticsCommun.tcult = this.sticsCommun.tcultveille;
+	}
+	
+	/**
+	* Return the soil management depth one day in meters
+	* @param simulationJulianDay Simulation julian day
+	**/
+	protected float getSoilManagementDepth (int simulationJulianDay) {
+		int nbSoilManagement = this.getCell().getCropZone().getSticsItk().P_nbjtrav;
+		for (int i=0; i<nbSoilManagement; i++) {
+			if (this.getCell().getCropZone().getSticsItk().P_jultrav[i] == simulationJulianDay)  	
+				return (this.getCell().getCropZone().getSticsItk().P_proftrav[i] / 100);			// convert cm to m
+		}
+		return 0;
+	}
+
+	/**
+	* Compute CROP total root length 
+	**/
+	public double computeTotalRootsLength () {
+	
+		double cropRootLength = 0;
+		SafeVoxel [] voxels = getCell().getVoxels();
+		
+		//Crop total root length
+		for (int i=0; i<voxels.length ; i++) {		// first iterator to compute totalRootLength
+			cropRootLength += voxels[i].getCropRootsDensity() * voxels[i].getVolume();			// m.m-3 * m3 = m
+		}
+		this.getPlantRoots().setTotalRootsLength (cropRootLength);	
+		return cropRootLength;
+	}
+		
+	/**
+	* Compute CROP plant water potential 
+	**/
+	public void computePlantWaterPotential () {
+		
+		if (this.getTotalRootsLength() <= 0) return;
+		
+		SafeVoxel [] voxels = getCell().getVoxels();
+		
+		double plantPotential = 0;
+
+		double drySoilFactor = this.getCell().getCropZone().getCropSpecies().getCropHarmonicWeightedMean();
+			
+		//plant water potential 
+		for (int i=0; i<voxels.length ; i++) {		
+			
+			if (voxels[i].getCropRootsDensity() > 0) { //IL 14/08/2020 add this test
+				double neededPot = voxels[i].getWaterPotentialTheta();	// soil water potential in this voxel  m3 m-3
+	
+				// additional potential for water flow from bulk soil to rhizosphere
+				neededPot *= (1+this.getCell().getCropZone().getCropSpecies().getCropBufferPotential()); 
+
+				
+				// additional potential for water flow from root surface to xylem
+				double radialTransportPotential = -this.getWaterDemand()								// L.day-1=dm3.day-1
+													* 1000												// from L.day-1 to cm3.day-1
+													/this.getCell().getCropZone().getCropSpecies().getCropRootConductivity()			// cm day-1
+													/(this.getTotalRootsLength()	/this.getCell().getArea()*100);							// m to cm
+													//we divide by cellArea to normalize total root length CD+IL 20/12/2023
+
+				this.getPlantRoots().setRadialTransportPotential(radialTransportPotential);
+				neededPot += radialTransportPotential;
+				
+				// additional potential to account for longitudinal water transport in coarse roots from the voxel to stem base
+				double longitudinalTransportPotential = -this.getWaterDemand()										//L.day-1=dm3.day-1
+															* 1000													// from L.day-1 to cm3.day-1
+															* this.getCell().getCropZone().getCropSpecies().getCropLongitudinalResistantFactor()	// day.cm-1.m-1
+															/(this.getTotalRootsLength()/this.getCell().getArea()*100);									// m to cm
+															//we divide by cellArea to normalize total root length CD+IL 20/12/2023
+
+				// in the model documentation from Meine et al, this term is not divided by cropRootLength... 
+				//but it leads to very different longitudinal drop potential for small and large trees because of differences in water demand... so...
+	
+				this.getPlantRoots().setLongitudinalTransportPotential(longitudinalTransportPotential);
+				neededPot += longitudinalTransportPotential*voxels[i].getZ();	// topological distance (m) between the voxel and stem base
+	
+				// additional potential to account for voxel depth
+				neededPot -= voxels[i].getZ()*100;		// from m to cm
+	
+				plantPotential += -(voxels[i].getCropRootsDensity() * voxels[i].getVolume()	// m.m-3 * m3 = m
+										/ Math.pow(-neededPot, drySoilFactor));	// cm		
+				
+			}
+		}
+		
+		plantPotential =-Math.pow (-this.getTotalRootsLength() /plantPotential , 1/drySoilFactor);
+		this.getPlantRoots().setRequiredWaterPotential(plantPotential);
+
+	}
+
+	/**
+	 * Retrieve values from STICS if hisafeLightMethodForCrop = 0 (crop interception calculated by STICS) 
+	 * @param beamSet Reference to SafeBeamSet collection of light beam 
+	 * @param directProp
+	 * @param diffuseProp
+	**/
+	public void cropSticsLightInterception (SafeBeamSet<SafeBeam> beamSet, double directProp, double diffuseProp){
+		float lai 	= this.getLai();
+		float eai 	= this.getEai();
+		float extin = this.getExtin();
+		float raint = (float) (0.95*(1-Math.exp(-extin*(lai+eai))));
+		this.setCaptureFactorForDirectPar((float) (raint*directProp));
+		this.setCaptureFactorForDiffusePar((float) (raint*diffuseProp));	
+	}
+	
+	/**
+	* Calculation of ParExtinctionCoef if hisafeLightMethodForCrop = 0 (crop interception calculated by STICS) 
+	* @param beamSet Reference to SafeBeamSet collection of light beam 
+	* @param dayClimat Reference to SafeDailyClimat climate of the day 
+	**/
+	public void computeParExtinctionCoef(SafeBeamSet<SafeBeam> beamSet, SafeDailyClimat dayClimat){
+
+		// % of Par intercepted by monocrop with Stic's formalism
+		double toBeIntercepted =1-Math.exp(-(this.getLai()+this.getEai())*this.getExtin());
+
+		// weights of direct and diffuse Par
+		double dailyDiffuse = dayClimat.getDiffusePar()/dayClimat.getGlobalPar();
+		double dailyDirect = dayClimat.getDirectPar()/dayClimat.getGlobalPar();
+
+		if(toBeIntercepted!=0){
+			// initialisation of k
+			double kEst=this.getExtin();
+
+			// calculation of Newton function = intercepted(kEst)-toBeIntercepted
+			//				and its derivative
+			double fEst=0;
+			double fEstPrime=0;
+			double fOld = 1;
+			double kOld = 1;
+			int nbIt = 0;
+
+			while((nbIt==0)||(((Math.abs(kEst-kOld)/kOld)>0.00001)||((Math.abs(fEst-fOld)/fOld)>0.001))){
+				nbIt++;
+				fEst = -toBeIntercepted;
+				fEstPrime = 0;
+
+				for (Iterator ite = beamSet.getBeams ().iterator (); ite.hasNext ();) {
+
+					SafeBeam b = (SafeBeam) ite.next ();
+					fOld=fEst;
+					fEst +=(dailyDiffuse*b.getDiffuseEnergy()+dailyDirect*b.getDirectEnergy())
+									* (1-Math.exp(-kEst*(this.getLai()+this.getEai())/Math.sin(b.getHeightAngle_rad())));
+					fEstPrime +=(dailyDiffuse*b.getDiffuseEnergy()+dailyDirect*b.getDirectEnergy())
+								*(this.getLai()+this.getEai())/Math.sin(b.getHeightAngle_rad())
+								*Math.exp(-kEst*(this.getLai()+this.getEai())/Math.sin(b.getHeightAngle_rad()));
+				}
+				kOld=kEst;
+				kEst += -fEst/fEstPrime;
+			}
+
+			setParExtinctionCoef (kEst);
+		}
+	}
+
+	/**
+	* Updating the results of light interception with daily climate
+	 * @param settings Reference to SafeGeneralParameters general parameters 
+	 * @param beamSet Reference to SafeBeamSet collection of light beam 
+	 * @param dayClimat Reference to SafeDailyClimat climate of the day 
+	**/
+	public void updateDailyInterceptedPar (SafeGeneralParameters settings,
+											SafeBeamSet<SafeBeam> beamSet,
+											SafeDailyClimat dayClimat){
+
+		if (this.getLai()+this.getEai() > 0){
+			
+			// Climatic input
+			float dailyDiffuse = dayClimat.getDiffusePar();	// moles m-2
+			float dailyDirect = dayClimat.getDirectPar();		// moles m-2
+
+			// Topological mask
+			float diffuseMask = (float) beamSet.getSkyDiffuseMask();
+			float directMask = (float) beamSet.getSkyDirectMask();
+
+			setDiffuseParIntercepted(getCaptureFactorForDiffusePar()*dailyDiffuse);	//moles.m-2
+			setDirectParIntercepted(getCaptureFactorForDirectPar()*dailyDirect);	//moles.m-2
+
+			float parIntercepted = getDirectParIntercepted()+getDiffuseParIntercepted(); //moles.m-2
+
+			// Computation of a competition index for Par =
+			//		(TotalParIntercepted)/(Par intercepted by the same crop in monoculture)
+			float incidentPar = dailyDiffuse*diffuseMask+dailyDirect*directMask;
+			if((this.getLai()+this.getEai()) > 0){
+				float competitionIndex = (float) (parIntercepted	// Par intercepted (moles.m-2)
+								/(0.95*(1-Math.exp(-this.getExtin()*(this.getLai()+this.getEai())))	// % of Par intercepted by monocrop
+								*incidentPar));						// daily incident Par (Moles m-2)
+				setCompetitionIndexForTotalPar(competitionIndex);
+
+			} else {
+				setCompetitionIndexForTotalPar(1);
+			}
+		}
+	}
+	
+	/**
+	 * Force LAI in STICS with values read in a file
+	 * @param year year to begin forcing
+	 * @param dayStart day to begin forcing
+	 * @param dayEnd day to end forcing
+	 * @param isLeap is this year a leap year y/n
+	 **/
+	public void forceLai (int year, int dayStart, int dayEnd, boolean isLeap) {
+		
+		int julianDay = dayStart;
+		int index = 2;
+		float maxLai = 0;
+		int j = 2;
+
+		for (int i=dayStart; i<dayEnd; i++) {
+			
+			if (isLeap) { //leap year 
+				if (julianDay>366) {
+					julianDay = 1; 
+					year++;
+				}			
+			}
+			else {
+				if (julianDay>365) {
+					julianDay = 1; 
+					year++;
+				}			
+			}
+			
+			//Read MAI in the data table filled by input file 
+			SafeSticsLai r = getLaiObs(year, julianDay);
+
+			//Force LAI in STICS table
+			int indice          = ((index-1)*3)+1;
+			if (indice < 1099) {
+				this.sticsCrop.lai[indice]	= (float) r.getLai();
+				this.sticsCrop.lai[indice+1]= this.sticsCrop.lai[indice];
+				this.sticsCrop.lai[indice+2]= this.sticsCrop.lai[indice];
+				if (this.sticsCrop.lai[indice] > maxLai) {
+					maxLai= this.sticsCrop.lai[indice];
+					this.sticsCrop.nlaxobs=j;
+				}
+				index++; 			
+			}	
+			julianDay++;
+			j++;
+		}
+
+	}
+
+	/**
+	 * Return the LAI observed for a day
+	 * @param year year to get lai observed
+	 * @param day day to get lai observed
+	 */
+	public SafeSticsLai getLaiObs  (int year, int day)  {
+
+		String jj = new Integer(day).toString();
+		String yy = new Integer(year).toString();
+		String key = yy+"|"+jj;
+		if (day == 0) return null; 
+		SafeSticsLai s = (SafeSticsLai) laiObservedMap.get (key);
+		if (s != null) 	return s;
+		else {
+			
+			System.out.println("Unrecognized lai in LAI file : "+key);
+			System.exit(1);
+
+		}
+		return null;
+	}
+	
+	/**
+	 * ADD one lai observed in the laiObservedMap 
+	 * @param lai lai observed to add in the map
+	 */
+	public void addLaiMap (SafeSticsLai lai) {
+		if (laiObservedMap==null) laiObservedMap = new Hashtable ();
+		String key    = lai.getYear()+"|"+lai.getJulianDay();
+		laiObservedMap.put (key, lai);
+	}
+	/**
+	 * return the SafeSticsCrop object reference 
+	 */
+	public SafeSticsCrop getSticsCrop() {return sticsCrop;}
+	/**
+	 * return the SafeSticsSoil object reference 
+	 */
+	public SafeSticsSoil getSticsSoil() {return sticsSoil;}
+	/**
+	 * return the SafeSticsCommun object reference 
+	 */
+	public SafeSticsCommun getSticsCommun () {return sticsCommun;}
+	/**
+	 * return the SafeSticsClimat object reference 
+	 */
+	public SafeSticsClimat getSticsClimat() {return sticsClimat;}
+	/**
+	 * return the SafePlantRoot object reference 
+	 */
+	public SafePlantRoot getPlantRoots() {return plantRoots;}
+	/**
+	 * return the crop species name
+	 */
+	public String getCropSpeciesName () {return cropSpeciesName;}
+	/**
+	 * Set the crop species name
+	 * @param speciesName The crop species name
+	 */
+	public void setCropSpeciesName (String speciesName) {cropSpeciesName = speciesName;}
+	/**
+	 * return the SafeCell object reference 
+	 */
+	public SafeCell getCell() {return cell;}
+	/**
+	 * return the crop age (nb years)
+	 */
+	public int getCropAge () {return cropAge ;}
+	/**
+	 * return the crop sowing day (1-365)
+	 */
+	public int getSowingDay () {return sowingDay;}
+	/**
+	 * return the crop harvest day (1-365)
+	 */
+	public int getHarvestDay () {return harvestDay;}
+	/**
+	 * return the crop phenologic stage vegetative
+		1=snu bare soil		
+		2=plt planting	
+		3=dor dormancy 
+		4=ger germination	
+		5=lev levee		
+		6=amf accélération maximale de croissance foliaire		
+		7=lax indice foliaire maxi, fin de croissance foliaire nette ou brute selon l’option.		
+		8=sen début sénescence nette (option LAInet)		
+		9=lan indice foliaire nul (option LAInet)		
+		10=rec recolte
+	 */
+	public int getPhenologicStageVegetative () {return phenologicStageVegetative;}
+	/**
+	 * return the crop phenologic stage vegetative
+		1=snu bare soil	
+		2=flo flowering	
+		3=drp début remplissage des organes récoltés		
+		4=nou nouaison (Fin de la nouaison, pour les plantes indéterminées)		
+		5=des début dessication des organes récoltés	
+		6=mat maturité physiologique	
+		7=rec recolte
+	 */
+	public int getPhenologicStageReproductive () {return phenologicStageReproductive;}
+	/**
+	 * return the crop is perennial (0=no 1=yes)
+	 */
+	public boolean isPerennial () {
+		if (this.sticsCrop.P_codeperenne == 2) return true;
+		else return false;
+	} 
+	/**
+	 * return the crop lai (m2.m-2) 
+	 */
+	public float getLai () {return lai;}
+	/**
+	 * return the crop eai (m2.m-2) 
+	 */
+	public float getEai () {return eai;}
+	/**
+	 * return the crop lai max (m2.m-2) 
+	 */
+	public float getLaiMax () {return laiMax;}
+	/**
+	 * return the crop eai max (m2.m-2) 
+	 */
+	public float getEaiMax () {return eaiMax;}
+	public float getExtin () {return this.sticsCrop.P_extin;}
+	public float getAlbedoLai () {return this.sticsCommun.albedolai;}		//Albedo of the crop cobining soil with vegetation  SD	
+	public float getBiomass () {return biomass;}
+	public float getGrainBiomass () {return grainBiomass;}
+	public float getFruitBiomass () {return this.sticsCrop.mafruit;}	//// Dry matter of harvested organs  // t ha-1
+	public float getTuberBiomass () {return this.sticsCrop.matuber;} 	// Dry matter of harvested organs  t.ha-1
+	public float getBiomassMax () {return biomassMax;}
+	public float getBiomassIncrement() {return biomassIncrement;}
+	public float getHeight() {return  height;}
+	public float getHeightMax () {return heightMax;}
+	public float getYield() {return  yield;}
+	public float getYieldMax() {return  yieldMax;}
+	public float getPlantDensity () {return  this.sticsCrop.densite;}		// nbr m-2	
+	public float getGrainNumber () {
+		if (phenologicStageVegetative==1) return 0;
+		return  this.sticsCrop.nbgrains[1];		// nbr m-2
+	}
+	public float getGrainWeight () {return  this.sticsCrop.pgrain[1];}		//g
+	public float getGrainGrowthRate () {
+		if (phenologicStageVegetative==1) return 0;
+		return this.sticsCrop.dltags[1];	//Growth rate of the grains  // t ha-1.j-1
+	}
+
+	public float getYieldIndice () {
+		if(this.biomass == 0){
+			return 0;
+		} else {
+			return this.yield/this.biomass;
+		}
+	}
+	public float getRootsDepth () {return  rootsDepth;}
+	public float getRootsDepthMax () {return  rootsDepthMax;}
+	public float getCropTemperature () {return  this.sticsCommun.tcult;}			//degree C;
+	public float getCropMaxTemperature () {return  this.sticsCommun.TcultMax;}
+	public float getCropMinTemperature () {return  this.sticsCommun.TcultMin;}
+	public float getSoilSurfaceTemperature () {return this.getSticsSoil().TS[0];}
+	public float getSoilManagementDepth () {return soilManagementDepth;}	
+	public float getSoilEvaporation () {return  this.sticsCommun.esol;}			//mm
+	public float getRunOff () {return  this.sticsCommun.ruissel;}				//mm
+	public float getSurfaceRunOff() {return  this.sticsCommun.ruisselsurf;}		//mm
+	public float getCapillaryRise () {return Math.max(capillaryRise-capillaryRisePrev,0);}	
+	public float getDrainageBottom () {return this.sticsCommun.drain;}			//Water flux drained at the base of the soil profile // mm j-1
+	public float getDrainageArtificial () {return this.sticsSoil.qdrain;}	
+	public float getIrrigation () {return  irrigation;}
+	public float getQNgrain() {return this.sticsCrop.QNgrain[1];}		//Amount of nitrogen in harvested organs (grains / fruits)  kg ha-1
+	public float getQNplante() {return qNplante;}
+	public float getCNgrain() {return this.sticsCrop.CNgrain[1];}		//Nitrogen concentration of grains %
+	public float getCNplante() {return this.sticsCrop.CNplante[1];}		//Nitrogen concentration of entire plant %
+
+	public float getGrainWaterContent() {return this.sticsCrop.teaugrain[1];}
+	public double getTotalRootsLength () {
+		if (this.getPlantRoots() != null)
+			return this.getPlantRoots().getTotalRootsLength();
+		else
+			return 0;
+	}
+
+	//WATER AND NITROGEN BUDGET
+	public float getWaterDemand () {return  waterDemand;}						//mm;
+	public float getWaterDemandReduced() {return  waterDemandReduced;}
+	public void setWaterDemandReduced (double v) { waterDemandReduced = (float) v;}
+	public float getHisafeWaterStomatalStress () {return hisafeWaterStomatalStress;}
+	public void setHisafeWaterStomatalStress (double v) {hisafeWaterStomatalStress = (float) v;}
+	
+	public float getHisafeWaterTurgescenceStress () {return hisafeWaterTurgescenceStress;}
+	public void setHisafeWaterTurgescenceStress (double v) {hisafeWaterTurgescenceStress = (float) v;}
+	public float getHisafeWaterSenescenceStress () {return hisafeWaterSenescenceStress;}
+	public void setHisafeWaterSenescenceStress (double v) {hisafeWaterSenescenceStress = (float) v;}
+
+	public float getWaterUptake() {return  waterUptake;}
+	public void  setWaterUptake(double v) {waterUptake =  (float) v;}
+	public void addWaterUptake  (double v) {waterUptake  +=  (float) v;}
+	
+	public float getMeanHisafeWaterStressVegetative () {
+		if (cptDaysStageVegetative > 0)
+		return sumHisafeWaterStressVegetative/cptDaysStageVegetative;
+		else return 0;
+	}
+	public float getMeanHisafeWaterStressReproductive () {
+		if (cptDaysStageReproductive > 0)
+		return sumHisafeWaterStressReproductive/cptDaysStageReproductive;
+		else return 0;
+	}
+
+	public float getSticsWaterStomatalStress() {return this.sticsCrop.swfac[1];}
+	public float getSticsWaterTurgescenceStress() {return this.sticsCrop.turfac[1];}
+	public float getSticsWaterSenescenceStress () {return this.sticsCrop.senfac[1];}
+	public float getNitrogenDemand () {return nitrogenDemand;}		//kg ha-1;
+	public float getNitrogenUptake () {return nitrogenUptake;}
+	public void setNitrogenUptake (double v) {nitrogenUptake =  (float) v;}
+	public float getNitrogenRain () {return  this.sticsCommun.precipjN;}
+	public float getHisafeNitrogenStress () {return hisafeNitrogenStress;}
+	public void setHisafeNitrogenStress (double v) {hisafeNitrogenStress = (float) v;}
+
+	public float getMeanHisafeNitrogenStressVegetative () {		
+		if (cptDaysStageVegetative > 0)
+		return sumHisafeNitrogenStressVegetative/cptDaysStageVegetative;
+		else return 0;
+	}
+	public float getMeanHisafeNitrogenStressReproductive () {
+		if (cptDaysStageReproductive > 0)
+		return sumHisafeNitrogenStressReproductive/cptDaysStageReproductive;
+		else return 0;
+	}
+	
+	public float getNitrogenFixation () {return  this.sticsCrop.offrenod[1];}
+	public float getNitrogenDenitrification () {return  this.sticsSoil.Ndenit;}
+	public float getBiomassRestitution () {return this.sticsCrop.qressuite;}			//??? gros doute la dessus IL 20/01/2017;
+	public float getNitrogenLeachingBottom () {return  this.sticsCommun.lessiv;}
+	public float getNitrogenLeachingArtificial () {return  this.sticsSoil.azlesd;}
+	
+	public float getNitrogenImmobilisation () {return   this.sticsSoil.Norgeng;}
+	public float getNitrogenVolatilisation () {return  this.sticsSoil.Nvoleng;}
+	public float getNitrogenVolatilisationOrganic () {return  this.sticsSoil.Nvolorg;}
+	public float getNitrogenIrrigation () {return  Math.max(nitrogenIrrigation- nitrogenIrrigationPrev,0);}
+	public float getNitrogenFertilisationMineral () {return  Math.max(nitrogenFertilisationMineral - nitrogenFertilisationMineralPrev,0);}
+	public float getNitrogenFertilisationOrganic () {return  Math.max(nitrogenFertilisationOrganic - nitrogenFertilisationOrganicPrev,0);}
+	public float getNitrogenHumusMineralisation () {return  this.sticsSoil.cumvminh;}
+	public float getNitrogenResiduMineralisation () {return  this.sticsSoil.cumvminr;}
+	public float getCropCarbonLeafLitter () {return  Math.max(cropCarbonLeafLitter - cropCarbonLeafLitterPrev,0);}
+	public float getCropNitrogenLeafLitter () {return  Math.max(cropNitrogenLeafLitter - cropNitrogenLeafLitterPrev,0);}
+	public float getCropCarbonRootsLitter () {return  Math.max(cropCarbonRootsLitter - cropCarbonRootsLitterPrev,0);}
+	public float getCropNitrogenRootsLitter () {return  Math.max(cropNitrogenRootsLitter - cropNitrogenRootsLitterPrev,0);}
+	public float getNitrogenHarvested() {return  Math.max(nitrogenHarvested- nitrogenHarvestedPrev,0);}
+	public float getBiomassHarvested () {return  Math.max(biomassHarvested- biomassHarvestedPrev,0);}
+	public float getSaturation() {return  this.sticsCommun.saturation;}						//mm;
+
+	public float getCarbonResidus() {return  this.sticsCommun.Cr;}				// Amount of C in the soil organic residues // kg.ha-1
+	public float getNitrogenResidus() {return this.sticsCommun.Nr;}				//Amount of N remaining in the decaying organic residues in the soil  // kg.ha-1
+	public float getCarbonMicrobialBiomass() {return this.sticsCommun.Cb;} 		// amount of C in the microbial biomass decomposing organic residues mixed with soil // kg.ha-1
+	public float getNitrogenMicrobialBiomass() {return this.sticsCommun.Nb;} 	// Amount of N remaining in the biomass decaying organic residues // kg.ha-1
+	public double getCarbonMicrobialBiomassMulch() {return this.sticsCommun.Cbmulch;}	// amount of C in the microbial biomass decomposing organic residues at soil surface (mulch) // kg.ha-1	
+	public double getNitrogenMicrobialBiomassMulch() {return this.sticsCommun.Nbmulch;}	// amount of N in microbial biomass decomposing mulch // kg.ha-1	
+	public float getNitrogenResidus2() {return this.sticsCommun.Ntousresidusprofil;}		// total of Nitrogen from residues (all residues on P_profhum) // kgN.ha-1
+	public float getTotalNitrogenHumusStock(){return this.sticsCommun.Nhumt;}	// Total quantity of N humus (active + inert fractions) in the soil // kg.ha-1
+	public float getTotalCarbonHumusStock(){return this.sticsCommun.Chumt;}		// Total amount of C humus (active + inert fractions) in the soil // kg.ha-1
+	public float getActiveCarbonHumusStock(){return  this.sticsCommun.Chuma;}
+	public float getInactiveCarbonHumusStock() {return this.sticsCommun.Chumi;}	
+	public float getActiveNitrogenHumusStock(){return  this.sticsCommun.Nhuma;}	// Amount of active nitrogen in the soil humus pool // kg.ha-1
+	public float getInactiveNitrogenHumusStock() {return this.sticsCommun.Nhumi;}	
+	public float getNitrogenLossNitrification() {return this.sticsCommun.em_N2O;}
+	public float getCsurNressuite(){return this.sticsCrop.CsurNressuite;}
+	public float getNitrogenNutritionIndex() {return this.sticsCrop.inn[1];}
+	public float getSticsNitrogenLaiStress() {return this.sticsCrop.innlai[1];}
+	public float getSticsNitrogenBiomassStress () {return this.sticsCrop.inns[1];}
+	public float getSticsNitrogenSenescenceStress () {return this.sticsCrop.innsenes[1];}
+	public float getSla(){return this.sticsCrop.sla[1];}					// cm2 g-1;
+	public float getResperenne() {return this.sticsCrop.resperenne[1];}		//C crop reserve for perenial crops) t ha-1
+
+	//Monthly values for export
+	public float getMonthBiomass () {return  monthBiomass;}
+	public float getMonthYield() {return  monthYield;}
+	public float getMonthEai () {return  monthEai;}
+	public float getMonthLai () {return  monthLai;}
+	public float getMonthDiffuseParIntercepted () {return  monthDiffuseParIntercepted;}
+	public float getMonthDirectParIntercepted () {return  monthDirecParIntercepted;}
+
+
+	//TOTALS
+	public float getAnnualCapillaryRise () {return  annualCapillaryRise;}
+	public float getAnnualIrrigation () {return  annualIrrigation;}
+	public float getAnnualWaterDemand () {return  annualWaterDemand;}
+	public float getAnnualWaterDemandReduced() {return  annualWaterDemandReduced;}
+	public float getAnnualNitrogenDemand () {return  annualNitrogenDemand;}
+	public float getAnnualSoilEvaporation () {return  annualSoilEvaporation;}
+	public float getAnnualRunOff () {return  annualRunOff;}
+	public float getAnnualSurfaceRunOff () {return  annualSurfaceRunOff;}
+	public float getAnnualDrainageBottom () {return  annualDrainageBottom;}
+	public float getAnnualDrainageArtificial () {return  annualDrainageArtificial;}
+	public float getAnnualNitrogenLeachingBottom () {return  annualNitrogenLeachingBottom;}
+
+	public float getAnnualRain () {return  annualRain;}
+	public float getAnnualDirectParIntercepted () {return  annualDirectParIntercepted;}
+	public float getAnnualDiffuseParIntercepted () {return  annualDiffuseParIntercepted;}
+	public float getAnnualTotalParIntercepted () {return  annualDiffuseParIntercepted+annualDiffuseParIntercepted;}
+	/****************************************************
+	MANAGEMENT OF THE RESULTS OF LIGHT COMPETITION MODULE
+	*****************************************************/
+	public void resetDirect (){captureFactorForDirectPar = 0;}
+	public void resetDiffuse (){captureFactorForDiffusePar = 0;}
+	public float getCaptureFactorForDiffusePar(){return captureFactorForDiffusePar;}
+	public float getCaptureFactorForDirectPar(){return captureFactorForDirectPar;}
+	public float getDirectParIntercepted(){return directParIntercepted;}
+	public float getDiffuseParIntercepted(){return diffuseParIntercepted;}
+	public float getTotalParIntercepted(){return directParIntercepted+diffuseParIntercepted;}
+	public float getCompetitionIndexForTotalPar(){return competitionIndexForTotalPar;}
+	public float sticsInterceptedPar(){return this.sticsCrop.raint[1];}
+	
+
+	public void setCaptureFactorForDiffusePar(float e){captureFactorForDiffusePar=e;}
+	public void setCaptureFactorForDirectPar(float e){captureFactorForDirectPar=e;}
+	public void setDirectParIntercepted(float e){directParIntercepted=e;}
+	public void setDiffuseParIntercepted(float e){diffuseParIntercepted=e;}
+
+	public void setCompetitionIndexForTotalPar(float e){competitionIndexForTotalPar=e;}
+	public void addDirect(float e) {this.captureFactorForDirectPar += e;}
+	public void addDiffuse(float e){this.captureFactorForDiffusePar += e;}
+	public double getParExtinctionCoef () {return (double) parExtinctionCoef;}
+	public void setParExtinctionCoef (double v) {parExtinctionCoef = (float) v;}
+
+	//MULCH
+	public double getCarbonMulch() {return this.sticsCommun.Cmulch;}				// Total C in mulch at soil surface // kg.ha-1
+	public double getNitrogenMulch() {return this.sticsCommun.Nmulch;}				// Total N in mulch at soil surface // kg.ha-1
+	public double getCarbonMulchTreeFoliage() {return this.sticsCommun.Cnondec[9];}	// undecomposable C in residue i present in the mulch // kg.ha-1
+	public double getMulchBiomass() {return this.sticsCommun.qmulch;}				//Quantity of plant mulch // t.ha-1
+	public double getMulchEvaporation() {return this.sticsCommun.Emulch;}		    // Direct evaporation of water intercepted by the mulch // mm
+	public double getMulchWaterStock() {return this.sticsCommun.mouillmulch;}		// Water stock in the mulch // mm
+	public double getMulchCoverRatio() {return this.sticsCommun.couvermulch;}		// Cover ratio of mulch  // 0-1
+	
+	//POUR FRANCESCO
+	public double getTempStressLue() {
+		if (phenologicStageVegetative==1) return 1;
+		else return  this.getSticsCrop().ftemp;
+	}
+	public double getTempStressGrainFilling() {
+		if (phenologicStageVegetative==1) return 1;
+		else return this.getSticsCrop().ftempremp;
+		}
+	public double getFrostStressPlantDensity () {
+		if (phenologicStageVegetative==1) return 1;
+		else return this.getSticsCrop().fgellev;
+	}
+	public double getFrostStressFoliage() {
+		if (phenologicStageVegetative==1) return 1;
+		else return this.getSticsCrop().fstressgel;
+	}
+	public double getFrostStressReprod() {
+		if (phenologicStageVegetative==1) return 1;
+		else return this.getSticsCrop().fgelflo;
+	}
+	
+	public double getNitrogenGrain() {return this.sticsCrop.QNgrain[1];}	//kg h-1;
+	
+	public double getWaterUptakePotential () {
+		if (plantRoots==null) return 0;
+		return plantRoots.getWaterUptakePotential();
+	}
+	
+	//PHENOLOGY (stades végétatifs) 
+	//PLT : semis ou plantation (annuelles)
+	public int getNplt() {
+		if (this.sticsCrop.nplt==0) return 0;
+		return this.sticsCrop.nplt+startDay;
+	}	
+	//DEBDORM et FINDORM : entrée et levée de dormance (ligneux)
+	public int getNdebdorm() {
+		if (this.sticsCrop.ndebdorm==0) return 0;
+		return this.sticsCrop.ndebdorm+startDay;
+	}	
+	public int getNfindorm() {
+		if (this.sticsCrop.nfindorm==0) return 0;
+		return this.sticsCrop.nfindorm+startDay;
+	}
+	//LEV : levée ou débourrement végétatif
+	public int getNlev() {
+		if (this.sticsCrop.nlev==0) return 0;
+		return this.sticsCrop.nlev+startDay;
+	}
+	//GER : germination
+	public int getNger() {
+		if (this.sticsCrop.nger==0) return 0;
+		return this.sticsCrop.nger+startDay;
+	}
+    //AMF : accélération maximale de croissance foliaire, fin de phase juvénile
+	public int getNamf() {
+		if (this.sticsCrop.namf==0) return 0;
+		return this.sticsCrop.namf+startDay;
+	}	
+	//LAX : indice foliaire maxi, fin de croissance foliaire nette ou brute selon l’option.
+	public int getNlax() {
+		if (this.sticsCrop.nlax==0) return 0;
+		return this.sticsCrop.nlax+startDay;
+	}		
+	//SEN : début sénescence nette (option LAInet)
+	public int getNsen() {
+		if (this.sticsCrop.nsen==0) return 0;
+		return this.sticsCrop.nsen+startDay;
+	}
+	//LAN : indice foliaire nul (option LAInet)
+	public int getNlan() {
+		if (this.sticsCrop.nlan==0) return 0;
+		return this.sticsCrop.nlan+startDay;
+	}
+	//REC : récolte
+	public int getNrec() {
+		if (this.sticsCrop.nrec==0) return 0;
+		return this.sticsCrop.nrec+startDay;
+	}
+	//PHENOLOGY (stades organes récoltés)
+	//FLO : floraison (début sensibilité au gel des fruits)
+	public int getNflo() {
+		if (this.sticsCrop.nflo==0) return 0;
+		return this.sticsCrop.nflo+startDay;
+	}
+    //DRP : début remplissage des organes récoltés
+	public int getNdrp() {
+		if (this.sticsCrop.ndrp==0) return 0;
+		return this.sticsCrop.ndrp+startDay;
+	}	
+	//NOU : fin de la nouaison (option indéterminée)
+	public int getNnou() {
+		if (this.sticsCrop.nnou==0) return 0;
+		return this.sticsCrop.nnou+startDay;
+	}		
+	//DEBDES ; début dynamique hydrique des fruits
+	public int getNdebdes() {
+		if (this.sticsCrop.ndebdes==0) return 0;
+		return this.sticsCrop.ndebdes+startDay;
+	}	
+	//MAT : maturité physiologique
+	public int getNmat() {
+		if (this.sticsCrop.nmat==0) return 0;
+		return this.sticsCrop.nmat+startDay;
+	}
+
+	public double getTetstomate() {return  this.getSticsCrop().tetstomate;}
+	public double getTeturg() {return this.getSticsCrop().teturg;}	
+	public float getTeta() {		return this.sticsCrop.teta[1];}
+	public float getTetsen() {return this.sticsCrop.tetsen[1];}	
+	public float getSlrac() {return this.sticsCrop.slrac[1];}
+	public float getCumlr() {return this.sticsCrop.cumlr[1];}	
+	public float getCumlracz() {return this.sticsCrop.cumlracz;}
+	public float getSupres() {return this.sticsCommun.supres;} 
+	public float getEp() {return this.sticsCrop.ep[1];}
+	public float getResrac() {return this.sticsCrop.resrac;}
+	public float getDensite() {return this.sticsCrop.densite;}
+	public float getCoeflev() {return this.sticsCrop.coeflev;}
+	public float getVitmoy() {return this.sticsCrop.vitmoy[1];}
+	public float getRemobilj() {return this.sticsCrop.remobilj[1];}
+	public float getTcultMin() {return this.sticsCommun.TcultMin;}
+	public float getTcultMax() {return this.sticsCommun.TcultMax;}
+	public float getPgraingel() {return this.sticsCrop.pgraingel[1];}
+
+	public float getDltaisen() {return this.sticsCrop.dltaisen[1];}
+	public float getExolai() {return this.sticsCrop.exolai;}
+	public float getEfdensite() {return this.sticsCrop.efdensite;}
+	public float getTempeff() {return this.sticsCrop.tempeff;}
+	public float getTustress() {return this.sticsCommun.tustress;}
+	public float getDeltaimaxi() {return this.sticsCrop.deltaimaxi[1];}
+
+	public float getCodebeso() {return this.sticsCrop.P_codebeso;}
+
+	public float getCodetemp() {return this.sticsCrop.P_codetemp;}
+	public float getQressuite() {return this.sticsCrop.qressuite;}
+	public float getQNressuite() {return this.sticsCrop.QNressuite;}
+	public float getQCressuite() {return this.sticsCrop.QCressuite;}	
+	public float getQCplante() {return this.sticsCrop.QCplante;}
+	public float getQNplantefauche() {return this.sticsCrop.QNplantefauche;}
+	public float getMsfauche() {return this.sticsCrop.msfauche;}
+	public float getCrac() {return this.sticsCrop.Crac;}
+	public float getNrac() {return this.sticsCrop.Nrac;}
+	public float getQCrac() {return this.sticsCrop.QCrac;}
+	public float getQNrac() {return this.sticsCrop.QNrac;}
+	public float getLueDay() {
+		if (this.getBiomassIncrement() == 0) return 0;
+		if (this.getTotalParIntercepted() == 0) return 0;
+		return this.getBiomassIncrement()/this.getTotalParIntercepted(); //kg MS/mole PAR
+	} 
+	public float getLueInt() {
+		if (this.getBiomass() == 0) return 0;
+		if (this.getAnnualTotalParIntercepted() == 0) return 0;
+		return this.getBiomass()/this.getAnnualTotalParIntercepted(); //kg MS/mole PAR
+	} 
+	public float getWueDay() {
+		if (this.getBiomassIncrement() == 0) return 0;
+		if (this.getWaterUptake() == 0) return 0;
+		return this.getBiomassIncrement()*100/this.getWaterUptake();//g MS/liter
+	} 
+	public float getWueInt() {
+		if (this.getBiomass() == 0) return 0;
+		if (this.getCell().getAnnualWaterUptakeByCrop() == 0) return 0;
+		return this.getBiomass()*100/this.getCell().getAnnualWaterUptakeByCrop(); //g MS/liter
+	} 
+	public String toString(){
+		String str = "crop cropSpeciesName ="+cropSpeciesName;
+		return str;
+	}
+}
+
+
