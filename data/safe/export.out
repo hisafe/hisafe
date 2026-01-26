@@ -40,8 +40,8 @@ annualCells	SafeCell	biomassMax	 t.ha-1	Maximum crop biomass for the year	4	1
 annualCells	SafeCell	laiMax	m2 leaf m-2 soil	Maximum crop LAI for the year	5	1
 annualCells	SafeCell	eaiMax	m2 leaf m-2 soil	Maximum crop EAI for the year	6	1
 annualCells	SafeCell	rootsDepthMax	m	Maximum crop roots depth for the year	7	1
-annualCells	SafeCell	cropMaxTemperature	°C	Crop max temperature	8	1
-annualCells	SafeCell	cropMinTemperature	°C	Crop min temperature	9	1
+annualCells	SafeCell	cropMaxTemperature	 C	Crop max temperature	8	1
+annualCells	SafeCell	cropMinTemperature	 C	Crop min temperature	9	1
 annualCells	SafeCell	annualSoilEvaporation	mm	annual evaporation	10	1
 annualCells	SafeCell	annualCapillaryRise	mm	annual capillary rise	11	1
 annualCells	SafeCell	annualDrainageBottom	mm	annual drainage bottom	12	1
@@ -222,10 +222,10 @@ cells	SafeCell	treeNitrogenBranchesLitter	kg N ha-1	treeNitrogenBranchesLitter	1
 cells	SafeCell	treeNitrogenFruitLitter	kg N ha-1	treeNitrogenFruitLitter	145	1
 cells	SafeCell	treeNitrogenFineRootsLitter	kg N ha-1	treeNitrogenFineRootsLitter	146	1
 cells	SafeCell	treeNitrogenCoarseRootsLitter	kg N ha-1	treeNitrogenCoarseRootsLitter	147	1
-climate	SafeMacroClimat	minTemperature	°	Minimum temperature of the air	1	1
-climate	SafeMacroClimat	maxTemperature	°	Maximum temperature of the air	2	1
-climate	SafeMacroClimat	minRelativeHumidity	°	Minimum relative humidity of the air	3	1
-climate	SafeMacroClimat	maxRelativeHumidity	°	Maximum relative humidity of the air	4	1
+climate	SafeMacroClimat	minTemperature	 	Minimum temperature of the air	1	1
+climate	SafeMacroClimat	maxTemperature	 	Maximum temperature of the air	2	1
+climate	SafeMacroClimat	minRelativeHumidity	 	Minimum relative humidity of the air	3	1
+climate	SafeMacroClimat	maxRelativeHumidity	 	Maximum relative humidity of the air	4	1
 climate	SafeMacroClimat	precipitation	mm	Precipitation from input wth file	5	1
 climate	SafeMacroClimat	rain	mm	Precipitation minus any calculated to fall as snow	6	1
 climate	SafeMacroClimat	snow	mm	Precipitation calculated to fall as snow	7	1
@@ -417,7 +417,8 @@ trees	SafeTree	fruitPhenologicalStage	0-4	Tree fruit phenological stage	53	1
 trees	SafeTree	rootingDepth	m	Tree maximum rooting depth	54	1
 trees	SafeTree	maxRootDistanceOnTreeLine	m	Tree maximum root extension parallel to tree line (in the Y direction)	55	1
 trees	SafeTree	maxRootDistanceOnCropLine	m	Tree maximum inter-row root extension (in the X direction)	56	1
-trees	SafeTree	totalRootLength	m	Total tree fine root length	57	1
+trees	SafeTree	totalRootsDensity	m	Total tree fine roots density	57	1
+trees	SafeTree	totalRootsLength	m	Total tree fine roots length	57	1
 trees	SafeTree	targetLfrRatio	kg C kg C-1	Target leaf to fine roots ratio (carbonFoliage / (carbonFoliage + carbonFineRoots))	58	1
 trees	SafeTree	lfrRatio	kg kg-1	Tree leaf to fine root ratio (carbonFoliage / (carbonFoliage / carbonFineRoots))	59	1
 trees	SafeTree	rootShootRatio	ratio	Ratio of belowground tree carbon to aboveground tree carbon	60	1
@@ -464,7 +465,6 @@ trees	SafeTree	nitrogenFineRoots	kg N	Nitrogen pool in tree fine roots	100	1
 trees	SafeTree	nitrogenLabile	kg N	Nitrogen in tree labile pool	101	1
 trees	SafeTree	nitrogenFruit	kg N	Nitrogen in tree fruit pool	102	1
 trees	SafeTree	nitrogenFoliageIncrement	kg C	Nitrogen foliage daily allocated	103	1
-trees	SafeTree	nitrogenLabileIncrement	kg C	Nitrogen labile daily allocated	104	1
 trees	SafeTree	nitrogenBranchesIncrement	kg C	Nitrogen branch daily allocated	105	1
 trees	SafeTree	nitrogenStemIncrement	kg C	Nitrogen stem daily allocated	106	1
 trees	SafeTree	nitrogenStumpIncrement	kg C	Nitrogen stump daily allocated	107	1
@@ -626,6 +626,11 @@ voxels	SafeVoxel	wiltingPointFineSoil	m m-3	Wilting point of fine soil component
 voxels	SafeVoxel	wiltingPointStone	m m-3	Wilting point of stone component of soil	55	0
 voxels	SafeVoxel	bulkDensityFineSoil	kg m-3	Bulk density of fine soil component of soil	56	0
 voxels	SafeVoxel	volumeFineSoil	m3	Volume of the fine soil in the voxel (voxel volume reduced by volume of stones)	57	0
+voxels	SafeVoxel	treeRootsDensity	m roots m-3 soil	Sum of fine roots density from all trees	18	1
+voxels	SafeVoxel	treeCarbonFineRoots	kg C	total carbon tree fine roots	32	1
+voxels	SafeVoxel	treeCarbonCoarseRoots	kg C	total carbon tree coarses roots	33	1
+voxels	SafeVoxel	treeNitrogenFineRoots	kg N	total N tree fine roots	34	1
+voxels	SafeVoxel	treeNitrogenCoarseRoots	kg N	total N tree coarses roots	35	1
 zones	SafeCropZone	area	m2	Surface area of the zone	1	1
 zones	SafeCropZone	cropSpeciesName	-	Name of crop species	2	1
 zones	SafeCropZone	totalCropBiomass	t ha-1	Total biomass of the zone	3	1
