@@ -104,7 +104,9 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	/** Crown volume (m3)  */
 	private double 	crownVolume;			
 	/** Stem volume (m3)  */
-	private double 	stemVolume;				
+	private double 	stemVolume;	
+	/** Stem volume per hectare (m3 ha-1)  */
+	private double 	stemVolumePerHectare;
 	/** Leaf area by cohort (dimension is given by species.nbCohortMax) (m2)  */
 	private double 	leafArea[];				
 	/** number of cells bellow the tree crown  */
@@ -133,6 +135,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	private int 	harvestingYear;			
 	/**  Harvest julian day (1-365)   */
 	private int 	harvestingDay;		
+	/** Stem volume harvested per hectare (m3 ha-1)  */
+	private double 	stemVolumeHarvestedPerHectare;
 	
 	//PHENOLOGY
 	/**  Vegetative phenological stage : 0:before budburst ; 1:during leaf expansion ; 2:before leaf fall ; 3:during leaf fall ; 4:after leaf fall  */
@@ -746,6 +750,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		setFloweringHeatStress(1); 
 		setFloweringFrostStress(1); 
 		setLightCompetitionIndex(1); 
+		setLeafWaterNitrogenStress(1);
 	}
 
 	/**
@@ -818,7 +823,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	 * @param stand Reference on SafeStand object
 	 * @param debug true if debugging
 	 */
-	public void plant (SafeStand stand, boolean debug) throws Exception {
+	public void plant (SafeStand stand, int year, int day, boolean debug) throws Exception {
 
 		SafeCell cell = (SafeCell) this.getCell();
 		if (cell.getIdTreePlanted() > 0) {
@@ -827,7 +832,9 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		}
 		//Plant the tree
 		setPlanted (true);
-
+		setPlantingYear (year);
+		setPlantingDay  (day);
+		
 		//INIT C and N POOLS
 		double woodDensity	 	 = this.getTreeSpecies ().getWoodDensity ();
 		double woodCarbonContent = this.getTreeSpecies ().getWoodCarbonContent();
@@ -843,7 +850,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		setAge(this.treeItk.plantingAge);
 	
 		for (int index = 0; index < this.getTreeSpecies().getNbCohortMax(); index++) {
-			setLeafAge(this.getTreeItk().plantingCohortAge.get(index), index);
+			setLeafAge(index, this.getTreeItk().plantingCohortAge.get(index));
 		}
 
 		//Tree dimensions are linked through the following allometric relationships  
@@ -1749,6 +1756,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			if (julianDay>365) dayTest = julianDay - 365;
 		}
 		
+		int leafAge = this.getLeafAgeCohort(0);
+		
 		//Cold temperature accumulation option 
 		if (this.getTreeSpecies ().getColdRequirement () && (dayTest == this.getTreeSpecies ().getColdTempAccumulationDateStart ())) {
 			setBudburstAccumulatedColdTemperatureStarted(true);
@@ -1778,7 +1787,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 				setBudburstAccumulatedTemperatureStarted(true);
 				setBudburstAccumulatedTemperature(0);
 				setBudburstDate (0);
-				if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************Date="+julianDay+" BudburstAccumulatedTemperatureStarted");
+				if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************Date="+julianDay+" BudburstAccumulatedTemperatureStarted");
 			}
 			
 			
@@ -1796,8 +1805,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 						this.setFruitPhenologicalStage(1);
 						setBudburstDate (julianDay);
 						setFirstYearStarted (true);
-						setLeafAge(1,0);
-						if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************BudburstDate="+julianDay+" temp="+budburstAccumulatedTemperature);
+						setLeafAge(0,1);
+						if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************BudburstDate="+julianDay+" temp="+budburstAccumulatedTemperature);
 					}
 				}		
 			}
@@ -1818,9 +1827,9 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 					this.setFruitPhenologicalStage(1);
 					setBudburstDate (julianDay);
 					setFirstYearStarted (true);
-					setLeafAge(1,0);
+					setLeafAge(0,1);
 
-					if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************BudburstDate="+julianDay+" temp="+budburstAccumulatedTemperature+ " cold="+budburstAccumulatedColdTemperature);
+					if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************BudburstDate="+julianDay+" temp="+budburstAccumulatedTemperature+ " cold="+budburstAccumulatedColdTemperature);
 					setBudburstAccumulatedColdTemperatureStarted(false);
 					setBudburstAccumulatedColdTemperature(0);
 
@@ -1829,50 +1838,46 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 			break;
 		case 1 : // budburst started
-			int leafExpansionDuration = this.getTreeSpecies ().getLeafExpansionDuration ();		// date for the end of leaf expansion (julian day)
-
-
-			if(julianDay-this.getBudburstDate()>leafExpansionDuration){
+			if (leafAge > this.getTreeSpecies ().getLeafExpansionDuration ()){
 				this.setPhenologicalStage(2); 	// end of leaf expansion
 				setLeafExpansionEndingDate (julianDay);
-				if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************LeafExpansionEndingDate="+julianDay+" leafExpansionDuration="+leafExpansionDuration);
+				if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************LeafExpansionEndingDate="+julianDay);
 			}
-			addLeafAge(0);
+			addLeafAge(0,1);
 
 			break;
 		case 2 : // leaf expansion finished
-			int budBurstToLeafFallDuration = this.getTreeSpecies().getBudBurstToLeafFallDuration();		// date for the end of leaf expansion (julian day)
-			double leafFallFrostThreshold = this.getTreeSpecies().getLeafFallFrostThreshold(); //threshold of daily temperature that trigger leaf fall
-			
-			int ageTest = this.getLeafAgeCohort(this.getTreeSpecies().getNbCohortMax()-1);
-			if(ageTest>budBurstToLeafFallDuration){
+			if (this.getTreeSpecies().getPhenologyType()==2) 
+				leafAge = this.getLeafAgeCohort(this.getTreeSpecies().getNbCohortMax()-1);
+			if (leafAge > this.getTreeSpecies().getBudBurstToLeafFallDuration()){
 
 				this.setPhenologicalStage(3); 	// beginning of leaf fall
 				setLeafFallStartingDate (julianDay);
-				if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************LeafFallStartingDate="+julianDay+" budBurstToLeafFallDuration="+budBurstToLeafFallDuration);
+				if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************LeafFallStartingDate="+julianDay);
 			} else {
-				if(dayClimat.getMinTemperature() < leafFallFrostThreshold){
+				if(dayClimat.getMinTemperature() < this.getTreeSpecies().getLeafFallFrostThreshold()) {
 					this.setPhenologicalStage(3); 	// beginning of leaf fall
 					setLeafFallStartingDate (julianDay);
-					if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************LeafFallStartingDate="+julianDay+" budBurstToLeafFallDuration"+budBurstToLeafFallDuration);
+					if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************LeafFallStartingDate="+julianDay);
 				}						
 			}
-			addLeafAge(0);
+			addLeafAge(0,1);
 			break;
 		case 3 :	// leaf fall began
-			int leafFallDuration = this.getTreeSpecies ().getLeafFallDuration ();
-			if((julianDay>=365)||(julianDay>=(this.getLeafFallStartingDate()+leafFallDuration))){
+			if (this.getTreeSpecies().getPhenologyType()==2) 
+				leafAge = this.getLeafAgeCohort(this.getTreeSpecies().getNbCohortMax()-1);
+			if (leafAge >  this.getTreeSpecies().getBudBurstToLeafFallDuration() + this.getTreeSpecies ().getLeafFallDuration ()){
 				this.setPhenologicalStage(4); 	// end of leaf fall
 				setLeafFallEndingDate (julianDay);
-				if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************LeafFallEndingDate="+julianDay+" leafFallDuration="+leafFallDuration);
+				if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************LeafFallEndingDate="+julianDay);
 			}
-			addLeafAge(0);
+			addLeafAge(0,1);
 			break;
 		case 4 :	// leaf fall finished
 			this.setPhenologicalStage(0); 	
 			setBudburstAccumulatedTemperatureStarted(false);
 			setBudburstAccumulatedTemperature(0);
-			addLeafAge(0);
+			addLeafAge(0,1);
 			//cold deciduous = shade accumulation is reset 
 			if (this.getTreeSpecies().getPhenologyType()==1) setNbrDaysInShade(0);
 
@@ -1882,7 +1887,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		//ADD 1 day to all leaves cohort	
 		if (this.getTreeSpecies().getNbCohortMax() > 1) {
 			for (int index = 1; index < this.getTreeSpecies().getNbCohortMax(); index++) {
-				if (this.getLeafAreaCohort(index) > 0) addLeafAge(index);
+				if (this.getLeafAreaCohort(index) > 0) addLeafAge(index,1);
 			}
 		}
 	}
@@ -1900,20 +1905,20 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		int nbrDays = 365; 
 		if (climat.isLeapYear(dayClimat.getYear())) nbrDays = 366; 
 		if (julianDay > nbrDays) julianDay = julianDay - nbrDays;
-		int ageTest = this.getLeafAgeCohort(this.getTreeSpecies().getNbCohortMax()-1);
+		int leafAge = this.getLeafAgeCohort(this.getTreeSpecies().getNbCohortMax()-1);
 
 		switch(this.getPhenologicalStage()){
 		case 0 : // before budburst
 
 			if (!firstYearStarted) {
-				int budbustDay = this.getTreeSpecies ().getBudburstInitialisation ();	// date to start temperature cumul (julian day)
+				int budbustDay = this.treeItk.budburstInitialisation;	// date to start temperature cumul (julian day)
 				if (julianDay == budbustDay) {
 					this.setPhenologicalStage(1); 	//budburst
 					this.setFruitPhenologicalStage(1);
 					setBudburstDate (julianDay);
 					setFirstYearStarted (true);
-					setLeafAge(1,0);
-					System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************BudburstDate="+julianDay);
+					setLeafAge(0,1);
+					if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************BudburstDate="+julianDay);
 
 				}
 			}
@@ -1928,60 +1933,49 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 					this.setFruitPhenologicalStage(1);
 					setBudburstDate (julianDay);
 					setFirstYearStarted (true);
-					setLeafAge(1,0);
-					System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************BudburstDate="+julianDay+" lastBudburst="+lastBudburst+" waterTableDay="+waterTableDay);
+					setLeafAge(0,1);
+					if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************BudburstDate="+julianDay+" lastBudburst="+lastBudburst+" waterTableDay="+waterTableDay);
 				}
 			}					
 			
-
 			break;
 		case 1 : // budburst started
-			int leafExpansionDuration = this.getTreeSpecies ().getLeafExpansionDuration ();		// date for the end of leaf expansion (julian day)
-			int leafExpensionTest =  julianDay - this.getBudburstDate();
-			if (julianDay < this.getBudburstDate()) 
-				leafExpensionTest =  (julianDay+nbrDays) - this.getBudburstDate();
-			if (leafExpensionTest > leafExpansionDuration){
+			if (leafAge > this.getTreeSpecies ().getLeafExpansionDuration ()){
 				this.setPhenologicalStage(2); 	// end of leaf expansion
 				setLeafExpansionEndingDate (julianDay);
-				System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************LeafExpansionEndingDate="+julianDay);
+				if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************LeafExpansionEndingDate="+julianDay);
 			}
-			addLeafAge(0);
+			addLeafAge(0,1);
 
 			break;
 			
 		case 2 : // leaf expansion finished
-			int budBurstToLeafFallDuration = this.getTreeSpecies().getBudBurstToLeafFallDuration();		// date for the end of leaf expansion (julian day)
-			double leafFallFrostThreshold = this.getTreeSpecies().getLeafFallFrostThreshold(); //threshold of daily temperature that trigger leaf fall
-
-			if (ageTest > budBurstToLeafFallDuration){
-
+			if (leafAge > this.getTreeSpecies().getBudBurstToLeafFallDuration()){
 				this.setPhenologicalStage(3); 	// beginning of leaf fall
 				setLeafFallStartingDate (julianDay);
-				System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************LeafFallStartingDate="+julianDay);
+				if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************LeafFallStartingDate="+julianDay);
 			} else {
-				if(dayClimat.getMinTemperature() < leafFallFrostThreshold){
+				if(dayClimat.getMinTemperature() < this.getTreeSpecies().getLeafFallFrostThreshold()){
 					this.setPhenologicalStage(3); 	// beginning of leaf fall
 					setLeafFallStartingDate (julianDay);
-					System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************LeafFallStartingDate="+julianDay);
+					if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************LeafFallStartingDate="+julianDay);
 				}						
 			}
-			addLeafAge(0);
+			addLeafAge(0,1);
 			break;
 		case 3 :	// leaf fall began
-			int leafFallTest =  this.getLeafFallStartingDate() + this.getTreeSpecies ().getLeafFallDuration ();
-			if (leafFallTest > nbrDays) leafFallTest = leafFallTest - nbrDays;
-			if (julianDay >= leafFallTest){
+			if (leafAge >  this.getTreeSpecies().getBudBurstToLeafFallDuration() + this.getTreeSpecies ().getLeafFallDuration ()){
 				this.setPhenologicalStage(4); 	// end of leaf fall
 				setLeafFallEndingDate (julianDay);
-				System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"*************LeafFallEndingDate="+julianDay);
+				if (debug) System.out.println(dayClimat.getDay()+"/"+ dayClimat.getMonth()+"************LeafFallEndingDate="+julianDay);
 			}
-			addLeafAge(0);
+			addLeafAge(0,1);
 			break;
 		case 4 :	// leaf fall finished
 			this.setPhenologicalStage(0); 	
 			setBudburstAccumulatedTemperatureStarted(false);
 			setBudburstAccumulatedTemperature(0);
-			addLeafAge(0);
+			addLeafAge(0,1);
 			//shade accumulation is reset 
 			setNbrDaysInShade(0);
 
@@ -1991,7 +1985,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		//ADD 1 day to all leaves cohort	
 		if (this.getTreeSpecies().getNbCohortMax() > 1) {
 			for (int index = 1; index < this.getTreeSpecies().getNbCohortMax(); index++) {
-				if (this.getLeafAreaCohort(index) > 0) addLeafAge(index);
+				if (this.getLeafAreaCohort(index) > 0) addLeafAge(index,1);
 			}
 		}
 	}
@@ -2861,7 +2855,6 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		setCarbonStump(getCarbonStump()+stumpGrowth);
 		//Only first cohort has carbon Increment
 		setCarbonFoliage (getCarbonFoliageCohort (0) + foliageGrowth, 0);
-
 		setAboveGroundCFraction ((getCarbonBranches() + getCarbonStem())
 								/ (getCarbonBranches() + getCarbonStem() + getCarbonStump() + getCarbonCoarseRoots ()));
 
@@ -3707,23 +3700,22 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	
 
 		//NB+IL 09/04/2021 
-		//AGE SENESCENCE before LEAF FALL only for EVERGREEN TREES
+		//EVERGREEN TREES : WATER and NITROGEN STRESS SENESCENCE before LEAF FALL only
 		double leafWaterNitrogenStress = 1;
 		int lastLeafIndex = this.getTreeSpecies().getNbCohortMax()-1;
-			if (this.getTreeSpecies().getPhenologyType() == 2 && this.getPhenologicalStage() < 3) {
-			
+		if (this.getTreeSpecies().getPhenologyType() == 2 && this.getPhenologicalStage() < 3) {
+		
 			//searching the last cohort with leaves to applies water and nitrogen stress effect
-			while ((lastLeafIndex >= 0) && (getCarbonFoliageCohort(lastLeafIndex)==0)) {
+			while ((lastLeafIndex >= 0) && (getCarbonFoliageCohort(lastLeafIndex)==0)) 
 				lastLeafIndex--;
-			}			
+			
 			leafWaterNitrogenStress     = Math.pow (getWaterStress(),this.getTreeSpecies().getSenWaterStressResponsiveness ())
-											* Math.pow (getNitrogenSatisfaction(), this.getTreeSpecies().getSenNitrogenStressResponsiveness ());
+										* Math.pow (getNitrogenSatisfaction(), this.getTreeSpecies().getSenNitrogenStressResponsiveness ());
 		}
 			
 		setLeafWaterNitrogenStress(leafWaterNitrogenStress);
 		
-
-		//APPLY CARBON and NITROGEN STRESS on LEAVES
+		//APPLY STRESS on LEAVES
 		double leafNRemobFrac = this.getTreeSpecies().getLeafNRemobFraction();
 		int maxIndex = this.getTreeSpecies().getNbCohortMax()-1;
 		
@@ -4125,7 +4117,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 				if (this.getLeafAreaCohort(index)>0) { 	
 					setLeafArea(this.getLeafAreaCohort(index)* (1-leafAreaDensityReductionFraction), index);
 					setCarbonFoliage    (getCarbonFoliageCohort (index)  * (1-leafAreaDensityReductionFraction), index);
-	                setNitrogenFoliage  (getNitrogenFoliageCohort (index)* (1-leafAreaDensityReductionFraction), index);    
+	                setNitrogenFoliage  (getNitrogenFoliageCohort (index)* (1-leafAreaDensityReductionFraction), index);
 				}
 			}
             setCarbonBranches (getCarbonBranches() * (1-leafAreaDensityReductionFraction));
@@ -4721,7 +4713,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 		SafeCell cellPlanted = (SafeCell) this.getCell();
 		cellPlanted.setIdTreePlanted(0); 
-		this.setHarvested(true);
+
 		this.setHarvestingYear (year);
 		this.setHarvestingDay  (day);
 
@@ -4753,6 +4745,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		this.setCrownRadiusTreeLine(0);
 		this.setCrownRadiusVertical(0);
 		this.setCrownVolume(0);
+		
 		
 		for (int index = 0; index < this.getTreeSpecies().getNbCohortMax(); index++) {
 			this.setLeafArea(0, index);
@@ -5110,6 +5103,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	public boolean getPlanted() {return planted;}
 	public int getPlantingYear () {return plantingYear;}
 	public int getPlantingDay  () {return plantingDay;}
+	public void setPlantingYear (int year) {plantingYear = year;}
+	public void setPlantingDay  (int day) {plantingDay = day;}
 	public int getBudburstDate () {return budburstDate;}
 	public int getLeafExpansionEndingDate () {return leafExpansionEndingDate;}
 	public int getLeafFallStartingDate () {return leafFallStartingDate;}
@@ -5208,8 +5203,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	public int getNbCellsBellow () {return nbCellsBellow;}
 	public void setLaiAboveCells (double v) {laiAboveCells = v;}
 	public void setLeafArea (double v, int c) {leafArea[c] = v;}
-	public void setLeafAge (int v, int c) {leafAge[c] = v;}
-	public void addLeafAge (int c) {leafAge[c] += 1;}
+	public void setLeafAge (int i, int v) {leafAge[i] = v;}
+	public void addLeafAge (int i, int v) {leafAge[i] += v;}
 	public void setLeafLue (double v, int c) {leafLue[c] = v;}
 	public void setLastLeafArea (double v) {lastLeafArea = v;}
 	public double getLeafAreaCohort (int c) {
@@ -5284,10 +5279,6 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	//after topping DbaseMeter is growing like dbh 
 	public double getDBaseMeters () {return dBaseMeters;}
 	
-	public double getStemYield () {
-		return(getCarbonStem() / this.getTreeSpecies ().getWoodCarbonContent());
-	}
-
 	//ACCESSOR FOR LIGHT MODULE
 	public float getCaptureFactorForDiffusePar () {
 		return  (float) captureFactorForDiffusePar;
@@ -5359,6 +5350,13 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 	//ACCESSOR FOR C AND N ALLOCATION MODULE
 	public double getStemVolume () {return stemVolume;}
+	public double getStemVolumePerHectare () {return stemVolumePerHectare;}
+	public double getStemVolumeHarvestedPerHectare() {return stemVolumeHarvestedPerHectare;}
+	public void setStemVolumeHarvestedPerHectare(double v) {stemVolumeHarvestedPerHectare = v;}
+	public double getStemYield () {
+		return((getStemVolumePerHectare () + getStemVolumeHarvestedPerHectare() ) * this.getTreeSpecies().getWoodDensity() );
+	}
+	
 	public double getCarbonStem () {return carbonStem;}
 	public double getCarbonStump () {return carbonStump;}
 	public double getCarbonFoliageCohort (int i) {return carbonFoliage[i];}
@@ -5540,6 +5538,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	public double getCarbonBranchesExported () {return carbonBranchesExported;}
 	public double getCarbonFruitExported () {return carbonFruitExported;}
 	public void setStemVolume (double v) {stemVolume =  v;}
+	public void setStemVolumePerHectare (double v) {stemVolumePerHectare =  v;}
 	public void setCarbonStem (double v) {carbonStem = v;}
 	public void setCarbonStump(double v) {carbonStump = v;}
 	public void setCarbonFoliage (double v, int i) {carbonFoliage[i] = v;}

@@ -424,7 +424,7 @@ public class SafeDailyClimat implements  Serializable {
 	 * Return the water table depth (negative value) of the climatic entry  (m) 
 	 **/
 	public float getWaterTableDepth () {
-		if (waterTableDepth == 0) return (float)(-0.1);
+		if (waterTableDepth == 0) return (float)(-0.005);
 		return (waterTableDepth);
 	}
 	/**

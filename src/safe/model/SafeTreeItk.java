@@ -97,6 +97,11 @@ public class SafeTreeItk   implements Serializable {
 	/** Fruit harvest days  (julian day) */
 	public List<Integer>  fruitHarvestDays; 
 	
+	//TROPICAL SPECIES MODULE (FAIDHERBIA)
+	//ADDED  BY LEA TRESCH 01/2026
+	/** Date of budburst for the first year (initialisation) */
+	public int budburstInitialisation;
+	
 	// PRUNING 
 	/** Tree pruning years index */
 	public List<Integer> treePruningYears; 				

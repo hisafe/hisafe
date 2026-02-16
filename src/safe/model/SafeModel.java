@@ -529,8 +529,8 @@ public class SafeModel extends GModel {
 						if (yearIndex == tree.getTreeItk().plantingYear && testDay == tree.getTreeItk().plantingDay) {
 							
 							try {
-								StatusDispatcher.print("Planting Tree ID=" + tree.getId()+" testDay="+testDay);
-								tree.plant(initStand, isDebugMode);							
+								StatusDispatcher.print("Planting Tree ID=" + tree.getId()+" julianDay="+testDay);
+								tree.plant(initStand, yearIndex, testDay, isDebugMode);							
 								// Computing tree fine and coarse roots initialisation
 								tree.fineRootsInitialisation (initStand.getPlot(),  evolutionParameters);
 								tree.coarseRootsInitialisation (initStand.getPlot());	
@@ -1123,7 +1123,27 @@ public class SafeModel extends GModel {
 				//***********************************************************
 				// EXPORT DATA 
 				//***********************************************************
+				//calculate tree stem volume per hectare 
+				for (Iterator t = initStand.getTrees().iterator(); t.hasNext();) {
+					SafeTree tree = (SafeTree) t.next();
+					tree.setStemVolumePerHectare(tree.getStemVolume()*10000/initPlot.getArea());	
+					if (tree.getHarvestingYear() > 0 && !tree.isHarvested()) {					
+						tree.setStemVolumeHarvestedPerHectare(tree.getStemVolumePerHectare());
+						initPlot.addAnnualTreeStemVolumeHarvestedPerHectare(tree.getStemVolumePerHectare());
+						tree.setStemVolumePerHectare(0);
+						tree.setStemVolume(0);				
+					}
+				}
+				
 				export(stp);
+
+				//tree set harvest after export
+				for (Iterator t = initStand.getTrees().iterator(); t.hasNext();) {
+					SafeTree tree = (SafeTree) t.next();
+					if (tree.getHarvestingYear()>0) {
+						tree.setHarvested(true);
+					}
+				}
 
 				//a la fin on ne refait pas le new step
 				if (year == simulationYearEnd && julianDay == dayEnd) {

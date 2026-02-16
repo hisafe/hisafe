@@ -290,7 +290,7 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 	private double fruitMaxDryMatterAllocation;			
 	/** Above ground carbon fraction allocated to fruit (ratio) */
 	private double fruitAllocationFraction;			
-	/** Date to start accumulation of fruit carbon stress (julian day) */
+	/** Date to start accumulation of fruit carbon stress */
 	private int fruitCarbonStressDateStart;				
 	/** Conversion rate from fruit dry to fresh matter  */
 	private double fruitDryToFreshMatterWeight;			
@@ -312,10 +312,7 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 	private double fruitingConfortThreshold;			
 	/** Ratio of fruitingConfortThreshold inhibate flowering */
 	private double fruitingTotalStressThreshold;		
-	/**  Light use efficiency MAX gr C MJ-1 (PAR) */
-	private double fruitLueMax;				
-	/** Fruit oil density (ratio) */
-	private int fruitAgeForLueMax;
+
 
 	// NITROGEN FIXATION MODULE 
 	/** Activation of nitrogen fixation BNF  */
@@ -421,8 +418,6 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 
 	//TROPICAL SPECIES MODULE (FAIDHERBIA)
 	//ADDED  BY LEA TRESCH 01/2026
-	/** Date of budburst for the first year (initialisation) */
-	private int budburstInitialisation;
 	/**Delay from last budburst to trigger upcoming budburst*/
 	private int budburstDelayFromLastBudburst;
 	/**Delay from last minimum water table to trigger upcoming budburst*/
@@ -648,11 +643,6 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 	public double getFruitingConfortThreshold() {return fruitingConfortThreshold;}
 	public double getFruitingTotalStressThreshold() {return fruitingTotalStressThreshold;}
 
-	public double getFruitLueMax () {return fruitLueMax;}
-	public int getFruitAgeForLueMax () {return fruitAgeForLueMax;}
-	
-
-	
 	//BNF module
 	public double getBnfMaxDepth() {return bnfMaxDepth;}
 	public double getBnfNodulationInhibitionThreshold() {return bnfNodulationInhibitionThreshold;}
@@ -678,7 +668,6 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 	public int getSelfPruningNbrYearsForBranchesFullDecay() {return selfPruningNbrYearsForBranchesFullDecay;}
 
 
-	public int getBudburstInitialisation() {return budburstInitialisation;}
 	public int getBudburstDelayFromLastBudburst() {return budburstDelayFromLastBudburst;}
 	public int getBudburstDelayFromMinWaterTable() {return budburstDelayFromMinWaterTable;}
 	
@@ -974,8 +963,6 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 			double fruitLeafArea, 
 			double fruitingConfortThreshold,
 			double fruitingTotalStressThreshold,
-			double fruitLueMax,
-			int fruitAgeForLueMax,
 			boolean coldRequirement,
 			int coldTempAccumulationDateStart,
 			double coldTempThreshold,
@@ -1011,8 +998,6 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 				this.fruitLeafArea = fruitLeafArea;
 				this.fruitingConfortThreshold = fruitingConfortThreshold;
 				this.fruitingTotalStressThreshold = fruitingTotalStressThreshold;
-				this.fruitLueMax = fruitLueMax;
-				this.fruitAgeForLueMax = fruitAgeForLueMax;
 
 				//phenology : cold temperature 			
 				this.coldRequirement = coldRequirement;
@@ -1073,12 +1058,10 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 	}	
 	
 	public void updateTropicalSpecies  (
-			int budburstInitialisation,
 			int budburstDelayFromLastBudburst,
 			int budburstDelayFromMinWaterTable
 			) {
 
-		this.budburstInitialisation = 	budburstInitialisation;
 		this.budburstDelayFromLastBudburst = 	budburstDelayFromLastBudburst;
 		this.budburstDelayFromMinWaterTable = 	budburstDelayFromMinWaterTable;
 

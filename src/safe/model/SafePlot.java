@@ -137,6 +137,8 @@ public class SafePlot extends RectangularPlot implements Serializable {
 	/** Total annual N out by water table leaching  (kg N ha-1) */
 	private double annualNitrogenLeachingWaterTable;
 
+	private double annualTreeStemVolumeHarvestedPerHectare;
+	
 	public SafePlot(GScene stand, double cellWidth) {
 
 		super(stand, cellWidth);
@@ -430,6 +432,7 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		this.annualWaterUptakeInSaturationByCrops += this.getTotalWaterUptakeInSaturationByCrops();	
 		this.annualNitrogenUptakeByTrees += this.getTotalNitrogenUptakeByTrees();
 		this.annualNitrogenUptakeByCrops += this.getTotalNitrogenUptakeByCrops();
+
 	}
 	/**
 	 * RAZ annual totals 
@@ -473,6 +476,8 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		annualNitrogenLeachingWaterTable = 0; 
 		annualNitrogenUptakeByTrees = 0;
 		annualNitrogenUptakeByCrops = 0;
+		annualTreeStemVolumeHarvestedPerHectare = 0;
+
 
 	}	
 	protected void initPlot() {}
@@ -1525,8 +1530,40 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		return annualNitrogenUptakeByCrops;
 	}
 	
+	//Tree stem volume per hectare
+	public double getTotalTreeStemVolumePerHectare() {
+		double totalTreeStemVolumePerHectare = 0;
+		for (Iterator c = ((SafeStand) this.getScene()).getTrees().iterator(); c.hasNext();) {
+			SafeTree tree = (SafeTree) c.next();
+			if (tree.isPlanted() && !tree.isHarvested()) {
+				totalTreeStemVolumePerHectare += tree.getStemVolumePerHectare();
+			}
+		}
+		return totalTreeStemVolumePerHectare;
+	}
 	
-
+	//Tree stem volume per hectare
+	public double getTotalTreeStemVolumeHarvestedPerHectare() {
+		double totalTreeStemVolumeHarvestedPerHectare = 0;
+		for (Iterator c = ((SafeStand) this.getScene()).getTrees().iterator(); c.hasNext();) {
+			SafeTree tree = (SafeTree) c.next();
+			if (tree.isPlanted() && !tree.isHarvested()) {
+				totalTreeStemVolumeHarvestedPerHectare += tree.getStemVolumeHarvestedPerHectare();
+			}
+		}
+		return totalTreeStemVolumeHarvestedPerHectare;
+	}
+	
+	public double getAnnualTreeStemVolumePerHectare() {
+		return getTotalTreeStemVolumePerHectare();
+	}
+	
+	public void addAnnualTreeStemVolumeHarvestedPerHectare(double v) {
+		annualTreeStemVolumeHarvestedPerHectare += v;
+	}
+	public double getAnnualTreeStemVolumeHarvestedPerHectare() {
+		return annualTreeStemVolumeHarvestedPerHectare;
+	}
 
 	public SafePlotSettings getPlotSettings() {return plotSettings;}
 	public void setPlotSettings(SafePlotSettings p) {plotSettings = p;}

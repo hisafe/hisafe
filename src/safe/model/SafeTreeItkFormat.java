@@ -317,7 +317,18 @@ public class SafeTreeItkFormat extends RecordSet {
 						System.out.println("Wrong itk tree file format parameters : treeHarvestDay");
 						throw new CancellationException();	// abort
 					}
-
+					
+// PHENOLOGY
+					
+				} else if  (r.key.equals ("budburstInitialisation")) {
+					try {
+					itk.budburstInitialisation = getJulianDay (r.value);
+					} catch(Exception e){
+						System.out.println("Wrong itk tree file format parameters : budburstInitialisation");
+						throw new CancellationException();	// abort
+					}
+					
+		
 // PRUNING
 				} else if (param.equals("treePruningYears")) {
 					

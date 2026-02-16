@@ -315,10 +315,7 @@ public class SafeTreeFormat extends RecordSet {
 	private double fruitingConfortThreshold;			
 	/** Ratio of fruitingConfortThreshold inhibate flowering */
 	private double fruitingTotalStressThreshold;		
-	/**  Light use efficiency MAX gr C MJ-1 (PAR) */
-	private double fruitLueMax;				
-	/** Fruit oil density (ratio) */
-	private int fruitAgeForLueMax;
+
 
 	// NITROGEN FIXATION MODULE 
 	/** Activation of nitrogen fixation BNF  */
@@ -425,8 +422,6 @@ public class SafeTreeFormat extends RecordSet {
 	
 	//TROPICAL SPECIES MODULE (FAIDHERBIA)
 	//ADDED  BY LEA TRESCH 01/2026
-	/** Date of budburst for the first year (initialisation) */
-	private int budburstInitialisation;
 	/**Delay from last budburst to trigger upcoming budburst*/
 	private int budburstDelayFromLastBudburst;
 	/**Delay from last minimum water table to trigger upcoming budburst*/
@@ -672,7 +667,6 @@ public class SafeTreeFormat extends RecordSet {
 					
 					//tropical tree (faidherbia) 
 					if(phenologyType==3){
-						requiredParameters.add("budburstInitialisation");
 						requiredParameters.add("budburstDelayFromLastBudburst");
 						requiredParameters.add("budburstDelayFromMinWaterTable");
 					}
@@ -1115,8 +1109,7 @@ public class SafeTreeFormat extends RecordSet {
 						requiredParameters.add("fruitLeafArea");
 						requiredParameters.add("fruitingConfortThreshold");
 						requiredParameters.add("fruitingTotalStressThreshold");
-						requiredParameters.add("fruitLueMax");
-						requiredParameters.add("fruitAgeForLueMax");
+
 	
 					}
 					requiredParameters.remove("fruitCompartment");
@@ -1210,13 +1203,6 @@ public class SafeTreeFormat extends RecordSet {
 					fruitingTotalStressThreshold = r.getDoubleValue ();
 					requiredParameters.remove("fruitingTotalStressThreshold");					
 
-				} else if  (r.key.equals ("fruitLueMax")) {
-					fruitLueMax = r.getDoubleValue ();
-					requiredParameters.remove("fruitLueMax");
-					
-				} else if  (r.key.equals("fruitAgeForLueMax")){
-					fruitAgeForLueMax = r.getIntValue();
-					requiredParameters.remove("fruitAgeForLueMax");	
 					
 //BNF		
 				} else if  (r.key.equals ("nitrogenFixation")) {
@@ -1340,9 +1326,7 @@ public class SafeTreeFormat extends RecordSet {
 					requiredParameters.remove("selfPruningNbrYearsForBranchesFullDecay");
 
 				//add tropical tree (faidherbia)  (IL 21/01/2026)	
-				} else if  (r.key.equals ("budburstInitialisation")) {
-					budburstInitialisation = getJulianDay (r.value);
-					requiredParameters.remove("budburstInitialisation");
+
 				} else if  (r.key.equals ("budburstDelayFromLastBudburst")) {
 					budburstDelayFromLastBudburst =  r.getIntValue ();
 					requiredParameters.remove("budburstDelayFromLastBudburst");
@@ -1455,8 +1439,6 @@ public class SafeTreeFormat extends RecordSet {
 							fruitLeafArea, 
 							fruitingConfortThreshold,
 							fruitingTotalStressThreshold,
-							fruitLueMax,
-							fruitAgeForLueMax,
 							coldRequirement,
 							coldTempAccumulationDateStart,
 							coldTempThreshold,
@@ -1494,7 +1476,7 @@ public class SafeTreeFormat extends RecordSet {
 			
 			//update tropical tree species
 			if (phenologyType ==3) {
-				species.updateTropicalSpecies(budburstInitialisation, 
+				species.updateTropicalSpecies(
 						budburstDelayFromLastBudburst, 
 						budburstDelayFromMinWaterTable);
 			}
