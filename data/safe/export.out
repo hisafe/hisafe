@@ -16,19 +16,13 @@ ProfileDef	climate	SafeMacroClimat	1
 ProfileDef	plot	SafePlot	1			
 ProfileDef	zones	SafeCropZone	1			
 ProfileDef	cells	SafeCell	1			
-ProfileDef	trees	SafeTree	1			
+ProfileDef	trees	SafeTree	1		
+ProfileDef	yield	SafeYield	1		
 ProfileDef	monthCells	SafeCell	30			
 ProfileDef	annualPlot	SafePlot	365			
 ProfileDef	annualCells	SafeCell	365			
-ProfileDef	annualTrees	SafeTree	365			
-#ProfileDef	voxels	SafeVoxel	1			
-#ProfileDef	voxelsDetail	SafeVoxel	1			
-#ProfileDef	voxelsOptim	SafeVoxel	1			
-#ProfileDef	voxels3D	SafeVoxel	1			
-#SELECTION of CELLS or DEPTHS 						
-#Export	Object	Frequency	Ids	Depth		
-#ProfileDef	cell	SafeCell	1	01-mars		
-#ProfileDef	voxel	SafeVoxel	1	"1;10;30"	"1-10;20-30"	
+ProfileDef	annualTrees	SafeTree	365	
+ProfileDef	voxels	SafeVoxel	1							
 #========================================================================						
 #  PART 2 : Variable selection						
 #=========================================================================						
@@ -37,6 +31,7 @@ annualCells	SafeCell	cropSpeciesName	-	Crop species name	1	1
 annualCells	SafeCell	yieldMax	t.ha-1	Maximum value of harvested yield (grain and hay) for the year	2	1
 annualCells	SafeCell	heightMax	 m	Maximum crop height for the year	3	1
 annualCells	SafeCell	biomassMax	 t.ha-1	Maximum crop biomass for the year	4	1
+annualCells	SafeCell	grainBiomassMax	 t.ha-1	Maximum crop grain biomass for the year	4	1
 annualCells	SafeCell	laiMax	m2 leaf m-2 soil	Maximum crop LAI for the year	5	1
 annualCells	SafeCell	eaiMax	m2 leaf m-2 soil	Maximum crop EAI for the year	6	1
 annualCells	SafeCell	rootsDepthMax	m	Maximum crop roots depth for the year	7	1
@@ -272,15 +267,10 @@ annualPlot	SafePlot	annualNitrogenLeachingBottom	kg N ha-1	Annual cumulation of 
 annualPlot	SafePlot	annualNitrogenLeachingWaterTable	kg N ha-1	Annual cumulation of nitrogen Leaching to WaterTable  on the plot	24	1
 annualPlot	SafePlot	annualWaterUptakeInSaturationByTrees	kg N ha-1	Annual cumulation of water uptake by trees  on saturated voxels of the plot	25	1
 annualPlot	SafePlot	annualWaterUptakeInSaturationByCrops	kg N ha-1	Annual cumulation of water uptake by crops  on saturated voxels of the plot	26	1
-plot	SafePlot	totalCropBiomass	t ha-1	Total biomass of the plot	1	1
 plot	SafePlot	meanCropBiomass	t ha-1	Mean biomass of the plot	2	1
-plot	SafePlot	totalCropYield	t ha-1	Total yield of the plot	3	1
 plot	SafePlot	meanCropYield	t ha-1	Mean yield of the plot	4	1
-plot	SafePlot	totalCropLai	m2 leaf m-2 soil	Total LAI of the plot	5	1
 plot	SafePlot	meanCropLai	m2 leaf m-2 soil	Mean LAI of the plot	6	1
-plot	SafePlot	totalCropEai	m2 leaf m-2 soil	Total EAI of the plot	7	1
 plot	SafePlot	meanCropEai	m2 leaf m-2 soil	Mean EAI of the plot	8	1
-plot	SafePlot	totalCropHeight	m	Mean canopy height in the plot	9	1
 plot	SafePlot	meanCropHeight	m	Mean canopy height in the plot	10	1
 plot	SafePlot	meanCropGrainNumber	nbr m-2	Mean of number of grains in the plot	11	1
 plot	SafePlot	meanCropGrainWeight	g	Mean of grain weight in the plot	12	1
@@ -361,6 +351,9 @@ plot	SafePlot	totalInactiveCarbonHumusStock	kg C ha-1	Total of inactive carbon i
 plot	SafePlot	totalNitrogenHumusStock	kg N ha-1	Total  of nitrogen (active + inactive) in the soil humus pool of the plot	87	1
 plot	SafePlot	totalActiveNitrogenHumusStock	kg N ha-1	Total of active nitrogen in the soil humus pool of the plot	88	1
 plot	SafePlot	totalInactiveNitrogenHumusStock	kg N ha-1	Total of inactive nitrogen in the soil humus pool of the plot	89	1
+plot	SafePlot	totalTreeStemVolumePerHectare	m3 ha-1	Total tree stem volume per hectare	90	1
+plot	SafePlot	totalTreeStemVolumeHarvestedPerHectare	m3 ha-1	Total tree stem volume harvested per hectare	91	1
+plot	SafePlot	totalTreeStemYield	kg C ha-1	Total tree stem yield per hectare	91	1
 annualTrees	SafeTree	age	years	Age of tree since planting	1	1
 annualTrees	SafeTree	dbh	cm	Tree diameter at breast height	2	1
 annualTrees	SafeTree	height	m	tree height	3	1
@@ -372,7 +365,9 @@ annualTrees	SafeTree	crownRadiusVertical	m	Tree crown vertical radius	8	1
 annualTrees	SafeTree	crownVolume	m3	Tree crown volume	9	1
 annualTrees	SafeTree	branchVolume	m3	Tree branches volume	10	1
 annualTrees	SafeTree	stemVolume	m3	Tree stem volume	11	1
-annualTrees	SafeTree	stemYield	kg	Tree stem biomass	12	1
+annualTrees	SafeTree	stemYield	kg C ha-1	Tree stem biomass per hectare	12	1
+annualTrees	SafeTree	stemVolumePerHectare	m3 ha-	Stem volume per hectare	12	1
+annualTrees	SafeTree	stemVolumeHarvestedPerHectare	m3 ha-	Stem volume harvested per hectare	12	1
 annualTrees	SafeTree	budburstDate	-	Date of budburst	13	1
 annualTrees	SafeTree	leafExpansionEndingDate	-	Date of leaf Expansion End	14	1
 annualTrees	SafeTree	leafFallStartingDate	-	Date of leaf Fall Start	15	1
@@ -411,7 +406,7 @@ trees	SafeTree	crownRadiusVertical	m	Tree crown vertical radius	47	1
 trees	SafeTree	crownVolume	m3	Tree crown volume	48	1
 trees	SafeTree	branchVolume	m3	Tree branches volume	49	1
 trees	SafeTree	stemVolume	m3	Tree stem volume	50	1
-trees	SafeTree	stemYield	kg	Tree stem biomass	51	1
+trees	SafeTree	stemYield	kg C ha-1	Tree stem yield par hectare	51	1
 trees	SafeTree	phenologicalStage	0-4	Tree phenological stage	52	1
 trees	SafeTree	fruitPhenologicalStage	0-4	Tree fruit phenological stage	53	1
 trees	SafeTree	rootingDepth	m	Tree maximum rooting depth	54	1
@@ -569,6 +564,8 @@ trees	SafeTree	carbonFruitLitterAllPlot	kg C	carbonFruitLitterAllPlot	207	1
 trees	SafeTree	carbonFoliageLitterUnderTree	kg N	carbonFoliageLitterUnderTree	208	1
 trees	SafeTree	carbonBranchesLitterUnderTree	kg N	carbonBranchesLitterUnderTree	209	1
 trees	SafeTree	carbonFruitLitterUnderTree	kg N	carbonFruitLitterUnderTree	210	1
+trees	SafeTree	stemVolumePerHectare	m3 ha-	Stem volume per hectare	210	1
+trees	SafeTree	stemVolumeHarvestedPerHectare	m3 ha-	Stem volume harvested per hectare	210	1
 voxels	SafeVoxel	thickness	m	Voxel thickness	1	1
 voxels	SafeVoxel	volume	m3	Voxel volume	2	1
 voxels	SafeVoxel	bulkDensity	kg m-3	Soil bulk densiity (including fine soil and stones)	3	1
@@ -633,19 +630,10 @@ voxels	SafeVoxel	treeNitrogenFineRoots	kg N	total N tree fine roots	34	1
 voxels	SafeVoxel	treeNitrogenCoarseRoots	kg N	total N tree coarses roots	35	1
 zones	SafeCropZone	area	m2	Surface area of the zone	1	1
 zones	SafeCropZone	cropSpeciesName	-	Name of crop species	2	1
-zones	SafeCropZone	totalCropBiomass	t ha-1	Total biomass of the zone	3	1
 zones	SafeCropZone	meanCropBiomass	t ha-1	Mean biomass of the zone	4	1
-zones	SafeCropZone	meanPeakCropBiomass	t ha-1	Mean peak biomass of the zone	5	1
-zones	SafeCropZone	totalCropYield	t ha-1	Total yield of the zone	6	1
 zones	SafeCropZone	meanCropYield	t ha-1	Mean yield of the zone	7	1
-zones	SafeCropZone	meanPeakCropYield	t ha-1	Mean peak yield of the zone	8	1
-zones	SafeCropZone	totalCropLai	m2 leaf m-2 soil	Total LAI of the zone	9	1
 zones	SafeCropZone	meanCropLai	m2 leaf m-2 soil	Mean LAI of the zone	10	1
-zones	SafeCropZone	meanPeakCropLai	m2 leaf m-2 soil	Mean peak LAI of the zone	11	1
-zones	SafeCropZone	totalCropEai	m2 leaf m-2 soil	Total EAI of the zone	12	1
 zones	SafeCropZone	meanCropEai	m2 leaf m-2 soil	Mean EAI of the zone	13	1
-zones	SafeCropZone	meanPeakCropEai	m2 leaf m-2 soil	Mean peak EAI of the zone	14	1
-zones	SafeCropZone	totalCropHeight	m	Mean canopy height in the zone	15	1
 zones	SafeCropZone	meanCropHeight	m	Mean canopy height in the zone	16	1
 zones	SafeCropZone	meanCropGrainNumber	nbr m-2	Mean of number of grains in the zone	17	1
 zones	SafeCropZone	meanCropGrainWeight	g	Mean of grain weight in the zone	18	1
@@ -723,3 +711,7 @@ zones	SafeCropZone	totalInactiveCarbonHumusStock	kg C ha-1	Total of inactive car
 zones	SafeCropZone	totalNitrogenHumusStock	kg N ha-1	Total  of nitrogen (active + inactive) in the soil humus pool of the zone	90	1
 zones	SafeCropZone	totalActiveNitrogenHumusStock	kg N ha-1	Total of active nitrogen in the soil humus pool of the zone	91	1
 zones	SafeCropZone	totalInactiveNitrogenHumusStock	kg N ha-1	Total of inactive nitrogen in the soil humus pool of the zone	92	1
+yield	SafeYield	cropSpeciesName	-	Crop species name	1	1
+yield	SafeYield	yield	t.ha-1	Maximum value of harvested yield (grain and hay) for the year	2	1
+yield	SafeYield	height	 m	Maximum crop height for the year	3	1
+yield	SafeYield	biomass	 t.ha-1	Maximum crop biomass for the year	4	1
