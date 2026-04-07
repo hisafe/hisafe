@@ -183,7 +183,7 @@ fruitMaxDryMatterAllocation = 0.0073
 fruitAllocationFraction = 0.38
 fruitCarbonStressDateStart = 04-01
 fruitDryToFreshMatterWeight = 1.72
-fruitDryMaterDensity = 0.8
+fruitDryMatterDensity = 0.8
 fruitOilConversionCoeffA = 18.2
 fruitOilConversionCoeffB = 0.78
 fruitOilConversionCoeffC = 1.31
@@ -191,8 +191,7 @@ fruitOilDensity = 0.92
 fruitLeafArea = 1575
 fruitingConfortThreshold = 3.3
 fruitingTotalStressThreshold = 3.96e-15
-fruitLueMax = 0.65
-fruitAgeForLueMax = 120
+
 
 ## Updated 23/03/2021 by Tristan GERAULT
 ## Adding new parameters for BNF Phenology and Nitrogen Fixation

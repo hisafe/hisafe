@@ -167,8 +167,8 @@ selfPruningNbrYearsForBranchesFullDecay = 10
 
 ## Updated 23/03/2021 by Nicolas BARBAULT 
 ## Adding new parameters for leaves senescence on water and nitrogen stress
-senWaterStressResponsiveness = 1
-senNitrogenStressResponsiveness = 1
+senWaterStressResponsiveness = 0
+senNitrogenStressResponsiveness = 0
 
 ## Updated 23/03/2021 by Nicolas BARBAULT 
 ## Adding new parameters for fruit Phenology and carbone allocation
@@ -188,7 +188,7 @@ fruitMaxDryMatterAllocation = 0
 fruitAllocationFraction = 0
 fruitCarbonStressDateStart = 0
 fruitDryToFreshMatterWeight = 0
-fruitDryMaterDensity = 0
+fruitDryMatterDensity = 0
 fruitOilConversionCoeffA = 0
 fruitOilConversionCoeffB = 0
 fruitOilConversionCoeffC = 0
@@ -196,8 +196,7 @@ fruitOilDensity = 0
 fruitLeafArea = 0
 fruitingConfortThreshold = 0
 fruitingTotalStressThreshold = 0
-fruitLueMax = 0
-fruitAgeForLueMax = 0
+
 
 ## Updated 23/03/2021 by Tristan GERAULT
 ## Adding new parameters for BNF Phenology and Nitrogen Fixation

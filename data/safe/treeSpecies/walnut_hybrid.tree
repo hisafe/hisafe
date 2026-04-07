@@ -135,15 +135,16 @@ colonisationFraction = 0.1
 colonisationThreshold = 1500
 fineRootLifespan = 113.95572
 geotropismFactor = 0.5
-horizontalPreference = 0.8
 sinkDistanceEffect = 50
 localWaterUptakeFactor = 50
 localNitrogenUptakeFactor = 50
 specificRootLength = 8.17
 
 ##UPDATED BY C.DUPRAZ 10/2025
+horizontalPreference = 0.8
 ##fineRootAnoxiaLifespan = 50
 ##coarseRootAnoxiaResistance = 60
+horizontalPreference = 0.5
 coarseRootAnoxiaResistance = 30
 fineRootAnoxiaLifespan = 20
 
@@ -172,8 +173,8 @@ selfPruningNbrYearsForBranchesFullDecay = 10
 
 ## Updated 23/03/2021 by Nicolas BARBAULT 
 ## Adding new parameters for leaves senescence on water and nitrogen stress
-senWaterStressResponsiveness = 1
-senNitrogenStressResponsiveness = 1
+senWaterStressResponsiveness = 0
+senNitrogenStressResponsiveness = 0
 
 ## Updated 23/03/2021 by Nicolas BARBAULT 
 ## Adding new parameters for fruit Phenology and carbone allocation
@@ -193,7 +194,7 @@ fruitMaxDryMatterAllocation = 0
 fruitAllocationFraction = 0
 fruitCarbonStressDateStart = 0
 fruitDryToFreshMatterWeight = 0
-fruitDryMaterDensity = 0
+fruitDryMatterDensity = 0
 fruitOilConversionCoeffA = 0
 fruitOilConversionCoeffB = 0
 fruitOilConversionCoeffC = 0
@@ -201,8 +202,7 @@ fruitOilDensity = 0
 fruitLeafArea = 0
 fruitingConfortThreshold = 0
 fruitingTotalStressThreshold = 0
-fruitLueMax = 0
-fruitAgeForLueMax = 0
+
 
 ## Updated 23/03/2021 by Tristan GERAULT
 ## Adding new parameters for BNF Phenology and Nitrogen Fixation
