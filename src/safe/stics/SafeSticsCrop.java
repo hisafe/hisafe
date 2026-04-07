@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
- * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
+ * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -51,6 +51,7 @@ package safe.stics;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+
 import com.sun.jna.Structure;
 
 /**
@@ -92,8 +93,8 @@ public class SafeSticsCrop extends Structure implements Serializable {
 	public float P_h2oreserve;   // PARAMETER // reserve water content // g eau g-1 MF // PARPLT // 1
 	public float P_h2otigestruc;   // PARAMETER // structural stem part water content // g eau g-1 MF // PARPLT // 1
 	public float P_inflomax;   // PARAMETER // maximal number of inflorescences per plant // nb pl-1 // PARPLT // 1
-	public float P_Kmabs1;   // PARAMETER // Constant of nitrogen uptake by roots for the high affinity system // µmole. cm root-1 // PARPLT // 1
-	public float P_Kmabs2;   // PARAMETER // Constant of nitrogen uptake by roots for the low affinity system // µmole. cm root-1 // PARPLT // 1
+	public float P_Kmabs1;   // PARAMETER // Constant of nitrogen uptake by roots for the high affinity system // ï¿½mole. cm root-1 // PARPLT // 1
+	public float P_Kmabs2;   // PARAMETER // Constant of nitrogen uptake by roots for the low affinity system // ï¿½mole. cm root-1 // PARPLT // 1
 	public float P_kmax;   // PARAMETER // Maximum crop coefficient for water requirements (= ETM/ETP) // SD // PARPLT // 1
 	public float P_kstemflow;   // PARAMETER // Extinction Coefficient connecting leaf area index to stemflow // * // PARPLT // 1
 	public float P_longsperac;   // PARAMETER // specific root length // cm g-1 // PARPLT // 1
@@ -128,21 +129,21 @@ public class SafeSticsCrop extends Structure implements Serializable {
 	public float P_vitirazo;   // PARAMETER // Rate of increase of the nitrogen harvest index // g grain g plant -1 day-1 // PARPLT // 1
 	public float P_vitpropsucre;   // PARAMETER // increase rate of sugar harvest index  // g sugar g MS-1  j-1 // PARPLT // 1
 	public float P_vitprophuile;   // PARAMETER // increase rate of oil harvest index  // g oil g MS-1 j-1 // PARPLT // 1
-	public float P_Vmax1;   // PARAMETER // Rate of slow nitrogen absorption (high affinity system) // µmole cm-1 h-1 // PARPLT // 1
-	public float P_Vmax2;   // PARAMETER // Rate of rapid nitrogen absorption (high affinity system) // µmole cm-1 h-1 // PARPLT // 1
+	public float P_Vmax1;   // PARAMETER // Rate of slow nitrogen absorption (high affinity system) // ï¿½mole cm-1 h-1 // PARPLT // 1
+	public float P_Vmax2;   // PARAMETER // Rate of rapid nitrogen absorption (high affinity system) // ï¿½mole cm-1 h-1 // PARPLT // 1
 	public float P_zlabour;   // PARAMETER // Depth of ploughing  // cm // PARPLT // 1
 	public float P_zprlim;   // PARAMETER // Maximum depth of the root profile for the reference profile // cm  // PARPLT // 1
-	public float P_zpente;   // PARAMETER // Depth where the root density is ½ of the surface root density for the reference profile // cm  // PARPLT // 1
+	public float P_zpente;   // PARAMETER // Depth where the root density is ï¿½ of the surface root density for the reference profile // cm  // PARPLT // 1
 	public float P_adilmax;   // PARAMETER // Parameter of the maximum curve of nitrogen needs [Nplante]=P_adilmax MS^(-P_bdilmax) // N% MS // PARPLT // 1
 	public float P_bdilmax;   // PARAMETER // Parameter of the maximum curve of nitrogen needs [Nplante]=P_adilmax MS^(-P_bdilmax) // SD // PARPLT // 1
 	public float P_masecNmax;   // PARAMETER // Aerial biomass  on and after there is nitrogen dilution (critical and maximal curves) // t ha-1 // PARPLT // 1
 	public float P_INNmin;   // PARAMETER // Minimum value of INN authorised for the crop // SD // PARPLT // 1
 	public float P_inngrain1;   // PARAMETER // INN minimal for net absorption of nitrogen during grain filling  // SD // PARPLT // 1
 	public float P_inngrain2;   // PARAMETER // INN minimal for null net absorption of nitrogen during grain filling  // SD // PARPLT // 1
-	public float P_stlevdno;   // PARAMETER // phasic duration between emergence and the beginning of nodulation  // degrés.jours // PARPLT // 1
+	public float P_stlevdno;   // PARAMETER // phasic duration between emergence and the beginning of nodulation  // degrï¿½s.jours // PARPLT // 1
 	public float P_stdnofno;   // PARAMETER // phasic duration between the beginning and the end of nodulation // degree.days // PARPLT // 1
-	public float P_stfnofvino;   // PARAMETER // phasic duration between the end of the nodulation and the end of the nodule life   // degrés.jours // PARPLT // 1
-	public float P_vitno;   // PARAMETER // "rate of nodule onset expressed as a proportion of  P_fixmax   per degree day   // nb degrés.jour-1 // PARPLT // 1
+	public float P_stfnofvino;   // PARAMETER // phasic duration between the end of the nodulation and the end of the nodule life   // degrï¿½s.jours // PARPLT // 1
+	public float P_vitno;   // PARAMETER // "rate of nodule onset expressed as a proportion of  P_fixmax   per degree day   // nb degrï¿½s.jour-1 // PARPLT // 1
 	public float P_profnod;   // PARAMETER // nodulation depth // cm // PARPLT // 1
 	public float P_concNnodseuil;   // PARAMETER // maximal soil nitrogen threshold for nodule onset  // kg.ha-1.mm-1 // PARPLT // 1
 	public float P_concNrac0;   // PARAMETER // soil nitrogen threshold forbiding nodule activity // kg.ha-1.mm-1 // PARPLT // 1
@@ -273,7 +274,7 @@ public class SafeSticsCrop extends Structure implements Serializable {
 	public float[] P_stamflax;      // PARAMETER // Sum of development units between the stages AMF and LAX // degree.days // PARPLT // 1
 	public float[] P_stlevamf;      // PARAMETER // Sum of development units between the stages LEV and AMF // degree.days // PARPLT // 1
 	public float[] P_stlevdrp;      // PARAMETER // Sum of development units between the stages LEV and DRP // degree.days // PARPLT // 1
-	public float[] P_stflodrp;      // PARAMETER // phasic duration between FLO and DRP (only for indication) // degrés.jours // PARPLT // 1
+	public float[] P_stflodrp;      // PARAMETER // phasic duration between FLO and DRP (only for indication) // degrï¿½s.jours // PARPLT // 1
 	public float[] P_stlaxsen;      // PARAMETER // Sum of development units between the stages LAX and SEN // degree.days // PARPLT // 1
 	public float[] P_stsenlan;      // PARAMETER // Sum of development units between the stages SEN et LAN // degree.days // PARPLT // 1
 	public float[] P_stdrpmat;      // PARAMETER // Sum of development units between the stages DRP and MAT // degree.days // PARPLT // 1
@@ -470,7 +471,7 @@ public class SafeSticsCrop extends Structure implements Serializable {
 	public float stemflow; // OUTPUT // Water running along the stem // mm
 	public float precrac[];
 	public float lracsenz[];
-	public float drl[];            // temporel pour sénescence (racinaire)
+	public float drl[];            // temporel pour sï¿½nescence (racinaire)
 	public float somtemprac;
 
 	public float poussracmoy; // OUTPUT // "Average index of the effect of soil constraints on the rooting profile (option  true density )" // 0-1
@@ -549,7 +550,7 @@ public class SafeSticsCrop extends Structure implements Serializable {
 	public float upvtutil;
 	public float somcour; // OUTPUT // Cumulated units of development between two stages // degree.days
 	public float reajust;
-	public float upobs[];              // tableau de forçage
+	public float upobs[];              // tableau de forï¿½age
 	public float stlevamf0;
 	public float stamflax0;
 	public float varrapforme;
@@ -595,7 +596,7 @@ public class SafeSticsCrop extends Structure implements Serializable {
 	public float rfvi; // OUTPUT // Slowing effect of the vernalization on plant development // 0-1
 	public float racnoy[];       
 	public float msrac[];            // pas besoin du tableau temporel, une simple sauvegarde de n-1 pourrait suffire    // OUTPUT // Estimated dry matter of the roots // t.ha-1
-	public float tdevelop[];           // temporel pour sénescence
+	public float tdevelop[];           // temporel pour sï¿½nescence
 	public float cu[];                 // pas besoin du tableau temporel
 	public int  nst1;
 	public int  nst2;
@@ -671,7 +672,7 @@ public class SafeSticsCrop extends Structure implements Serializable {
 	public float densiteger;
 	public float mafruit; // OUTPUT // Dry matter of harvested organs // t.ha-1
 	public float matuber; // OUTPUT // Dry matter of harvested organs // t.ha-1
-	public float matuber_rec; // DR 06/04/2012 on garde le matuber à la recolte
+	public float matuber_rec; // DR 06/04/2012 on garde le matuber ï¿½ la recolte
 	public float msrec_fou; // OUTPUT // Dry matter of harvested organs for forages// t.ha-1
 	public float dNdWcrit;
 	public float dNdWmax;
@@ -680,7 +681,7 @@ public class SafeSticsCrop extends Structure implements Serializable {
 	public float profextN;       // OUTPUT // Average depth of Nitrogen absorption // cm
 	public float profexteau;     // OUTPUT // Average depth of water absorption // cm
 	public int age_prairie;      // OUTPUT // forage crop age from sowing // an
-	public float RsurRUrac;      // OUTPUT // Fraction of available water reserve (R/RU) over the root profile // 0 à 1
+	public float RsurRUrac;      // OUTPUT // Fraction of available water reserve (R/RU) over the root profile // 0 ï¿½ 1
 	public float RUrac;      // OUTPUT // maximum available water reserve over the root profile // mm
 	public float somcourmont;    // OUTPUT // Cumulatied units of development from the start of vernalisation // degree.days
 	public float psibase;      // OUTPUT // Predawn leaf water potential potentiel foliaire de base // Mpascal
@@ -835,7 +836,7 @@ public class SafeSticsCrop extends Structure implements Serializable {
 	public float sucre_percent;    // OUTPUT // Sugar content of fresh harvested organs // % (of fresh weight)
 	public float huile_percent;    // OUTPUT // Oil content of fresh harvested organs // % (of fresh weight)
 	public float et0;  // OUTPUT // eos+eop // mm
-	public float QNexport; // N exporté
+	public float QNexport; // N exportï¿½
 	public int day_cut;  //jour de la coupe precedente
 
 
@@ -864,12 +865,12 @@ public class SafeSticsCrop extends Structure implements Serializable {
 	  public int onestan2; 
 
 	  public float teta[];    // OUTPUT // Teneur en eau comparable aux seuils
-	  public float tetsen[];    // OUTPUT // Teneur en eau en deça duquel il y a accélération de sénescence
+	  public float tetsen[];    // OUTPUT // Teneur en eau en deï¿½a duquel il y a accï¿½lï¿½ration de sï¿½nescence
 	  public float slrac[];    // OUTPUT // contribution racinaire
-	  public float cumlr[];    // OUTPUT // pondération de cumlracz par la surface de la plante		
+	  public float cumlr[];    // OUTPUT // pondï¿½ration de cumlracz par la surface de la plante		
 	  public float fhumirac[];// OUTPUT // ajout sortie calcul F_humirac		
 	  public float deltaimaxi[];// OUTPUT // ajout sortie deltaimaxi
-	  public float msfauche; // OUTPUT // matiere seche fauchée
+	  public float msfauche; // OUTPUT // matiere seche fauchï¿½e
 	  
 	public SafeSticsCrop () {
 		
@@ -1114,8 +1115,8 @@ public class SafeSticsCrop extends Structure implements Serializable {
 		this.P_h2oreserve=origin.P_h2oreserve;   // PARAMETER // reserve water content // g eau g-1 MF // PARPLT // 1
 		this.P_h2otigestruc=origin.P_h2otigestruc;   // PARAMETER // structural stem part water content // g eau g-1 MF // PARPLT // 1
 		this.P_inflomax=origin.P_inflomax;   // PARAMETER // maximal number of inflorescences per plant // nb pl-1 // PARPLT // 1
-		this.P_Kmabs1=origin.P_Kmabs1;   // PARAMETER // Constant of nitrogen uptake by roots for the high affinity system // µmole. cm root-1 // PARPLT // 1
-		this.P_Kmabs2=origin.P_Kmabs2;   // PARAMETER // Constant of nitrogen uptake by roots for the low affinity system // µmole. cm root-1 // PARPLT // 1
+		this.P_Kmabs1=origin.P_Kmabs1;   // PARAMETER // Constant of nitrogen uptake by roots for the high affinity system // ï¿½mole. cm root-1 // PARPLT // 1
+		this.P_Kmabs2=origin.P_Kmabs2;   // PARAMETER // Constant of nitrogen uptake by roots for the low affinity system // ï¿½mole. cm root-1 // PARPLT // 1
 		this.P_kmax=origin.P_kmax;   // PARAMETER // Maximum crop coefficient for water requirements (= ETM/ETP) // SD // PARPLT // 1
 		this.P_kstemflow=origin.P_kstemflow;   // PARAMETER // Extinction Coefficient connecting leaf area index to stemflow // * // PARPLT // 1
 		this.P_longsperac=origin.P_longsperac;   // PARAMETER // specific root length // cm g-1 // PARPLT // 1
@@ -1150,21 +1151,21 @@ public class SafeSticsCrop extends Structure implements Serializable {
 		this.P_vitirazo=origin.P_vitirazo;   // PARAMETER // Rate of increase of the nitrogen harvest index // g grain g plant -1 day-1 // PARPLT // 1
 		this.P_vitpropsucre=origin.P_vitpropsucre;   // PARAMETER // increase rate of sugar harvest index  // g sugar g MS-1  j-1 // PARPLT // 1
 		this.P_vitprophuile=origin.P_vitprophuile;   // PARAMETER // increase rate of oil harvest index  // g oil g MS-1 j-1 // PARPLT // 1
-		this.P_Vmax1=origin.P_Vmax1;   // PARAMETER // Rate of slow nitrogen absorption (high affinity system) // µmole cm-1 h-1 // PARPLT // 1
-		this.P_Vmax2=origin.P_Vmax2;   // PARAMETER // Rate of rapid nitrogen absorption (high affinity system) // µmole cm-1 h-1 // PARPLT // 1
+		this.P_Vmax1=origin.P_Vmax1;   // PARAMETER // Rate of slow nitrogen absorption (high affinity system) // ï¿½mole cm-1 h-1 // PARPLT // 1
+		this.P_Vmax2=origin.P_Vmax2;   // PARAMETER // Rate of rapid nitrogen absorption (high affinity system) // ï¿½mole cm-1 h-1 // PARPLT // 1
 		this.P_zlabour=origin.P_zlabour;   // PARAMETER // Depth of ploughing  // cm // PARPLT // 1
 		this.P_zprlim=origin.P_zprlim;   // PARAMETER // Maximum depth of the root profile for the reference profile // cm  // PARPLT // 1
-		this.P_zpente=origin.P_zpente;   // PARAMETER // Depth where the root density is ½ of the surface root density for the reference profile // cm  // PARPLT // 1
+		this.P_zpente=origin.P_zpente;   // PARAMETER // Depth where the root density is ï¿½ of the surface root density for the reference profile // cm  // PARPLT // 1
 		this.P_adilmax=origin.P_adilmax;   // PARAMETER // Parameter of the maximum curve of nitrogen needs [Nplante]=P_adilmax MS^(-P_bdilmax) // N% MS // PARPLT // 1
 		this.P_bdilmax=origin.P_bdilmax;   // PARAMETER // Parameter of the maximum curve of nitrogen needs [Nplante]=P_adilmax MS^(-P_bdilmax) // SD // PARPLT // 1
 		this.P_masecNmax=origin.P_masecNmax;   // PARAMETER // Aerial biomass  on and after there is nitrogen dilution (critical and maximal curves) // t ha-1 // PARPLT // 1
 		this.P_INNmin=origin.P_INNmin;   // PARAMETER // Minimum value of INN authorised for the crop // SD // PARPLT // 1
 		this.P_inngrain1=origin.P_inngrain1;   // PARAMETER // INN minimal for net absorption of nitrogen during grain filling  // SD // PARPLT // 1
 		this.P_inngrain2=origin.P_inngrain2;   // PARAMETER // INN minimal for null net absorption of nitrogen during grain filling  // SD // PARPLT // 1
-		this.P_stlevdno=origin.P_stlevdno;   // PARAMETER // phasic duration between emergence and the beginning of nodulation  // degrés.jours // PARPLT // 1
+		this.P_stlevdno=origin.P_stlevdno;   // PARAMETER // phasic duration between emergence and the beginning of nodulation  // degrï¿½s.jours // PARPLT // 1
 		this.P_stdnofno=origin.P_stdnofno;   // PARAMETER // phasic duration between the beginning and the end of nodulation // degree.days // PARPLT // 1
-		this.P_stfnofvino=origin.P_stfnofvino;   // PARAMETER // phasic duration between the end of the nodulation and the end of the nodule life   // degrés.jours // PARPLT // 1
-		this.P_vitno=origin.P_vitno;   // PARAMETER // "rate of nodule onset expressed as a proportion of  P_fixmax   per degree day   // nb degrés.jour-1 // PARPLT // 1
+		this.P_stfnofvino=origin.P_stfnofvino;   // PARAMETER // phasic duration between the end of the nodulation and the end of the nodule life   // degrï¿½s.jours // PARPLT // 1
+		this.P_vitno=origin.P_vitno;   // PARAMETER // "rate of nodule onset expressed as a proportion of  P_fixmax   per degree day   // nb degrï¿½s.jour-1 // PARPLT // 1
 		this.P_profnod=origin.P_profnod;   // PARAMETER // nodulation depth // cm // PARPLT // 1
 		this.P_concNnodseuil=origin.P_concNnodseuil;   // PARAMETER // maximal soil nitrogen threshold for nodule onset  // kg.ha-1.mm-1 // PARPLT // 1
 		this.P_concNrac0=origin.P_concNrac0;   // PARAMETER // soil nitrogen threshold forbiding nodule activity // kg.ha-1.mm-1 // PARPLT // 1

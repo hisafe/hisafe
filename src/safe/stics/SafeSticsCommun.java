@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
- * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
+ * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -51,6 +51,7 @@ package safe.stics;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+
 import com.sun.jna.Structure;
 
 /**
@@ -68,8 +69,8 @@ public class SafeSticsCommun extends Structure implements Serializable {
 	   public boolean flag_record;
 	   public int ipl;  
 	   public int P_nbplantes;     // PARAMETER // number of simulated plants // SD // P_USM/USMXML // 0
-	   public int jour;            //  variable pour le stockage du jour courant de la simulation (01 à 31)
-	   public int nummois;         //  variable pour le stockage du numéro de mois courant (01 à 12)
+	   public int jour;            //  variable pour le stockage du jour courant de la simulation (01 ï¿½ 31)
+	   public int nummois;         //  variable pour le stockage du numï¿½ro de mois courant (01 ï¿½ 12)
 	   public int P_culturean;  	// PARAMETER // crop status 1 = over 1 calendar year ,other than 1  = on two calendar years (winter crop in northern hemisphere) // code 0/1 // P_USM/USMXML // 0
 	   public int P_iwater;  		// PARAMETER // julian day of the beginning of the simulation // jour julien // P_USM // 1
 	   public int P_ifwater;  		// PARAMETER // julian day of the end of simulation // julian day // P_USM // 1
@@ -127,7 +128,7 @@ public class SafeSticsCommun extends Structure implements Serializable {
 	   public float coefbifres;  
 	   public float coefcifres;  
 	   public float a;  
-	   public float effN; // TODO: variable locale. Pas d'interêt dans la version actuelle de la stocker  
+	   public float effN; // TODO: variable locale. Pas d'interï¿½t dans la version actuelle de la stocker  
 	   public float hi;  
 	   public float ha;  
 	   public float hpf;  
@@ -137,7 +138,7 @@ public class SafeSticsCommun extends Structure implements Serializable {
 	   public float rnet;       	// OUTPUT // Net radiation  // MJ m-2
 	   public float albedolai;       // OUTPUT // P_Albedo of the crop cobining soil with vegetation // SD
 	   public float resmes;       	// OUTPUT // Amount of soil water in the measurement depth // mm
-	   public float dacouche[]; 	// 0 à dacouche sinon pb le jour de la recolte dans densirac (si codeculture = feuille)
+	   public float dacouche[]; 	// 0 ï¿½ dacouche sinon pb le jour de la recolte dans densirac (si codeculture = feuille)
 	   public float ruisselt;       // OUTPUT // Total quantity of water in run-off (surface + overflow) // mm
 	   public float infilj[]; 
 	   public float exces[];       	// OUTPUT // Amount of water  present in the macroporosity of the horizon 1  // mm
@@ -174,8 +175,8 @@ public class SafeSticsCommun extends Structure implements Serializable {
 	   public float qmulch;       	// OUTPUT // Quantity of plant mulch // t.ha-1
 	   public float azomes;       	// OUTPUT // Amount of  mineral nitrogen in the depth of measurement // kgN.ha-1
 	   public float ammomes;       	// OUTPUT // Amount of ammonium in the depth of measurement // kgN.ha-1
-	   public float FsNH3;       	// OUTPUT // Volatilisation of NH3  // µg.m-2.j-1
-	   public float RsurRU;       	// OUTPUT // Fraction of available water reserve (R/RU) over the entire profile // 0 à 1
+	   public float FsNH3;       	// OUTPUT // Volatilisation of NH3  // ï¿½g.m-2.j-1
+	   public float RsurRU;       	// OUTPUT // Fraction of available water reserve (R/RU) over the entire profile // 0 ï¿½ 1
 	   public float DRAT;       	// OUTPUT // Water flux drained at the base of the soil profile integrated over the simulation periodout of the soil   // mm
 	   public float QNdrp;  
 	   public float esol;       	// OUTPUT // Actual soil evaporation flux  // mm day-1
