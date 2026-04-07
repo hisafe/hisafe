@@ -83,9 +83,9 @@ public class SafeLayer implements Serializable {
 	private double infiltrability; 	
 	/**  Total saturated porosity (m3 water m-3 soil) */
 	private double thetaSat;		
-	/**  Bulk density (fine soil+stones) (kg m-3) */
+	/**  Bulk density (fine soil+stones) (g m-3) */
 	private double bulkDensity;		
-	/**  Bulk density (fine soil) (kg m-3) */
+	/**  Bulk density (fine soil) (g m-3) */
 	private double bulkDensityFineSoil;		
 	/**  Field capacity (fine soil+stones) (m3 m-3) */
 	private double fieldCapacity;	
@@ -174,6 +174,7 @@ public class SafeLayer implements Serializable {
 							organicMatter,
 							topSoil,
 							soil);
+
 		this.alpha = SafePedotransferUtil.getAlpha (
 							clay,
 							bulkDensityFineSoil,
@@ -181,12 +182,14 @@ public class SafeLayer implements Serializable {
 							organicMatter,
 							topSoil,
 							soil);
+	
 		this.lambda = SafePedotransferUtil.getLambda (
 							clay,
 							bulkDensityFineSoil,
 							silt,
 							organicMatter,
 							soil);
+
 		this.n = SafePedotransferUtil.getN (
 							clay,
 							bulkDensityFineSoil,

@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
- * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
+ * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -49,31 +49,30 @@
 package safe.model;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 
-import jeeb.lib.defaulttype.SimpleCrownDescription;
-import jeeb.lib.util.CancellationException;
-import jeeb.lib.util.StatusDispatcher;
-import jeeb.lib.util.Vertex3d;
 import capsis.defaulttype.SpatializedTree;
 import capsis.defaulttype.Speciable;
 import capsis.defaulttype.Species;
 import capsis.defaulttype.plotofcells.PlotOfCells;
 import capsis.kernel.GScene;
+import jeeb.lib.defaulttype.SimpleCrownDescription;
+import jeeb.lib.util.CancellationException;
+import jeeb.lib.util.StatusDispatcher;
+import jeeb.lib.util.Vertex3d;
 
 /**
  * TREE object 
  * @author : Christian DUPRAZ - INRA Montpellier France - 2002 : initialization - phenology - pruning - root pruning - trimming
- * @author : Grégoire VINCENT - IRD  Montpellier France - 2003 : C allocation and allometric growth
+ * @author : Grï¿½goire VINCENT - IRD  Montpellier France - 2003 : C allocation and allometric growth
  * @author : Rachmat MULIA    - ICRAF Bogor Indonesia   - 2004 : fine root cellular automata 
- * @author : Grégoire TALBOT  - INRA Montpellier France - 2009 : C allocation - allometric growth - root growth modification 
+ * @author : Grï¿½goire TALBOT  - INRA Montpellier France - 2009 : C allocation - allometric growth - root growth modification 
  * @author : Tristan GERAULT  - INRA Montpellier France - 2021 : nitrogen fixation module (V1) 
  * @author : Nicolas BARBAULT - INRA Montpellier France - 2021 : evergreen tree and fruit module 
  */
@@ -751,6 +750,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		setFloweringFrostStress(1); 
 		setLightCompetitionIndex(1); 
 		setLeafWaterNitrogenStress(1);
+		setLeafFrostStress(1);
 	}
 
 	/**
@@ -1697,7 +1697,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			}
 		}
 	
-		if (this.getTotalCarbonFoliage() != 0) this.computeCarbonFoliageSenescence(dayClimat, generalParameters, julianDay);
+		if (this.getTotalCarbonFoliage() != 0) this.computeCarbonFoliageSenescence(dayClimat, generalParameters);
 
 		//CARBON ALLOCATION 
 		SafePlotSettings plotSettings = stand.getPlot().getPlotSettings();
@@ -2454,8 +2454,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 	/**
 	 * C allocation module
-	 * @author Grégoire VINCENT (IRD) - August 2003
-	 * @author Grégoire TALBOT (INRA SYSTEM) - OCtober 2010
+	 * @author Grï¿½goire VINCENT (IRD) - August 2003
+	 * @author Grï¿½goire TALBOT (INRA SYSTEM) - OCtober 2010
      * @param stand Reference on SafeStand object
      * @param generalParameters Reference on SafeGeneralParameters object
      * @param simulationDay Julian day of simulation
@@ -2468,7 +2468,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 		double carbonAllocated = carbonIncrement; 
 		double woodCarbonContent = this.getTreeSpecies ().getWoodCarbonContent ();
-		
+
 		//Tree specific parameters 
 		SafeTreeSpecies treeSpecies = this.getTreeSpecies ();
 		double	aTree					= treeSpecies.getHeightDbhAllometricCoeffA ();
@@ -2952,8 +2952,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 	/**
 	 * Allometric growth (dbh, height, crowndiameter)
-	 * @author Grégoire VINCENT (IRD) - August 2003
-	 * @author Grégoire TALBOT (INRA SYSTEM) - OCtober 2010
+	 * @author Grï¿½goire VINCENT (IRD) - August 2003
+	 * @author Grï¿½goire TALBOT (INRA SYSTEM) - OCtober 2010
      * @param stand Reference on SafeStand object
      * @param generalParameters Reference on SafeGeneralParameters object
 	 */
@@ -3131,7 +3131,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	/**
 	 * Cellular automata for fine roots growth : calculation of additional root length to each voxel already rooted
 	 * @author Rachmat MULIA (ICRAF) - August 2003
-	 * @author Grégoire TALBOT (INRA SYSTEM) - 2008
+	 * @author Grï¿½goire TALBOT (INRA SYSTEM) - 2008
 	 * @param carbonFineRootsIncrement Carbon increment of the day for fine roots (kg c) 
 	 */
 	private double [] calculateAdditionalRootToVoxels (double carbonFineRootsIncrement) {	
@@ -3303,7 +3303,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	/**
 	 * Cellular automata for fine roots growth : root colonisation
 	 * @author Rachmat MULIA (ICRAF) - August 2003
-	 * @author Grégoire TALBOT (INRA SYSTEM) - 2008
+	 * @author Grï¿½goire TALBOT (INRA SYSTEM) - 2008
 	 * @param simulationDay Julain day of simulation
 	 * @param additionalRootLength Table of additional root length for each rooted voxel (m)
 	 */
@@ -3665,7 +3665,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	 * @param generalParameters Reference to SafeGeneralParameters
 	 * @param julianDay Julian day of simulation
 	 */
-	public void computeCarbonFoliageSenescence (SafeDailyClimat dayClimat, SafeGeneralParameters generalParameters, int julianDay) {
+	public void computeCarbonFoliageSenescence (SafeDailyClimat dayClimat, SafeGeneralParameters generalParameters) {
 
 		int leavesResiduesSpreading = generalParameters.leavesResiduesSpreading;	//0=exported 1=under tree 2=all plot
 		
@@ -3690,10 +3690,11 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		double leafAgeStress = 1;
 	
 		if (this.getPhenologicalStage() == 3){
+			int leafAge = this.getBudburstDate()+this.getLeafAgeCohort(this.getTreeSpecies().getNbCohortMax()-1);
 			// computed for respecting the sigmoidal decrease with parameters a and b
-			double a = getLeafFallStartingDate()+this.getTreeSpecies ().getLeafFallDuration()/2;
-			double b = 2*Math.log(99)/this.getTreeSpecies ().getLeafFallDuration();
-			double fastSenescenceRate = 1-(1+Math.exp(-b*(julianDay-a)))/(Math.exp(b)+Math.exp(-b*(julianDay-a)));		
+			double a = getLeafFallStartingDate()+(this.getTreeSpecies ().getLeafFallDuration()/2);
+			double b = 2*Math.log(99)/this.getTreeSpecies ().getLeafFallDuration();	
+			double fastSenescenceRate = 1-(1+Math.exp(-b*(leafAge-a)))/(Math.exp(b)+Math.exp(-b*(leafAge-a)));	
 			leafAgeStress = 1 - (this.getTreeSpecies ().getLeafSenescenceRate() + fastSenescenceRate);
 		}
 		setLeafAgeStress(leafAgeStress);
@@ -4662,7 +4663,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	}
 	/**
 	 * Daily calculation of PAR intercepted by a tree depending climatic entries
-	 * @author Grégoire TALBOT (INRA SYSTEM) - 2007
+	 * @author Grï¿½goire TALBOT (INRA SYSTEM) - 2007
 	 * @param dayClimat Reference of SafeDailyClimat object 
 	 * @param generalParameters Reference of SafeGeneralParameters object 
 	 */
@@ -4828,6 +4829,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		this.setWaterUptakeInSaturation (0);
 		this.setFloweringHeatStress(1); 
 		this.setFloweringFrostStress(1); 
+		this.setLeafFrostStress(1);
 		this.setNitrogenDemandAfterFixation (0);
 		this.setNitrogenDemandBeforeFixation(0);
 		this.setNitrogenUptake(0);
@@ -5493,7 +5495,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	}
 
 	public double getFruitMeanFreshMatterWeight () {return getFruitMeanDryMatterWeight() * this.getTreeSpecies().getFruitDryToFreshMatterWeight();}
-	public double getFruitVolume () {return getFruitMeanDryMatterWeight () * this.getTreeSpecies().getFruitDryMaterDensity();}
+	public double getFruitVolume () {return getFruitMeanDryMatterWeight () * this.getTreeSpecies().getFruitDryMatterDensity();}
 	public double getFruitEquivalentSurfaceArea () {
 		double radiusEquivalentSphere = Math.cbrt(3 * getFruitVolume () / 4 * Math.PI);
 		return ((getFruitNbr () * Math.PI * radiusEquivalentSphere * radiusEquivalentSphere) / 10000);	
@@ -6224,5 +6226,4 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		else return this.getTotalLeafArea()/this.getCrownVolume();
 	}
 
-	
 }

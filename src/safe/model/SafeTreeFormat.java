@@ -297,8 +297,8 @@ public class SafeTreeFormat extends RecordSet {
 	private int fruitCarbonStressDateStart;				
 	/** Conversion rate from fruit dry to fresh matter  */
 	private double fruitDryToFreshMatterWeight;			
-	/** Fruit dry mater density (m2 / tonnes DM) */
-	private double fruitDryMaterDensity;			
+	/** Fruit dry matter density (m2 / tonnes DM) */
+	private double fruitDryMatterDensity;			
 	/** Fruit fresh matter weight to oil concentration conversion parameter */
 	private double fruitOilConversionCoeffA;			//
 	/** Fruit fresh matter weight to oil concentration conversion parameter */
@@ -332,17 +332,27 @@ public class SafeTreeFormat extends RecordSet {
 	private int bnfStartToEndDuration;	
 	/**  Maximum depth for nitrogen fixation (m) */
 	private double bnfMaxDepth;//
-	private double bnfNodulationInhibitionThreshold;	
+	/**Param1 for trapezoidal function for bnf temperature stress calculation (degrees)*/
 	private double bnfCardinalTemp1;
+	/**Param2 for trapezoidal function for bnf temperature stress calculation (degrees)*/
 	private double bnfCardinalTemp2;	
+	/**Param3 for trapezoidal function for bnf temperature stress calculation (degrees)*/
 	private double bnfCardinalTemp3;		 
+	/**Param4 for trapezoidal function for bnf temperature stress calculation (degrees)*/
 	private double bnfCardinalTemp4;	
+	/**Saturation inhibiting BNF linear function param Max (g m-3)*/
 	private double bnfFullNoduleActivityThreshold;
+	/**Saturation inhibiting BNF linear function param Min (g m-3)*/
 	private double bnfNullNoduleActivityThreshold;
+	/** Threshold under whitch BNF nodulation Inhibition is activated (g m-3))*/
+	private double bnfNodulationInhibitionThreshold;	
 	/** Air temperature threshold for BNF potential activity to be increased by air temperature (degree) */
-	private double bnfAirTemperatureThreshold; 		
-	private double bnfOptimalTemperatureDifference;  //degrees 
+	private double bnfAirTemperatureThreshold; 	
+	/**The optimal difference to bnfAirTemperatureThreshold for optimal activity (degree)*/
+	private double bnfOptimalTemperatureDifference;  
+	/**A parameter describing the mass of nitrogen fixed per g of produced vegetative dry matter.*/
 	private double bnfFixMaxVeg;
+	/**A parameter describing the mass of nitrogen fixed per g of produced reproductive organ dry matter (flowers + fruits). */
 	private double bnfFixMaxRepro;
 	
 	//STRESSES EFFECT ON Root Shoot 
@@ -404,7 +414,7 @@ public class SafeTreeFormat extends RecordSet {
 	private double co2EffectOnLueHalfSaturationConstant;	
 	/** CO2 intrinsic effect on WUE (Water use efficiency) sensitivity  */
 	private double co2EffectIntrinsicWueSensitivity;		
-	/** CO2 reference value (ppm)  */
+	/** CO2 concentration reference value (ppm)  */
 	private double co2ReferenceValue;					
  
 	// SELF PRUNING PARAMETERS 
@@ -1100,7 +1110,7 @@ public class SafeTreeFormat extends RecordSet {
 						requiredParameters.add("fruitAllocationFraction");
 						requiredParameters.add("fruitCarbonStressDateStart");
 						requiredParameters.add("fruitDryToFreshMatterWeight");
-						requiredParameters.add("fruitDryMaterDensity");
+						requiredParameters.add("fruitDryMatterDensity");
 						requiredParameters.add("fruitOilConversionCoeffA");
 						requiredParameters.add("fruitOilConversionCoeffB");
 						requiredParameters.add("fruitOilConversionCoeffC");
@@ -1170,9 +1180,9 @@ public class SafeTreeFormat extends RecordSet {
 					fruitDryToFreshMatterWeight = r.getDoubleValue ();
 					requiredParameters.remove("fruitDryToFreshMatterWeight");
 					
-				} else if  (r.key.equals ("fruitDryMaterDensity")) {
-					fruitDryMaterDensity = r.getDoubleValue ();
-					requiredParameters.remove("fruitDryMaterDensity");					
+				} else if  (r.key.equals ("fruitDryMatterDensity")) {
+					fruitDryMatterDensity = r.getDoubleValue ();
+					requiredParameters.remove("fruitDryMatterDensity");					
 					
 				} else if  (r.key.equals ("fruitOilConversionCoeffA")) {
 					fruitOilConversionCoeffA = r.getDoubleValue ();
@@ -1432,7 +1442,7 @@ public class SafeTreeFormat extends RecordSet {
 							fruitHeatStressTemperatureMin, fruitHeatStressTemperatureMax,
 							fruitFrostStressTemperatureMin, fruitFrostStressTemperatureMax,					
 							fruitMaxDryMatterAllocation, fruitAllocationFraction,fruitCarbonStressDateStart,						
-							fruitDryToFreshMatterWeight, fruitDryMaterDensity,
+							fruitDryToFreshMatterWeight, fruitDryMatterDensity,
 							fruitOilConversionCoeffA,fruitOilConversionCoeffB,fruitOilConversionCoeffC,
 							fruitOilDensity,
 							fruitFirstYear,

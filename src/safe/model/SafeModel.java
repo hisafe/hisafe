@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
- * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
+ * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -53,22 +53,12 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import jeeb.lib.util.CancellationException;
-import jeeb.lib.util.Log;
-import jeeb.lib.util.StatusDispatcher;
-import jeeb.lib.util.Translator;
-import safe.extension.ioformat.SafeInventory;
-import safe.extension.ioformat.safeExportNew.*;
-import safe.stics.SafeSticsClimat;
-import safe.stics.SafeSticsParameters;
-import safe.stics.SafeSticsParametersFormat;
-import safe.stics.SafeSticsStation;
-import safe.stics.SafeSticsTransit;
+
 import capsis.kernel.EvolutionParameters;
 import capsis.kernel.GModel;
 import capsis.kernel.GScene;
@@ -76,6 +66,19 @@ import capsis.kernel.InitialParameters;
 import capsis.kernel.MethodProvider;
 import capsis.kernel.Project;
 import capsis.kernel.Step;
+import jeeb.lib.util.CancellationException;
+import jeeb.lib.util.Log;
+import jeeb.lib.util.StatusDispatcher;
+import jeeb.lib.util.Translator;
+import safe.extension.ioformat.SafeInventory;
+import safe.extension.ioformat.safeExportNew.SafeExportFormat;
+import safe.extension.ioformat.safeExportNew.SafeExportNew;
+import safe.extension.ioformat.safeExportNew.SafeExportProfile;
+import safe.stics.SafeSticsClimat;
+import safe.stics.SafeSticsParameters;
+import safe.stics.SafeSticsParametersFormat;
+import safe.stics.SafeSticsStation;
+import safe.stics.SafeSticsTransit;
 
 
 /**
@@ -568,7 +571,7 @@ public class SafeModel extends GModel {
 								sticsParam.P_codeinitprec = 1;	
 									
 								int julianDayStart = zone.getJulianDayStart(year);
-								int julianDayEnd = zone.getJulianDayEnd (year);
+								int julianDayEnd = zone.getJulianDayEnd (year, true);
 								
 								//first initialisation of crops in STICS
 								//Stics objects are initialised with initial values			
@@ -597,7 +600,7 @@ public class SafeModel extends GModel {
 								sticsParam.P_codeinitprec = 2;	
 								
 								int julianDayStart = zone.getJulianDayStart(year);
-								int julianDayEnd = zone.getJulianDayEnd (year);
+								int julianDayEnd = zone.getJulianDayEnd (year, true);
 								
 								//Re-initialisation of crops in STICS
 								//Stics objects are initialised with last day of previous simulation
@@ -622,7 +625,7 @@ public class SafeModel extends GModel {
 								zone.loadNextItk(year, false);
 								zone.setSticsSimulationDay(1);
 								int julianDayStart = zone.getJulianDayStart(year);
-								int julianDayEnd = zone.getJulianDayEnd (year);
+								int julianDayEnd = zone.getJulianDayEnd (year, true);
 								
 								//STICS parameters for chaining years (second year and others = Yes) 
 								sticsParam.P_codeinitprec = 2;	
@@ -644,7 +647,7 @@ public class SafeModel extends GModel {
 						if (zone.isDayStart(year, month, day)) {
 
 							int julianDayStart = zone.getJulianDayStart(year);
-							int julianDayEnd = zone.getJulianDayEnd (year);
+							int julianDayEnd = zone.getJulianDayEnd (year, true);
 							
 							System.out.println("==== Simulation year="+year+" month="+month+" day="+day+" julianDay="+julianDay+" zone="+zone.getName()+" crop="+zone.getCropSpecies().getName()+" ====");
 
@@ -1464,12 +1467,16 @@ public class SafeModel extends GModel {
 		this.loadStics();
 		
 		//Date simulation start
-		int year = ep.simulationDateStart.get(GregorianCalendar.YEAR);
-		int month = (ep.simulationDateStart.get(GregorianCalendar.MONTH))+1;
-		int day = ep.simulationDateStart.get(GregorianCalendar.DAY_OF_MONTH);
+		int yearStart = ep.simulationDateStart.get(GregorianCalendar.YEAR);
+		int monthStart = (ep.simulationDateStart.get(GregorianCalendar.MONTH))+1;
+		int dayStart = ep.simulationDateStart.get(GregorianCalendar.DAY_OF_MONTH);
 		int simulationDayStart = ep.simulationDateStart.get(GregorianCalendar.DAY_OF_YEAR);
+	
+		int yearEnd = ep.simulationDateEnd.get(GregorianCalendar.YEAR);
+		int monthEnd = (ep.simulationDateEnd.get(GregorianCalendar.MONTH))+1;
+		int dayEnd = ep.simulationDateEnd.get(GregorianCalendar.DAY_OF_MONTH);
 		
-		String line = System.getProperty("line.separator")+"Simulation date start = " + year + "-" + month+"-"+ day;
+		String line = System.getProperty("line.separator")+"Simulation date start = " + yearStart + "-" + monthStart+"-"+ dayStart;
 		Files.write(myfile, line.getBytes(), StandardOpenOption.APPEND);
 		
 		// Computing cell neighbourgs (for root growth)
@@ -1496,19 +1503,23 @@ public class SafeModel extends GModel {
 			
 			SafeCropZone zone = (SafeCropZone) z.next();
 			List<String> itkList = zone.getItkList();
-			zone.loadFirstItk(year);
-			int julianDayStart = zone.getJulianDayStart(year);
-			if (julianDayStart != simulationDayStart) {
-				System.out.println("CROP ITK DAYS START="+julianDayStart+" IS DIFFERENT OF SIMULATION DAY START="+simulationDayStart);
-				System.out.println(itkList.get(0));
-				System.exit(1);	
-			}
-			int julianDayEnd = zone.getJulianDayEnd(year);
+			zone.loadFirstItk(yearStart);
+			int julianDayStart = zone.getJulianDayStart(yearStart);
+			
+			int zoneMonthStart = (int) zone.getSticsItk().getMonthstart(); 
+			int zoneDayStart = (int) zone.getSticsItk().getDaystart(); 
+			int zoneMonthEnd = (int) zone.getSticsItk().getMonthend(); 
+			int zoneDayEnd = (int) zone.getSticsItk().getDayend(); 
+			int julianDayEnd = zone.getJulianDayEnd(yearStart, false);
 			if (julianDayEnd>365) julianDayEnd=julianDayEnd-365;
-
 			if (julianDayEnd==366 || julianDayEnd==365) julianDayEnd=1;
 			else julianDayEnd++;
-			
+			if (monthStart != zoneMonthStart || dayStart != zoneDayStart ) {
+				System.out.println("ZONE " + zone.getName()+ " FIRST CROP ITK DAYS START "+  zoneMonthStart+"-"+ zoneDayStart+" IS DIFFERENT OF SIMULATION DAY START "+monthStart+"-"+dayStart);
+				System.out.println();
+				System.exit(1);	
+			}
+
 			line = System.getProperty("line.separator")+"##===============================================";
 			line = line + System.getProperty("line.separator")+"## ZONE " + zone.getName();
 			line = line + System.getProperty("line.separator")+"##===============================================";
@@ -1517,32 +1528,39 @@ public class SafeModel extends GModel {
 			zone.printVerif (myfile); 
 			
 			for (int itkIndex=1; itkIndex<itkList.size();itkIndex++) {
-				zone.loadNextItk(year, false);
-				julianDayStart = zone.getJulianDayStart(year);
+
+				zone.loadNextItk(yearStart, false);
+
+				julianDayStart = zone.getJulianDayStart(yearStart);
 				if (julianDayStart != julianDayEnd) {
 					System.out.println("SIMULATION DAYS PROBLEM BETWEEN "+itkList.get(itkIndex-1)+" AND "+itkList.get(itkIndex));
 					System.out.println("JULIAN DAY END="+julianDayEnd+" JULIAN DAY START="+julianDayStart);
 					System.exit(1);		
 				}
-				
-				julianDayEnd = zone.getJulianDayEnd(year);
 
+				julianDayEnd = zone.getJulianDayEnd(yearStart, false);
 				if (julianDayEnd>365) julianDayEnd=julianDayEnd-365;
 				if (julianDayEnd==366 || julianDayEnd==365) julianDayEnd=1;
 				else julianDayEnd++;
-				
 				zone.printVerif (myfile); 
-
+			}
+			
+			zoneMonthEnd = (int) zone.getSticsItk().getMonthend(); 
+			zoneDayEnd = (int) zone.getSticsItk().getDayend(); 
+			if (monthEnd != zoneMonthEnd || dayEnd != zoneDayEnd ) {
+				System.out.println("ZONE " + zone.getName()+ " LAST CROP ITK DAYS END "+  zoneMonthEnd+"-"+ zoneDayEnd+" IS DIFFERENT OF SIMULATION DAY END "+monthEnd+"-"+dayEnd);
+				System.out.println();
+				System.exit(1);	
 			}
 		}
 		
-		year = ep.simulationDateEnd.get(GregorianCalendar.YEAR);
-		month = (ep.simulationDateEnd.get(GregorianCalendar.MONTH))+1;
-		day = ep.simulationDateEnd.get(GregorianCalendar.DAY_OF_MONTH);
-		line = System.getProperty("line.separator")+"Simulation date end = "  + year + "-" + month+"-"+ day;
+
+
+		
+
+		line = System.getProperty("line.separator")+"Simulation date end = "  + yearEnd + "-" + monthEnd+"-"+ dayEnd;
 		Files.write(myfile, line.getBytes(), StandardOpenOption.APPEND);
 	}
-
 	/**
 	 * Post intervention processing (ex: after thining).
 	 */

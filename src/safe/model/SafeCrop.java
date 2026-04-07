@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
- * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
+ * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -54,7 +54,15 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-import safe.stics.*;
+import safe.stics.SafeSticsClimat;
+import safe.stics.SafeSticsCommun;
+import safe.stics.SafeSticsCrop;
+import safe.stics.SafeSticsLai;
+import safe.stics.SafeSticsLaiFormat;
+import safe.stics.SafeSticsParameters;
+import safe.stics.SafeSticsSoil;
+import safe.stics.SafeSticsStation;
+import safe.stics.SafeSticsTransit;
 
 /**
  * CROP represent the crop sowed on a SafeCell (can be baresoil)
@@ -97,7 +105,9 @@ import safe.stics.*;
 	/** Crop total month  aboveground dry matter   (t.ha-1)  */
 	private float monthBiomass;
  	/** Crop grain dry matter (sticsCrop.magrain) (t.ha-1)  */
- 	private float grainBiomass;										
+ 	private float grainBiomass;	
+ 	/** Crop grain dry matter  MAX during the plant cycle (t.ha-1)  */
+ 	private float grainBiomassMax;		
  	/** Crop growth rate  (sticsCrop.dltams) (t ha-1.j-1)  */
  	private float biomassIncrement;			
 	/** Crop aboveground dry matter harvested (sticsCrop.MSexporte) (t.ha-1)  */
@@ -129,9 +139,9 @@ import safe.stics.*;
 		3=dor DORMANCE (ou DEBDORM et FINDORM pour les ligneux)	
 		4=ger GERMINATION	
 		5=lev LEVEE		
-		6=amf accélération maximale de croissance foliaire		
-		7=lax indice foliaire maxi, fin de croissance foliaire nette ou brute selon l’option.		
-		8=sen début sénescence nette (option LAInet)		
+		6=amf accï¿½lï¿½ration maximale de croissance foliaire		
+		7=lax indice foliaire maxi, fin de croissance foliaire nette ou brute selon lï¿½option.		
+		8=sen dï¿½but sï¿½nescence nette (option LAInet)		
 		9=lan indice foliaire nul (option LAInet)		
 		10=rec RECOLTE
 	*/
@@ -142,11 +152,11 @@ import safe.stics.*;
 	/** Crop Phenological stage reproductive
 		1=snu SOL NU
 		2=flo Floraison		
-		3=drp début remplissage des organes récoltés		
-		4=nou Nouaison (Fin de la nouaison, pour les plantes indéterminées)		
-		5=des début dessication des organes récoltés	
-		6=mat maturité physiologique	
-		7=rec Récolte
+		3=drp dï¿½but remplissage des organes rï¿½coltï¿½s		
+		4=nou Nouaison (Fin de la nouaison, pour les plantes indï¿½terminï¿½es)		
+		5=des dï¿½but dessication des organes rï¿½coltï¿½s	
+		6=mat maturitï¿½ physiologique	
+		7=rec Rï¿½colte
 	*/
 	private int phenologicStageReproductive;
 	/** Computing days between 2 stages reproductive */
@@ -363,7 +373,9 @@ import safe.stics.*;
 		if (this.yield > this.yieldMax) 
 			this.yieldMax = this.yield ; 	
 		if (this.biomass > this.biomassMax) 
-			this.biomassMax = this.biomass ; 	
+			this.biomassMax = this.biomass ; 
+		if (this.grainBiomass > this.grainBiomassMax) 
+			this.grainBiomassMax = this.grainBiomass ; 		
 		if (this.height > this.heightMax) 
 			this.heightMax = this.height ; 	
 				
@@ -416,6 +428,7 @@ import safe.stics.*;
 		this.yieldMax = 0;
 		this.rootsDepthMax = 0;
 		this.biomassMax = 0;
+		this.grainBiomassMax = 0;
 		this.heightMax = 0;
 	}
 	
@@ -881,8 +894,8 @@ import safe.stics.*;
 				sumHisafeWaterStressVegetative=0;
 				sumHisafeNitrogenStressVegetative=0;
 			}
-			//rajouté IL 11/06/2025
-			//sinon bug sol nu après récolte 
+			//rajoutï¿½ IL 11/06/2025
+			//sinon bug sol nu aprï¿½s rï¿½colte 
 			Arrays.fill(this.sticsCrop.ep	, 0);
 			Arrays.fill(this.sticsCrop.eop	, 0);
 			this.sticsCrop.mafruit = 0;
@@ -908,6 +921,7 @@ import safe.stics.*;
 			int indicePrev      = ((sticsJulianDay-1)*3)+1;
 			this.yield  		= this.sticsCrop.masec[indicePrev];
 		}
+		
 		//After planting we start compting stress days 
 		if ((phenologicStageVegetative > 1) && (phenologicStageVegetative < 10)){
 			cptDaysStageVegetative++;
@@ -1537,9 +1551,9 @@ import safe.stics.*;
 		3=dor dormancy 
 		4=ger germination	
 		5=lev levee		
-		6=amf accélération maximale de croissance foliaire		
-		7=lax indice foliaire maxi, fin de croissance foliaire nette ou brute selon l’option.		
-		8=sen début sénescence nette (option LAInet)		
+		6=amf accï¿½lï¿½ration maximale de croissance foliaire		
+		7=lax indice foliaire maxi, fin de croissance foliaire nette ou brute selon lï¿½option.		
+		8=sen dï¿½but sï¿½nescence nette (option LAInet)		
 		9=lan indice foliaire nul (option LAInet)		
 		10=rec recolte
 	 */
@@ -1548,10 +1562,10 @@ import safe.stics.*;
 	 * return the crop phenologic stage vegetative
 		1=snu bare soil	
 		2=flo flowering	
-		3=drp début remplissage des organes récoltés		
-		4=nou nouaison (Fin de la nouaison, pour les plantes indéterminées)		
-		5=des début dessication des organes récoltés	
-		6=mat maturité physiologique	
+		3=drp dï¿½but remplissage des organes rï¿½coltï¿½s		
+		4=nou nouaison (Fin de la nouaison, pour les plantes indï¿½terminï¿½es)		
+		5=des dï¿½but dessication des organes rï¿½coltï¿½s	
+		6=mat maturitï¿½ physiologique	
 		7=rec recolte
 	 */
 	public int getPhenologicStageReproductive () {return phenologicStageReproductive;}
@@ -1585,6 +1599,7 @@ import safe.stics.*;
 	public float getFruitBiomass () {return this.sticsCrop.mafruit;}	//// Dry matter of harvested organs  // t ha-1
 	public float getTuberBiomass () {return this.sticsCrop.matuber;} 	// Dry matter of harvested organs  t.ha-1
 	public float getBiomassMax () {return biomassMax;}
+	public float getGrainBiomassMax () {return grainBiomassMax;}
 	public float getBiomassIncrement() {return biomassIncrement;}
 	public float getHeight() {return  height;}
 	public float getHeightMax () {return heightMax;}
@@ -1816,13 +1831,13 @@ import safe.stics.*;
 		return plantRoots.getWaterUptakePotential();
 	}
 	
-	//PHENOLOGY (stades végétatifs) 
+	//PHENOLOGY (stades vï¿½gï¿½tatifs) 
 	//PLT : semis ou plantation (annuelles)
 	public int getNplt() {
 		if (this.sticsCrop.nplt==0) return 0;
 		return this.sticsCrop.nplt+startDay;
 	}	
-	//DEBDORM et FINDORM : entrée et levée de dormance (ligneux)
+	//DEBDORM et FINDORM : entrï¿½e et levï¿½e de dormance (ligneux)
 	public int getNdebdorm() {
 		if (this.sticsCrop.ndebdorm==0) return 0;
 		return this.sticsCrop.ndebdorm+startDay;
@@ -1831,7 +1846,7 @@ import safe.stics.*;
 		if (this.sticsCrop.nfindorm==0) return 0;
 		return this.sticsCrop.nfindorm+startDay;
 	}
-	//LEV : levée ou débourrement végétatif
+	//LEV : levï¿½e ou dï¿½bourrement vï¿½gï¿½tatif
 	public int getNlev() {
 		if (this.sticsCrop.nlev==0) return 0;
 		return this.sticsCrop.nlev+startDay;
@@ -1841,17 +1856,17 @@ import safe.stics.*;
 		if (this.sticsCrop.nger==0) return 0;
 		return this.sticsCrop.nger+startDay;
 	}
-    //AMF : accélération maximale de croissance foliaire, fin de phase juvénile
+    //AMF : accï¿½lï¿½ration maximale de croissance foliaire, fin de phase juvï¿½nile
 	public int getNamf() {
 		if (this.sticsCrop.namf==0) return 0;
 		return this.sticsCrop.namf+startDay;
 	}	
-	//LAX : indice foliaire maxi, fin de croissance foliaire nette ou brute selon l’option.
+	//LAX : indice foliaire maxi, fin de croissance foliaire nette ou brute selon lï¿½option.
 	public int getNlax() {
 		if (this.sticsCrop.nlax==0) return 0;
 		return this.sticsCrop.nlax+startDay;
 	}		
-	//SEN : début sénescence nette (option LAInet)
+	//SEN : dï¿½but sï¿½nescence nette (option LAInet)
 	public int getNsen() {
 		if (this.sticsCrop.nsen==0) return 0;
 		return this.sticsCrop.nsen+startDay;
@@ -1861,33 +1876,33 @@ import safe.stics.*;
 		if (this.sticsCrop.nlan==0) return 0;
 		return this.sticsCrop.nlan+startDay;
 	}
-	//REC : récolte
+	//REC : rï¿½colte
 	public int getNrec() {
 		if (this.sticsCrop.nrec==0) return 0;
 		return this.sticsCrop.nrec+startDay;
 	}
-	//PHENOLOGY (stades organes récoltés)
-	//FLO : floraison (début sensibilité au gel des fruits)
+	//PHENOLOGY (stades organes rï¿½coltï¿½s)
+	//FLO : floraison (dï¿½but sensibilitï¿½ au gel des fruits)
 	public int getNflo() {
 		if (this.sticsCrop.nflo==0) return 0;
 		return this.sticsCrop.nflo+startDay;
 	}
-    //DRP : début remplissage des organes récoltés
+    //DRP : dï¿½but remplissage des organes rï¿½coltï¿½s
 	public int getNdrp() {
 		if (this.sticsCrop.ndrp==0) return 0;
 		return this.sticsCrop.ndrp+startDay;
 	}	
-	//NOU : fin de la nouaison (option indéterminée)
+	//NOU : fin de la nouaison (option indï¿½terminï¿½e)
 	public int getNnou() {
 		if (this.sticsCrop.nnou==0) return 0;
 		return this.sticsCrop.nnou+startDay;
 	}		
-	//DEBDES ; début dynamique hydrique des fruits
+	//DEBDES ; dï¿½but dynamique hydrique des fruits
 	public int getNdebdes() {
 		if (this.sticsCrop.ndebdes==0) return 0;
 		return this.sticsCrop.ndebdes+startDay;
 	}	
-	//MAT : maturité physiologique
+	//MAT : maturitï¿½ physiologique
 	public int getNmat() {
 		if (this.sticsCrop.nmat==0) return 0;
 		return this.sticsCrop.nmat+startDay;

@@ -190,7 +190,6 @@ public class SafeCropZone implements Serializable {
 	
 		int day = this.getSticsItk().getDaystart();
 		int month = this.getSticsItk().getMonthstart();
-		
 		GregorianCalendar startDate= new GregorianCalendar();
 		startDate.set(year,month-1,day);
 		return( startDate.get(GregorianCalendar.DAY_OF_YEAR));
@@ -201,18 +200,17 @@ public class SafeCropZone implements Serializable {
 	 * @param year Year of the current simulation
 	 * @return the julian day
 	 **/
-	public int getJulianDayEnd (int year) {
+	public int getJulianDayEnd (int year, boolean testLeapYear) {
 
 		int day = this.getSticsItk().getDayend();
 		int month = this.getSticsItk().getMonthend();
 		int julianstart = getJulianDayStart(year);
 		GregorianCalendar endDate= new GregorianCalendar();
 		endDate.set(year,month-1,day);
-
 		int julianend = endDate.get(GregorianCalendar.DAY_OF_YEAR);
 		if (julianend <= julianstart) {
 			julianend=julianend+365;
-			if (endDate.isLeapYear(year+1)) {
+			if (testLeapYear && endDate.isLeapYear(year+1)) {
 				julianend++;
 			}
 		}
@@ -531,14 +529,7 @@ public class SafeCropZone implements Serializable {
 		return getTotalCropBiomass()  / getNbCells (); //t.ha-1
 	}
 	
-	public double getMeanPeakCropBiomass() {
-		double total = 0;
-		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
-			SafeCell cell = (SafeCell) c.next();
-			total += cell.getCrop().getBiomassMax();
-		}
-		return total / getNbCells (); //t.ha-1
-	}
+	
 	
 	public double getTotalCropYield() {
 		double total = 0;
@@ -553,14 +544,7 @@ public class SafeCropZone implements Serializable {
 		return getTotalCropYield() / getNbCells ();	//t.ha-1
 	}
 
-	public double getMeanPeakCropYield() {
-		double total = 0;
-		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
-			SafeCell cell = (SafeCell) c.next();
-			total += cell.getCrop().getYieldMax();
-		}
-		return (total / getNbCells ());	//t.ha-1
-	}
+	
 	
 	public double getTotalCropLai() {
 		double total = 0;
@@ -574,15 +558,7 @@ public class SafeCropZone implements Serializable {
 		return getTotalCropLai()/ getNbCells ();	// m2.m-2
 	}
 
-	public double getMeanPeakCropLai() {
-		double total = 0;
-		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
-			SafeCell cell = (SafeCell) c.next();
-			total += cell.getCrop().getLaiMax();	// m2.m-2
-		}
-		return (total / getNbCells ());	// m2.m-2
-	}
-
+	
 	public double getTotalCropEai() {
 		double total = 0;
 		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
@@ -595,14 +571,7 @@ public class SafeCropZone implements Serializable {
 		return getTotalCropEai() / getNbCells ();	// m2.m-2
 	}
 	
-	public double getMeanPeakCropEai() {
-		double total = 0;
-		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
-			SafeCell cell = (SafeCell) c.next();
-			total += cell.getCrop().getEaiMax();	// m2.m-2
-		}
-		return (total / getNbCells ());	// m2.m-2
-	}
+
 	
 	public double getTotalCropHeight() {
 		double total = 0;

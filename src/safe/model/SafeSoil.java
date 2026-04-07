@@ -148,7 +148,7 @@ public class SafeSoil implements Serializable {
 	private double pedotransfertLambda;
 	/** n (van Genuchten parameter) (unitless) */
 	private double pedotransfertN;
-	/** bulk density (kg m-3) */
+	/** bulk density (g m-3) */
 	private double pedotransfertBulkDensity;
 	
 	public SafeSoil () {}

@@ -244,7 +244,7 @@ public class SafePedotransferUtil {
 	}
 
 	/**
-	 * Return BulkDensity in kg m-3
+	 * Return BulkDensity in g m-3
 	 * @param particleSizeSand Particle size of sand (micrometers)
 	 * @param clay Percentage of clay (%)  
 	 * @param silt Percentage of silt (%)  

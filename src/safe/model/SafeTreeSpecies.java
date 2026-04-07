@@ -294,8 +294,8 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 	private int fruitCarbonStressDateStart;				
 	/** Conversion rate from fruit dry to fresh matter  */
 	private double fruitDryToFreshMatterWeight;			
-	/** Fruit dry mater density (m2 / tonnes DM) */
-	private double fruitDryMaterDensity;			
+	/** Fruit dry matter density (m3 / tonnes DM) */
+	private double fruitDryMatterDensity;			
 	/** Fruit fresh matter weight to oil concentration conversion parameter */
 	private double fruitOilConversionCoeffA;			//
 	/** Fruit fresh matter weight to oil concentration conversion parameter */
@@ -329,21 +329,31 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 	private int bnfStartToEndDuration;	
 	/**  Maximum depth for nitrogen fixation (m) */
 	private double bnfMaxDepth;//
-	private double bnfNodulationInhibitionThreshold;	
+	/**Param1 for trapezoidal function for bnf temperature stress calculation (degrees)*/
 	private double bnfCardinalTemp1;
+	/**Param2 for trapezoidal function for bnf temperature stress calculation (degrees)*/
 	private double bnfCardinalTemp2;	
+	/**Param3 for trapezoidal function for bnf temperature stress calculation (degrees)*/
 	private double bnfCardinalTemp3;		 
+	/**Param4 for trapezoidal function for bnf temperature stress calculation (degrees)*/
 	private double bnfCardinalTemp4;	
+	/**Saturation inhibiting BNF linear function param Max (g m-3)*/
 	private double bnfFullNoduleActivityThreshold;
+	/**Saturation inhibiting BNF linear function param Min (g m-3)*/
 	private double bnfNullNoduleActivityThreshold;
+	/** Threshold under whitch BNF nodulation Inhibition is activated (g m-3))*/
+	private double bnfNodulationInhibitionThreshold;	
 	/** Air temperature threshold for BNF potential activity to be increased by air temperature (degree) */
-	private double bnfAirTemperatureThreshold; 		
-	private double bnfOptimalTemperatureDifference;  //degrees 
+	private double bnfAirTemperatureThreshold; 	
+	/**The optimal difference to bnfAirTemperatureThreshold for optimal activity (degree)*/
+	private double bnfOptimalTemperatureDifference;  
+	/**A parameter describing the mass of nitrogen fixed per g of produced vegetative dry matter.*/
 	private double bnfFixMaxVeg;
+	/**A parameter describing the mass of nitrogen fixed per g of produced reproductive organ dry matter (flowers + fruits). */
 	private double bnfFixMaxRepro;
 	
 	//STRESSES EFFECT ON Root Shoot 
-	/** Activation of effect of below ground stress (water and nitrogen) in shoot root allocation s */
+	/** Activation of effect of below ground stress (water and nitrogen) in shoot root allocation  */
 	private boolean rsBelowGroundStressActivation ;		//
 	/** Activation of effect of light competition in shoot root allocation  */
 	private boolean rsLightStressActivation;			
@@ -401,7 +411,7 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 	private double co2EffectOnLueHalfSaturationConstant;	
 	/** CO2 intrinsic effect on WUE (Water use efficiency) sensitivity  */
 	private double co2EffectIntrinsicWueSensitivity;		
-	/** CO2 reference value (ppm)  */
+	/** CO2 concentration reference value (ppm)  */
 	private double co2ReferenceValue;					
  
 	// SELF PRUNING PARAMETERS 
@@ -631,7 +641,7 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 	
 	
 	public double getFruitDryToFreshMatterWeight() {return fruitDryToFreshMatterWeight;}
-	public double getFruitDryMaterDensity() {return fruitDryMaterDensity;}
+	public double getFruitDryMatterDensity() {return fruitDryMatterDensity;}
 	public double getFruitOilConversionCoeffA() {return fruitOilConversionCoeffA;}
 	public double getFruitOilConversionCoeffB() {return fruitOilConversionCoeffB;}
 	public double getFruitOilConversionCoeffC() {return fruitOilConversionCoeffC;}
@@ -956,7 +966,7 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 			double fruitHeatStressTemperatureMin, double fruitHeatStressTemperatureMax,
 			double fruitFrostStressTemperatureMin, double fruitFrostStressTemperatureMax,
 			double fruitMaxDryMatterAllocation, double fruitAllocationFraction, int fruitCarbonStressDateStart,
-			double fruitDryToFreshMatterWeight, double fruitDryMaterDensity,
+			double fruitDryToFreshMatterWeight, double fruitDryMatterDensity,
 			double fruitOilConversionCoeffA, double fruitOilConversionCoeffB, double fruitOilConversionCoeffC,
 			double fruitOilDensity,
 			int fruitFirstYear,
@@ -989,7 +999,7 @@ public class SafeTreeSpecies implements  Species, Serializable, Cloneable {	// f
 				this.fruitAllocationFraction = fruitAllocationFraction;
 				this.fruitCarbonStressDateStart = fruitCarbonStressDateStart;
 				this.fruitDryToFreshMatterWeight = fruitDryToFreshMatterWeight;
-				this.fruitDryMaterDensity = fruitDryMaterDensity; 
+				this.fruitDryMatterDensity = fruitDryMatterDensity; 
 				this.fruitOilConversionCoeffA = fruitOilConversionCoeffA;
 				this.fruitOilConversionCoeffB = fruitOilConversionCoeffB;
 				this.fruitOilConversionCoeffC = fruitOilConversionCoeffC;
