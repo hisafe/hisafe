@@ -1,0 +1,22 @@
+## SIMULATION
+simulationDateStart = 1994-10-01
+simulationDateEnd = 2024-09-30
+saveProjectOption = 0
+debugMode = 0
+sticsReport = 0
+
+## ZONES DEFINITION
+#name	zoneName	zoneCellList	zoneTecFileNameList
+ZONE	Main-AF	1-6,8-19,21-32,34-45,47-58,60-71,73-84,86-97,99-104	R1994-wheat.tec,R1995-weed.tec,R1995-wheat.tec,R1996-weed.tec,R1996-wheat.tec,R1997-weed.tec,R1997-rape.tec,R1998-weed.tec,R1998-wheat.tec,R1999-weed.tec,R1999-wheat.tec,R2000-weed.tec,R2000-rape.tec,R2001-weed.tec,R2001-wheat.tec,R2002-weed.tec,R2002-wheat.tec,R2003-weed.tec,R2003-wheat.tec,R2004-weed.tec,R2004-wheat.tec,R2005-rape.tec,R2006-weed.tec,R2006-wheat.tec,R2007-weed.tec,R2007-wheat.tec,R2008-weed.tec,R2008-wheat.tec,R2009-weed.tec,R2009-pea.tec,R2010-weed.tec,R2010-wheat.tec,R2011-weed.tec,R2011-wheat.tec,R2012-weed.tec,R2012-pea.tec,R2013-weed.tec,R2013-wheat.tec,R2014-weed.tec,R2014-barley.tec,R2015-weed.tec,R2015-pea.tec,R2016-weed.tec,R2016-wheat.tec,R2017-weed.tec,R2017-barley.tec,R2018-weed.tec,R2018-pea.tec,R2019-weed.tec,R2019-barley.tec,R2020-weed.tec,R2021-mais.tec,R2022-wheat.tec,R2022-weed.tec,R2023-pea.tec,R2023-weed.tec,R2024-sorghum.tec
+ZONE	TLV-AF	7,20,33,46,59,72,85,98	weed-restinclieres.tec
+
+## TREES TECHNICAL FILES
+#name	treeTecFileName
+TREETEC	walnut1.ttec
+TREETEC	walnut2.ttec
+
+## TORIC SYMETRY OPTIONS
+toricXp = 1
+toricXn = 1
+toricYp = 1
+toricYn = 1
