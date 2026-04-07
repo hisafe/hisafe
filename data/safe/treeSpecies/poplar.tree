@@ -24,7 +24,7 @@
 treeSpecies = poplar
 woodAreaDensity = 0.026
 woodCarbonContent = 0.5
-woodDensity = 616
+woodDensity = 350
 
 ##Biomass
 leafCarbonContent = 0.5
