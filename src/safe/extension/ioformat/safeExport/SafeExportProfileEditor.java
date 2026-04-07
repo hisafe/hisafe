@@ -30,7 +30,6 @@ import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -52,18 +51,18 @@ import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import jeeb.lib.util.AmapDialog;
-import jeeb.lib.util.Check;
-import jeeb.lib.util.ColumnPanel;
-import jeeb.lib.util.MessageDialog;
-import jeeb.lib.util.LinePanel;
-import jeeb.lib.util.Question;
-import jeeb.lib.util.Translator;
 import capsis.commongui.util.Helper;
 import capsis.defaulttype.plotofcells.PlotOfCells;
 import capsis.gui.MainFrame;
 import capsis.kernel.GScene;
 import capsis.util.WrapperPanel;
+import jeeb.lib.util.AmapDialog;
+import jeeb.lib.util.Check;
+import jeeb.lib.util.ColumnPanel;
+import jeeb.lib.util.LinePanel;
+import jeeb.lib.util.MessageDialog;
+import jeeb.lib.util.Question;
+import jeeb.lib.util.Translator;
 
 /**
  * SafeExportProfileEditor is a Dialog box for SafeExport profile edition.

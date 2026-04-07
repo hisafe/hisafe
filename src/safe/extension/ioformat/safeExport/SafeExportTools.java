@@ -27,12 +27,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.Locale;
 
-import jeeb.lib.util.Translator;
 import capsis.commongui.util.Tools;
+import jeeb.lib.util.Translator;
 
 
 /**

@@ -41,18 +41,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import jeeb.lib.util.AmapTools;
-import jeeb.lib.util.Translator;
-import jeeb.lib.util.Vertex3d;
-import safe.model.SafeCell;
-import safe.model.SafeCrop;
-import safe.model.SafeStand;
-import safe.model.SafeTree;
 import capsis.commongui.util.Helper;
 import capsis.defaulttype.plotofcells.Cell;
 import capsis.defaulttype.plotofcells.PlotOfCells;
 import capsis.util.Drawer;
 import capsis.util.Panel2D;
+import jeeb.lib.util.AmapTools;
+import jeeb.lib.util.Translator;
+import jeeb.lib.util.Vertex3d;
+import safe.model.SafeCell;
+import safe.model.SafeStand;
+import safe.model.SafeTree;
 /**
  * A panel to select Safe Cells (subclasses of GCells, ex : SquareCells, PolygonalCells in  a Collection).
  * The given cells must be in the same plot.

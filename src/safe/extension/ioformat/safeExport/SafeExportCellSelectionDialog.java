@@ -30,9 +30,9 @@ import java.util.Collection;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import capsis.commongui.util.Helper;
 import jeeb.lib.util.AmapDialog;
 import jeeb.lib.util.Translator;
-import capsis.commongui.util.Helper;
 
 /**
  * A dialog to select Safe Cells (subclasses of GCells, ex : SquareCells, PolygonalCells in  a Collection).

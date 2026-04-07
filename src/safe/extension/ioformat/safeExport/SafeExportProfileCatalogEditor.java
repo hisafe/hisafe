@@ -26,9 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
@@ -41,18 +39,15 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import jeeb.lib.util.AmapDialog;
-import jeeb.lib.util.AmapTools;
-import jeeb.lib.util.LinePanel;
-import jeeb.lib.util.Log;
-import jeeb.lib.util.MessageDialog;
-import jeeb.lib.util.Question;
-import jeeb.lib.util.Translator;
 import capsis.commongui.util.Helper;
 import capsis.gui.MainFrame;
 import capsis.kernel.GScene;
-import jeeb.lib.util.PathManager;
 import capsis.util.WrapperPanel;
+import jeeb.lib.util.AmapDialog;
+import jeeb.lib.util.LinePanel;
+import jeeb.lib.util.MessageDialog;
+import jeeb.lib.util.Question;
+import jeeb.lib.util.Translator;
 
 
 /**
