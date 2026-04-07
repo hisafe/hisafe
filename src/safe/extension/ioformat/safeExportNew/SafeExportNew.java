@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
- * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
+ * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -53,15 +53,29 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.TreeSet;
-import jeeb.lib.util.Log;
-import jeeb.lib.util.Translator;
-import safe.model.*;
+
 import capsis.defaulttype.plotofcells.PlotOfCells;
 import capsis.kernel.GModel;
 import capsis.kernel.GScene;
 import capsis.kernel.Step;
 import capsis.kernel.extensiontype.OFormat;
 import capsis.util.StandRecordSet;
+import jeeb.lib.util.Log;
+import jeeb.lib.util.Translator;
+import safe.model.SafeCell;
+import safe.model.SafeCrop;
+import safe.model.SafeCropZone;
+import safe.model.SafeDailyClimat;
+import safe.model.SafeLayer;
+import safe.model.SafeMacroClimat;
+import safe.model.SafeModel;
+import safe.model.SafePlantRoot;
+import safe.model.SafePlot;
+import safe.model.SafeSoil;
+import safe.model.SafeStand;
+import safe.model.SafeTree;
+import safe.model.SafeTreeSpecies;
+import safe.model.SafeVoxel;
 
 /**
  * SafeExport execute Safe exportation
@@ -77,6 +91,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 	public static String OBJECT_ZONE = "SafeCropZone";
 	public static String OBJECT_PLOT = "SafePlot";
 	public static String OBJECT_CLIMATE = "SafeMacroClimat";
+	public static String OBJECT_YIELD = "SafeYield";
 
 	private SafeMacroClimat macroClimate;
 
@@ -140,11 +155,12 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 		Step s = (Step) stand.getStep();
 		PlotOfCells plotc = (PlotOfCells) stand.getPlot(); // fc-30.10.2017
 
+		
 		try {
 
 			// TREE EXPORT
 			if (p.getObject().equals(OBJECT_TREE)) {
-
+	
 				SafeTree tree = null;
 
 				TreeSet treeRecords = new TreeSet(new SafeExportRecordComparator());
@@ -153,12 +169,16 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 				// for all selected treeIds...
 				for (Iterator itTree = trees.iterator(); itTree.hasNext();) {
 					tree = (SafeTree) itTree.next();
-					if (p.getIdsToExport().size() > 0) {
-						if (p.getIdsToExport().contains(tree.getId())) {
+					//if tree is  alive
+					if (!tree.isHarvested()) {
+					
+						if (p.getIdsToExport().size() > 0) {
+							if (p.getIdsToExport().contains(tree.getId())) {
+								createStepTreeRecords(treeRecords, s, p, tree);
+							}
+						} else
 							createStepTreeRecords(treeRecords, s, p, tree);
-						}
-					} else
-						createStepTreeRecords(treeRecords, s, p, tree);
+					}
 
 				}
 
@@ -166,7 +186,6 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 			// PLOT (ZONES)  EXPORT
 			} else if (p.getObject().equals(OBJECT_ZONE)) {
 			
-				
 				TreeSet zoneRecords = new TreeSet(new SafeExportRecordComparator());
 
 				// for all selected cellIds...
@@ -204,6 +223,26 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 
 				writeRecords(cellRecords);
 
+			} else if (p.getObject().equals(OBJECT_YIELD)) {
+
+				TreeSet cellRecords = new TreeSet(new SafeExportRecordComparator());
+
+				// for all selected cellIds...
+				Collection cells = plotc.getCells();
+				for (Iterator itCell = cells.iterator(); itCell.hasNext();) {
+					SafeCell cell = (SafeCell) itCell.next();
+					if (cell.getCrop().getYield() > 0 ) {
+						if (p.getIdsToExport().size() > 0) {
+							if (p.getIdsToExport().contains(cell.getId())) {
+								createStepCellRecords(cellRecords, s, p, cell);
+							}
+						} else
+							createStepCellRecords(cellRecords, s, p, cell);
+					}
+
+				}
+
+				writeRecords(cellRecords);
 				// VOXEL EXPORT
 			} else if (p.getObject().equals(OBJECT_VOXEL)) {
 
@@ -310,6 +349,11 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 			SafePlot plotc = (SafePlot) stand.getPlot(); 
 			SafeCropZone firstZone = (SafeCropZone) plotc.getCropZone(0);
 			writeHeader(p, firstZone);
+		}
+		if (p.getObject().equals(OBJECT_YIELD)) {
+			PlotOfCells plotc = (PlotOfCells) stand.getPlot(); 
+			SafeCell firstCell = (SafeCell) plotc.getCell(1);
+			writeHeader(p, firstCell);
 		}
 		if (p.getObject().equals(OBJECT_CELL)) {
 			PlotOfCells plotc = (PlotOfCells) stand.getPlot(); 
@@ -537,6 +581,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 		int objectId = 0;
 		int arraySize;
 		String values[];
+
 
 		// write step information (and a separator)
 		String s = step.getScene().getCaption();
