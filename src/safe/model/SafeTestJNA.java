@@ -128,19 +128,19 @@ public class SafeTestJNA implements  Serializable {
 	 * @param zoneId ID of the zone
 	 * @param exportDir Name of the export folder
      */ 
+
     public static void verifPlant  (SafeSticsParameters param, 
 						    		SafeSticsTransit transit, 
 						    		SafeSticsCommun commun, 
 						    		SafeSticsItk itk, 
 						    		SafeSticsCrop plant, 
-								     int julianDayStart, 
-								     int julianDayEnd, 
 						    		int zoneId,
+								    int julianDayStart, 
+								    int julianDayEnd, 
 						    		String exportDir) { 
 
     	commun.P_iwater = julianDayStart;	
     	commun.P_ifwater = julianDayEnd;
-
     	
    	 	TestJNA.INSTANCE_STICS.verifPlant (param, transit, commun, itk, plant, zoneId, exportDir.length(), exportDir);
 

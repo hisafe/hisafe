@@ -829,11 +829,12 @@ public class SafeLightModel {
 
 								// giving energy to the tree
 								// cold deciduous - if leafFall began, Energy is no more given to the tree gt - 01.10.2009 
-								if ((t.getTreeSpecies().getPhenologyType() != 2 && t.getPhenologicalStage () != 3)
+								if (((t.getTreeSpecies().getPhenologyType() != 2 && t.getTreeSpecies().getPhenologyType() != 3) && t.getPhenologicalStage () != 3)
 								//evergreen
-								|| (t.getTreeSpecies().getPhenologyType() == 2) ) { 									
+								|| (t.getTreeSpecies().getPhenologyType() == 2)
+								// faidherbia (energy is given to the tree during leaf fall)
+								|| (t.getTreeSpecies().getPhenologyType() == 3 && t.getPhenologicalStage () != 4)) { 									
 									if (isDiffus) {
-										
 										t.addDiffuse (currentPar * (interceptedPar) * beamDiffuseEnergy
 												* energyConvFactor * impactSize); // GT 2007
 									
