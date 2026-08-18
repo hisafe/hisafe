@@ -1,75 +1,62 @@
 ###################################################
-## WALNUT HYBRID V0
-## Updated 18/12/2020 by C.DUPRAZ
-## 		Back to Grégoire TALBOT values
-## 
-## WALNUT HYBRID V1
-## Updated 23/03/2021 by Nicolas BARBAULT and  Tristan GERAULT
-## 		Adding new parameters for fruit Phenology and carbone allocation
-## 		Adding new parameters for BNF Phenology and Nitrogen Fixation
-## 
-## WALNUT HYBRID V2
-## Updated 25/11/2022 by Christian DUPRAZ
-## 		Adding new parameters for rs stress calculation
-## 		Adding new parameters for self pruning 
-##
-## WALNUT HYBRID V3
-## Updated 06/06/2023 by Christian DUPRAZ
-## 		Adding new parameters for CO2 effect on LUE and WUE
-## Updated 31/07/2023 by Isabelle LECOMTE
-## 		Julian days replaced by MM-JJ
+## FAIDHERBIA ALBIDA
+## CREATED 21/01/2026 by Léa Tresch
+## 		based on walnut hybdrid v3
+## 		Here only allometry and phenology parameters were modified
+## 		crownDbhAllometricCoeffA and crownDbhAllometricCoeffB not yet calibrated
 ###################################################
 
 ##General
-treeSpecies = walnut-hybrid
-woodAreaDensity = 0.026
-woodCarbonContent = 0.5
-woodDensity = 616
-
-##Biomass
-leafCarbonContent = 0.5
-leafMassArea = 0.1
+treeSpecies = faidherbia-albida
+woodDensity = 580
+woodCarbonContent = 0.48
+leafCarbonContent = 0.48
+leafMassArea = 0.06
 
 ##Geometry
 crownShape = 1
-ellipsoidTruncationRatio = 0
+ellipsoidTruncationRatio = 0.5
 
 ##Phenology
-phenologyType = 1
+phenologyType = 3
 nbCohortMax = 1
-budBurstTempAccumulationDateStart = 03-02
-budBurstTempThreshold = 0
-budBurstTriggerTemp = 612
-budBurstToLeafFallDuration = 180
-leafExpansionDuration = 91
-leafFallDuration = 15
+leafExpansionDuration = 70
+budBurstToLeafFallDuration = 95 
+leafFallDuration  = 150
+budburstDelayFromLastBudburst = 350
+budburstDelayFromMinWaterTable = 45
+
+##TEMPERATURE REQUIREMENTS
+budBurstTempAccumulationDateStart = 999
+budBurstTempThreshold = 999
+budBurstTriggerTemp = 999
 leafFallFrostThreshold = 0
 
 ##COLD TEMPERATURE REQUIREMENT
 coldRequirement = 0
-coldTempAccumulationDateStart = 0
-coldTempThreshold = 0
-coldBudBurstTriggerTemp = 0
-coldBudBurstTriggerParamA = 0
-coldBudBurstTriggerParamB = 0
-coldBudBurstTriggerParamC = 0
-coldBudBurstTriggerParamE = 0
+coldTempAccumulationDateStart = 999
+coldTempThreshold = 999
+coldBudBurstTriggerTemp = 999
+coldBudBurstTriggerParamA = 999
+coldBudBurstTriggerParamB = 999
+coldBudBurstTriggerParamC = 999
+coldBudBurstTriggerParamE = 999
 
 ##Allometry
-branchVolumeRatio = 0.0006
+branchVolumeRatio = 0.0034
 crownDbhAllometricCoeffA = 887.4
 crownDbhAllometricCoeffB = 1.95
-dcbFromDbhAllometricCoeff = 2.14
-heightDbhAllometricCoeffA = 30.96
-heightDbhAllometricCoeffB = 0.718
-leafAreaCrownVolCoefA = 5.34
-leafAreaCrownVolCoefB = 0.61
-stemDbhAllometricCoeffA = -1.27
-stemDbhAllometricCoeffB = 1.75
-stemDbhAllometricCoeffC = 0.86
-maxCrownRadiusInc = 0.02
-maxHeightInc = 0.02
-maxDbhInc = 0.005
+dcbFromDbhAllometricCoeff = 1.5
+heightDbhAllometricCoeffA = 18.818
+heightDbhAllometricCoeffB = 0.883
+leafAreaCrownVolCoefA = 0.016
+leafAreaCrownVolCoefB = 1.526
+stemDbhAllometricCoeffA = 1.3040
+stemDbhAllometricCoeffB = 4.2775
+stemDbhAllometricCoeffC = -0.0579
+maxCrownRadiusInc = 0.2
+maxHeightInc = 0.04
+maxDbhInc = 0.0009
 
 ##Functional Equilibrium
 ## Updated 25/11/2022 by Christian DUPRAZ
@@ -89,6 +76,7 @@ minTargetLfrRatio = 0.45
 cRAreaToFRLengthRatio = 0.000000018
 imbalanceThreshold = 0.1
 stumpToStemBiomassRatio = 0.2
+leafSenescenceRate = 0
 
 ##Carbon Labile
 maxNSCUseFoliageFraction = 0.1
@@ -96,24 +84,24 @@ maxNSCUseFraction = 0.2
 targetNSCFraction = 0.1
 
 ##Leaf area
-clumpingCoef = 1
-leafFrostStressTemperatureMin = -9.7
-leafFrostStressTemperatureMax = -13.2
+woodAreaDensity = 0.026
+clumpingCoef = 0.5
+leafFrostStressTemperatureMin = 0
+leafFrostStressTemperatureMax = 0
 
 ##Photosynthesis
-leafLueMax = 0.65
-leafAgeForLueMax = 60
+leafLueMax = 0.61
+leafAgeForLueMax = 70
 leafNirAbsorption = 0.15
 leafParAbsorption = 0.85
-leafSenescenceRate = 0
 leafPhotosynthesisEfficiencyTimeConstant = 0.0000781
-lueStressMethod = 1
-lueWaterStressResponsiveness = 7.8
+lueStressMethod = 2
+lueWaterStressResponsiveness = 1
 lueNitrogenStressResponsiveness = 0.1
-lueTemperatureStressTMin = 0
-lueTemperatureStressTMax = 35
-lueTemperatureStressTOptMin = 15
-lueTemperatureStressTOptMax = 25
+lueTemperatureStressTMin = 10
+lueTemperatureStressTMax = 40
+lueTemperatureStressTOptMin = 25
+lueTemperatureStressTOptMax = 38
 lightCompetitionIndexMin = 0.3
 
 ##Nitrogen
@@ -131,20 +119,17 @@ targetNCoefficient = 1.2
 
 ##Roots
 coarseRootTopologyType = 1
+specificRootLength = 8.17
 colonisationFraction = 0.1
 colonisationThreshold = 1500
+fineRootAnoxiaLifespan = 50
 fineRootLifespan = 113.95572
 geotropismFactor = 0.5
+horizontalPreference = 0.8
 sinkDistanceEffect = 50
 localWaterUptakeFactor = 50
 localNitrogenUptakeFactor = 50
-specificRootLength = 8.17
-fineRootAnoxiaLifespan = 50
 coarseRootAnoxiaResistance = 60
-
-##UPDATED BY C.DUPRAZ 10/2025
-#horizontalPreference = 0.8
-horizontalPreference = 0.5
 
 ##Water
 stemFlowCoefficient = 1
@@ -191,7 +176,7 @@ fruitMaxDryMatterAllocation = 0
 fruitAllocationFraction = 0
 fruitCarbonStressDateStart = 0
 fruitDryToFreshMatterWeight = 0
-fruitDryMatterDensity = 0
+fruitDryMaterDensity = 0
 fruitOilConversionCoeffA = 0
 fruitOilConversionCoeffB = 0
 fruitOilConversionCoeffC = 0
@@ -199,7 +184,8 @@ fruitOilDensity = 0
 fruitLeafArea = 0
 fruitingConfortThreshold = 0
 fruitingTotalStressThreshold = 0
-
+fruitLueMax = 0
+fruitAgeForLueMax = 0
 
 ## Updated 23/03/2021 by Tristan GERAULT
 ## Adding new parameters for BNF Phenology and Nitrogen Fixation
