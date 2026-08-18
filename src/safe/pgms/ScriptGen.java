@@ -224,7 +224,7 @@ public class ScriptGen {
 					
 					//in case of lai forcing file 
 					String laiPath = "";
-					if (loader.laiFileName!= "") laiPath = simulationPath + "/" + loader.laiFileName;
+					if (loader.laiFileName != "") laiPath = simulationPath + "/" + loader.laiFileName;
 
 					//copy session.txt
 					String sessionOrigin = capsisDataPath + "/session.txt";
@@ -258,8 +258,8 @@ public class ScriptGen {
 									  stand.getPlot().getPlotSettings().latitude, 
 									  stand.getPlot().getPlotSettings().elevation);
 
-					
-					model.verifSimulation(stand, ep, monFichierCopie);
+					//no verification if relaod (erase values!!!)
+					if (loader.projectFileName.equals("")) model.verifSimulation(stand, ep, monFichierCopie);
 					
 					model.initExport(stand);
 					
