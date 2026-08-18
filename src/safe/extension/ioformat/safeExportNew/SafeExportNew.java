@@ -155,6 +155,18 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 		Step s = (Step) stand.getStep();
 		PlotOfCells plotc = (PlotOfCells) stand.getPlot(); // fc-30.10.2017
 
+		//PARAMETERS TO ADD IN EXPORT FILES
+		String paramValues="";
+		String [] part1 = s.getProject().getName().split("-");
+		for (int i = 0; i< part1.length; i++) {
+			if (part1[i].contains("_")){
+				String [] param = part1[i].split("_");
+				if (param.length==2){									
+					paramValues=paramValues+param[1]+ '\t';											
+				}
+			}
+		}
+
 		
 		try {
 
@@ -174,10 +186,10 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 					
 						if (p.getIdsToExport().size() > 0) {
 							if (p.getIdsToExport().contains(tree.getId())) {
-								createStepTreeRecords(treeRecords, s, p, tree);
+								createStepTreeRecords(treeRecords, s, p, tree, paramValues);
 							}
 						} else
-							createStepTreeRecords(treeRecords, s, p, tree);
+							createStepTreeRecords(treeRecords, s, p, tree, paramValues);
 					}
 
 				}
@@ -194,10 +206,10 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 					SafeCropZone zone = (SafeCropZone) itCell.next();
 					if (p.getIdsToExport().size() > 0) {
 						if (p.getIdsToExport().contains(zone.getId())) {
-							createStepZoneRecords(zoneRecords, s, p, zone);
+							createStepZoneRecords(zoneRecords, s, p, zone, paramValues);
 						}
 					} else
-						createStepZoneRecords(zoneRecords, s, p, zone);
+						createStepZoneRecords(zoneRecords, s, p, zone, paramValues);
 				}
 
 				writeRecords(zoneRecords);
@@ -215,10 +227,10 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 					SafeCell cell = (SafeCell) itCell.next();
 					if (p.getIdsToExport().size() > 0) {
 						if (p.getIdsToExport().contains(cell.getId())) {
-							createStepCellRecords(cellRecords, s, p, cell);
+							createStepCellRecords(cellRecords, s, p, cell, paramValues);
 						}
 					} else
-						createStepCellRecords(cellRecords, s, p, cell);
+						createStepCellRecords(cellRecords, s, p, cell, paramValues);
 				}
 
 				writeRecords(cellRecords);
@@ -234,10 +246,10 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 					if (cell.getCrop().getYield() > 0 ) {
 						if (p.getIdsToExport().size() > 0) {
 							if (p.getIdsToExport().contains(cell.getId())) {
-								createStepCellRecords(cellRecords, s, p, cell);
+								createStepCellRecords(cellRecords, s, p, cell, paramValues);
 							}
 						} else
-							createStepCellRecords(cellRecords, s, p, cell);
+							createStepCellRecords(cellRecords, s, p, cell, paramValues);
 					}
 
 				}
@@ -260,13 +272,13 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 								for (Iterator itv = voxels.iterator(); itv.hasNext();) {
 									SafeVoxel voxel = (SafeVoxel) itv.next();
 									if (p.getVoxelIdsToExport().contains(voxel.getId())) {
-										createStepVoxelRecords(voxelRecords, s, p, voxel);
+										createStepVoxelRecords(voxelRecords, s, p, voxel, paramValues);
 									}
 								}
 							} else {
 								for (Iterator itv = voxels.iterator(); itv.hasNext();) {
 									SafeVoxel voxel = (SafeVoxel) itv.next();
-									createStepVoxelRecords(voxelRecords, s, p, voxel);
+									createStepVoxelRecords(voxelRecords, s, p, voxel, paramValues);
 								}
 							}
 						}
@@ -275,13 +287,13 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 							for (Iterator itv = voxels.iterator(); itv.hasNext();) {
 								SafeVoxel voxel = (SafeVoxel) itv.next();
 								if (p.getVoxelIdsToExport().contains(voxel.getId())) {
-									createStepVoxelRecords(voxelRecords, s, p, voxel);
+									createStepVoxelRecords(voxelRecords, s, p, voxel, paramValues);
 								}
 							}
 						} else {
 							for (Iterator itv = voxels.iterator(); itv.hasNext();) {
 								SafeVoxel voxel = (SafeVoxel) itv.next();
-								createStepVoxelRecords(voxelRecords, s, p, voxel);
+								createStepVoxelRecords(voxelRecords, s, p, voxel, paramValues);
 							}
 						}
 					}
@@ -296,7 +308,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 				TreeSet plotRecords = new TreeSet(new SafeExportRecordComparator());
 
 				stand = (SafeStand) s.getScene();
-				createStepPlotRecords(plotRecords, s, p, stand);
+				createStepPlotRecords(plotRecords, s, p, stand, paramValues);
 
 				writeRecords(plotRecords);
 
@@ -317,7 +329,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 					SafeDailyClimat climat = macroClimate.getDailyWeather(y, j);
 
 					if (climat != null)
-						createStepClimateRecords(climateRecords, s, p, climat);
+						createStepClimateRecords(climateRecords, s, p, climat, paramValues);
 				} catch (Exception exc) {
 				}
 
@@ -338,49 +350,52 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 	 */
 	public void writeHeaders(SafeModel model, SafeStand stand, SafeExportProfile p) {
 		
+		Step step = (Step) stand.getStep();
+		String projetName = step.getProject().getName(); 
+		
 		if (p.getObject().equals(OBJECT_TREE)) {
 			SafeTree firstTree = (SafeTree) stand.getTree(1);
-			writeHeader(p, firstTree);
+			writeHeader(projetName, p, firstTree);
 		}
 		if (p.getObject().equals(OBJECT_PLOT)) {
-			writeHeader(p, stand);
+			writeHeader(projetName,p, stand);
 		}
 		if (p.getObject().equals(OBJECT_ZONE)) {
 			SafePlot plotc = (SafePlot) stand.getPlot(); 
 			SafeCropZone firstZone = (SafeCropZone) plotc.getCropZone(0);
-			writeHeader(p, firstZone);
+			writeHeader(projetName,p, firstZone);
 		}
 		if (p.getObject().equals(OBJECT_YIELD)) {
 			PlotOfCells plotc = (PlotOfCells) stand.getPlot(); 
 			SafeCell firstCell = (SafeCell) plotc.getCell(1);
-			writeHeader(p, firstCell);
+			writeHeader(projetName,p, firstCell);
 		}
 		if (p.getObject().equals(OBJECT_CELL)) {
 			PlotOfCells plotc = (PlotOfCells) stand.getPlot(); 
 			SafeCell firstCell = (SafeCell) plotc.getCell(1);
-			writeHeader(p, firstCell);
+			writeHeader(projetName,p, firstCell);
 		}
 		if (p.getObject().equals(OBJECT_VOXEL)) {
 			PlotOfCells plotc = (PlotOfCells) stand.getPlot(); 
 			SafeCell firstCell = (SafeCell) plotc.getCell(1);
 			SafeVoxel firstVoxel = firstCell.getFirstVoxel();
-			writeHeader(p, firstVoxel);
+			writeHeader(projetName,p, firstVoxel);
 		}
 
 		if (p.getObject().equals(OBJECT_CLIMATE)) {
 			SafeDailyClimat climat = new SafeDailyClimat();
-			writeHeader(p, climat);
+			writeHeader(projetName,p, climat);
 		}
 	}
 
-	private void writeHeader(SafeExportProfile p, Object object) {
-		add(new FreeRecord(createHeadLine(p, object)));
+	private void writeHeader(String projetName, SafeExportProfile p, Object object) {
+		add(new FreeRecord(createHeadLine(projetName, p, object)));
 	}
 
 	/**
 	 * create recordsets for tree objects
 	 */
-	private void createStepTreeRecords(TreeSet dest, Step step, SafeExportProfile p, Object object) {
+	private void createStepTreeRecords(TreeSet dest, Step step, SafeExportProfile p, Object object, String paramValues) {
 		StringBuffer write = new StringBuffer("");
 		StringBuffer val;
 		boolean readed;
@@ -394,7 +409,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 		int julian = ((SafeStand) step.getScene()).getJulianDay();
 		Date dateStart = ((SafeStand) step.getScene()).getStartDate();
 
-		write.append(step.getProject().getName() + '\t' + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
+		write.append(step.getProject().getName() + '\t' + paramValues + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
 				+ '\t' + ts[1] + '\t' + ts[2] + '\t' + julian + '\t');
 
 		// for all subject variables
@@ -487,7 +502,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 	/**
 	 * create recordsets for zone objects
 	 */
-	private void createStepZoneRecords(TreeSet dest, Step step, SafeExportProfile p, Object object) {
+	private void createStepZoneRecords(TreeSet dest, Step step, SafeExportProfile p, Object object, String paramValues) {
 		StringBuffer write = new StringBuffer("");
 		StringBuffer val;
 		boolean readed;
@@ -501,7 +516,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 		int julian = ((SafeStand) step.getScene()).getJulianDay();
 		Date dateStart = ((SafeStand) step.getScene()).getStartDate();
 
-		write.append(step.getProject().getName() + '\t' + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
+		write.append(step.getProject().getName() + '\t' + paramValues + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
 				+ '\t' + ts[1] + '\t' + ts[2] + '\t' + julian + '\t');
 
 		// for all subject variables
@@ -574,7 +589,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 	/**
 	 * create recordsets for cell objects
 	 */
-	private void createStepCellRecords(TreeSet dest, Step step, SafeExportProfile p, Object object) {
+	private void createStepCellRecords(TreeSet dest, Step step, SafeExportProfile p, Object object, String paramValues) {
 		StringBuffer write = new StringBuffer("");
 		StringBuffer val;
 		boolean readed;
@@ -589,7 +604,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 		int julian = ((SafeStand) step.getScene()).getJulianDay();
 		Date dateStart = ((SafeStand) step.getScene()).getStartDate();
 
-		write.append(step.getProject().getName() + '\t' + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
+		write.append(step.getProject().getName() + '\t' + paramValues + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
 				+ '\t' + ts[1] + '\t' + ts[2] + '\t' + julian + '\t');
 
 		// for all subject variables
@@ -682,7 +697,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 	/**
 	 * create recordsets for voxel objects
 	 */
-	private void createStepVoxelRecords(TreeSet dest, Step step, SafeExportProfile p, Object object) {
+	private void createStepVoxelRecords(TreeSet dest, Step step, SafeExportProfile p, Object object, String paramValues) {
 		StringBuffer write = new StringBuffer("");
 		StringBuffer val;
 		boolean readed;
@@ -697,7 +712,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 		int julian = ((SafeStand) step.getScene()).getJulianDay();
 		Date dateStart = ((SafeStand) step.getScene()).getStartDate();
 
-		write.append(step.getProject().getName() + '\t' + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
+		write.append(step.getProject().getName() + '\t' + paramValues + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
 				+ '\t' + ts[1] + '\t' + ts[2] + '\t' + julian + '\t');
 
 		// for all subject variables
@@ -781,7 +796,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 	/**
 	 * create recordsets for CLIMATE objects
 	 */
-	private void createStepClimateRecords(TreeSet dest, Step step, SafeExportProfile p, Object object) {
+	private void createStepClimateRecords(TreeSet dest, Step step, SafeExportProfile p, Object object, String paramValues) {
 		StringBuffer write = new StringBuffer("");
 		StringBuffer val;
 		boolean readed;
@@ -795,7 +810,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 		int julian = ((SafeStand) step.getScene()).getJulianDay();
 		Date dateStart = ((SafeStand) step.getScene()).getStartDate();
 
-		write.append(step.getProject().getName() + '\t' + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
+		write.append(step.getProject().getName() + '\t' + paramValues + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
 				+ '\t' + ts[1] + '\t' + ts[2] + '\t' + julian + '\t');
 
 		// for all subject variables
@@ -848,7 +863,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 	/**
 	 * create recordsets for PLOT objects
 	 */
-	private void createStepPlotRecords(TreeSet dest, Step step, SafeExportProfile p, Object object) {
+	private void createStepPlotRecords(TreeSet dest, Step step, SafeExportProfile p, Object object, String paramValues) {
 		StringBuffer write = new StringBuffer("");
 		StringBuffer val;
 		boolean readed;
@@ -862,7 +877,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 		int julian = ((SafeStand) step.getScene()).getJulianDay();
 		Date dateStart = ((SafeStand) step.getScene()).getStartDate();
 
-		write.append(step.getProject().getName() + '\t' + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
+		write.append(step.getProject().getName() + '\t' + paramValues + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
 				+ '\t' + ts[1] + '\t' + ts[2] + '\t' + julian + '\t');
 
 		// for all subject variables
@@ -930,7 +945,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 	 * create recordsets for LAYER objects
 	 */
 
-	private void createStepLayerRecords(TreeSet dest, Step step, SafeExportProfile p, Object object) {
+	private void createStepLayerRecords(TreeSet dest, Step step, SafeExportProfile p, Object object, String paramValues) {
 		StringBuffer write = new StringBuffer("");
 		StringBuffer val;
 		boolean readed;
@@ -944,7 +959,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 		int julian = ((SafeStand) step.getScene()).getJulianDay();
 		Date dateStart = ((SafeStand) step.getScene()).getStartDate();
 
-		write.append(step.getProject().getName() + '\t' + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
+		write.append(step.getProject().getName() + '\t' + paramValues + dateStart + '\t' + step.getScene().getCaption() + '\t' + ts[0]
 				+ '\t' + ts[1] + '\t' + ts[2] + '\t' + julian + '\t');
 
 		// for all subject variables
@@ -1023,13 +1038,27 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 	 * which returned an array instead of a "single" value - this method is only to
 	 * be used with not default subject (default subjects used writeDefaultRecords)
 	 */
-	private String createHeadLine(SafeExportProfile p, Object o) {
+	private String createHeadLine(String projetName, SafeExportProfile p, Object o) {
 		StringBuffer write = new StringBuffer("");
 		boolean readed;
 		int sizeVariableArray;
 		StringBuffer value;
+		
+		//PARAMETERS TO ADD IN EXPORT FILES
+		String paramNames="";
+		String [] part1 = projetName.split("-");
+		for (int i = 0; i< part1.length; i++) {
+			if (part1[i].contains("_")){
+				String [] param = part1[i].split("_");
+				if (param.length==2){									
+					paramNames=paramNames+param[0]+ '\t';											
+				}
+			}
+		}
+
+		
 		// write a title for the step data
-		write.append("SimulationName" + '\t' + "SimulationDate" + '\t' + "Date" + '\t' + "Day" + '\t' + "Month" + '\t'
+		write.append("SimulationName" + '\t' + paramNames+   "SimulationDate" + '\t' + "Date" + '\t' + "Day" + '\t' + "Month" + '\t'
 				+ "Year" + '\t' + "JulianDay" + '\t');
 		// for all variables...
 		for (Iterator i = p.getVariables().iterator(); i.hasNext();) {
