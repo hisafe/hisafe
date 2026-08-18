@@ -1,18 +1,19 @@
-## WALNUT TREE INTERVENTIONS
+## FAIDHERBIA ALBIDA INTERVENTIONS
 
 ## TREE PLANTING
-plantingYear = 2
-plantingDay = 01-01
+plantingYear = 1
+plantingDay = 18-08
+plantingAge = 10
+plantingHeight = 1.3
+plantingCrownBaseHeight = 1.17
+plantingCrownRadius = 0.3
 plantingCohortAge = 0
-plantingAge = 1
-plantingHeight = 1
-plantingCrownBaseHeight = 0.3
-plantingCrownRadius = 0.25
-plantingRootShape = 1
-plantingRootRepartition = 3
-plantingRootShapeParam1 = 0.5
-plantingRootShapeParam2 = 0
-plantingRootShapeParam3 = 0
+plantingRootShape = 3
+plantingRootRepartition = 1
+plantingRootShapeParam1 = 2
+plantingRootShapeParam2 = 6
+plantingRootShapeParam3 = 999
+budburstInitialisation = 07-10
 
 ## TREE HARVEST
 #treeHarvestYear = 40
@@ -33,16 +34,14 @@ plantingRootShapeParam3 = 0
 #treeRootPruningDepth = 1
 
 ## TREE IRRIGATION
-treeIrrigationType = 2
-treeIrrigationYears = 2,3
-treeIrrigationMethod = 1
-treeIrrigationRadius = 0
-treeIrrigationDriporSprinklerX = 0
-treeIrrigationDriporSprinklerY = 0
-treeIrrigationWaterStressTrigger = 0
-treeIrrigationAutomaticDose = 0
-treeIrrigationDays = 06-30,07-30
-treeIrrigationDose = 20,20
+#treeIrrigationType = 0
+#treeIrrigationYears = 0
+#treeIrrigationMethod = 1
+#treeIrrigationRadius = 0
+#treeIrrigationWaterStressTrigger = 0
+#treeIrrigationAutomaticDose = 0
+#treeIrrigationDays = 177,185,193,198,200,204,207,211,214,218,221,232,239,249,257,264
+#treeIrrigationDose = 20,24,29,28,31,21,21,23,18,22,16,16,30,29,20,20
 
 ## TREE FERTILIZATION
 #treeFertilizationType = 0
@@ -51,7 +50,7 @@ treeIrrigationDose = 20,20
 #treeFertilizationNitrogenStressTrigger = 0
 #treeFertilizationAutomaticDose = 0
 #treeFertilizerAutomaticCode = 0
-#treeFertilizationDays = 06-30,07-30,08-30
+#treeFertilizationDays = 2,5,10
 #treeFertilizationDose = 10,20,30
 #treeFertilizerCode = 1,1,1
 
