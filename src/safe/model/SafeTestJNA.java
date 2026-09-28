@@ -88,14 +88,17 @@ public class SafeTestJNA implements  Serializable {
 		// Loads the SticsV8.so library (libSticsV8.so under Linux, SticsV8.dll under Windows, libSticsV8.dylib under MacOS).
 		TestJNA INSTANCE_STICS = (TestJNA) Native.loadLibrary("SticsV8", TestJNA.class);
 
+		// The bundled STICS libraries still export the legacy Fortran entry-point names.
+		// Public Java wrapper names stay unchanged; only the JNA ABI bindings use those symbols.
+
 		 void verifParam (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsSoil soil, SafeSticsCommun commun, int lg, String outputDir);
-		 void verifPlant (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsCommun commun,  SafeSticsItk itk, SafeSticsCrop plant, int zoneId, int lg, String outputDir);
+		 void verifPlante (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsCommun commun,  SafeSticsItk itk, SafeSticsCrop plant, int zoneId, int lg, String outputDir);
 		 void initClimat (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat);
-		 void annualLoopStart (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, int cellId, int lg, String outputDir);
-		 void addLitterInSoil (SafeSticsParameters param,  SafeSticsSoil soil, SafeSticsCommun commun, SafeSticsCrop plant, SafeSticsItk itk, float profmax, float carbonLitter, float cnLitter, float cfeupc, float waterLitter, int typeLitter);
-		 void dailyLoopPart1 (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, float cellVisibleSky, int flagFirst);
-		 void dailyLoopPart2 (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, int hisafeWaterExtraction, float cellVisibleSky);
-		 void annualLoopEnd (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, int cellId);
+		 void initBoucleAnnuelle (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, int cellId, int lg, String outputDir);
+		 void apport (SafeSticsParameters param,  SafeSticsSoil soil, SafeSticsCommun commun, SafeSticsCrop plant, SafeSticsItk itk, float profmax, float carbonLitter, float cnLitter, float cfeupc, float waterLitter, int typeLitter);
+		 void boucleJour1 (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, float cellVisibleSky, int flagFirst);
+		 void boucleJour2 (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, int hisafeWaterExtraction, float cellVisibleSky);
+		 void finBoucleAnnuelle (SafeSticsParameters param, SafeSticsTransit transit, SafeSticsStation sta, SafeSticsClimat climat, SafeSticsCommun commun, SafeSticsSoil soil,  SafeSticsCrop plant,SafeSticsItk itk, int cellId);
 	}
 
 	/**
@@ -142,7 +145,7 @@ public class SafeTestJNA implements  Serializable {
     	commun.P_iwater = julianDayStart;	
     	commun.P_ifwater = julianDayEnd;
     	
-   	 	TestJNA.INSTANCE_STICS.verifPlant (param, transit, commun, itk, plant, zoneId, exportDir.length(), exportDir);
+   	 	TestJNA.INSTANCE_STICS.verifPlante (param, transit, commun, itk, plant, zoneId, exportDir.length(), exportDir);
 
 		return; 
    }  
@@ -209,7 +212,7 @@ public class SafeTestJNA implements  Serializable {
     	param.P_flagEcriture = 0;
     	if (sticsReport) param.P_flagEcriture = 31;
 
-    	TestJNA.INSTANCE_STICS.annualLoopStart (param, transit, sta, climat, commun, soil, plant, itk, cellId, exportDir.length(), exportDir);
+    	TestJNA.INSTANCE_STICS.initBoucleAnnuelle (param, transit, sta, climat, commun, soil, plant, itk, cellId, exportDir.length(), exportDir);
 	  
 		return;     
    } 
@@ -239,7 +242,7 @@ public class SafeTestJNA implements  Serializable {
 										  float  waterLitter,
 										  int    typeLitter) { 
     	
-        TestJNA.INSTANCE_STICS.addLitterInSoil (param, soil, commun, plant, itk, profMax, carbonLitter, cnLitter, cfeupc, waterLitter, typeLitter);
+        TestJNA.INSTANCE_STICS.apport (param, soil, commun, plant, itk, profMax, carbonLitter, cnLitter, cfeupc, waterLitter, typeLitter);
     
     }
     /**
@@ -302,7 +305,7 @@ public class SafeTestJNA implements  Serializable {
 		commun.drain=0;
 		plant.offrenod[1]=0;
 
-       TestJNA.INSTANCE_STICS.dailyLoopPart1 (param, transit, sta, climat, commun, soil, plant, itk, visibleSky, flagFirst);
+       TestJNA.INSTANCE_STICS.boucleJour1 (param, transit, sta, climat, commun, soil, plant, itk, visibleSky, flagFirst);
 
 		return;
     } 
@@ -334,7 +337,7 @@ public class SafeTestJNA implements  Serializable {
 	
 			float visibleSky = (float) cellVisibleSky;		//% of visible sky (1=100%)
 
-	    	TestJNA.INSTANCE_STICS.dailyLoopPart2 (param, transit, sta, climat, commun, soil, plant, itk, hisafeWaterExtraction, visibleSky);
+	    	TestJNA.INSTANCE_STICS.boucleJour2 (param, transit, sta, climat, commun, soil, plant, itk, hisafeWaterExtraction, visibleSky);
 	   	  
   		}		
 
@@ -362,7 +365,7 @@ public class SafeTestJNA implements  Serializable {
 									     SafeSticsItk itk,
 									     int cellId) { 
 
-		TestJNA.INSTANCE_STICS.annualLoopEnd (param, transit, sta, climat, commun, soil, plant, itk, cellId);
+		TestJNA.INSTANCE_STICS.finBoucleAnnuelle (param, transit, sta, climat, commun, soil, plant, itk, cellId);
 
 		return;
     }   
