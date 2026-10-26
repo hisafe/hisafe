@@ -31,7 +31,7 @@ maxTempSnowMelt = 10
 minTempSnowMelt = 2 
 
 ## WATER
-sticsWaterExtractionForCrop = 0
+sticsWaterExtractionForCrop = 1
 waterStressMin = 0
 nitrogenStressMin = 0.0001
 
