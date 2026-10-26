@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
- * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -43,7 +43,6 @@
  *		For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.  
  *
  * For more details see <https://creativecommons.org/licenses/by/4.0/>.
- *
  */
 
 package safe.model;
@@ -95,49 +94,49 @@ public class SafeCell extends SquareCell {
 	/** List of tree crown above this cell  */
 	Collection<SafeTree> treeAbove;				
 	/** Sum of lai of all trees above */
-	private float  laiTree;						
+	private double  laiTree;						
 	/** ETP calculated on the cell   */
-	private float etpCalculated;
+	private double etpCalculated;
 	
 	//LIGHT 
-	private float relativeToFlatCellDirectParIncident;	// %
-	private float relativeToFlatCellDiffuseParIncident;	// %
-	private float relativeToFlatCellVisibleSky;			// %
-	private float relativeToFlatCellDirectNirIncident;	// %
-	private float relativeToFlatCellDiffuseNirIncident;	// %
+	private double relativeToFlatCellDirectParIncident;	// %
+	private double relativeToFlatCellDiffuseParIncident;	// %
+	private double relativeToFlatCellVisibleSky;			// %
+	private double relativeToFlatCellDirectNirIncident;	// %
+	private double relativeToFlatCellDiffuseNirIncident;	// %
 
 	/** Direct PAR incident on the cell (moles PAR m-2)  */
-	private float directParIncident;				
+	private double directParIncident;				
 	/** Diffuse PAR incident on the cell (moles PAR m-2)  */
-	private float diffuseParIncident;	
+	private double diffuseParIncident;	
 	/** Relative direct PAR incident on the cell (%)  */
-	private float relativeDirectParIncident;	
+	private double relativeDirectParIncident;	
 	/** Relative diffuse PAR incident on the cell (%)  */
-	private float relativeDiffuseParIncident;		
+	private double relativeDiffuseParIncident;		
 	/** Relative total PAR incident on the cell (%)  */
-	private float relativeTotalParIncident;	
+	private double relativeTotalParIncident;	
 	/** Relative global PAR incident on the cell (%) */
-	private float relativeGlobalRadIncident;
+	private double relativeGlobalRadIncident;
 	/** Visible sky from the cell (%) */
-	private float visibleSky;
+	private double visibleSky;
 	/** Total month direct PAR  on this cell (moles PAR m-2)   */
-	private float monthDirectPar;				
+	private double monthDirectPar;				
 	/** Total month diffuse PAR  on this cell (moles PAR m-2)   */
-	private float monthDiffusePar;				
+	private double monthDiffusePar;				
 	/** Total month direct PAR incident on this cell (moles PAR m-2)   */
-	private float monthDirectParIncident;		
+	private double monthDirectParIncident;		
 	/** Total month diffuse PAR incident on this cell (moles PAR m-2)   */
-	private float monthDiffuseParIncident;			
+	private double monthDiffuseParIncident;			
 	/** Total month visible sky on this cell (%)   */
-	private float monthVisibleSky;								
+	private double monthVisibleSky;								
 	/** Total annual direct PAR incident on this cell (moles PAR m-2)   */
-	private float annualDirectParIncident;		
+	private double annualDirectParIncident;		
 	/** Total annual diffuse PAR incident on this cell (moles PAR m-2)   */
-	private float annualDiffuseParIncident;				
+	private double annualDiffuseParIncident;				
 	
 	//WATER ENTRIES 
 	/** Rain intercepted by trees on this cell (mm d-1)   */
-	private float rainInterceptedByTrees; 			
+	private double rainInterceptedByTrees; 			
 	/** Rain transmitted by trees on this cell (mm d-1) (mm d-1)   */
 	private float rainTransmittedByTrees; 			
 	/** Stemflow by trees on this cell  (mm d-1)   */
@@ -155,9 +154,7 @@ public class SafeCell extends SquareCell {
 	
 	//WATER TABLE IN AND OUT
 	/** Amount of water provided by the water table flooding  (mm)   */
-	private float waterAddedByWaterTable;			
-	/** Amount of water taken by the water table flow back (mm)   */
-	private float waterTakenByDesaturation;				
+	private float waterAddedByWaterTable;						
 	/** Amount of water uptake  by the trees in saturated voxels (mm)   */
 	private float waterUptakeInSaturationByTrees;	
 	/** Amount of water uptake  by the crop in saturated voxels (mm)   */
@@ -229,7 +226,6 @@ public class SafeCell extends SquareCell {
 		setStemFlowByTrees (0); 
 		setRainInterceptedByTrees (0); 
 		setWaterAddedByWaterTable (0);
-		setWaterTakenByDesaturation (0);
 		setWaterUptakeInSaturationByTrees(0);	
 		setWaterUptakeInSaturationByCrop(0);	
 		setNitrogenUptakeInSaturationByTrees(0);	
@@ -267,7 +263,6 @@ public class SafeCell extends SquareCell {
 
 		//RAZ
 		this.setWaterAddedByWaterTable (0);
-		this.setWaterTakenByDesaturation (0);
 		this.setWaterUptakeInSaturationByTrees (0);
 		this.setWaterUptakeInSaturationByCrop (0);
 		this.setNitrogenUptakeInSaturationByTrees (0);
@@ -583,7 +578,7 @@ public class SafeCell extends SquareCell {
 		for (int i=0; i < this.voxels.length; i++) {
 
 			//IF voxel is SATURATED we don't extract water and nitrogen from STICS SOIL
-			if (!voxels[i].getIsSaturated()) {
+			//if (!voxels[i].getIsSaturated()) {
 				//number of miniCouches in this voxel
 				int miniCoucheMin = voxels[i].getMiniCoucheMin();		//starting  miniCouches  for current voxel
 				int miniCoucheMax = voxels[i].getMiniCoucheMax();	   //ending    miniCouches  for current voxel
@@ -657,7 +652,7 @@ public class SafeCell extends SquareCell {
 					   }
 					}			
 				} //if no extraction
-			}	//IF voxel is SATURATED 
+			//}	//IF voxel is SATURATED 
 		}	//FOR EACH VOXEL
 	}
 	/**
@@ -760,26 +755,8 @@ public class SafeCell extends SquareCell {
 			}
 		}
 	}
+
 	
-
-    /**
-	 * Check if the cell is colonized by a tree roots (at least one voxel) 
-	 * @param treeID ID of the tree to check   
-	 */
-    public boolean isColonised (int treeID)  {
-    	boolean isColonised = false; 		
-		SafeVoxel[] voxels = this.getVoxels();
-
-		int nbVoxels = voxels.length;
-		for (int i=0; (i<nbVoxels && (!isColonised))  ; i++) {
-			if (voxels[i].getTheTreeRootsDensity(treeID-1) > 0) {			
-				isColonised = true; 
-			}
-		}
-		return isColonised;
-    }
-	
-
 	/**
 	 * Daily calculation of PAR incident on the cell depending climatic entries
 	 * @param generalParameters Reference to SafeGeneralParameters general parameters 
@@ -795,11 +772,11 @@ public class SafeCell extends SquareCell {
 		}
 
 		//Calculation of diffuse PAR transmitted today on this cell in Moles m-2 d-1
-		float dailyDiffuse = dayClimat.getDiffusePar ();				  					// Climatic entry of the day in Moles m-2 d-1
+		double dailyDiffuse = dayClimat.getDiffusePar ();				  					// Climatic entry of the day in Moles m-2 d-1
 		setDiffuseParIncident(dailyDiffuse * getRelativeToFlatCellDiffuseParIncident())  ;  // Moles m-2 d-1
 		
 		//Same in relative (%)
-		float skyDiffuseMask =(float)(beamSet.getSkyDiffuseMask());
+		double skyDiffuseMask = beamSet.getSkyDiffuseMask();
 
 		if ((getDiffuseParIncident() > 0) && (skyDiffuseMask >0) ) {
 			setRelativeDiffuseParIncident (getRelativeToFlatCellDiffuseParIncident()/skyDiffuseMask);		// %
@@ -833,8 +810,8 @@ public class SafeCell extends SquareCell {
 		else setRelativeTotalParIncident(0);
 
 		//Compute relative visibleSky
-		setVisibleSky(getRelativeToFlatCellVisibleSky()/((float) (beamSet.getSkyInfraRedMask())));
-
+		setVisibleSky(getRelativeToFlatCellVisibleSky()/(beamSet.getSkyInfraRedMask()));		
+		
 		//Compute relative Global Radiation Incident
 		double parProp = generalParameters.parGlobalCoefficient;
 		double directProp = dailyDirect/(dailyDirect+dailyDiffuse);
@@ -1140,12 +1117,6 @@ public class SafeCell extends SquareCell {
 	public void addWaterAddedByWaterTable (double v) {waterAddedByWaterTable += (float) v;}
 	public double getWaterAddedByWaterTable () {return (double) waterAddedByWaterTable;}
 	public void addDrainageWaterTable (double v) {this.getCrop().sticsCommun.drain += (float) v;}
-
-	
-	public void setWaterTakenByDesaturation (double v) {waterTakenByDesaturation = (float) v;}
-	public void addWaterTakenByDesaturation(double v) {waterTakenByDesaturation += (float) v;}
-	public double getWaterTakenByDesaturation () {return (double) waterTakenByDesaturation;}
-
 	public float getNitrogenLeachingWaterTable() {return  nitrogenLeachingWaterTable;}
 	public float getNitrogenAddedByWaterTable () {return  nitrogenAddedByWaterTable;}// AQ 11/04/2011
 	public void addNitrogenAddedByWaterTable (double np) {nitrogenAddedByWaterTable +=np;}// AQ 11/04/2011
@@ -1160,8 +1131,6 @@ public class SafeCell extends SquareCell {
 	public void addWaterUptakeInSaturationByCrop (double v) {waterUptakeInSaturationByCrop += (float) v;}
 	public double getWaterUptakeInSaturationByCrop () {return (double) waterUptakeInSaturationByCrop;}
 
-
-	
 	//aq - 10.06.2011 - Same for Nitrogen
 	public void setNitrogenUptakeInSaturationByTrees (double v) {nitrogenUptakeInSaturationByTrees = (float) v;}
 	public void addNitrogenUptakeInSaturationByTrees (double v) {nitrogenUptakeInSaturationByTrees += (float) v;}
@@ -1170,7 +1139,6 @@ public class SafeCell extends SquareCell {
 	public void addNitrogenUptakeInSaturationByCrop (double v) {nitrogenUptakeInSaturationByCrop += (float) v;}
 	public double getNitrogenUptakeInSaturationByCrop () {return (double) nitrogenUptakeInSaturationByCrop;}
 
-	
 	public void setTreeCarbonFoliageLitter(double v) {treeCarbonFoliageLitter =  v;}
 	public void addTreeCarbonFoliageLitter (double v) {treeCarbonFoliageLitter +=  v;}
 	public double getTreeCarbonFoliageLitter () {return  treeCarbonFoliageLitter;}
@@ -1236,59 +1204,60 @@ public class SafeCell extends SquareCell {
 	/****************************************************
 	MANAGEMENT OF THE RESULTS OF LIGHT COMPETITION MODULE
 	*****************************************************/
-	public double getRelativeToFlatCellDirectParIncident () {return (double) relativeToFlatCellDirectParIncident;}
-	public double getRelativeToFlatCellDiffuseParIncident () {return (double) relativeToFlatCellDiffuseParIncident;}
-	public double getRelativeToFlatCellVisibleSky () {return (double) relativeToFlatCellVisibleSky;}
-	public double getRelativeToFlatCellDirectNirIncident () {return (double) relativeToFlatCellDirectNirIncident;}
-	public double getRelativeToFlatCellDiffuseNirIncident () {return (double) relativeToFlatCellDiffuseNirIncident;}
-	public double getDirectParIncident () {return (double) directParIncident;}
-	public double getDiffuseParIncident () {return (double) diffuseParIncident;}
-	public double getTotalParIncident () {return (double) directParIncident+diffuseParIncident;}
-	public double getRelativeDirectParIncident () {return (double) relativeDirectParIncident;}
-	public double getRelativeDiffuseParIncident () {return (double) relativeDiffuseParIncident;}
-	public double getRelativeTotalParIncident () {return (double) relativeTotalParIncident;}
-	public double getRelativeGlobalRadIncident () {return (double) relativeGlobalRadIncident;}
-	public double getVisibleSky () {return visibleSky;}
-	public void setRelativeToFlatCellDirectParIncident (double e) {relativeToFlatCellDirectParIncident= (float) e;}
-	public void setRelativeToFlatCellDiffuseParIncident (double e) {relativeToFlatCellDiffuseParIncident= (float) e;}
-	public void setRelativeToFlatCellVisibleSky (double e) {relativeToFlatCellVisibleSky= (float) e;}
-	public void setRelativeToFlatCellDirectNirIncident (double e) {relativeToFlatCellDirectNirIncident= (float) e;}
-	public void setRelativeToFlatCellDiffuseNirIncident (double e) {relativeToFlatCellDiffuseNirIncident= (float) e;}
-	public void setDirectParIncident (double e) {directParIncident= (float) e;}
-	public void setDiffuseParIncident (double e) {diffuseParIncident=(float) e;}
-	public void setRelativeDirectParIncident (double e) {relativeDirectParIncident=(float) e;}
-	public void setRelativeDiffuseParIncident (double e) {relativeDiffuseParIncident=(float) e;}
-	public void setRelativeTotalParIncident (double e) {relativeTotalParIncident=(float) e;}
-	public void setRelativeGlobalRadIncident (double e) {relativeGlobalRadIncident=(float) e;}
-	public void setVisibleSky (double e) {visibleSky= (float)e;}
+	public float getRelativeToFlatCellDirectParIncident () {return  (float) Math.min(relativeToFlatCellDirectParIncident, 1.0d);}
+	public float getRelativeToFlatCellDiffuseParIncident () {return  (float) Math.min(relativeToFlatCellDiffuseParIncident, 1.0d);}
+	public float getRelativeToFlatCellVisibleSky () {return (float) Math.min(relativeToFlatCellVisibleSky, 1.0d);}
+	public float getRelativeToFlatCellDirectNirIncident () {return (float) Math.min(relativeToFlatCellDirectNirIncident, 1.0d);}
+	public float getRelativeToFlatCellDiffuseNirIncident () {return (float) Math.min(relativeToFlatCellDiffuseNirIncident, 1.0d);}
+	public double getDirectParIncident () {return directParIncident;}
+	public double getDiffuseParIncident () {return diffuseParIncident;}
+	public double getTotalParIncident () {return directParIncident+diffuseParIncident;}
+	public float getRelativeDirectParIncident () {return (float) Math.min(relativeDirectParIncident, 1.0d);}
+	public float getRelativeDiffuseParIncident () {return (float) Math.min(relativeDiffuseParIncident, 1.0d);}
+	public float getRelativeTotalParIncident () {return (float) Math.min(relativeTotalParIncident, 1.0d);}
+	public float getRelativeGlobalRadIncident () {return (float) Math.min(relativeGlobalRadIncident, 1.0d);}
+	public float getVisibleSky () {return (float) Math.min(visibleSky, 1.0d);}
+	public void setRelativeToFlatCellDirectParIncident (double e) {relativeToFlatCellDirectParIncident= e;}
+	public void setRelativeToFlatCellDiffuseParIncident (double e) {relativeToFlatCellDiffuseParIncident=e;}
+	public void setRelativeToFlatCellVisibleSky (double e) {relativeToFlatCellVisibleSky= e;}
+	public void setRelativeToFlatCellDirectNirIncident (double e) {relativeToFlatCellDirectNirIncident= e;}
+	public void setRelativeToFlatCellDiffuseNirIncident (double e) {relativeToFlatCellDiffuseNirIncident=  e;}
+	public void setDirectParIncident (double e) {directParIncident=  e;}
+	public void setDiffuseParIncident (double e) {diffuseParIncident= e;}
+	public void setRelativeDirectParIncident (double e) {relativeDirectParIncident= e;}
+	public void setRelativeDiffuseParIncident (double e) {relativeDiffuseParIncident= e;}
+	public void setRelativeTotalParIncident (double e) {relativeTotalParIncident= e;}
+	public void setRelativeGlobalRadIncident (double e) {relativeGlobalRadIncident= e;}
+	public void setVisibleSky (double e) {visibleSky= e;}
 
 	// add functions
-	public void addDirectPar (double energy){this.relativeToFlatCellDirectParIncident += (float) energy;}
-	public void addDiffusePar (double energy){this.relativeToFlatCellDiffuseParIncident += (float) energy;}
-	public void addVisibleSky (double energy){this.relativeToFlatCellVisibleSky += (float) energy;}
-	public void addDirectNir (double energy){this.relativeToFlatCellDirectNirIncident += (float) energy;}
-	public void addDiffuseNir (double energy){this.relativeToFlatCellDiffuseNirIncident += (float) energy;}
+	public void addDirectPar (double energy){this.relativeToFlatCellDirectParIncident +=  energy;}
+	public void addDiffusePar (double energy){this.relativeToFlatCellDiffuseParIncident +=  energy;}
+	public void addVisibleSky (double energy){this.relativeToFlatCellVisibleSky += energy;}
+	public void addDirectNir (double energy){this.relativeToFlatCellDirectNirIncident +=  energy;}
+	public void addDiffuseNir (double energy){this.relativeToFlatCellDiffuseNirIncident +=  energy;}
 
 	//Monthly values for export
-	public float getMonthDirectParIncident () { return monthDirectParIncident;}
-	public float getMonthDiffuseParIncident () {return monthDiffuseParIncident;}
-	public float getMonthVisibleSky () {return monthVisibleSky;}	
-	public float getMonthDirectPar() { return monthDirectPar;}
-	public float getMonthDiffusePar () {return monthDiffusePar;}
+	public double getMonthDirectParIncident () { return monthDirectParIncident;}
+	public double getMonthDiffuseParIncident () {return monthDiffuseParIncident;}
+	public double getMonthVisibleSky () {return monthVisibleSky;}	
+	public double getMonthDirectPar() { return monthDirectPar;}
+	public double getMonthDiffusePar () {return monthDiffusePar;}
 
 	
-	public float getMonthRelativeDirectParIncident () {
+	public double getMonthRelativeDirectParIncident () {
 		if (getMonthDirectPar() > 0) 
 			return getMonthDirectParIncident ()/getMonthDirectPar();
 		else return 0;
 	}
-	public float getMonthRelativeDiffuseParIncident () {
+	public double getMonthRelativeDiffuseParIncident () {
 		if (getMonthDiffusePar () > 0)   
 			return getMonthDiffuseParIncident ()/getMonthDiffusePar ();
 		else return 0;
 	}
-	public float getMonthRelativeTotalParIncident () {
-		if (getMonthDirectPar()+getMonthDiffusePar () > 0)   return (getMonthDirectParIncident () + getMonthDiffuseParIncident ())/(getMonthDirectPar()+getMonthDiffusePar ());
+	public double getMonthRelativeTotalParIncident () {
+		if (getMonthDirectPar()+getMonthDiffusePar () > 0)   
+			return (getMonthDirectParIncident () + getMonthDiffuseParIncident ())/(getMonthDirectPar()+getMonthDiffusePar ());
 		else return 0;
 	}
 
@@ -1399,8 +1368,8 @@ public class SafeCell extends SquareCell {
 	public float getAnnualNitrogenUptakeByTrees() { return annualNitrogenUptakeByTrees;}
 	public float getAnnualWaterUptakeByCrop() { return annualWaterUptakeByCrop;}
 	public float getAnnualNitrogenUptakeByCrop() { return annualNitrogenUptakeByCrop;}
-	public float getAnnualDirectParIncident() { return annualDirectParIncident;}
-	public float getAnnualDiffuseParIncident() { return annualDiffuseParIncident;}
+	public double getAnnualDirectParIncident() { return annualDirectParIncident;}
+	public double getAnnualDiffuseParIncident() { return annualDiffuseParIncident;}
 	public String toString(){
 		String str = "id = "+this.getId();
 		if (this.getCropZone()!=null)

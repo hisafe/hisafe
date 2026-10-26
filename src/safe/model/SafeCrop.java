@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
- * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -43,7 +43,6 @@
  *		For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.  
  *
  * For more details see <https://creativecommons.org/licenses/by/4.0/>.
- *
  */
 
 package safe.model;
@@ -139,9 +138,9 @@ import safe.stics.SafeSticsTransit;
 		3=dor DORMANCE (ou DEBDORM et FINDORM pour les ligneux)	
 		4=ger GERMINATION	
 		5=lev LEVEE		
-		6=amf accï¿½lï¿½ration maximale de croissance foliaire		
-		7=lax indice foliaire maxi, fin de croissance foliaire nette ou brute selon lï¿½option.		
-		8=sen dï¿½but sï¿½nescence nette (option LAInet)		
+		6=amf acceleration maximale de croissance foliaire		
+		7=lax indice foliaire maxi, fin de croissance foliaire nette ou brute selon option.		
+		8=sen debut sïenescence nette (option LAInet)		
 		9=lan indice foliaire nul (option LAInet)		
 		10=rec RECOLTE
 	*/
@@ -152,11 +151,11 @@ import safe.stics.SafeSticsTransit;
 	/** Crop Phenological stage reproductive
 		1=snu SOL NU
 		2=flo Floraison		
-		3=drp dï¿½but remplissage des organes rï¿½coltï¿½s		
-		4=nou Nouaison (Fin de la nouaison, pour les plantes indï¿½terminï¿½es)		
-		5=des dï¿½but dessication des organes rï¿½coltï¿½s	
-		6=mat maturitï¿½ physiologique	
-		7=rec Rï¿½colte
+		3=drp debut remplissage des organes recoltes		
+		4=nou Nouaison (Fin de la nouaison, pour les plantes indeterminees)		
+		5=des debut dessication des organes recoltes	
+		6=mat maturite physiologique	
+		7=rec Recolte
 	*/
 	private int phenologicStageReproductive;
 	/** Computing days between 2 stages reproductive */
@@ -387,8 +386,6 @@ import safe.stics.SafeSticsTransit;
 		this.directParIntercepted		= 0;
 		this.diffuseParIntercepted		= 0;
 		this.competitionIndexForTotalPar= 1;
-		this.yield = 0;
-
 		this.getPlantRoots().razDaily();
 		
  	}
@@ -494,7 +491,9 @@ import safe.stics.SafeSticsTransit;
 		sticsCrop.P_densinitial[3] = (float) zone.getInitialCropRootsDensity(3);
 		sticsCrop.P_densinitial[4] = (float) zone.getInitialCropRootsDensity(4);
 
-
+		this.yield = 0;
+		this.harvestDay = 0;
+		
 		//JNA NATIVE method to check plant and itk parameters
 		//result is in output/initialisation.sti
 		SafeTestJNA.verifPlant(sticsParam, sticsTransit, this.sticsCommun, zone.getSticsItk(), this.sticsCrop, zone.getId(), julianDayStart, julianDayEnd, exportDir);
@@ -894,8 +893,8 @@ import safe.stics.SafeSticsTransit;
 				sumHisafeWaterStressVegetative=0;
 				sumHisafeNitrogenStressVegetative=0;
 			}
-			//rajoutï¿½ IL 11/06/2025
-			//sinon bug sol nu aprï¿½s rï¿½colte 
+			//add IL 11/06/2025
+			//to avoid baresoil bug after harvest  
 			Arrays.fill(this.sticsCrop.ep	, 0);
 			Arrays.fill(this.sticsCrop.eop	, 0);
 			this.sticsCrop.mafruit = 0;
@@ -1254,65 +1253,7 @@ import safe.stics.SafeSticsTransit;
 		return cropRootLength;
 	}
 		
-	/**
-	* Compute CROP plant water potential 
-	**/
-	public void computePlantWaterPotential () {
-		
-		if (this.getTotalRootsLength() <= 0) return;
-		
-		SafeVoxel [] voxels = getCell().getVoxels();
-		
-		double plantPotential = 0;
-
-		double drySoilFactor = this.getCell().getCropZone().getCropSpecies().getCropHarmonicWeightedMean();
-			
-		//plant water potential 
-		for (int i=0; i<voxels.length ; i++) {		
-			
-			if (voxels[i].getCropRootsDensity() > 0) { //IL 14/08/2020 add this test
-				double neededPot = voxels[i].getWaterPotentialTheta();	// soil water potential in this voxel  m3 m-3
 	
-				// additional potential for water flow from bulk soil to rhizosphere
-				neededPot *= (1+this.getCell().getCropZone().getCropSpecies().getCropBufferPotential()); 
-
-				
-				// additional potential for water flow from root surface to xylem
-				double radialTransportPotential = -this.getWaterDemand()								// L.day-1=dm3.day-1
-													* 1000												// from L.day-1 to cm3.day-1
-													/this.getCell().getCropZone().getCropSpecies().getCropRootConductivity()			// cm day-1
-													/(this.getTotalRootsLength()	/this.getCell().getArea()*100);							// m to cm
-													//we divide by cellArea to normalize total root length CD+IL 20/12/2023
-
-				this.getPlantRoots().setRadialTransportPotential(radialTransportPotential);
-				neededPot += radialTransportPotential;
-				
-				// additional potential to account for longitudinal water transport in coarse roots from the voxel to stem base
-				double longitudinalTransportPotential = -this.getWaterDemand()										//L.day-1=dm3.day-1
-															* 1000													// from L.day-1 to cm3.day-1
-															* this.getCell().getCropZone().getCropSpecies().getCropLongitudinalResistantFactor()	// day.cm-1.m-1
-															/(this.getTotalRootsLength()/this.getCell().getArea()*100);									// m to cm
-															//we divide by cellArea to normalize total root length CD+IL 20/12/2023
-
-				// in the model documentation from Meine et al, this term is not divided by cropRootLength... 
-				//but it leads to very different longitudinal drop potential for small and large trees because of differences in water demand... so...
-	
-				this.getPlantRoots().setLongitudinalTransportPotential(longitudinalTransportPotential);
-				neededPot += longitudinalTransportPotential*voxels[i].getZ();	// topological distance (m) between the voxel and stem base
-	
-				// additional potential to account for voxel depth
-				neededPot -= voxels[i].getZ()*100;		// from m to cm
-	
-				plantPotential += -(voxels[i].getCropRootsDensity() * voxels[i].getVolume()	// m.m-3 * m3 = m
-										/ Math.pow(-neededPot, drySoilFactor));	// cm		
-				
-			}
-		}
-		
-		plantPotential =-Math.pow (-this.getTotalRootsLength() /plantPotential , 1/drySoilFactor);
-		this.getPlantRoots().setRequiredWaterPotential(plantPotential);
-
-	}
 
 	/**
 	 * Retrieve values from STICS if hisafeLightMethodForCrop = 0 (crop interception calculated by STICS) 

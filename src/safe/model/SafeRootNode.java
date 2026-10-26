@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
- * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -43,7 +43,6 @@
  *		For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.  
  *
  * For more details see <https://creativecommons.org/licenses/by/4.0/>.
- *
  */
 
 package safe.model;
@@ -152,35 +151,35 @@ public class SafeRootNode implements Serializable, Comparable {
 		this.nitrogenUptakePotential = 0;
 
 		// linking father and son
-		if (nodeParent != null) {
-			nodeParent.addNodeColonised (this);
+		if (getNodeParent() != null) {
+			getNodeParent().addNodeColonised (this);
 			computeDistanceFromFather (direction);
-			setTreeDistance (nodeParent.getTreeDistance () + getFatherDistance());
-			this.computeEffDist (tree);
-			distanceX0 = nodeParent.getDistanceX0();
-			distanceX1 = nodeParent.getDistanceX1();
-			distanceY2 = nodeParent.getDistanceY2();
-			distanceY3 = nodeParent.getDistanceY3();
+			setTreeDistance (getNodeParent().getTreeDistance () + getFatherDistance());
+			setEffectiveDistance (tree);
+			distanceX0 = getNodeParent().getDistanceX0();
+			distanceX1 = getNodeParent().getDistanceX1();
+			distanceY2 = getNodeParent().getDistanceY2();
+			distanceY3 = getNodeParent().getDistanceY3();
 			
-			if (direction==0)  distanceX0 +=  voxelRooted.getCell().getWidth();	
-			if (direction==1)  distanceX1 +=  voxelRooted.getCell().getWidth();
-			if (direction==2)  distanceY2 +=  voxelRooted.getCell().getWidth();
-			if (direction==3)  distanceY3 +=  voxelRooted.getCell().getWidth();
+			if (direction==0)  distanceX0 +=  getVoxelRooted ().getCell().getWidth();	
+			if (direction==1)  distanceX1 +=  getVoxelRooted ().getCell().getWidth();
+			if (direction==2)  distanceY2 +=  getVoxelRooted ().getCell().getWidth();
+			if (direction==3)  distanceY3 +=  getVoxelRooted ().getCell().getWidth();
 
 		//first node
 		} else {
-			setFatherDistance (0.5 * this.voxelRooted.getThickness ());
-			setTreeDistance (0.5 * this.voxelRooted.getThickness ());
-			setEffectiveDistance (0.5 * this.voxelRooted.getThickness ());
-			this.colonisationDirection = 4; // gt - 27.03.2009
-			distanceX0 = voxelRooted.getCell().getWidth() / 2;
-			distanceX1 = voxelRooted.getCell().getWidth() / 2;
-			distanceY2 = voxelRooted.getCell().getWidth() / 2;
-			distanceY3 = voxelRooted.getCell().getWidth() / 2;
-
+			setFatherDistance (0.5 * getVoxelRooted ().getThickness ());
+			setTreeDistance (0.5 * getVoxelRooted ().getThickness ());
+			setEffectiveDistance (0.5 * getVoxelRooted ().getThickness ());
+			setColonisationDirection(4); 
+			distanceX0 = getVoxelRooted ().getCell().getWidth() / 2;
+			distanceX1 = getVoxelRooted ().getCell().getWidth() / 2;
+			distanceY2 = getVoxelRooted ().getCell().getWidth() / 2;
+			distanceY3 = getVoxelRooted ().getCell().getWidth() / 2;
 		}
+		
 		// init plant waterRhizospherePotential with soil water potential
-		setWaterRhizospherePotential (voxelRooted.getWaterPotentialTheta ());
+		setWaterRhizospherePotential (getVoxelRooted ().getWaterPotentialTheta ());
 	}
 
 
@@ -212,14 +211,14 @@ public class SafeRootNode implements Serializable, Comparable {
 		this.fineRootsCost = 0;
 		
 		// linking father and son
-		if (nodeParent != null) nodeParent.addNodeColonised (this);
+		if (getNodeParent() != null) getNodeParent().addNodeColonised (this);
 		
-		setFatherDistance (0.5 * this.voxelRooted.getThickness ());
-		setTreeDistance (0.5 * this.voxelRooted.getThickness ());
-		setEffectiveDistance (0.5 * this.voxelRooted.getThickness ());
+		setFatherDistance (0.5 * getVoxelRooted ().getThickness ());
+		setTreeDistance (0.5 * getVoxelRooted ().getThickness ());
+		setEffectiveDistance (0.5 * getVoxelRooted ().getThickness ());
 		
 		// init plant waterRhizospherePotential with soil water potential
-		setWaterRhizospherePotential (voxelRooted.getWaterPotentialTheta ());
+		setWaterRhizospherePotential (getVoxelRooted ().getWaterPotentialTheta ());
 	}
 
 	/**
@@ -229,36 +228,37 @@ public class SafeRootNode implements Serializable, Comparable {
 	 */
 	public void computeDistanceFromFather (int direction) {
 
-		this.colonisationDirection = direction;
+		setColonisationDirection (direction);
 		if (direction >= 4) {
-			Vertex3d node = this.getVoxelRooted ().getGravityCenter ();
-			Vertex3d father = this.getNodeParent ().getVoxelRooted ().getGravityCenter ();
+			Vertex3d node = getVoxelRooted ().getGravityCenter ();
+			Vertex3d father = getNodeParent ().getVoxelRooted ().getGravityCenter ();
 			setFatherDistance (Math.abs (node.z - father.z));
 		}
 		else {
-			setFatherDistance (this.getVoxelRooted ().getCell().getWidth());
+			setFatherDistance (getVoxelRooted ().getCell().getWidth());
 		}
 	}
 
 	/**
 	 * Compute node effective distance from tree
-	 * if the topological distance to the tree (treeDistance)  is as short as possible (shorterWay), 
-	 * in other words, if there were no "bypass" for the colonization of the voxel, we take the Euclidean distance to the tree
-	 * otherwise, we search in the genealogy of the present node the most distant node N that we can reach without making a bypass 
-	 * (that is to say that the distance to this node is the shortest possible). 
-	 * And in this case, the effective distance is the sum of the Euclidean distance between the present node and the node N, 
-	 * and the effective distance from node N to the tree 
+	 * case 1 : the topological distance to the tree (treeDistance)  is as short as possible (shorterWay), 
+	 *          in other words, if there were no "bypass" for the colonization of the voxel
+	 *          we take the Euclidean distance to the tree
+	 * case 2 : we search in the genealogy of the present node the most distant node N that we can reach without making a bypass 
+	 *          (that is to say that the distance to this node is the shortest possible). 
+	 *          the effective distance is the sum of the Euclidean distance between the present node and the node N, 
+	 *          and the effective distance from node N to the tree 
 	 * 
 	 * @author Gregoire Talbot. September 2008
 	 * @param tree Reference to the SafeTree object
 	 */
-	public void computeEffDist (SafeTree tree) {
+	public void setEffectiveDistance (SafeTree tree) {
 		if ((tree != null) && (getNodeParent () != null)) {
+			//case 1 
 			if (this.getTreeDistance () <= this.shorterWay (tree.getX (), tree.getY (), tree.getZ ())) {
 				this.setEffectiveDistance (this.euclidist (tree.getX (), tree.getY (), tree.getZ ()));
-				
+			//case 2	
 			} else {
-
 				SafeRootNode parent = getNodeParent ();
 				if (parent.getNodeParent () != null) {
 					Vertex3d parentFatherPosition = parent.getNodeParent ().getVoxelRooted ().getGravityCenter ();
@@ -274,8 +274,9 @@ public class SafeRootNode implements Serializable, Comparable {
 				this.setEffectiveDistance (parent.getEffectiveDistance ()
 						+ euclidist (parentPosition.x, parentPosition.y, parentPosition.z));
 			}
+		// firstRootNode is just below the tree
 		} else {
-			this.setEffectiveDistance (this.getTreeDistance ());	// cas du firstRootNode, situe juste sous l'arbre
+			this.setEffectiveDistance (this.getTreeDistance ());	
 
 		}
 	}
@@ -288,11 +289,11 @@ public class SafeRootNode implements Serializable, Comparable {
 	 * @param z Z coordinate of the distant node 
 	 */
 	public double shorterWay (double x, double y, double z) {
-		SafeCell cell = (SafeCell) this.getVoxelRooted ().getCell();
+		SafeCell cell = (SafeCell) getVoxelRooted ().getCell();
 		SafePlot plot = (SafePlot) cell.getPlot();
 		double plotWidth = plot.getXSize();
 		double plotHeight = plot.getYSize();
-		Vertex3d nodePosition = this.getVoxelRooted ().getGravityCenter ();
+		Vertex3d nodePosition = getVoxelRooted ().getGravityCenter ();
 		double nodex = nodePosition.x;
 		double nodey = nodePosition.y;
 
@@ -314,11 +315,11 @@ public class SafeRootNode implements Serializable, Comparable {
 	 * @param z Z coordinate of the distant node 
 	 */
 	public double euclidist (double x, double y, double z) {
-		SafeCell cell = (SafeCell) this.getVoxelRooted ().getCell();
+		SafeCell cell = (SafeCell) getVoxelRooted ().getCell();
 		SafePlot plot = (SafePlot) cell.getPlot();
 		double plotWidth = plot.getXSize();
 		double plotHeight = plot.getYSize();
-		Vertex3d nodePosition = this.getVoxelRooted ().getGravityCenter ();
+		Vertex3d nodePosition = getVoxelRooted ().getGravityCenter ();
 
 		double nodex = nodePosition.x;
 		double nodey = nodePosition.y;
@@ -352,7 +353,26 @@ public class SafeRootNode implements Serializable, Comparable {
 			}
 		}
 	}
+	/**
+	 * Compute deficit of coarse roots carbon between target and real pool
+	 * 
+	 * @author Gregoire Talbot. September 2008
+	 * @param tree Reference to the SafeTree object 
+	 */
+	public double computeCarbonCoarseRootsImbalance (SafeTree tree) {
 
+		double nodeCoarseRootsImbalance = Math.max(getVoxelRooted ().getTreeCarbonCoarseRootsImbalance(tree.getId()-1), 0);	
+
+		if (nodeColonised != null) {
+			for (Iterator<SafeRootNode>  v = this.getNodeColonised ().iterator (); v.hasNext ();) {
+				SafeRootNode nodeColonised = v.next ();
+				nodeCoarseRootsImbalance += nodeColonised.computeCarbonCoarseRootsImbalance (tree);
+			}
+		}
+
+		return nodeCoarseRootsImbalance;
+
+	}
 	/**
 	 * Compute the target coarse root carbon for all nodes and the total coarse root target carbon of the tree 
 	 * 
@@ -372,7 +392,7 @@ public class SafeRootNode implements Serializable, Comparable {
 
 		double fineRootsLength = 0; // Kg C
 		
-		//loop on all colonised voxels to get the fineRootLenght total to the end of the coarseRoot
+		//loop on all colonised voxels to get the fineRootLenght total to the end of the coarseRoot topology
 		if (nodeColonised != null) {
 			for (Iterator<SafeRootNode> v = this.getNodeColonised ().iterator (); v.hasNext ();) {
 				SafeRootNode nodeColonised =  v.next ();
@@ -381,16 +401,16 @@ public class SafeRootNode implements Serializable, Comparable {
 				fineRootsLength += toAdd;
 			}
 		}
-		int v = this.getVoxelRooted ().getId () - 1;
+		int v = getVoxelRooted ().getId () - 1;
 		int treeIndex = tree.getId () - 1;
-		double fineRootDensity = this.getVoxelRooted ().getTheTreeRootsDensity (treeIndex);
-		fineRootsLength += fineRootDensity * this.getVoxelRooted ().getVolume () // m m-3 * m3
-							* this.getTopologicalToEffDistance (); 				// voir les explication la dessus dans la methode computeEffDist
-																				// - 30.03.2009
-
+		double fineRootDensity = getVoxelRooted ().getTheTreeRootsDensity (treeIndex);
+		fineRootsLength += fineRootDensity * getVoxelRooted ().getVolume () // m m-3 * m3
+							* this.getTopologicalDistanceCorrectionFactor (); 	 // see setEffectiveDistance
+																		
+		//add new root length 
 		if (additionalRootLength != null) {
 			fineRootsLength += additionalRootLength[v] // m
-							* this.getTopologicalToEffDistance ();
+							* this.getTopologicalDistanceCorrectionFactor ();
 		}
 
 		double carbonTarget =  (fineRootsLength * cRAreaToFRLengthRatio * this.getFatherDistance () // m x m2 m-1 x m = m3
@@ -400,34 +420,13 @@ public class SafeRootNode implements Serializable, Comparable {
 		//We remove the voxels with enough carbon in coarse root (negative imbalance)  
 		//https://github.com/hisafe/hisafe/issues/123
 		// Math.max(...) : if target< carbon : the coarse root can't contribute to carbon allocation as a negative sink
-		carbonTarget = Math.max(carbonTarget, voxelRooted.getTheTreeCarbonCoarseRootsTarget(treeIndex));
-
-		voxelRooted.setTreeCarbonCoarseRootsTarget (treeIndex, carbonTarget);
-
+		carbonTarget = Math.max(carbonTarget, getVoxelRooted ().getTheTreeCarbonCoarseRootsTarget(treeIndex));
+		getVoxelRooted ().setTreeCarbonCoarseRootsTarget (treeIndex, carbonTarget);
 		tree.addTargetCarbonCoarseRoots (carbonTarget);
 
 		return fineRootsLength;
 	}
-	/**
-	 * Growth of carbon coarse root  in KG C : computing of carbon allocation between coarse roots
-	 * 
-	 * @author Gregoire Talbot. September 2008
-	 * @param tree Reference to the SafeTree object 
-	 */
-	public double computeCarbonCoarseRootsImbalance (SafeTree tree) {
 
-		double nodeCoarseRootsImbalance = Math.max(voxelRooted.getTreeCarbonCoarseRootsImbalance(tree.getId()-1), 0);	
-
-		if (nodeColonised != null) {
-			for (Iterator<SafeRootNode>  v = this.getNodeColonised ().iterator (); v.hasNext ();) {
-				SafeRootNode nodeColonised = v.next ();
-				nodeCoarseRootsImbalance += nodeColonised.computeCarbonCoarseRootsImbalance (tree);
-			}
-		}
-
-		return nodeCoarseRootsImbalance;
-
-	}
 	/**
 	 * Growth of carbon coarse root  in KG C : computing of carbon allocation between coarse roots
 	 * 
@@ -443,7 +442,7 @@ public class SafeRootNode implements Serializable, Comparable {
 											double totalNodeImbalance) {
 
 		double proportion = 0;
-		double nodeCoarseRootImbalance = voxelRooted.getTreeCarbonCoarseRootsImbalance(tree.getId()-1);	
+		double nodeCoarseRootImbalance = getVoxelRooted ().getTreeCarbonCoarseRootsImbalance(tree.getId()-1);	
 
 		int treeIndex = tree.getId () - 1;
 		//loop on all colonised voxels to add carbon all along the coarseRoot
@@ -471,11 +470,11 @@ public class SafeRootNode implements Serializable, Comparable {
 				//If we assume that they join the centers of gravity of the two voxels, this "virtual cylinder" of coarse roots is physically 
 				// half in the voxel and half in the father voxel. Therefore the C allocation needs to be split in two between the two voxels.
 				//https://github.com/hisafe/hisafe/issues/121			
-				if (nodeParent != null) {
-					voxelRooted.addTreeCarbonCoarseRoots (treeIndex, (additionalCarbonCoarseRoot/2));		
-					nodeParent.getVoxelRooted ().addTreeCarbonCoarseRoots (treeIndex, (additionalCarbonCoarseRoot/2));				
+				if (getNodeParent() != null) {
+					getVoxelRooted ().addTreeCarbonCoarseRoots (treeIndex, (additionalCarbonCoarseRoot/2));		
+					getNodeParent().getVoxelRooted ().addTreeCarbonCoarseRoots (treeIndex, (additionalCarbonCoarseRoot/2));				
 				} else {
-					voxelRooted.addTreeCarbonCoarseRoots (treeIndex, additionalCarbonCoarseRoot);
+					getVoxelRooted ().addTreeCarbonCoarseRoots (treeIndex, additionalCarbonCoarseRoot);
 				}
 			}
 			
@@ -483,11 +482,11 @@ public class SafeRootNode implements Serializable, Comparable {
 			//IL 11/09/2024 : SAME for NITROGEN CR
 			double additionalNitrogenCoarseRoot =  (proportion * nitrogenCoarseRootsIncrement);
 			if (additionalNitrogenCoarseRoot > 0) {
-				if (nodeParent != null) {
-					voxelRooted.addTreeNitrogenCoarseRoots (treeIndex, (additionalNitrogenCoarseRoot/2));			
-					nodeParent.getVoxelRooted ().addTreeNitrogenCoarseRoots (treeIndex, (additionalNitrogenCoarseRoot/2));					
+				if (getNodeParent() != null) {
+					getVoxelRooted ().addTreeNitrogenCoarseRoots (treeIndex, (additionalNitrogenCoarseRoot/2));			
+					getNodeParent().getVoxelRooted ().addTreeNitrogenCoarseRoots (treeIndex, (additionalNitrogenCoarseRoot/2));					
 				} else {
-					voxelRooted.addTreeNitrogenCoarseRoots (treeIndex, additionalNitrogenCoarseRoot);
+					getVoxelRooted ().addTreeNitrogenCoarseRoots (treeIndex, additionalNitrogenCoarseRoot);
 				}
 			}
 		}
@@ -538,15 +537,15 @@ public class SafeRootNode implements Serializable, Comparable {
 			}
 		}
 		double localFineRootLength = getFineRootsDensity () * getVoxelRooted ().getVolume ()
-									* getTopologicalToEffDistance ();
+									* getTopologicalDistanceCorrectionFactor ();
 		
-		//the topologicalToEffDistance ratio allows to correct biases in cost calculations linked to voxelization.
+		//the TopologicalDistanceCorrectionFactor allows to correct biases in cost calculations linked to voxelization.
 		// If we do nothing: the fine roots located diagonally across the tree relative to the x, y and z axes cost more in carbon than the others
 		// because their topological distance to the tree is greater.. 
 		// If we corrected by the ratio of Euclidean distance to topological distance, we could not take into account cases where the root system has made bypass.
 		// In this case, the path between these roots and the base of the tree must be taken into account.
 		// then the calculation of an effective distance (see the computeEffDist method) to replace the Euclidean distance.
-		double localNewFineRoots = newFineRootsDensity * getVoxelRooted ().getVolume () * getTopologicalToEffDistance ();
+		double localNewFineRoots = newFineRootsDensity * getVoxelRooted ().getVolume () * getTopologicalDistanceCorrectionFactor ();
 
 		fineRootLength[0] += localFineRootLength;
 		fineRootLength[1] += localNewFineRoots;
@@ -558,7 +557,7 @@ public class SafeRootNode implements Serializable, Comparable {
 										* cRAreaToFRLengthRatio
 										* getFatherDistance () 
 										* woodDensity * woodCarbonContent 
-										- voxelRooted.getTheTreeCarbonCoarseRoots(treeIndex));		 
+										- getVoxelRooted ().getTheTreeCarbonCoarseRoots(treeIndex));		 
 																							
 		// the cost of this coarse root increase must be distributed among all the nodes which depend on the present node 	
 		this.costDispatching (treeIndex, totalCost, localNewFineRoots, fineRootLength[1], newFineRootsDensity);	
@@ -581,13 +580,13 @@ public class SafeRootNode implements Serializable, Comparable {
 	public void costDispatching (int treeIndex, double totalCost, double localFineRoots, double totalFineRoots,
 								double newFineRootsDensity) {
 
-		this.addFineRootsCost (totalCost * getTopologicalToEffDistance () / totalFineRoots);
+		this.addFineRootsCost (totalCost * getTopologicalDistanceCorrectionFactor () / totalFineRoots);
 		
 		if (nodeColonised != null) {
 			for (Iterator<SafeRootNode>  v = this.getNodeColonised ().iterator (); v.hasNext ();) {
 				SafeRootNode nodeColonised =  v.next ();
 				localFineRoots = newFineRootsDensity * nodeColonised.getVoxelRooted ().getVolume ()
-						* nodeColonised.getTopologicalToEffDistance ();
+						* nodeColonised.getTopologicalDistanceCorrectionFactor ();
 				nodeColonised
 						.costDispatching (treeIndex, totalCost, localFineRoots, totalFineRoots, newFineRootsDensity);
 			}
@@ -633,7 +632,7 @@ public class SafeRootNode implements Serializable, Comparable {
 		
 		// anoxia fine root senescence
 		double fineRootLifespan  =  tree.getTreeSpecies ().getFineRootLifespan  ();
-		if (this.getVoxelRooted ().getIsSaturated ()) 
+		if (getVoxelRooted ().getIsSaturated ()) 
 			fineRootLifespan =  tree.getTreeSpecies ().getFineRootAnoxiaLifespan  ();
 	
 		// age fine root senescence
@@ -644,31 +643,45 @@ public class SafeRootNode implements Serializable, Comparable {
 
 		setFineRootsDensity(getFineRootsDensity () - fineRootSenescence);
 		
-		this.getVoxelRooted ().setTreeRootsDensity (treeIndex, getFineRootsDensity ());
-		this.getVoxelRooted ().addTreeRootsDensitySen (treeIndex, fineRootSenescence);
+		getVoxelRooted ().setTreeRootsDensity (treeIndex, getFineRootsDensity ());
+		getVoxelRooted ().addTreeRootsDensitySen (treeIndex, fineRootSenescence);
+		if (getVoxelRooted ().getIsSaturated ())
+			getVoxelRooted ().addTreeRootsDensitySenAnox (treeIndex, fineRootSenescence);
 
 		//carbon senescence
-		double carbonFineRootsSen = fineRootSenescence * this.getVoxelRooted ().getVolume () * fineRootCost; // m.m-3 to KgC
-		tree.addCarbonFineRootsSen (carbonFineRootsSen);
+		double carbonFineRootsSen = fineRootSenescence * getVoxelRooted ().getVolume () * fineRootCost; // m.m-3 to KgC
+		
 		tree.setCarbonFineRoots (tree.getCarbonFineRoots () - carbonFineRootsSen);
-		this.getVoxelRooted ().addTreeCarbonFineRoots (treeIndex, -carbonFineRootsSen);
-		this.getVoxelRooted ().addTreeCarbonFineRootsSen (treeIndex, carbonFineRootsSen);
+		getVoxelRooted ().addTreeCarbonFineRoots (treeIndex, -carbonFineRootsSen);
+		getVoxelRooted ().addTreeCarbonFineRootsSen (treeIndex, carbonFineRootsSen);
+	    tree.addCarbonFineRootsSen (carbonFineRootsSen);
+	    
+		if (getVoxelRooted ().getIsSaturated ()) {
+			getVoxelRooted ().addTreeCarbonFineRootsSenAnox (treeIndex, carbonFineRootsSen);
+			tree.addCarbonFineRootsSenAnoxia (carbonFineRootsSen);
+		}
+
 
 		// Nitrogen senescence 
 		double nitrogenFineRootsSen = carbonFineRootsSen* (nitrogenFR / carbonFR);
 		tree.setNitrogenFineRoots (tree.getNitrogenFineRoots () - nitrogenFineRootsSen);
-		this.getVoxelRooted ().addTreeNitrogenFineRoots (treeIndex, -nitrogenFineRootsSen);
+		getVoxelRooted ().addTreeNitrogenFineRoots (treeIndex, -nitrogenFineRootsSen);
 		
 		//some of the nitrogen lost is back to labile pool
 		tree.addNitrogenLabile (nitrogenFineRootsSen * nitrogenRemobilisationFraction);
 		double nitrogenFineRootsLoss = nitrogenFineRootsSen * (1 - nitrogenRemobilisationFraction);
+		getVoxelRooted ().addTreeNitrogenFineRootsSen (treeIndex, nitrogenFineRootsLoss);
 		tree.addNitrogenFineRootsSen (nitrogenFineRootsLoss);
-		this.getVoxelRooted ().addTreeNitrogenFineRootsSen (treeIndex, nitrogenFineRootsLoss);
+		if (getVoxelRooted ().getIsSaturated ()) {
+			getVoxelRooted ().addTreeNitrogenFineRootsSenAnox (treeIndex, nitrogenFineRootsLoss);
+			tree.addNitrogenFineRootsSenAnoxia (nitrogenFineRootsLoss);
+		}
+
 		
 		//AQ	Deep senescent roots mineralization
-		double voxelBottom = this.getVoxelRooted ().getZ()+(this.getVoxelRooted ().getThickness()/2);
+		double voxelBottom = getVoxelRooted ().getZ()+(getVoxelRooted ().getThickness()/2);
 		if (voxelBottom > humificationDepth) {
-			this.getVoxelRooted ().addCumulatedTreeNitrogenRootsSen (nitrogenFineRootsLoss);//kg 
+			getVoxelRooted ().addCumulatedTreeNitrogenRootsSen (nitrogenFineRootsLoss);//kg 
 		}
 
 		if (nodeColonised != null) {
@@ -703,6 +716,7 @@ public class SafeRootNode implements Serializable, Comparable {
 		double carbonToDryMatter = 1d / tree.getTreeSpecies ().getWoodCarbonContent(); 
 		double frCost =  1 / (carbonToDryMatter * 1000 * tree.getTreeSpecies ().getSpecificRootLength ());
 
+		
 		//if (prop > 0.5) prop = 1;
 		if (nodeColonised != null) {
 			for (Iterator<SafeRootNode>  it = this.getNodeColonised ().iterator (); it.hasNext ();) {
@@ -710,8 +724,6 @@ public class SafeRootNode implements Serializable, Comparable {
 				SafeVoxel voxelSon = nodeSon.getVoxelRooted ();
 				if ((voxel == null) || (voxelSon.getId () == voxel.getId ())) { // if v not specified, all voxel colonized are removed.
 
-					
-					
 					double carbonFineRootSenescence = prop * nodeSon.getFineRootsDensity () * voxelSon.getVolume () * frCost;
 					double nitrogenFineRootSenescence =  carbonFineRootSenescence * nitrogenFR / carbonFR;
 					
@@ -720,27 +732,27 @@ public class SafeRootNode implements Serializable, Comparable {
 
 					double newDensity = (1 - prop) * nodeSon.getFineRootsDensity ();
 					double senDensity = prop * nodeSon.getFineRootsDensity ();
-					double oldcarbonFineRoot = nodeSon.getFineRootsDensity () * voxelSon.getVolume () * frCost;
-	
 					nodeSon.setFineRootsDensity (newDensity);
 					voxelSon.setTreeRootsDensity (treeIndex, newDensity);
-					
-					if ((testAnoxia) && (voxelSon.getIsSaturated ())) {
+					voxelSon.addTreeRootsDensitySen (treeIndex, senDensity);
+					if ((testAnoxia) && (voxelSon.getIsSaturated ())) 
 						voxelSon.addTreeRootsDensitySenAnox (treeIndex, senDensity);
-					}
-					else {
-						voxelSon.addTreeRootsDensitySen (treeIndex, senDensity);
-					}
+				
 							
 					double carbonFineRoot = newDensity * voxelSon.getVolume () * frCost;
 					voxelSon.setTreeCarbonFineRoots(treeIndex, carbonFineRoot);
 				
 					//RAZ saturation duration because all roots are dead 
 					if (newDensity==0) voxelSon.setTreeRootsAgeInWater(tree.getId()-1, 0);
-
-					//update TREE carbon and nitrogen pool 
 					tree.addCarbonFineRootsSen (carbonFineRootSenescence);
-					tree.addNitrogenFineRootsSen (nitrogenFineRootSenescence);	
+					tree.addNitrogenFineRootsSen (nitrogenFineRootSenescence);
+					
+					//update TREE carbon and nitrogen pool 
+					if ((testAnoxia) && (voxelSon.getIsSaturated ())) {
+						tree.addCarbonFineRootsSenAnoxia (carbonFineRootSenescence);					
+						tree.addNitrogenFineRootsSenAnoxia (nitrogenFineRootSenescence);	
+					}
+
 					tree.setCarbonFineRoots (tree.getCarbonFineRoots() - carbonFineRootSenescence);
 					tree.setNitrogenFineRoots (tree.getNitrogenFineRoots() - nitrogenFineRootSenescence);
 
@@ -749,11 +761,6 @@ public class SafeRootNode implements Serializable, Comparable {
 					if (voxelBottom > humificationDepth) 
 						voxelSon.addCumulatedTreeNitrogenRootsSen (nitrogenFineRootSenescence);//kg 
 
-					//in case of ANOXIA
-					if ((testAnoxia) && (voxelSon.getIsSaturated ())) {
-						tree.addCarbonFineRootsSenAnoxia (carbonFineRootSenescence);
-						tree.addNitrogenFineRootsSenAnoxia (nitrogenFineRootSenescence);
-					}
 					
 					//If all fine roots are removed, son roots have also to be killed (and coarse root also) 
 					if (prop == 1) {
@@ -766,22 +773,23 @@ public class SafeRootNode implements Serializable, Comparable {
 						
 						voxelSon.setTreeCarbonCoarseRoots(treeIndex, 0);
 						voxelSon.setTreeCarbonCoarseRootsTarget(treeIndex, 0);
-						voxelSon.setTreeCarbonCoarseRootsSen (treeIndex, carbonCoarseRootSenescence);
-						voxelSon.setTreeNitrogenCoarseRootsSen (treeIndex, nitrogenCoarseRootSenescence);
-						
-						//update TREE carbon and nitrogen pool 
-						tree.addCarbonCoarseRootsSen (carbonCoarseRootSenescence);
-						tree.addNitrogenCoarseRootsSen (nitrogenCoarseRootSenescence);
 						tree.setCarbonCoarseRoots (tree.getCarbonCoarseRoots() - carbonCoarseRootSenescence);
 						tree.setNitrogenCoarseRoots (tree.getNitrogenCoarseRoots() - nitrogenCoarseRootSenescence);
-
+						voxelSon.setTreeCarbonCoarseRootsSen (treeIndex, carbonCoarseRootSenescence);
+						voxelSon.setTreeNitrogenCoarseRootsSen (treeIndex, nitrogenCoarseRootSenescence);
+						tree.addCarbonCoarseRootsSen (carbonCoarseRootSenescence);
+						tree.addNitrogenCoarseRootsSen (nitrogenCoarseRootSenescence);
+						
+						if ((testAnoxia) && (voxelSon.getIsSaturated ())) {
+							voxelSon.setTreeCarbonCoarseRootsSenAnox (treeIndex, carbonCoarseRootSenescence);
+							voxelSon.setTreeNitrogenCoarseRootsSenAnox (treeIndex, nitrogenCoarseRootSenescence);
+							tree.addCarbonCoarseRootsSenAnoxia  (carbonCoarseRootSenescence);
+							tree.addNitrogenCoarseRootsSenAnoxia (nitrogenCoarseRootSenescence);
+						}
+		
 						//AQ	Deep senescent roots mineralization
 						if (voxelBottom > humificationDepth) {
 							voxelSon.addCumulatedTreeNitrogenRootsSen (nitrogenCoarseRootSenescence);//kg 
-						}
-						if ((testAnoxia) && (voxelSon.getIsSaturated ())) {
-							tree.addCarbonCoarseRootsSenAnoxia  (carbonCoarseRootSenescence);
-							tree.addNitrogenCoarseRootsSenAnoxia (nitrogenCoarseRootSenescence);
 						}
 					}
 				}
@@ -836,7 +844,7 @@ public class SafeRootNode implements Serializable, Comparable {
 	public void setFatherDistance (double d) {fatherDistance = (float) d;}
 	public double getEffectiveDistance () {return (double) effectiveDistance;}
 	public void setEffectiveDistance (double d) {effectiveDistance = (float) d;}
-	public double getTopologicalToEffDistance () {
+	public double getTopologicalDistanceCorrectionFactor () {
 		return getEffectiveDistance () / getTreeDistance ();
 	}
 	

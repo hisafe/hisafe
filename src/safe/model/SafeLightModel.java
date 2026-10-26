@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
- * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -43,7 +43,6 @@
  *		For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.  
  *
  * For more details see <https://creativecommons.org/licenses/by/4.0/>.
- *
  */
 
 package safe.model;
@@ -162,7 +161,7 @@ public class SafeLightModel {
 			}
 		} else // TURTLE OPTION IS DESACTIVATED
 		{
-			heightAngle = angleStep / 2; // first elevtion angle
+			heightAngle = angleStep / 2; // first elevation angle
 
 			while (heightAngle < Math.PI / 2) {
 
@@ -245,7 +244,6 @@ public class SafeLightModel {
 										SafeDailyClimat dailyClimat 
 										) {
 
-
 		double timeStep = generalParameters.timeStep; // time (in hours) between two calculations of Sun position
 		double dayLength = (double) dailyClimat.getDayLength (); // hours
 		int nbTimeStep = (int) Math.round (dayLength / timeStep); // number of calculations of sun position
@@ -298,10 +296,6 @@ public class SafeLightModel {
 		double[] sunAzimutSerie = new double[nbTimeStep]; // radians
 		double[] directParSerie = new double[nbTimeStep]; // directParSerie[i] = fraction of direct radiation allocated to timeStep i.
 															// (proportionnal to sin(sunElevationSerie[i]))
-		// qm+sa 11.08.2014 log the sun elevation
-		// String lineToLog = "";
-		// lineToLog += dailyClimat.getYear() + "\t" + dailyClimat.getMonth() + "\t" +
-		// dailyClimat.getDay() + "\t" + dailyClimat.getDayLength();
 
 		for (int i = 0; i < nbTimeStep; i++) {
 
@@ -309,9 +303,6 @@ public class SafeLightModel {
 			sunElevationSerie[i] = Math.asin (sinSunElevationSerie[i]);
 
 			sumPar += sinSunElevationSerie[i];
-
-			// qm+sa 11.08.2014 log the sun elevation
-			// lineToLog += "\t" + sunElevationSerie[i];
 
 			double coasi = (silat * codec * Math.cos ((Math.PI / 12) * dayTime) - colat * sidec)
 					/ Math.cos (sunElevationSerie[i]);
@@ -421,8 +412,6 @@ public class SafeLightModel {
 		double slope = Math.toRadians (plotSettings.slopeIntensity); // azimut of the maximum slope
 																		// line / x axis
 		double width = plotSettings.cellWidth; // cell width (meters)
-		// double reach = (double) Math.min (plotSettings.plotWidth, plotSettings.plotHeight); //
-		// max reach (meters) : min (plot width, plot height)
 
 		for (Iterator ite = beamSet.getBeams ().iterator (); ite.hasNext ();) {
 			SafeBeam b = (SafeBeam) ite.next ();
@@ -832,7 +821,7 @@ public class SafeLightModel {
 								if (((t.getTreeSpecies().getPhenologyType() != 2 && t.getTreeSpecies().getPhenologyType() != 3) && t.getPhenologicalStage () != 3)
 								//evergreen
 								|| (t.getTreeSpecies().getPhenologyType() == 2)
-								// faidherbia (energy is given to the tree during leaf fall)
+								// faidherbia : energy is given to the tree during leaf fall (LT 18/05/26)
 								|| (t.getTreeSpecies().getPhenologyType() == 3 && t.getPhenologicalStage () != 4)) { 									
 									if (isDiffus) {
 										t.addDiffuse (currentPar * (interceptedPar) * beamDiffuseEnergy
@@ -981,7 +970,7 @@ public class SafeLightModel {
 		
 		if (tree.getTreeSpecies ().getCrownShape () == 1) // Ellipsoide crown shape
 		{
-			// Ellipsoï¿½d : crown equation : (x-x0)^2/R^2 + (y-y0)^2/R^2 +
+			// Ellipsoid : crown equation : (x-x0)^2/R^2 + (y-y0)^2/R^2 +
 			// (z-zMidCrown)^2/halfLength^2 = 1
 			/*
 			 * double zMidCrown = (zTopTree + zTreeBase)/2; double halfLength = (zTopTree -
@@ -1131,29 +1120,29 @@ public class SafeLightModel {
 		// interception by trunks //gt 28/05/2010
 		boolean trunk = false;
 		double lt = 0;
+		//The horizontal distance between the impact point and the tree is therefore
 		double hdist = Math.sqrt (Math.pow (x0, 2) + Math.pow (y0, 2));
+		//rayTrunk represents a point located on the ray—or the path of the inclined ray—being tested to determine whether it intersects the trunk.
 		Vertex3d rayTrunk = new Vertex3d (0, 0, 0);
 		rayTrunk.x = hdist * cosAzimut;
 		rayTrunk.y = hdist * sinAzimut;
 		rayTrunk.z = hdist * sinAzimut / cosHAngle;
 		double dRayTrunk = Math.sqrt (Math.pow (rayTrunk.x - x0, 2) + Math.pow (rayTrunk.y - y0, 2));
 
+		//z0 = the vertical position of the shaft relative to the point of impact.
 		z0 = tree.getZ () + shiftZ - (cell.getOrigin ().z + impact.z);
+		//This verifies that the rayTrunk point lies between the base of the tree and its top.
 		if ((rayTrunk.z > z0) & (rayTrunk.z < (z0 + tree.getHeight ()))) {
-			double drh = tree.getDbhMeters () / 2 * (z0 + tree.getHeight () - rayTrunk.z) / (tree.getHeight () - 1.3); // tree
-																														// diameter
-																														// at
-																														// ray
-																														// height;
+			//This line calculates the radius of the trunk at the height where the radius (rayTrunk) passes.
+			double drh = tree.getDbhMeters () / 2 * (z0 + tree.getHeight () - rayTrunk.z) / (tree.getHeight () - 1.3); 
+			//This part involves detecting the intersection between the ray and the trunk, followed by calculating the length of the ray.
 			if (drh >= dRayTrunk) {
 				trunk = true;
 				lt = hdist / sinHAngle;
 			}
 		}
 
-		
 
-		
 		if ((pathLength != 0) || (trunk == true)) { // gt 28/05/2010
 			if (pathLength == 0) {
 				l1 = lt; // gt 28/05/2010

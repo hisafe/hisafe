@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
- * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -43,13 +43,13 @@
  *		For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.  
  *
  * For more details see <https://creativecommons.org/licenses/by/4.0/>.
- *
  */
 
 package safe.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -110,11 +110,7 @@ public class SafePlot extends RectangularPlot implements Serializable {
 	/**  Total annual rain intercepted by trees (liter)   */
 	private double annualRainInterceptedByTrees;					
 	/** Total annual rain intercepted by crops (liter)   */
-	private double annualRainInterceptedByCrops;	
-	/** Total annual water out by desaturation (liter) */
-	private double annualWaterToDesaturation;						
-				
-
+	private double annualRainInterceptedByCrops;						
 
 	//ANNUAL NITROGEN BUDGET FOR EXPORT 
 	/** Total annual N entries by mineral fertilization (kg N ha-1) */
@@ -136,9 +132,11 @@ public class SafePlot extends RectangularPlot implements Serializable {
 	private double annualNitrogenLeachingBottom;	
 	/** Total annual N out by water table leaching  (kg N ha-1) */
 	private double annualNitrogenLeachingWaterTable;
-
+	/** Total annual tree stem volume per hectare  (m3 ha-1) */
 	private double annualTreeStemVolumeHarvestedPerHectare;
-	
+	/** Number of saturated days for each 10 meter depth */
+	private int[] saturationDays;
+
 	public SafePlot(GScene stand, double cellWidth) {
 
 		super(stand, cellWidth);
@@ -157,6 +155,7 @@ public class SafePlot extends RectangularPlot implements Serializable {
 
 		double userWidth = cellWidth * nCols;
 		double userHeight = cellWidth * nRows;
+
 		getImmutable().nLin = nRows;
 		getImmutable().nCol = nCols;
 
@@ -172,8 +171,15 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		setArea (userWidth * userHeight);
 
 	}
-
+	public void createSaturationDays() {
 	
+			double soilDepth = this.getSoil().getDepth();
+			int nbIndice = (int) soilDepth;
+			if ((double) nbIndice < soilDepth) nbIndice++;
+			saturationDays = new int[nbIndice];	//Soil is 10 meters depth MAX
+			Arrays.fill(saturationDays 	, 0);
+	}
+		
 	/**
 	 * Computation of cell neighbors in 4 directions (right left back front) 
      * @param evolutionParameters Reference to the SafeEvolutionParameters object
@@ -324,9 +330,8 @@ public class SafePlot extends RectangularPlot implements Serializable {
 			
 			boolean changes = false;
 			double waterAddedByWaterTable = 0;
-			double waterTakenByDesaturation = 0;
 			double drainageWaterTable = 0;
-			double nitrogenLeaching= 0; // AQ
+			double nitrogenLeaching = 0; 
 			double nitrogenAddedByWaterTable = 0;
 
 			// for each voxel of the cell
@@ -334,10 +339,11 @@ public class SafePlot extends RectangularPlot implements Serializable {
 				// Voxel gravity center under water table depth are saturated
 				if (voxels[iz].getZ() >= waterTableDepth) {
 					
+					voxels[iz].setIsSaturated(true); 
 					// calculate the water stock increase in this voxel
 					//5 positions in result table (0=water, 1-2=NO3, 3-4=NH4) 
 					double[] waterNStockIncrease = new double[3];
-					waterNStockIncrease = voxels[iz].setIsSaturated(true, this.getSoil());
+					waterNStockIncrease = voxels[iz].waterTableLeaching(this.getSoil());
 					
 					if (waterNStockIncrease[0] >= 0) waterAddedByWaterTable += waterNStockIncrease[0];
 					
@@ -354,11 +360,7 @@ public class SafePlot extends RectangularPlot implements Serializable {
 				// voxel saturated which are no more under water table are back
 				// to field capacity
 				else if (voxels[iz].getIsSaturated() == true) {
-					// calculate the water stock decrease in this voxel
-					double[] waterNStockIncrease = voxels[iz].setIsSaturated(false, this.getSoil());
-					waterTakenByDesaturation -= waterNStockIncrease[0];
-					changes = true; //A REACTIVER QUAND ON PASSERA DE SAT A
-					// FC -- AQ 08.08.2011
+					 voxels[iz].setIsSaturated(false);
 				}
 			}
 			// if something have changed, new values have to be desagregated in
@@ -367,14 +369,38 @@ public class SafePlot extends RectangularPlot implements Serializable {
 				cell.voxelsToMinicouchesWaterNitrogen();
 				cell.addWaterAddedByWaterTable(waterAddedByWaterTable / cell.getArea()); // mm
 				cell.addDrainageWaterTable(drainageWaterTable / cell.getArea()); // mm
-				cell.addWaterTakenByDesaturation(waterTakenByDesaturation / cell.getArea()); // mm
 				cell.addNitrogenLeachingWaterTable(nitrogenLeaching * 10 / cell.getArea()); // AQ from g to kg/cell to kg/ha
 				cell.addNitrogenAddedByWaterTable(nitrogenAddedByWaterTable * 10 / cell.getArea()); 
 			}
 		}
+		computeSaturationDays ();
+	} 
 
-	} // fin
+	/**
+	 * Compute saturation index for each 10 meter depth
+	 */
+	public void computeSaturationDays () {
 
+
+		SafeCell cell = (SafeCell) this.getFirstCell();
+		SafeVoxel[] voxels = cell.getVoxels();
+		
+        // 10 depth : 0, 1, 2, ..., 9 meters
+		int soilDepth = saturationDays.length;
+        for (int profondeur = 1; profondeur <= soilDepth; profondeur++) {
+        	double profTest = profondeur - 0.1d;
+			// for each voxel of the cell
+			for (int iz = 0; iz < voxels.length; iz++) {
+	            if (voxels[iz].getZ() == profTest) {
+	                //voxelTrouve
+	            	if (iz > 0 && voxels[iz].getIsSaturated()) {
+	            		saturationDays[profondeur-1] = saturationDays[profondeur-1]+1;
+	            	}
+	                break;
+	            }		
+			}
+        }
+	}
 	/**
 	 * Compute Deep Root Mineralization: AQ
 	 */
@@ -414,8 +440,7 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		this.annualRainTransmittedByTrees += this.getTotalRainTransmittedByTrees();	
 		this.annualRainInterceptedByCrops += this.getTotalRainInterceptedByCrops();
 		this.annualRainTransmittedByCrops += this.getTotalRainTransmittedByCrops();
-		this.annualWaterAddedByWaterTable += this.getTotalWaterAddedByWaterTable();
-		this.annualWaterToDesaturation += this.getTotalWaterToDesaturation();	
+		this.annualWaterAddedByWaterTable += this.getTotalWaterAddedByWaterTable();	
 		this.annualEvaporation += this.getTotalSoilEvaporation();
 		this.annualIrrigation+= this.getTotalIrrigation();
 		this.annualFertilisationMineral = this.getTotalNitrogenFertilisationMineral();
@@ -461,7 +486,6 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		annualRainInterceptedByCrops= 0;
 		annualRainTransmittedByCrops= 0;
 		annualWaterAddedByWaterTable = 0;
-		annualWaterToDesaturation = 0;
 		annualNitrogenRunOff = 0;
 		annualEvaporation = 0;
 		annualIrrigation = 0;
@@ -477,14 +501,63 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		annualNitrogenUptakeByTrees = 0;
 		annualNitrogenUptakeByCrops = 0;
 		annualTreeStemVolumeHarvestedPerHectare = 0;
-
+		if (saturationDays!= null) Arrays.fill(saturationDays , 0);
 
 	}	
 	protected void initPlot() {}
 
+	public int getSaturationIndiceSize () {
+		return saturationDays.length;
+	}
+	
+	public String getSaturationIndiceType () {
+		return "Int";
+	}
 
+	/**
+	 * Get saturation indice (0/1) for each 10 meter depth
+	 */
+	public int[] getSaturationIndice() {
+		int [] indice = new int[saturationDays.length]; 
+		SafeCell cell = (SafeCell) this.getFirstCell();
+		SafeVoxel[] voxels = cell.getVoxels();
+		
+        // 10 depth : 0, 1, 2, ..., 9 meters
+        for (int profondeur = 1; profondeur <= saturationDays.length; profondeur++) {
+        	double profTest = profondeur - 0.1d;
+			// for each voxel of the cell
+			for (int iz = 0; iz < voxels.length; iz++) {
+	            if (voxels[iz].getZ() == profTest) {
+	                //voxelTrouve
+	            	if (iz > 0 && voxels[iz].getIsSaturated()) {
+	            		indice[profondeur-1] = 1;
+	            	}
+	                break;
+	            }		
+			}
+        }
+        return indice;
+	}
+	
+	public int getAnnualSaturationIndexSize () {
+		return saturationDays.length;
+	}
+	
+	public String getAnnualSaturationIndexType () {
+		return "Double";
+	}
+
+	public double[] getAnnualSaturationIndex()
+	{
+	double [] index = new double[saturationDays.length]; 
+    for (int p = 0; p < saturationDays.length; p++) {
+    	index[p] = Math.min(((double) saturationDays[p])/365, 100);
+    }
+	 return index;	 
+	}
+
+	
 	public int getNbCells () {return this.getCells().size();}
-
 
 	//****************************************
 	//Total and mean values for EXPORT
@@ -1024,15 +1097,7 @@ public class SafePlot extends RectangularPlot implements Serializable {
 		return water; //liters
 	}
 	
-	public double getTotalWaterToDesaturation() {
-		double waterDesat = 0;
 
-		for (Iterator c = this.getCells().iterator(); c.hasNext();) {
-			SafeCell cell = (SafeCell) c.next();
-			waterDesat += cell.getWaterTakenByDesaturation()* cell.getArea();//convert mm to liters
-		}
-		return waterDesat;//liters
-	}
 	
 	//NITROGEN
 	public double getTotalCropsNitrogenDemand() {
@@ -1450,10 +1515,6 @@ public class SafePlot extends RectangularPlot implements Serializable {
 	public double getAnnualWaterAddedByWaterTable() {
 		return annualWaterAddedByWaterTable;
 	}
-	public double getAnnualWaterToDesaturation() {
-		return annualWaterToDesaturation;
-	}
-
 
 	
 	public double getAnnualEvaporation() {

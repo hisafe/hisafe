@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
- * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -43,7 +43,6 @@
  *		For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.  
  *
  * For more details see <https://creativecommons.org/licenses/by/4.0/>.
- *
  */
 
 package safe.model;
@@ -110,21 +109,29 @@ public class SafeVoxel implements Serializable, Identifiable {
 	/** Tree carbon fine roots (kg C per tree) */
 	private double[] treeCarbonFineRoots;			
 	/** Tree carbon fine roots senescence (kg C per tree) */
-	private double[] treeCarbonFineRootsSen;		
+	private double[] treeCarbonFineRootsSen;	
+	/** Tree carbon fine roots senescence by anoxia (kg C per tree) */
+	private double[] treeCarbonFineRootsSenAnox;
 	/** Tree carbon coarse roots (kg C per tree) */
 	private double[] treeCarbonCoarseRoots;			
 	/** Tree carbon coarse roots target (kg C per tree) */
 	private double[] treeCarbonCoarseRootsTarget;	
 	/** Tree carbon coarse roots senescence (kg C per tree) */
-	private double[] treeCarbonCoarseRootsSen;		
+	private double[] treeCarbonCoarseRootsSen;	
+	/** Tree carbon coarse roots senescence (kg C per tree) */
+	private double[] treeCarbonCoarseRootsSenAnox;
 	/** Tree nitrogen fine roots (kg N per tree) */
 	private double[] treeNitrogenFineRoots;   
 	/** Tree nitrogen fine roots senescence (kg N per tree) */
-	private double[] treeNitrogenFineRootsSen;    
+	private double[] treeNitrogenFineRootsSen; 
+	/** Tree nitrogen fine roots senescence by anoxia (kg N per tree) */
+	private double[] treeNitrogenFineRootsSenAnox;  
 	/** Tree nitrogen coarse roots (kg N per tree) */
 	private double[] treeNitrogenCoarseRoots;    	
 	/** Tree nitrogen coarse roots senescence (kg N per tree) */
-	private double[] treeNitrogenCoarseRootsSen;   
+	private double[] treeNitrogenCoarseRootsSen;  
+	/** Tree nitrogen coarse roots senescence by anoxia (kg N per tree) */
+	private double[] treeNitrogenCoarseRootsSenAnox; 
 	/** Tree nitrogen fine root senescence (cumulation all trees) (Kg N)   */
 	private double   cumulatedTreeNitrogenRootsSen;	 
 	/** Tree deep fine roots mineralisation (cumulation all trees) (Kg N)  */
@@ -247,13 +254,17 @@ public class SafeVoxel implements Serializable, Identifiable {
 			treeRootsDensityInc = new double[nbTrees];
 			treeCarbonFineRoots = new double[nbTrees];
 			treeCarbonFineRootsSen = new double[nbTrees];
+			treeCarbonFineRootsSenAnox = new double[nbTrees];
 			treeCarbonCoarseRoots = new double[nbTrees];
 			treeCarbonCoarseRootsTarget = new double[nbTrees];
 			treeCarbonCoarseRootsSen = new double[nbTrees];
+			treeCarbonCoarseRootsSenAnox = new double[nbTrees];
 			treeNitrogenFineRoots = new double[nbTrees];
 			treeNitrogenCoarseRoots = new double[nbTrees];
 			treeNitrogenFineRootsSen = new double[nbTrees];
+			treeNitrogenFineRootsSenAnox = new double[nbTrees];
 			treeNitrogenCoarseRootsSen = new double[nbTrees];
+			treeNitrogenCoarseRootsSenAnox = new double[nbTrees];
 			
 			//RAZ values 
 			Arrays.fill(this.treeWaterUptake, 0);
@@ -265,14 +276,18 @@ public class SafeVoxel implements Serializable, Identifiable {
 			Arrays.fill(this.treeRootsDensitySenAnox, 0);
 			Arrays.fill(this.treeRootsDensityInc, 0);
 			Arrays.fill(this.treeCarbonFineRoots, 0);
-			Arrays.fill(this.treeCarbonFineRootsSen, 0);		
+			Arrays.fill(this.treeCarbonFineRootsSen, 0);	
+			Arrays.fill(this.treeCarbonFineRootsSenAnox, 0);
 			Arrays.fill(this.treeCarbonCoarseRoots, 0);
 			Arrays.fill(this.treeCarbonCoarseRootsTarget, 0);
 			Arrays.fill(this.treeCarbonCoarseRootsSen, 0);
+			Arrays.fill(this.treeCarbonCoarseRootsSenAnox, 0);
 			Arrays.fill(this.treeNitrogenFineRoots, 0);
 			Arrays.fill(this.treeNitrogenCoarseRoots, 0);
 			Arrays.fill(this.treeNitrogenFineRootsSen, 0);
+			Arrays.fill(this.treeNitrogenFineRootsSenAnox, 0);
 			Arrays.fill(this.treeNitrogenCoarseRootsSen, 0);
+			Arrays.fill(this.treeNitrogenCoarseRootsSenAnox, 0);
 			
 		} else {
 			this.treeRootsDensity = null;
@@ -284,10 +299,13 @@ public class SafeVoxel implements Serializable, Identifiable {
 			this.treeCarbonCoarseRootsSen = null;
 			this.treeCarbonFineRoots = null;
 			this.treeCarbonFineRootsSen = null;
+			this.treeCarbonFineRootsSenAnox = null;
 			this.treeNitrogenFineRoots = null; 
 			this.treeNitrogenCoarseRoots = null;
 			this.treeNitrogenFineRootsSen = null; 
+			this.treeNitrogenFineRootsSenAnox = null; 
 			this.treeNitrogenCoarseRootsSen = null;
+			this.treeNitrogenCoarseRootsSenAnox = null;
 			this.treeCarbonCoarseRoots = null;
 			this.treeWaterUptake = null;
 			this.treeNitrogenUptake = null;
@@ -339,7 +357,12 @@ public class SafeVoxel implements Serializable, Identifiable {
 			treeCarbonCoarseRootsSen[i] = 0;
 			treeCarbonFineRootsSen[i] = 0;
 			treeNitrogenFineRootsSen[i] = 0;
-			treeNitrogenCoarseRootsSen[i] = 0;
+			treeNitrogenCoarseRootsSen[i] = 0;			
+			treeCarbonCoarseRootsSenAnox[i] = 0;
+			treeCarbonFineRootsSenAnox[i] = 0;
+			treeNitrogenFineRootsSenAnox[i] = 0;
+			treeNitrogenCoarseRootsSenAnox[i] = 0;
+			
 		}	
 		
 		nitrogenAvailableForBoth = 0;
@@ -578,31 +601,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 	}
 
 	/**
-	* Voxel initialization 
-	* @param thetaInit Value of nitrogen NO3 for initialization (m3 m-3)
-	* @param nitrogenNo3Init Value of nitrogen NO3 for initialization (kg N)
-	* @param nitrogenNh4Init Value of nitrogen NO3 for initialization (kg N)
-	*/
-	public void initializeWaterNitrogen (double thetaInit,
-										 double nitrogenNo3Init, 
-										 double nitrogenNh4Init) {
-
-		//to avoid theta > field capacity
-		double thetaSat = this.getLayer().getFieldCapacity();		
-		if (thetaInit> thetaSat) thetaInit = thetaSat; 
-	
-		// if voxel is saturated by waterTable, no need to update water content
-		if (this.getIsSaturated () == false) {		
-			setWaterStock (thetaInit * this.getVolume () * 1000);		    	//convert m3 m-3 in liters
-		}
-		
-		double cellSurface = this.getVolume() / this.getThickness();
-		setNitrogenNo3Stock ((nitrogenNo3Init / 10) * cellSurface);				    //convert kg ha-1 in g
-		setNitrogenNh4Stock ((nitrogenNh4Init / 10) * cellSurface);				    //convert kg ha-1 in g
-
-	}
-
-	/**
 	* Compute Pressure head in soil at plant root surface (cm)
 	* and the associated matrix flux potentials phi_pF (cm-2 day-1)
 	* 
@@ -764,10 +762,11 @@ public class SafeVoxel implements Serializable, Identifiable {
 					}
 				}
 
-				rootDiameterTotal = Math.pow(sumRootDiameterTotal/rootDensityCum , 2);
-				double rho = 1/(rootDiameterTotal/2*Math.sqrt(Math.PI*rootDensityCum));		// rho = R1/R0
-				rootVGnt = (0.5*((1-3*Math.pow(rho,2))/4+Math.pow(rho,4)*Math.log(rho)/(Math.pow(rho,2)-1)))/(Math.pow(rho,2)-1);		// van genuchten function as described by Heinen 2001
-
+				if (rootDensityCum > 0) {
+					rootDiameterTotal = Math.pow(sumRootDiameterTotal/rootDensityCum , 2);
+					double rho = 1/(rootDiameterTotal/2*Math.sqrt(Math.PI*rootDensityCum));		// rho = R1/R0
+					rootVGnt = (0.5*((1-3*Math.pow(rho,2))/4+Math.pow(rho,4)*Math.log(rho)/(Math.pow(rho,2)-1)))/(Math.pow(rho,2)-1);		// van genuchten function as described by Heinen 2001
+				}
 				
 				if(nextPhiPF <= phiPF){
 					nextPhiPF = phiPFSoil;		//PhiPF of the soil
@@ -776,24 +775,27 @@ public class SafeVoxel implements Serializable, Identifiable {
 					//nextPotential = this.getWaterPotentialTheta();
 					nextPotential = this.getWaterPotentialThetaFineSoil();
 				}
-							
-				double phiRange = nextPhiPF-phiPF;
-				potWaterUpPerFrd =
-						10								// conversion from cm to mm
-						* Math.PI
-						* this.getThickness()*100		//m to cm
-						* phiRange						//cm2 day-1
-						/ rootVGnt;						// unitless
-
+					
 				// calculer la quantite d'eau fournissable par le sol dans cette gamme de phi. 
 				//En deduire alors un vrai uptake potential qui prend ca en compte
 				double waterAvailable = (this.getLayer().getTheta(nextPotential)-this.getLayer().getTheta(voxelRoot.getWaterRhizospherePotential()))		// m3.m-3
 								      * this.getThickness()		// m
 								      * 1000;					// from m to mm
 				
-				if(((potWaterUpPerFrd* rootDensityCum) > waterAvailable)||(this.getIsSaturated())){
-					potWaterUpPerFrd = waterAvailable/(rootDensityCum);
+				double phiRange = nextPhiPF-phiPF;
+				if (rootDensityCum > 0) {
+					potWaterUpPerFrd =
+							10								// conversion from cm to mm
+							* Math.PI
+							* this.getThickness()*100		//m to cm
+							* phiRange						//cm2 day-1
+							/ rootVGnt;						// unitless
+
+					if(((potWaterUpPerFrd * rootDensityCum) > waterAvailable)||(this.getIsSaturated())){
+						potWaterUpPerFrd = waterAvailable/(rootDensityCum);
+					}
 				}
+				
 				lastPhiPFForRootTotalComputation = phiPF;
 
 				double density = voxelRoot.getFineRootsDensity() / generalParameters.MM3_TO_CMCM3; //convert m m-3 in cm cm-3
@@ -801,6 +803,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 										   * density					// cm cm-3
 										   * this.getCell().getArea();	// m2
 
+	
 				if (waterUptakePotential > 0) {
 					voxelRoot.addWaterUptakePotential (waterUptakePotential);
 					plantRoot.addWaterUptakePotential (waterUptakePotential);			
@@ -969,65 +972,75 @@ public class SafeVoxel implements Serializable, Identifiable {
 		}
 	}
 
+	
 	/**
 	* Declare a voxel saturated or not with water	
-	* This method include Nitrogen leaching by water table
+	* @param saturated Tells if the voxel is saturated true or false 
+	*/
+	public void setIsSaturated (boolean saturated) {	
+		isSaturated = saturated;
+		if (saturated == true) {	//When a voxel is flooded by watertable, theta = field capacity
+			addSaturationDuration (); 								//Increase saturation duration
+			addTreeRootsAgeInWater();								//Increase all trees age in water  
+		}
+		else {
+			setSaturationDuration (0); 								//RAZ saturation duration
+			resetTreeRootsAgeInWater(); 
+		}
+	
+	}
+	
+	
+	/**
+	* Water and Nitrogen leaching by water table
 	* @param saturated Tells if the voxel is saturated true or false
 	* @param soil Reference to the SafeSoil object
 	* @return Table with water and nitrogen increase 
 	*/
-	public double[] setIsSaturated (boolean saturated, SafeSoil soil) {	
+	public double[] waterTableLeaching (SafeSoil soil) {	
 		
 		double[] waterNStockIncrease = {0,0,0,0,0};		// the first value contains water, the others nitrogen
 
-		isSaturated = saturated;
+		addSaturationDuration (); 								//Increase saturation duration
+		addTreeRootsAgeInWater();								//Increase all trees age in water  
 
-		if (saturated == true) {	//When a voxel is flooded by watertable, theta = field capacity
+		// voxel water is reset to fieldCapacity (fineSoil + stone) 
+		double thetaInit = this.getLayer().getFieldCapacity();		//test AQ 08.08.2011 (in the water table, voxels are at saturation)
+		waterNStockIncrease[0]= -(this.getWaterStock()); 			//water stock before saturation in liters
+		setWaterStock (thetaInit * this.getVolume () * 1000);		 //from m3 m-3 to liters/voxel
+		waterNStockIncrease[0] += this.getWaterStock(); 			//water stock difference after saturation
 
-			addSaturationDuration (); 								//Increase saturation duration
-			addTreeRootsAgeInWater();								//Increase all trees age in water  
+		// NO3 fluctuation only if water have changed
+		if (waterNStockIncrease[0] !=0) {
+			double no3ConcentrationInWaterTable = soil.getNo3ConcentrationInWaterTable();		//AQ in g/L
+			double wtNitrogenNo3Stock = this.getWaterStock()*no3ConcentrationInWaterTable;	//g.voxel-1	
+			double tempA = this.getNitrogenNo3Stock()-wtNitrogenNo3Stock;	//calcul variation stock NO3 dans le voxel
+			if (tempA >0) {
+				waterNStockIncrease[1] = tempA;	//lixiv NO3
+			}		
+			else {			
+				waterNStockIncrease[2] = wtNitrogenNo3Stock-this.getNitrogenNo3Stock();	//Apport NO3 par nappe
+			}	
+			
+			setNitrogenNo3Stock(wtNitrogenNo3Stock);			
+						
+			// NH4
+			double nh4ConcentrationInWaterTable = soil.getNh4ConcentrationInWaterTable();		//AQ
+			
+			//test aq 04.11.2011
+			double wtNitrogenNh4Stock = this.getWaterStock()*nh4ConcentrationInWaterTable;	//g.voxel-1	
+			double tempB = this.getNitrogenNh4Stock()-wtNitrogenNh4Stock;	//calcul variation stock NH4 dans le voxel
+			if (tempB >0) {
+				waterNStockIncrease[3] = tempB;	//lixiv NH4
+			}		
+			else {			
+				waterNStockIncrease[4] = wtNitrogenNh4Stock-this.getNitrogenNh4Stock();	//Apport NH4 par nappe
+			}	
 
-			// voxel water is reset to fieldCapacity (fineSoil + stone) 
-			double thetaInit = this.getLayer().getFieldCapacity();		//test AQ 08.08.2011 (in the water table, voxels are at saturation)
-			waterNStockIncrease[0]= -(this.getWaterStock()); 			//water stock before saturation in liters
-			setWaterStock (thetaInit * this.getVolume () * 1000);		 //from m3 m-3 to liters/voxel
-			waterNStockIncrease[0] += this.getWaterStock(); 			//water stock difference after saturation
+			setNitrogenNh4Stock(wtNitrogenNh4Stock);			
 
-			// NO3 fluctuation only if water have changed
-			if (waterNStockIncrease[0] !=0) {
-				double no3ConcentrationInWaterTable = soil.getNo3ConcentrationInWaterTable();		//AQ in g/L
-				double wtNitrogenNo3Stock = this.getWaterStock()*no3ConcentrationInWaterTable;	//g.voxel-1	
-				double tempA = this.getNitrogenNo3Stock()-wtNitrogenNo3Stock;	//calcul variation stock NO3 dans le voxel
-				if (tempA >0) {
-					waterNStockIncrease[1] = tempA;	//lixiv NO3
-				}		
-				else {			
-					waterNStockIncrease[2] = wtNitrogenNo3Stock-this.getNitrogenNo3Stock();	//Apport NO3 par nappe
-				}	
-				
-				setNitrogenNo3Stock(wtNitrogenNo3Stock);			
-							
-				// NH4
-				double nh4ConcentrationInWaterTable = soil.getNh4ConcentrationInWaterTable();		//AQ
-				
-				//test aq 04.11.2011
-				double wtNitrogenNh4Stock = this.getWaterStock()*nh4ConcentrationInWaterTable;	//g.voxel-1	
-				double tempB = this.getNitrogenNh4Stock()-wtNitrogenNh4Stock;	//calcul variation stock NH4 dans le voxel
-				if (tempB >0) {
-					waterNStockIncrease[3] = tempB;	//lixiv NH4
-				}		
-				else {			
-					waterNStockIncrease[4] = wtNitrogenNh4Stock-this.getNitrogenNh4Stock();	//Apport NH4 par nappe
-				}	
-	
-				setNitrogenNh4Stock(wtNitrogenNh4Stock);			
-
-			}
-				
-		} else {	//watertable is receeding, theta doesn't change
-			setSaturationDuration (0); 								//RAZ saturation duration
-			resetTreeRootsAgeInWater(); 	
 		}
+				
 		return waterNStockIncrease;
 	}
 	
@@ -1215,6 +1228,12 @@ public class SafeVoxel implements Serializable, Identifiable {
 	public int getTreeCarbonCoarseRootsSenSize () {
 		return immutable.nbTrees;
 	}	
+	public int getTreeCarbonFineRootsSenAnoxSize () {
+		return immutable.nbTrees;
+	}	
+	public int getTreeCarbonCoarseRootsSenAnoxSize () {
+		return immutable.nbTrees;
+	}
 	public int getTreeNitrogenFineRootsSize () {
 		return immutable.nbTrees;
 	}	
@@ -1226,7 +1245,13 @@ public class SafeVoxel implements Serializable, Identifiable {
 	}	
 	public int getTreeNitrogenCoarseRootsSenSize () {
 		return immutable.nbTrees;
-	}		
+	}	
+	public int getTreeNitrogenFineRootsSenAnoxSize () {
+		return immutable.nbTrees;
+	}	
+	public int getTreeNitrogenCoarseRootsSenAnoxSize () {
+		return immutable.nbTrees;
+	}
 	public int getTreeCarbonCoarseRootsSize () {
 		return immutable.nbTrees;
 	}
@@ -1249,7 +1274,6 @@ public class SafeVoxel implements Serializable, Identifiable {
 		return immutable.nbTrees;
 	}	
 
-	
 	public String getTreeRootsDensityType () {
 		return "Double";
 	}
@@ -1280,6 +1304,12 @@ public class SafeVoxel implements Serializable, Identifiable {
 	public String getTreeCarbonCoarseRootsSenType () {
 		return "Double";
 	}	
+	public String getTreeCarbonFineRootsSenAnoxType () {
+		return "Double";
+	}	
+	public String getTreeCarbonCoarseRootsSenAnoxType () {
+		return "Double";
+	}	
 	public String getTreeNitrogenFineRootsType () {
 		return "Double";
 	}	
@@ -1291,7 +1321,13 @@ public class SafeVoxel implements Serializable, Identifiable {
 	}	
 	public String getTreeNitrogenCoarseRootsSenType () {
 		return "Double";
-	}		
+	}	
+	public String getTreeNitrogenFineRootsSenAnoxType () {
+		return "Double";
+	}	
+	public String getTreeNitrogenCoarseRootsSenAnoxType () {
+		return "Double";
+	}	
 	public String getTreeDistanceType () {
 			return "Double";
 	}
@@ -1449,7 +1485,28 @@ public class SafeVoxel implements Serializable, Identifiable {
 
 		return total;
 	}
-
+	/**
+	 * Return total root density  in m/m3 (all trees) to be displayed in hiSAFE standviewer
+	 */
+	public double getTotalTreeRootsDensitySen () {
+		double total = 0;
+		if (treeRootsDensitySen != null) {
+			for (int t=0; t < immutable.nbTrees; t++)
+				total +=  treeRootsDensitySen[t];
+		}
+		return total;
+	}
+	/**
+	 * Return total root density  in m/m3 (all trees) to be displayed in hiSAFE standviewer
+	 */
+	public double getTotalTreeRootsDensitySenAnox () {
+		double total = 0;
+		if (treeRootsDensitySenAnox != null) {
+			for (int t=0; t < immutable.nbTrees; t++)
+				total +=  treeRootsDensitySenAnox[t];
+		}
+		return total;
+	}
 	public double getTheTreeRootsDensitySen (int t) {
 		if (treeRootsDensitySen != null) return treeRootsDensitySen[t];
 		else return 0;
@@ -1526,17 +1583,7 @@ public class SafeVoxel implements Serializable, Identifiable {
 		if (treeRootsDensityInc == null) treeRootsDensityInc = new double [immutable.nbTrees];
 		this.treeRootsDensityInc [t] += v;
 	}
-	/**
-	 * Return total root density  in m/m3 (all trees) to be displayed in hiSAFE standviewer
-	 */
-	public double getTotalTreeRootsDensitySen () {
-		double total = 0;
-		if (treeRootsDensitySen != null) {
-			for (int t=0; t < immutable.nbTrees; t++)
-				total +=  treeRootsDensitySen[t];
-		}
-		return total;
-	}
+
 	
 	public double getTotalTreeRootsDensityInc () {
 		double total = 0;
@@ -1565,12 +1612,12 @@ public class SafeVoxel implements Serializable, Identifiable {
 	  }
 	}
 	public void setTreeRootsAgeInWater (int t, int  v) {
-		if (treeRootsAgeInWater == null) treeRootsAgeInWater = new int [immutable.nbTrees];
-		this.treeRootsAgeInWater [t] =  v;
+		if (treeRootsAgeInWater == null && immutable.nbTrees > 0) treeRootsAgeInWater = new int [immutable.nbTrees];
+		if (treeRootsAgeInWater != null) this.treeRootsAgeInWater [t] =  v;
 	}
 
 	public void addTreeRootsAgeInWater () {
-		if (treeRootsAgeInWater == null) treeRootsAgeInWater = new int [immutable.nbTrees];
+		if (treeRootsAgeInWater == null && immutable.nbTrees > 0) treeRootsAgeInWater = new int [immutable.nbTrees];
 		for (int t=0; t<immutable.nbTrees; t++) {
 			if (this.getTheTreeCarbonCoarseRoots(t)>0) this.treeRootsAgeInWater [t] += 1;
 		}
@@ -1732,6 +1779,15 @@ public class SafeVoxel implements Serializable, Identifiable {
 		}
 		return total;
 	}
+	public double getTotalTreeNitrogenCoarseRootsSenAnox () {
+		double total=0; 
+		if (this.treeNitrogenCoarseRootsSenAnox != null ) {
+			for (int t=0; t<immutable.nbTrees; t++) {
+				total += this.treeNitrogenCoarseRootsSenAnox [t];
+			}
+		}
+		return total;
+	}	
 	public double getTotalTreeCarbonFineRoots () {
 		double total=0; 
 		if (this.treeCarbonFineRoots != null ) {
@@ -1746,6 +1802,24 @@ public class SafeVoxel implements Serializable, Identifiable {
 		if (this.treeCarbonFineRootsSen != null ) {
 			for (int t=0; t<immutable.nbTrees; t++) {
 				total += this.treeCarbonFineRootsSen [t];
+			}
+		}
+		return total;
+		}
+	public double getTotalTreeCarbonFineRootsSenAnox () {
+		double total=0; 
+		if (this.treeCarbonFineRootsSenAnox != null ) {
+			for (int t=0; t<immutable.nbTrees; t++) {
+				total += this.treeCarbonFineRootsSenAnox [t];
+			}
+		}
+		return total;
+		}	
+	public double getTotalTreeCarbonCoarseRootsSenAnox () {
+		double total=0; 
+		if (this.treeCarbonCoarseRootsSenAnox != null ) {
+			for (int t=0; t<immutable.nbTrees; t++) {
+				total += this.treeCarbonCoarseRootsSenAnox [t];
 			}
 		}
 		return total;
@@ -1768,7 +1842,15 @@ public class SafeVoxel implements Serializable, Identifiable {
 		}
 		return total;
 	}
-
+	public double getTotalTreeNitrogenFineRootsSenAnox () {
+		double total=0; 
+		if (this.treeNitrogenFineRootsSenAnox  != null ) {
+			for (int t=0; t<immutable.nbTrees; t++) {
+				total += this.treeNitrogenFineRootsSenAnox  [t];
+			}
+		}
+		return total;
+	}
 
 	public double[] getTreeCarbonFineRoots()
 	{
@@ -1806,6 +1888,22 @@ public class SafeVoxel implements Serializable, Identifiable {
 	  }
 	}
 
+	public double[] getTreeCarbonFineRootsSenAnox()
+	{
+	  if (treeCarbonFineRootsSenAnox != null) return treeCarbonFineRootsSenAnox;  // NULL OCCURS IF NO TREE IN SCENE
+	  else {
+		if (immutable.nbTrees > 0) {
+		  double[] nullValues = new double[immutable.nbTrees];
+		  return nullValues;
+		}
+		else {
+		  double[] nullValues = new double[1];
+		  return nullValues;
+		}
+	  }
+	}
+	
+	
 	public double[] getTreeNitrogenFineRoots()
 	{
 	  if (treeNitrogenFineRoots != null) return treeNitrogenFineRoots;  // NULL OCCURS IF NO TREE IN SCENE
@@ -1839,6 +1937,22 @@ public class SafeVoxel implements Serializable, Identifiable {
 		}
 	  }
 	}
+	
+	public double[] getTreeNitrogenFineRootsSenAnox()
+	{
+	  if (treeNitrogenFineRootsSenAnox != null) return treeNitrogenFineRootsSenAnox;  // NULL OCCURS IF NO TREE IN SCENE
+	  else {
+		if (immutable.nbTrees > 0) {
+		  double[] nullValues = new double[immutable.nbTrees];
+		  return nullValues;
+		}
+		else {
+		  double[] nullValues = new double[1];
+		  return nullValues;
+		}
+	  }
+	}
+	
 	public double[] getTreeCarbonCoarseRootsSen()
 	{
 	  if (treeCarbonCoarseRootsSen != null) return treeCarbonCoarseRootsSen;  // NULL OCCURS IF NO TREE IN SCENE
@@ -1854,9 +1968,39 @@ public class SafeVoxel implements Serializable, Identifiable {
 	  }
 	}
 
+	public double[] getTreeCarbonCoarseRootsSenAnox()
+	{
+	  if (treeCarbonCoarseRootsSenAnox != null) return treeCarbonCoarseRootsSenAnox;  // NULL OCCURS IF NO TREE IN SCENE
+	  else {
+		if (immutable.nbTrees > 0) {
+		  double[] nullValues = new double[immutable.nbTrees];
+		  return nullValues;
+		}
+		else {
+		  double[] nullValues = new double[1];
+		  return nullValues;
+		}
+	  }
+	}
+	
 	public double[] getTreeNitrogenCoarseRootsSen()
 	{
 	  if (treeNitrogenCoarseRootsSen != null) return treeNitrogenCoarseRootsSen;  // NULL OCCURS IF NO TREE IN SCENE
+	  else {
+		if (immutable.nbTrees > 0) {
+		  double[] nullValues = new double[immutable.nbTrees];
+		  return nullValues;
+		}
+		else {
+		  double[] nullValues = new double[1];
+		  return nullValues;
+		}
+	  }
+	}
+	
+	public double[] getTreeNitrogenCoarseRootsSenAnox()
+	{
+	  if (treeNitrogenCoarseRootsSenAnox != null) return treeNitrogenCoarseRootsSenAnox;  // NULL OCCURS IF NO TREE IN SCENE
 	  else {
 		if (immutable.nbTrees > 0) {
 		  double[] nullValues = new double[immutable.nbTrees];
@@ -1888,10 +2032,18 @@ public class SafeVoxel implements Serializable, Identifiable {
 		if (treeCarbonCoarseRootsSen == null) treeCarbonCoarseRootsSen = new double [immutable.nbTrees];
 		this.treeCarbonCoarseRootsSen [t] = v;
 	}
+	public void setTreeCarbonCoarseRootsSenAnox (int t, double  v) {
+		if (treeCarbonCoarseRootsSenAnox == null) treeCarbonCoarseRootsSenAnox = new double [immutable.nbTrees];
+		this.treeCarbonCoarseRootsSenAnox [t] = v;
+	}
 	public void setTreeNitrogenCoarseRootsSen (int t, double  v) {
 		if (treeNitrogenCoarseRootsSen == null) treeNitrogenCoarseRootsSen = new double [immutable.nbTrees];
 		this.treeNitrogenCoarseRootsSen [t] = v;
 	}
+	public void setTreeNitrogenCoarseRootsSenAnox (int t, double  v) {
+		if (treeNitrogenCoarseRootsSenAnox == null) treeNitrogenCoarseRootsSenAnox = new double [immutable.nbTrees];
+		this.treeNitrogenCoarseRootsSenAnox [t] = v;
+	}	
 	public void setTreeNitrogenCoarseRoots (int t, double  v) {
 		if (treeNitrogenCoarseRoots == null) treeNitrogenCoarseRoots = new double [immutable.nbTrees];
 		this.treeNitrogenCoarseRoots [t] = v;
@@ -1910,28 +2062,43 @@ public class SafeVoxel implements Serializable, Identifiable {
 		if (treeCarbonFineRootsSen == null) treeCarbonFineRootsSen = new double [immutable.nbTrees];
 		this.treeCarbonFineRootsSen [t] += v;
 	}
-	
+	public void addTreeCarbonFineRootsSenAnox (int t, double  v) {
+		if (treeCarbonFineRootsSenAnox == null) treeCarbonFineRootsSenAnox = new double [immutable.nbTrees];
+		this.treeCarbonFineRootsSenAnox [t] += v;
+	}
 	public void addTreeNitrogenFineRootsSen (int t, double  v) {
 		if (treeNitrogenFineRootsSen == null) treeNitrogenFineRootsSen = new double [immutable.nbTrees];
 		this.treeNitrogenFineRootsSen [t] += v;
 	}
-	
+	public void addTreeNitrogenFineRootsSenAnox (int t, double  v) {
+		if (treeNitrogenFineRootsSenAnox == null) treeNitrogenFineRootsSenAnox = new double [immutable.nbTrees];
+		this.treeNitrogenFineRootsSenAnox [t] += v;
+	}
 	public void addTreeCarbonCoarseRootsSen (int t, double  v) {
 		if (treeCarbonCoarseRootsSen == null) treeCarbonCoarseRootsSen = new double [immutable.nbTrees];
 		this.treeCarbonCoarseRootsSen [t] += v;
 	}
 	
-	
+	public void addTreeCarbonCoarseRootsSenAnox (int t, double  v) {
+		if (treeCarbonCoarseRootsSenAnox == null) treeCarbonCoarseRootsSenAnox = new double [immutable.nbTrees];
+		this.treeCarbonCoarseRootsSenAnox [t] += v;
+	}
 	public void addTreeNitrogenCoarseRootsSen (int t, double  v) {
 		if (treeNitrogenCoarseRootsSen == null) treeNitrogenCoarseRootsSen = new double [immutable.nbTrees];
 		this.treeNitrogenCoarseRootsSen [t] += v;
 	}
-	
+	public void addTreeNitrogenCoarseRootsSenAnox (int t, double  v) {
+		if (treeNitrogenCoarseRootsSenAnox == null) treeNitrogenCoarseRootsSenAnox = new double [immutable.nbTrees];
+		this.treeNitrogenCoarseRootsSenAnox [t] += v;
+	}
 	public void setTreeNitrogenFineRootsSen (int t, double  v) {
 		if (treeNitrogenFineRootsSen == null) treeNitrogenFineRootsSen = new double [immutable.nbTrees];
 		this.treeNitrogenFineRootsSen [t] = v;
 	}
-	
+	public void setTreeNitrogenFineRootsSenAnox (int t, double  v) {
+		if (treeNitrogenFineRootsSenAnox == null) treeNitrogenFineRootsSenAnox = new double [immutable.nbTrees];
+		this.treeNitrogenFineRootsSenAnox [t] = v;
+	}
 	public void setTreeNitrogenFineRoots (int t, double  v) {
 		if (treeNitrogenFineRoots == null) treeNitrogenFineRoots = new double [immutable.nbTrees];
 		this.treeNitrogenFineRoots [t] = v;
@@ -2311,7 +2478,7 @@ public class SafeVoxel implements Serializable, Identifiable {
  		waterStock = waterStockSave;
  	}
  	public void resetTreeRootsAgeInWater() {
- 		Arrays.fill(this.treeRootsAgeInWater, 0);
+ 		if (treeRootsAgeInWater!= null)  Arrays.fill(this.treeRootsAgeInWater, 0);
  	}
 
 }

@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
- * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
+ * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
+ * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -43,7 +43,6 @@
  *		For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.  
  *
  * For more details see <https://creativecommons.org/licenses/by/4.0/>.
- *
  */
 
 package safe.model;
@@ -81,18 +80,6 @@ public class SafeStand extends TreeList implements Serializable {
 	}
 
 	/**
-	 * Creates the plot 
-	 * @param model Reference to GModel object
-	 * @param cellWidth Cells width (m)
-	 * @param nRows Number of cells rows
-	 * @param nCols Number of cells columns
-	 */
-	public void createPlot (GModel model, double cellWidth, int nRows, int nCols) {
-		SafePlot initPlot = new SafePlot (this, cellWidth, nRows, nCols);
-		this.setPlot(initPlot);
-	}
-
-	/**
 	 * Redefinition of getEvolutionBase to return a stand with cloned trees
 	 */
 	public GScene getEvolutionBase () {
@@ -109,6 +96,17 @@ public class SafeStand extends TreeList implements Serializable {
 		return newStand;
 	}
 	
+	/**
+	 * Creates the plot 
+	 * @param model Reference to GModel object
+	 * @param cellWidth Cells width (m)
+	 * @param nRows Number of cells rows
+	 * @param nCols Number of cells columns
+	 */
+	public void createPlot (GModel model, double cellWidth, int nRows, int nCols) {
+		SafePlot initPlot = new SafePlot (this, cellWidth, nRows, nCols);
+		this.setPlot(initPlot);
+	}
 	/**
 	 * Creation of all objets (cells, trees, soil, voxels) attached to the stand
 	 * @param generalParameters Reference to SafeGeneralParameters object
@@ -252,6 +250,35 @@ public class SafeStand extends TreeList implements Serializable {
 		}
 
 		soil.setNbVoxels(nbVoxels);
+		
+		// Initialization of water and nitrogen in the soil voxels 
+		for (Iterator c = plot.getCells ().iterator (); c.hasNext ();) {
+			SafeCell cell = (SafeCell) c.next ();
+			
+			SafeVoxel[] voxels = cell.getVoxels();
+
+			for (int i=0; i<voxels.length ; i++) {
+
+				int idLayer = voxels[i].getLayer().getId();
+
+				//to avoid theta > field capacity	
+				if (plot.getPlotSettings().layerWaterContent[idLayer] > voxels[i].getLayer().getFieldCapacity()) 
+					plot.getPlotSettings().layerWaterContent[idLayer] = voxels[i].getLayer().getFieldCapacity(); 
+			
+				// if voxel is saturated by waterTable, no need to update water content
+				if (voxels[i].getIsSaturated () == false) {		
+					//convert m3 m-3 in liters
+					voxels[i].setWaterStock (plot.getPlotSettings().layerWaterContent[idLayer] * voxels[i].getVolume () * 1000);
+				}
+				
+				//convert kg ha-1 in g
+				double nProp = voxels[i].getThickness()/voxels[i].getLayer().getThickness();
+				voxels[i].setNitrogenNo3Stock (plot.getPlotSettings().layerNo3Content[idLayer] * nProp / 10 * cell.getArea());
+				voxels[i].setNitrogenNh4Stock (plot.getPlotSettings().layerNh4Content[idLayer] * nProp / 10 * cell.getArea());
+			}
+		}
+		//create a saturation table with soil depth 
+		plot.createSaturationDays();
 	}
 
 	/**
@@ -271,29 +298,7 @@ public class SafeStand extends TreeList implements Serializable {
 			}
 		}
 	}
-	/**
-	 * Initialization of the soil voxels 
-	 */
-	public void initialisation () {
 
-		SafePlot initPlot = (SafePlot) this.getPlot();
-
-		// Initialisation of all other cells soil initial values
-		for (Iterator c = initPlot.getCells ().iterator (); c.hasNext ();) {
-			SafeCell cell = (SafeCell) c.next ();
-			SafeVoxel[] voxels = cell.getVoxels();
-			int nbVoxels = voxels.length;
-			for (int i=0; i<nbVoxels ; i++) {
-
-				//Water and nitrogen initialisation
-				int nbLayer = voxels[i].getLayer().getId();
-				double nProp = voxels[i].getThickness()/voxels[i].getLayer().getThickness();
-				voxels[i].initializeWaterNitrogen (initPlot.getPlotSettings().layerWaterContent[nbLayer],
-													initPlot.getPlotSettings().layerNo3Content[nbLayer]*nProp,
-													initPlot.getPlotSettings().layerNh4Content[nbLayer]*nProp);		
-			}
-		}
-	}
 
 	/**
 	 * Reload the tree species file in case of reopening a project 
@@ -351,24 +356,7 @@ public class SafeStand extends TreeList implements Serializable {
 			}
 		}
 	}	
-   
-    /**
-	 * Check if a tree roots have colonized the all scene (at least one voxel for each cell) 
-	* @param treeID Id of the tree 
-	 */
-    public boolean isAllColonised (int treeID)  {
 
-    	boolean retour = true; 
-		SafePlot plot = (SafePlot) this.getPlot();
-
-		//STICS initialisation for each cell
-		for (Iterator c = plot.getCells().iterator(); (c.hasNext() && retour);) {
-			SafeCell cell = (SafeCell) c.next ();
-			retour = cell.isColonised(treeID);
-		}
-		return retour;
-    }
-    
     
    /**
 	* Tree foliage Carbon Litter spread on all plot (kg) 

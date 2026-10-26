@@ -195,18 +195,97 @@ public class SafePlantRoot implements   Serializable {
 	* @param campbellFactor Campbell factor (dimensionless) 
 	* @param halfCurrWaterPotential Water potential where tranpiration demand is half of its potential (mm)
 	*/
-	public void calculatePotential (double potentialWaterDemand, double campbellFactor, double halfCurrWaterPotential) {
-
-		setWaterDemandReductionFactor (1d / (1d + Math.pow (getRequiredWaterPotential() / halfCurrWaterPotential, campbellFactor)));
-
-		setActualWaterPotential (getRequiredWaterPotential()
-								- (1-getWaterDemandReductionFactor ())
-								* (getRadialTransportPotential () + getLongitudinalTransportPotential ()));
-
-		setRadialTransportPotential(getRadialTransportPotential()*getWaterDemandReductionFactor());		
-		setLongitudinalTransportPotential(getLongitudinalTransportPotential()*getWaterDemandReductionFactor());
+	public void computePlantWaterPotential (double potentialWaterDemand) {
+		double drySoilFactor;
+		double bufferPotential;
+		double rootConductivity;
+		double longitudinalResistantFactor; 
+		double  campbellFactor;
+		double halfCurrWaterPotential;
+		double totalRootLenght;
+		double distance;
 		
-		return;
+		if (getFirstRootNode() == null) return;  
+	
+		if (this.getPlant() instanceof SafeCrop) {
+			SafeCrop crop = (SafeCrop) this.getPlant();
+			drySoilFactor = crop.getCell().getCropZone().getCropSpecies().getCropHarmonicWeightedMean();
+			bufferPotential = crop.getCell().getCropZone().getCropSpecies().getCropBufferPotential(); 
+			rootConductivity = crop.getCell().getCropZone().getCropSpecies().getCropRootConductivity();
+			longitudinalResistantFactor = crop.getCell().getCropZone().getCropSpecies().getCropLongitudinalResistantFactor();
+			campbellFactor = crop.getCell().getCropZone().getCropSpecies().getCampbellFactorIcraf();
+			halfCurrWaterPotential =  crop.getCell().getCropZone().getCropSpecies().getHalfCurrWaterPotentialIcraf();
+			totalRootLenght = this.getTotalRootsLength() /crop.getCell().getArea()*100;// m to cm
+		}
+		else {
+			SafeTree tree = (SafeTree) this.getPlant();
+			drySoilFactor = tree.getTreeSpecies().getTreeHarmonicWeightedMean();
+			bufferPotential = tree.getTreeSpecies().getTreeBufferPotential(); 
+			rootConductivity = tree.getTreeSpecies().getTreeRootConductivity();
+			longitudinalResistantFactor = tree.getTreeSpecies().getTreeLongitudinalResistantFactor();
+			campbellFactor = tree.getTreeSpecies().getCampbellFactorIcraf();
+			halfCurrWaterPotential =  tree.getTreeSpecies().getHalfCurrWaterPotentialIcraf();
+			totalRootLenght = this.getTotalRootsLength() * 100;// m to cm
+		}
+		double plantPotential = 0;
+
+		for (Iterator c = getRootTopology().iterator (); c.hasNext ();) {
+			SafeVoxel voxel = (SafeVoxel) c.next ();
+			SafeRootNode node = getRootTopology (voxel);
+
+			double neededPot = voxel.getWaterPotentialTheta();	// soil water potential in this voxel
+			
+			if (node.getFineRootsDensity() > 0) {			//IL 14/08/2020 add this test
+				
+				// topological distance (m) between the voxel and stem base
+				if (this.getPlant() instanceof SafeCrop) distance = node.getVoxelRooted().getZ();
+				else distance = node.getTreeDistance(); 
+				
+				// additional potential for water flow from bulk soil to rhizosphere
+				neededPot *= (1+bufferPotential); 
+
+				// additional potential for water flow from root surface to xylem
+				double radialTransportPotential = -potentialWaterDemand						// L.day-1=dm3.day-1
+													* 1000									// from L.day-1 to cm3.day-1
+													/ rootConductivity						// cm day-1
+													/ totalRootLenght;						//	cm
+								
+				setRadialTransportPotential(radialTransportPotential);
+					
+				
+				neededPot += radialTransportPotential;
+	
+				// additional potential to account for longitudinal water transport in coarse roots from the voxel to stem base
+				double longitudinalTransportPotential = -potentialWaterDemand					//L.day-1=dm3.day-1
+															* 1000								// from L.day-1 to cm3.day-1
+															* longitudinalResistantFactor		// day.cm-1.m-1
+															/ totalRootLenght;					// cm
+				// in the model documentation from Meine et al, this term is not divided by totalRootLength... but it leads to very different longitudinal drop potential for small and large trees because of differences in water demand... so...
+				setLongitudinalTransportPotential(longitudinalTransportPotential);
+				neededPot += longitudinalTransportPotential*distance;	
+	
+				// additional potential to account for voxel depth
+				neededPot -= voxel.getZ()*100;		// from m to cm
+
+				plantPotential += (-node.getFineRootsDensity() * voxel.getVolume()	// m.m-3 * m3 = m
+										/ Math.pow(-neededPot, drySoilFactor));	// cm
+				
+			}
+		}
+
+		
+		plantPotential =-Math.pow (-this.getTotalRootsLength() /plantPotential , 1/drySoilFactor);
+		setRequiredWaterPotential(plantPotential);
+		
+		setWaterDemandReductionFactor (1d / (1d + Math.pow (plantPotential / halfCurrWaterPotential, campbellFactor)));
+
+		setActualWaterPotential (plantPotential
+								- (1-getWaterDemandReductionFactor ())
+								* (radialTransportPotential + longitudinalTransportPotential));
+
+		setRadialTransportPotential(radialTransportPotential * getWaterDemandReductionFactor());		
+		setLongitudinalTransportPotential(longitudinalTransportPotential * getWaterDemandReductionFactor());
+		
 	}
 
 	/**

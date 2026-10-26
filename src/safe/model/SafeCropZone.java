@@ -261,6 +261,7 @@ public class SafeCropZone implements Serializable {
 			System.exit(1);
 		}
 		simulationFinished=false;
+
 	}
 	/**
 	 * Load the NEXT itk and the crop species file for the zone
@@ -326,6 +327,7 @@ public class SafeCropZone implements Serializable {
 			System.out.println("NEXT CROP SPECIES PARAMETERS  "+cropSpeciesfileName+" problem... simulation is canceled !");
 			System.exit(1);
 		}
+
 		simulationFinished=false;
 	}
 	/**
@@ -484,6 +486,8 @@ public class SafeCropZone implements Serializable {
 	public SafeSticsItk getSticsItk() {
 		return sticsItk;
 	}
+
+
 	
 	public int getSimulationDay(){return simulationDay;}
 	public void setSimulationDay(int d){simulationDay=d;}
@@ -516,6 +520,32 @@ public class SafeCropZone implements Serializable {
 	//****************************************
 	//Total and mean values for EXPORT
 	//****************************************
+	/**
+	 * return the min crop harvest day of the zone (1-365)
+	 */
+	public int getMinHarvestDay () {
+		int minHarvestDay = 999;
+		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
+			SafeCell cell = (SafeCell) c.next();
+			minHarvestDay  = Math.min(minHarvestDay, cell.getCrop().getHarvestDay());
+		}
+		return minHarvestDay; 
+		}
+	/**
+	 * return the max crop harvest day of the zone (1-365)
+	 */
+	public int getMaxHarvestDay () {
+		int maxHarvestDay = 0;
+		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
+			SafeCell cell = (SafeCell) c.next();
+			maxHarvestDay  = Math.max(maxHarvestDay, cell.getCrop().getHarvestDay());
+		}
+		return maxHarvestDay; 
+		}
+
+	/**
+	 * return the total crop biomass  of the zone (t.ha-1)
+	 */
 	public double getTotalCropBiomass() {
 		double total = 0;
 		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
@@ -524,13 +554,15 @@ public class SafeCropZone implements Serializable {
 		}
 		return total; //t.ha-1
 	}
-	
+	/**
+	 * return the mean crop biomass  of the zone (t.ha-1)
+	 */
 	public double getMeanCropBiomass() {
 		return getTotalCropBiomass()  / getNbCells (); //t.ha-1
 	}
-	
-	
-	
+	/**
+	 * return the total crop yield  of the zone (t.ha-1)
+	 */
 	public double getTotalCropYield() {
 		double total = 0;
 		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
@@ -539,13 +571,15 @@ public class SafeCropZone implements Serializable {
 		}
 		return total;	//t.ha-1
 	}
-
+	/**
+	 * return the mean crop yield  of the zone (t.ha-1)
+	 */
 	public double getMeanCropYield() {
 		return getTotalCropYield() / getNbCells ();	//t.ha-1
 	}
-
-	
-	
+	/**
+	 * return the total crop lai  of the zone (m2.m-2)
+	 */
 	public double getTotalCropLai() {
 		double total = 0;
 		for (Iterator<SafeCell>  c = this.cellList.iterator(); c.hasNext();) {
@@ -554,6 +588,9 @@ public class SafeCropZone implements Serializable {
 		}
 		return total;
 	}
+	/**
+	 * return the total mean lai  of the zone (m2.m-2)
+	 */
 	public double getMeanCropLai() {
 		return getTotalCropLai()/ getNbCells ();	// m2.m-2
 	}
@@ -1009,15 +1046,7 @@ public class SafeCropZone implements Serializable {
 		return water; //liters
 	}
 	
-	public double getTotalWaterToDesaturation() {
-		double waterDesat = 0;
 
-		for (Iterator<SafeCell> c = this.cellList.iterator(); c.hasNext();) {
-			SafeCell cell = (SafeCell) c.next();
-			waterDesat += cell.getWaterTakenByDesaturation()* cell.getArea();//convert mm to liters
-		}
-		return waterDesat;//liters
-	}
 	
 	//NITROGEN
 	public double getTotalCropNitrogenDemand() {

@@ -79,19 +79,12 @@ public class SafeWaterCompetitionModel  {
 				
 				double treeTotalRootLenght = tree.getPlantRoots().getTotalRootsLength();
 
-				if (treeTotalRootLenght>0) tree.computePlantWaterPotential();
-				
-				if (tree.getWaterDemand () > 0) {
-					
-					//calculate potentials
-					double  campbellFactor = tree.getTreeSpecies().getCampbellFactorIcraf();
-					double halfCurrWaterPotential =  tree.getTreeSpecies().getHalfCurrWaterPotentialIcraf();
-					tree.getPlantRoots().calculatePotential (tree.getWaterDemand (), campbellFactor, halfCurrWaterPotential);
+				if (treeTotalRootLenght > 0 && tree.getWaterDemand () > 0) {
+					tree.getPlantRoots().computePlantWaterPotential(tree.getWaterDemand());
 
 					// Reduction factor for water demand
 					double waterDemandReductionFactor = tree.getPlantRoots().getWaterDemandReductionFactor();
 					tree.setWaterDemandReduced (tree.getWaterDemand() * waterDemandReductionFactor);		//liters
-
 				}
 			}
 		}
@@ -103,14 +96,9 @@ public class SafeWaterCompetitionModel  {
 			SafeCrop crop = cell.getCrop();
 			
 			double cropTotalRootLenght = crop.computeTotalRootsLength();
-			if (cropTotalRootLenght>0) crop.computePlantWaterPotential();
-		
-			if (crop.getWaterDemand () > 0) {		//in mm
-				//calculate potentials
-				double  campbellFactor = cell.getCropZone().getCropSpecies().getCampbellFactorIcraf();
-				double halfCurrWaterPotential =  cell.getCropZone().getCropSpecies().getHalfCurrWaterPotentialIcraf();
-				crop.getPlantRoots().calculatePotential (crop.getWaterDemand()* (float)cell.getArea(), campbellFactor, halfCurrWaterPotential);		
-				
+			if (cropTotalRootLenght > 0 && crop.getWaterDemand () > 0) {
+				crop.getPlantRoots().computePlantWaterPotential(crop.getWaterDemand() * (float)cell.getArea());
+
 				//Reduction factor for water demand (dimensionless)
 				double waterDemandReductionFactor = crop.getPlantRoots().getWaterDemandReductionFactor();
 				crop.setWaterDemandReduced (crop.getWaterDemand() * waterDemandReductionFactor);		//mm
@@ -338,13 +326,8 @@ public class SafeWaterCompetitionModel  {
 				
 				double treeTotalRootLenght = tree.getPlantRoots().getTotalRootsLength();
 	
-				if (treeTotalRootLenght>0) tree.computePlantWaterPotential();
-				
-				if (tree.getWaterDemand () > 0) {
-					//calculate potentials
-					double  campbellFactor = tree.getTreeSpecies().getCampbellFactorIcraf();
-					double halfCurrWaterPotential =  tree.getTreeSpecies().getHalfCurrWaterPotentialIcraf();
-					tree.getPlantRoots().calculatePotential (tree.getWaterDemand (), campbellFactor, halfCurrWaterPotential);
+				if (treeTotalRootLenght > 0 && tree.getWaterDemand () > 0) {
+					tree.getPlantRoots().computePlantWaterPotential(tree.getWaterDemand());
 	
 					// Reduction factor for water demand
 					double waterDemandReductionFactor = tree.getPlantRoots().getWaterDemandReductionFactor();
@@ -359,14 +342,8 @@ public class SafeWaterCompetitionModel  {
 			SafeCell cell	= (SafeCell) iter.next();
 			SafeCrop crop = cell.getCrop();
 			double cropTotalRootLenght = crop.computeTotalRootsLength();
-			if (cropTotalRootLenght>0) crop.computePlantWaterPotential();
-			
-
-			if (crop.getWaterDemand () > 0) {		//in mm
-				//calculate potentials
-				double  campbellFactor = cell.getCropZone().getCropSpecies().getCampbellFactorIcraf();
-				double halfCurrWaterPotential =  cell.getCropZone().getCropSpecies().getHalfCurrWaterPotentialIcraf();
-				crop.getPlantRoots().calculatePotential (crop.getWaterDemand()*cell.getArea(), campbellFactor, halfCurrWaterPotential);		
+			if (cropTotalRootLenght > 0 && crop.getWaterDemand () > 0) {
+				crop.getPlantRoots().computePlantWaterPotential(crop.getWaterDemand()* (float)cell.getArea());	
 				
 				// Reduction factor for water demand
 				double waterDemandReductionFactor = crop.getPlantRoots().getWaterDemandReductionFactor();
@@ -530,14 +507,8 @@ public class SafeWaterCompetitionModel  {
 			if (tree.isPlanted() && !tree.isHarvested()) {
 				
 				double treeTotalRootLenght = tree.getPlantRoots().getTotalRootsLength();
-
-				if (treeTotalRootLenght>0) tree.computePlantWaterPotential();
-
-				if (tree.getWaterDemand () > 0) {
-					//calculate potentials
-					double  campbellFactor = tree.getTreeSpecies().getCampbellFactorIcraf();
-					double halfCurrWaterPotential =  tree.getTreeSpecies().getHalfCurrWaterPotentialIcraf();
-					tree.getPlantRoots().calculatePotential (tree.getWaterDemand (), campbellFactor, halfCurrWaterPotential);
+				if (treeTotalRootLenght > 0 && tree.getWaterDemand () > 0) {
+					tree.getPlantRoots().computePlantWaterPotential(tree.getWaterDemand());
 
 					// Reduction factor for water demand
 					double waterDemandReductionFactor = tree.getPlantRoots().getWaterDemandReductionFactor();
@@ -552,13 +523,8 @@ public class SafeWaterCompetitionModel  {
 			SafeCell cell	= (SafeCell) iter.next();
 			SafeCrop crop = cell.getCrop();
 			double cropTotalRootLenght = crop.computeTotalRootsLength();
-			if (cropTotalRootLenght>0) crop.computePlantWaterPotential();
-
-			if (crop.getWaterDemand () > 0) {		//in mm
-				//calculate potentials
-				double  campbellFactor = cell.getCropZone().getCropSpecies().getCampbellFactorIcraf();
-				double halfCurrWaterPotential =  cell.getCropZone().getCropSpecies().getHalfCurrWaterPotentialIcraf();
-				crop.getPlantRoots().calculatePotential (crop.getWaterDemand()*cell.getArea(), campbellFactor, halfCurrWaterPotential);		
+			if (cropTotalRootLenght > 0 && crop.getWaterDemand () > 0) {
+				crop.getPlantRoots().computePlantWaterPotential(crop.getWaterDemand()* (float)cell.getArea());	
 
 				//Reduction factor for water demand (dimensionless)
 				double waterDemandReductionFactor = crop.getPlantRoots().getWaterDemandReductionFactor();

@@ -75,6 +75,7 @@ import jeeb.lib.util.Vertex3d;
  * @author : Grégoire TALBOT  - INRA Montpellier France - 2009 : C allocation - allometric growth - root growth modification 
  * @author : Tristan GERAULT  - INRA Montpellier France - 2021 : nitrogen fixation module (V1) 
  * @author : Nicolas BARBAULT - INRA Montpellier France - 2021 : evergreen tree and fruit module 
+ * @author : Lea TRESH        - INRA Montpellier France - 2026 : tropical tree (faidherbia)
  */
 
 public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownDescription {
@@ -210,15 +211,15 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	/**  Capture factor for direct NIR (m2)   */
 	private double	captureFactorForDirectNir;		
 	/**  Capture factor for diffuse NIR (m2)    */
-	private double	captureFactorForDiffuseNir;		
+	private double	captureFactorForDiffuseNir;
 	/** Direct PAR intercepted  (Moles PAR)  */
-	private float	directParIntercepted;				
+	private double	directParIntercepted;	
 	/**  Diffuse PAR intercepted  (Moles PAR)   */
-	private float	diffuseParIntercepted;			
+	private double	diffuseParIntercepted;
 	/**  Global radiation intercepted  (MJ)    */
-	private float	globalRadIntercepted;				
+	private double	globalRadIntercepted;	
 	/**   Infra red intercepted  (Watts)   */
-	private float	infraRedIntercepted;				
+	private double	infraRedIntercepted;
 	/**  Capture factor for direct Par if the tree were alone    */
 	private double	cFdirectLonelyTree;			
 	/**  Capture factor for diffuse Par if the tree were alone    */
@@ -515,9 +516,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	/**  Carbon allocated to above ground growth (kg C)  */
 	private double 	aboveGroundGrowth;
 	/**  No structural carbon exchange (kg C)  */
-	private double  NSCExchange;
-	/** Fraction of Carbon total allocated to above ground */
-	private double aboveGroundCFraction;		
+	private double  NSCExchange;		
 	/** Target value for carbonFoliage/(carbonFineRoots+carbonFoliage) (kg C) */
 	private double targetLfrRatio;				
 	/** Target drift value for carbonFoliage/(carbonFineRoots+carbonFoliage) (kg C) */
@@ -821,52 +820,52 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	/**
 	 * Planting a SafeTree.
 	 * @param stand Reference on SafeStand object
+	 * @param evolutionParameters Reference on SafeEvolutionParameters object
+	 * @param year Year of planting
+	 * @param day Day of planting
 	 * @param debug true if debugging
 	 */
-	public void plant (SafeStand stand, int year, int day, boolean debug) throws Exception {
+	public void plant (SafeStand stand, SafeEvolutionParameters evolutionParameters, int year, int day, boolean debug) throws Exception {
 
-		SafeCell cell = (SafeCell) this.getCell();
-		if (cell.getIdTreePlanted() > 0) {
+		SafeCell treeCell = (SafeCell) this.getCell();
+		if (treeCell.getIdTreePlanted() > 0) {
 			System.out.println("TREE already PLANTED in this CELL");
 			throw new CancellationException();
 		}
 		//Plant the tree
+		treeCell.setIdTreePlanted (getId()); 
 		setPlanted (true);
 		setPlantingYear (year);
 		setPlantingDay  (day);
+		int treeIndex = getId() - 1;		//index of this tree
 		
-		//INIT C and N POOLS
-		double woodDensity	 	 = this.getTreeSpecies ().getWoodDensity ();
-		double woodCarbonContent = this.getTreeSpecies ().getWoodCarbonContent();
-		double aLeafArea		 = this.getTreeSpecies ().getLeafAreaCrownVolCoefA();
-		double bLeafArea		 = this.getTreeSpecies ().getLeafAreaCrownVolCoefB();
-		double leafMassArea  	 = this.getTreeSpecies ().getLeafMassArea ();
-		double leafCarbonContent = this.getTreeSpecies ().getLeafCarbonContent();
-		double initialTargetLfrRatio = this.getTreeSpecies ().getInitialTargetLfrRatio();
+		//IL 02/01/2023 (https://github.com/hisafe/hisafe/issues/42) 
+		//the tree Z has to be 0 (in case of slope) 
+		//to avoid to have roots above horizon and not in the soil
+		//Vertex3d treeCoordinate = new Vertex3d(this.getX(),this.getY(),this.getZ());	
+		Vertex3d treeCoordinate = new Vertex3d(this.getX(),this.getY(),0);
 		
 		//Initialization of tree dimension
-		setHeight (this.treeItk.plantingHeight);
-		setCrownBaseHeight (this.treeItk.plantingCrownBaseHeight);
-		setAge(this.treeItk.plantingAge);
-	
-		for (int index = 0; index < this.getTreeSpecies().getNbCohortMax(); index++) {
-			setLeafAge(index, this.getTreeItk().plantingCohortAge.get(index));
+		setHeight (treeItk.plantingHeight);
+		setCrownBaseHeight (treeItk.plantingCrownBaseHeight);
+		setAge (treeItk.plantingAge);
+		for (int index = 0; index < getTreeSpecies().getNbCohortMax(); index++) {
+			setLeafAge (index, getTreeItk().plantingCohortAge.get(index));
 		}
 
-		//Tree dimensions are linked through the following allometric relationships  
+		//DBH and HEIGHT are linked through the following allometric relationships  
 		// Height=aTree * dbh^bTree
 		double aTree = this.getTreeSpecies ().getHeightDbhAllometricCoeffA ();
 		double bTree = this.getTreeSpecies ().getHeightDbhAllometricCoeffB ();
-		double truncationRatio = this.getTreeSpecies ().getEllipsoidTruncationRatio ();
-		
 		setDbhMeters (Math.pow (((1/aTree) * getHeight()) , (1/bTree)));		//m
 		setDbh (getDbhMeters() * 100);											//cm
-		setDBaseMeters(getDbhMeters() * (getHeight()/(getHeight() - 1.3)));		//m 
+		setDBaseMeters (getDbhMeters() * (getHeight()/(getHeight() - 1.3)));		//m 
 	
 		//Ellipsoid crown shape (after G.Vincent 2003)
-		int crownShape 	= this.getTreeSpecies ().getCrownShape ();
-		double aCrown	= this.getTreeSpecies ().getCrownDbhAllometricCoeffA ();
-		double bCrown 	= this.getTreeSpecies ().getCrownDbhAllometricCoeffB ();
+		int crownShape 	= getTreeSpecies ().getCrownShape ();
+		double aCrown	= getTreeSpecies ().getCrownDbhAllometricCoeffA ();
+		double bCrown 	= getTreeSpecies ().getCrownDbhAllometricCoeffB ();
+		double truncationRatio = getTreeSpecies ().getEllipsoidTruncationRatio ();
 		if (crownShape == 1) {
 			//if truncated ellipsoid
 			if (truncationRatio == 1) {		//100% => ERROR
@@ -877,191 +876,130 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			{
 				setCrownRadiusVertical (((getHeight()-getCrownBaseHeight())/(1-truncationRatio))/2);
 			}
-			double crownArea = Math.PI*Math.pow(this.treeItk.plantingCrownRadius,2);		// gt - 5.10.2009 - initial crown radius is now given in the pld input file
+			double crownArea = Math.PI*Math.pow(treeItk.plantingCrownRadius,2);		// gt - 5.10.2009 - initial crown radius is now given in the pld input file
 			//crown radius calculation limited by tree line and inter-row distance
 			double newRadius [] = new double [2];
 			newRadius = computeRadiiDeformation (stand, crownArea);
-			setCrownRadiusTreeLine   (Math.max(this.getCrownRadiusTreeLine(),newRadius[0]));
-			setCrownRadiusInterRow   (Math.max(this.getCrownRadiusInterRow(),newRadius[1]));
+			setCrownRadiusTreeLine   (Math.max(getCrownRadiusTreeLine(),newRadius[0]));
+			setCrownRadiusInterRow   (Math.max(getCrownRadiusInterRow(),newRadius[1]));
 
 			//Ellipsoid crown volume with truncation ratio
-			setCrownVolume (Math.PI  * this.getCrownRadiusTreeLine() * this.getCrownRadiusInterRow() * this.getCrownRadiusVertical() *
+			setCrownVolume (Math.PI  * this.getCrownRadiusTreeLine() * getCrownRadiusInterRow() * getCrownRadiusVertical() *
 			 				(2 * (1-truncationRatio) - (1d/3d * (1 - Math.pow (2 * truncationRatio-1,3)))));
 		}
 
 	
 		//Paraboloid of revolution crown shape (after B.Courbeaud 2000)
 		if (crownShape == 2) {
-			setCrownParameter ((aCrown * Math.pow ((this.getDbhMeters () / getHeight()), bCrown)));
-			setCrownRadiusTreeLine (Math.sqrt (this.getCrownParameter() * (getHeight() - getCrownBaseHeight())));
-			setCrownRadiusInterRow (Math.sqrt (this.getCrownParameter() * (getHeight() - getCrownBaseHeight())));
+			setCrownParameter ((aCrown * Math.pow ((getDbhMeters () / getHeight()), bCrown)));
+			setCrownRadiusTreeLine (Math.sqrt (getCrownParameter() * (getHeight() - getCrownBaseHeight())));
+			setCrownRadiusInterRow (Math.sqrt (getCrownParameter() * (getHeight() - getCrownBaseHeight())));
 			setCrownRadiusVertical ((getHeight()-getCrownBaseHeight())/2);
-			setCrownVolume (1d/2d * Math.PI * this.getCrownParameter ()
+			setCrownVolume (1d/2d * Math.PI * getCrownParameter ()
 							* Math.pow (getHeight()-getCrownBaseHeight(),2));
 		}
 				
-		//At initialization step, the stem volume needs to be computed from
-		//tree dimensions while later the inverse calculation is made as stem volume is
-		//determined by stem carbon pool.
-		//Here we compute the volume of the solid of revolution using the species specific stem profile equation :
+		//Stem volume of the solid of revolution using the species specific stem profile equation :
 		//Ln(V) = a + b*Ln(dbh) + c*Ln(Height)
-		double aStemVolume 			= this.getTreeSpecies ().getStemDbhAllometricCoeffA ();
-		double bStemVolume 			= this.getTreeSpecies ().getStemDbhAllometricCoeffB ();
-		double cStemVolume 			= this.getTreeSpecies ().getStemDbhAllometricCoeffC ();
-
+		double aStemVolume 			= getTreeSpecies ().getStemDbhAllometricCoeffA ();
+		double bStemVolume 			= getTreeSpecies ().getStemDbhAllometricCoeffB ();
+		double cStemVolume 			= getTreeSpecies ().getStemDbhAllometricCoeffC ();
 		setStemVolume (Math.exp (aStemVolume) * Math.pow (getDbhMeters (),bStemVolume)
 		               * Math.pow (getHeight(),cStemVolume));		
 		
-		setTargetLfrRatio (initialTargetLfrRatio);
-		
+		//INIT C and N POOLS
+		double woodDensity	 	 = getTreeSpecies ().getWoodDensity ();
+		double woodCarbonContent = getTreeSpecies ().getWoodCarbonContent();
 		setCarbonStem (getStemVolume()			// m3
 						* woodDensity 			// kg m-3
 						* woodCarbonContent);	// %
-						
+	
+		//BranchVolume is set to a fixed fraction of total crown volume
+		setCarbonBranches(getBranchVolume() * woodDensity * woodCarbonContent);
+		setCarbonStump(getCarbonStem() * getTreeSpecies().getStumpToStemBiomassRatio());
+		
+		//carbonFoliage depending of CrownVolume
+		double aLeafArea		 = getTreeSpecies ().getLeafAreaCrownVolCoefA();
+		double bLeafArea		 = getTreeSpecies ().getLeafAreaCrownVolCoefB();
+		double leafMassArea  	 = getTreeSpecies ().getLeafMassArea ();
+		double leafCarbonContent = getTreeSpecies ().getLeafCarbonContent();
+		double targetCarbonFoliage = aLeafArea*Math.pow(getCrownVolume(),bLeafArea)	// m2
+								     * leafMassArea										// kg m-2
+								     * leafCarbonContent;								// %
+		
 		//deciduous tree or faidherbia (single cohort) 
-		if (this.getTreeSpecies().getPhenologyType() != 2) {
-			if (!((this.getPhenologicalStage()==0)||(this.getPhenologicalStage()==4))){
-				setCarbonFoliage  (aLeafArea*Math.pow(getCrownVolume(),bLeafArea)	// m2 
-									* leafMassArea									// kg m-2
-									* leafCarbonContent,0);							// %
+		if (getTreeSpecies().getPhenologyType() != 2) {
+			if (!((getPhenologicalStage()==0)||(getPhenologicalStage()==4))){
+				setCarbonFoliage  (targetCarbonFoliage,0);						
 			} else setCarbonFoliage (0,0);
 
 		}
-		//evergreen (leave at planting) 
-		//carbonFoliage depending of CrownVolume
+		//evergreen (leave at planting for each cohort) 
 		else {
 			 
-			double carbonFoliageTotal = (aLeafArea*Math.pow(getCrownVolume(),bLeafArea)		// m2 
-										* leafMassArea										// kg m-2
-										* leafCarbonContent);								// %
 			int nbCohortWithLeaves = 0;
-			for (int index = 0; index < this.getTreeSpecies().getNbCohortMax(); index++) {
+			for (int index = 0; index < getTreeSpecies().getNbCohortMax(); index++) {
 				if (leafAge[index] > 0) {
 					nbCohortWithLeaves++;
 				};
 			}
 			if (nbCohortWithLeaves>0) {
-				double carbonCohort = carbonFoliageTotal/nbCohortWithLeaves;
-				for (int index = 0; index < this.getTreeSpecies().getNbCohortMax(); index++) {
+				double carbonCohort = targetCarbonFoliage/nbCohortWithLeaves;
+				for (int index = 0; index < getTreeSpecies().getNbCohortMax(); index++) {
 					if (leafAge[index] > 0) setCarbonFoliage (carbonCohort, index);
 					else  setCarbonFoliage (0, index);
 				}
 			}
 		}
-
-		//BranchVolume is set to a fixed fraction of total crown volume (to be refined later based on AMAP architectural models)
-		setCarbonBranches(getBranchVolume() * woodDensity * woodCarbonContent);
-		setCarbonStump(getCarbonStem()*this.getTreeSpecies().getStumpToStemBiomassRatio());
-
-		double targetCarbonFoliage = aLeafArea*Math.pow(getCrownVolume(),bLeafArea)	// m2
-								* leafMassArea										// kg m-2
-								* leafCarbonContent;								// %
-		double carbonFineRoot = targetCarbonFoliage*(1-initialTargetLfrRatio)/initialTargetLfrRatio;
 		
+		double initialTargetLfrRatio = getTreeSpecies ().getInitialTargetLfrRatio();
+		setTargetLfrRatio (initialTargetLfrRatio);
+		double carbonFineRoot = targetCarbonFoliage*(1-initialTargetLfrRatio)/initialTargetLfrRatio;
 		setCarbonFineRoots (carbonFineRoot);
 		
 		// nitrogen pools are set to optimum level at planting
 		// optimum level being defined as the level below which the nitrogen stress
 		// factor will be different from 1
-		double optiNCStem 	 	= this.getTreeSpecies ().getOptiNCStem ();
-		double optiNCStump 	 	= this.getTreeSpecies ().getOptiNCStump ();
-		double optiNCFoliage 	= this.getTreeSpecies ().getOptiNCFoliage ();
-		double optiNCBranch 	= this.getTreeSpecies ().getOptiNCBranch ();
-		double optiNCFineRoot 	= this.getTreeSpecies ().getOptiNCFineRoot ();
-
-		setNitrogenStem (getCarbonStem() * optiNCStem);
-		setNitrogenStump(getCarbonStump() * optiNCStump);
-		setNitrogenBranches	(getCarbonBranches() * optiNCBranch) ;
-		setNitrogenFineRoots  (carbonFineRoot * optiNCFineRoot);
+		setNitrogenStem (getCarbonStem() * getTreeSpecies ().getOptiNCStem ());
+		setNitrogenStump(getCarbonStump() * getTreeSpecies ().getOptiNCStump ());
+		setNitrogenBranches	(getCarbonBranches() * getTreeSpecies ().getOptiNCBranch ()) ;
+		setNitrogenFineRoots (carbonFineRoot * getTreeSpecies ().getOptiNCFineRoot ());
 		
-		for (int index = 0; index < this.getTreeSpecies().getNbCohortMax(); index++) 
-			setNitrogenFoliage (getCarbonFoliageCohort(index) * optiNCFoliage, index);
+		for (int index = 0; index < getTreeSpecies().getNbCohortMax(); index++) 
+			setNitrogenFoliage (getCarbonFoliageCohort(index) * getTreeSpecies ().getOptiNCFoliage (), index);
 		
+		//no fruits at planting
 		setCarbonFruit(0); 
 		setNitrogenFruit(0); 
-		
-		//cold temperature accumulation have to be set to trigger temperature 
-		//otherwise budburst will not be triggered the first year 
-		if (this.getTreeSpecies ().getColdRequirement ()) {
-			setBudburstAccumulatedColdTemperatureStarted(true);
-			setBudburstAccumulatedColdTemperature(this.getTreeSpecies ().getColdBudBurstTriggerTemp());
-		}
 
-		// initialisation of carbon senescence value	
-		setCarbonFoliageSen(0);
-		setNitrogenFoliageSen(0);
-		setCarbonFineRootsSen(0);
-		setCarbonCoarseRootsSen(0);
-		setCarbonFineRootsSenAnoxia(0);
-		setCarbonCoarseRootsSenAnoxia(0);		
-		setNitrogenFineRootsSen(0);
-		setNitrogenCoarseRootsSen(0);
-		setNitrogenFineRootsSenAnoxia(0);
-		setNitrogenCoarseRootsSenAnoxia(0);
-		setCarbonFineRootsIncrement(0);
-		setNbrDaysInShade(0);
-		
-		cell.setIdTreePlanted(this.getId()); 
-	}
-
-	/**
-	* Tree fine roots initialization (Done before coarse roots)
-	* Available root shapes for initialization are : 1- Spherical 2- Elipsoidal 3- Conic	
-	* Available carbon repartitions in root shape are : 1- Uniform  2- Reverse to the tree distance 3- Negative exponential
-	* These parameters are read in treeItk parameter file
-	* @author Christian DUPRAZ - August 2004
-	* @param plot Reference on SafePlot object
-    * @param evolutionParameters Reference on SafeEvolutionParameters object
-	*/
-	public void fineRootsInitialisation (SafePlot plot, 
-										 SafeEvolutionParameters evolutionParameters) {
-
-		int treeIndex = this.getId() - 1;		//index of this tree
-		
-		//IL 02/01/2023 (https://github.com/hisafe/hisafe/issues/42) 
-		//the tree Z has to be 0 (in case of slope) 
-		//to avoid to have roots above horizon and not in the soil
-		//Vertex3d treeCoordinate = new Vertex3d(this.getX(),this.getY(),this.getZ());	
-		Vertex3d treeCoordinate = new Vertex3d(this.getX(),this.getY(),0);
-
-		//retrieve carbon pool calculated for fine root
-		//and convert in root length (m)
-		double carbonToDryMatter= 1d / this.getTreeSpecies ().getWoodCarbonContent ();
-		double totalTreeRootLength =  this.getCarbonFineRoots()
-									* carbonToDryMatter 									//convert C to dry matter
-									* this.getTreeSpecies().getSpecificRootLength() 		//convert grammes of dry matter to m
-									* 1000;													//convert kg to gr
-
-		// Available equations for root shape are :
-		//  1- Spherical 2- Elipsoidal 3- Conic		
+		//FINE ROOTS GEOMETRY AND REPARTITION 
+		//SHAPE       : 1-Spherical 2-Elipsoidal 3-Conic	
+		//REPARTITION : 1-Uniform   2-Reverse to the tree distance 3-Negative exponential to the tree distance	
 		int rootShape = treeItk.plantingRootShape;
 		double shapeParam1=0;
 		double shapeParam2=0;
 		double shapeParam3=0;
-		if (rootShape == 1) {	//sphere
+		if (rootShape == 1) {	//1-Spherical
 			shapeParam1 = treeItk.plantingRootShapeParam1;
 		}
-		if (rootShape == 2) {	//elipsoide
+		if (rootShape == 2) {	//2-Elipsoidal
 			shapeParam1 = treeItk.plantingRootShapeParam1;
 			shapeParam2 = treeItk.plantingRootShapeParam2;
 			shapeParam3 = treeItk.plantingRootShapeParam3;
 		}
-		if (rootShape == 3) {	//cone
+		if (rootShape == 3) {	//3-Conic
 			shapeParam1 = treeItk.plantingRootShapeParam1;
 			shapeParam2 = treeItk.plantingRootShapeParam2;
 		}
 
-		// Available equations for carbon repartition are :
-		//  1- Uniform  2- Reverse to the tree distance 3- Negative exponential
-		int rootRepartition = treeItk.plantingRootRepartition;
-		
-		//for each voxel of the plot, find if it is rooted or not
+		//for each voxel find if it is rooted or not
 		//comparing tree-voxel distance with a criteria depending of root shape
 		double totalCoefficient = 0;
-		double plotWidth = plot.getXSize();
-		double plotHeight = plot.getYSize();
+		double totalRootDensity = 0; 
+		double plotWidth = stand.getPlot().getXSize();
+		double plotHeight = stand.getPlot().getYSize();
 
-		for (Iterator c = plot.getCells ().iterator (); c.hasNext ();) {
+		for (Iterator c = stand.getPlot().getCells ().iterator (); c.hasNext ();) {
 			SafeCell cell = (SafeCell) c.next ();
 			SafeVoxel [] voxel = cell.getVoxels();
 			for (int i=0; i<voxel.length; i++) {
@@ -1069,23 +1007,39 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 				//Compute this voxel gravity center distance with the tree origin
 				voxel[i].computeTreeDistance (treeIndex, treeCoordinate);
 
-				//Check if the voxel is rooted according to the criteria
+				//Check if the voxel is rooted according to the shape criteria
 				double coefficient = 0;
-
 				if (voxel[i].isVoxelInShape (rootShape, treeCoordinate, shapeParam1, shapeParam2, shapeParam3,
 				 								plotWidth, plotHeight, evolutionParameters)) {
-					coefficient = voxel[i].computeRepartitionCoefficient (treeIndex, rootRepartition);
+					
+					// Root repartition coefficient in rooted voxels
+					//1-Uniform
+					if (treeItk.plantingRootRepartition == 1)
+						coefficient = voxel[i].getVolume();
+					//2-Reverse to the tree distance
+					else if ((treeItk.plantingRootRepartition == 2) && (voxel[i].getTheTreeDistance(treeIndex) != 0))
+						coefficient = (1/voxel[i].getTheTreeDistance(treeIndex));
+					//3-Negative exponential
+					else if ((treeItk.plantingRootRepartition == 3) && (voxel[i].getTheTreeDistance(treeIndex) != 0))
+						coefficient = (Math.exp(-voxel[i].getTheTreeDistance(treeIndex)));
 
 					if (coefficient > 0) totalCoefficient += coefficient;
 				}
 			}
 		}
 
-		//Compute carbon repartition on rooted voxels
-		if (totalCoefficient > 0) {	//if some voxel are rooted
+		//FINE ROOTS CARBON AND NITROGEN DISTRIBUTION
+		if (totalCoefficient > 0) {	
 			
-			double totalRootDensity = 0; 
-			for (Iterator c = plot.getCells ().iterator (); c.hasNext ();) {
+			//carbon fine root is convert in root length (m)
+			double carbonToDryMatter= 1d / getTreeSpecies ().getWoodCarbonContent ();
+			double totalTreeRootLength =  getCarbonFineRoots()
+										* carbonToDryMatter 									//convert C to dry matter
+										* getTreeSpecies().getSpecificRootLength() 		//convert grammes of dry matter to m
+										* 1000;													//convert kg to gr
+			
+			//Initial Root length (m) have to be reparted in the shape (m m-3)
+			for (Iterator c = stand.getPlot().getCells ().iterator (); c.hasNext ();) {
 				SafeCell cell = (SafeCell) c.next ();
 				SafeVoxel [] voxel = cell.getVoxels();
 				for (int i=0; i<voxel.length; i++) {
@@ -1093,9 +1047,29 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 					if (voxel[i].isVoxelInShape (rootShape, treeCoordinate, shapeParam1, shapeParam2,shapeParam3,
 												plotWidth, plotHeight, evolutionParameters)) {
 
-						//compute the fine root density value
-						totalRootDensity += voxel[i].computeTreeFineRootsRepartition (treeIndex, rootRepartition,
-																totalTreeRootLength, totalCoefficient);
+						double rootDensity = 0;
+
+						//1 uniform : coefficient is the rooted voxel total volume in m3
+						if (treeItk.plantingRootRepartition == 1)  {
+							rootDensity = (totalTreeRootLength / totalCoefficient);  // m / m3
+						}
+						//2 reverse : coefficient is total of reverse of distance tree-rooted voxels in m
+						if (treeItk.plantingRootRepartition == 2) {
+							if (voxel[i].getTheTreeDistance(treeIndex) != 0) {
+								double distance = 1 / voxel[i].getTheTreeDistance(treeIndex);
+								rootDensity = ((distance / totalCoefficient) * totalTreeRootLength) / voxel[i].getVolume();  // m / m3
+							}
+						}
+						//3 negative exp : coefficient is total of negative exp of the distance tree-rooted voxels in m
+						if (treeItk.plantingRootRepartition == 3) {
+							if (voxel[i].getTheTreeDistance(treeIndex) != 0) {
+								double distance = Math.exp(-voxel[i].getTheTreeDistance(treeIndex));
+								rootDensity = ((distance / totalCoefficient) * totalTreeRootLength) / voxel[i].getVolume();  // m / m3
+							}
+						}
+						//set the value in the voxel
+						voxel[i].setTreeRootsDensity (treeIndex, rootDensity);
+						totalRootDensity += rootDensity;
 						
 						//ADD empty topology to be filled by coarse root initialization	
 						if (this.getPlantRoots().getRootTopology(voxel[i])==null)
@@ -1105,39 +1079,27 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			}
 
 			//compute carbon in fine root in each voxels (proportional to total FR)
-			for (Iterator c = plot.getCells ().iterator (); c.hasNext ();) {
+			for (Iterator c = stand.getPlot().getCells ().iterator (); c.hasNext ();) {
 				SafeCell cell = (SafeCell) c.next ();
 				SafeVoxel [] voxel = cell.getVoxels();
 				for (int i=0; i<voxel.length; i++) {				
 					if (voxel[i].getTheTreeRootsDensity (treeIndex) > 0) {
-					
-						double carbon = getCarbonFineRoots() * (voxel[i].getTheTreeRootsDensity (treeIndex) / totalRootDensity);
-						voxel[i].setTreeCarbonFineRoots (treeIndex, carbon);
-						
-						double nitrogen = getNitrogenFineRoots() * (voxel[i].getTheTreeRootsDensity (treeIndex) / totalRootDensity);
-						voxel[i].setTreeNitrogenFineRoots (treeIndex, nitrogen);				
+
+						voxel[i].setTreeCarbonFineRoots (treeIndex, 
+														 getCarbonFineRoots() * (voxel[i].getTheTreeRootsDensity (treeIndex) / totalRootDensity));
+						voxel[i].setTreeNitrogenFineRoots (treeIndex, 
+														getNitrogenFineRoots() * (voxel[i].getTheTreeRootsDensity (treeIndex) / totalRootDensity));				
 					}						
 				}
 			}
 		}
-	}
-	
-	/**
-	* Tree coarse roots initialization 
-	* @author Rachmat MULIA (ICRAF) - August 2004
-	* @param plot Reference on SafePlot object
-	* Available preferences for coarse roots initialization are : 1- Horizontal 2- Vertical	
-	*/
-	public void coarseRootsInitialisation (SafePlot plot) throws Exception  {		
-
-		PlotOfCells plotc = (PlotOfCells) plot; 
-				
-		//Coarse root topology type defines priority to parent determination
-		double  coarseRootTopologyType 	= this.getTreeSpecies().getCoarseRootTopologyType();
+		
+		//COARSE ROOTS TOPOLOGY INITIALIZATION
+		double  coarseRootTopologyType 	= getTreeSpecies().getCoarseRootTopologyType();
 
 		///Search the voxel reference where the tree is planted
 		int treeId = this.getId() - 1 ;
-		SafeCell plantedCell = (SafeCell) (this.getCell ());
+		SafeCell plantedCell = (SafeCell) (getCell ());
 		SafeVoxel plantedVoxel = plantedCell.getVoxels()[0];
 		plantedVoxel.setColonisationDirection(treeId, 4);
 		
@@ -1146,7 +1108,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		this.getPlantRoots().setFirstRootNode (plantedNode);
 
 		//for each voxel of the PLOT
-		for (Iterator c = plot.getCells ().iterator (); c.hasNext ();) {
+		for (Iterator c = stand.getPlot().getCells ().iterator (); c.hasNext ();) {
 			SafeCell cell = (SafeCell) c.next ();
 			SafeVoxel [] voxels = cell.getVoxels();
 			for (int i=0; i<voxels.length; i++) {
@@ -1164,7 +1126,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 						SafeVoxel [] neighbourgs = new SafeVoxel[4];
 
 						//RIGHT voxel   (X positive)
-						SafeCell rightNeighbourg = (SafeCell) (plotc.getCell (cell.getCellIdRight()));
+						SafeCell rightNeighbourg = (SafeCell) (stand.getPlot().getCell (cell.getCellIdRight()));
 						if (rightNeighbourg != null) {	//can be null if toric symetry is OFF of Xp
 							SafeVoxel [] rightVoxels = rightNeighbourg.getVoxels();
 							if (voxels[i] != rightVoxels[i])
@@ -1172,7 +1134,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 						}
 
 						//LEFT voxel  (X negative)
-						SafeCell leftNeighbourg = (SafeCell) (plotc.getCell (cell.getCellIdLeft()));
+						SafeCell leftNeighbourg = (SafeCell) (stand.getPlot().getCell (cell.getCellIdLeft()));
 						if (leftNeighbourg != null) {	//can be null if toric symetry is OFF of Xn
 							SafeVoxel [] leftVoxels = leftNeighbourg.getVoxels();
 							if (voxels[i] != leftVoxels[i])
@@ -1180,7 +1142,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 						}
 
 						//BACK voxel (Y positif)
-						SafeCell backNeighbourg = (SafeCell) (plotc.getCell (cell.getCellIdBack()));
+						SafeCell backNeighbourg = (SafeCell) (stand.getPlot().getCell (cell.getCellIdBack()));
 						if (backNeighbourg != null) {	//can be null if toric symetry is OFF of Yp
 							SafeVoxel [] backVoxels = backNeighbourg.getVoxels();
 							if (voxels[i] != backVoxels[i])
@@ -1188,7 +1150,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 						}
 
 						//FRONT voxel (Y negative)
-						SafeCell frontNeighbourg = (SafeCell) (plotc.getCell (cell.getCellIdFront()));
+						SafeCell frontNeighbourg = (SafeCell) (stand.getPlot().getCell (cell.getCellIdFront()));
 						if (frontNeighbourg != null) {	//can be null if toric symetry is OFF of Yn
 							SafeVoxel [] frontVoxels = frontNeighbourg.getVoxels();
 							if (voxels[i] != frontVoxels[i])
@@ -1289,15 +1251,14 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 					//UPDATE empty topology already created in fine root initialisation
 					if (this.getPlantRoots().getRootTopology(voxels[i])!=null) {
-						SafeRootNode node = this.getPlantRoots().getRootTopology (voxels[i]);
+						SafeRootNode node = getPlantRoots().getRootTopology (voxels[i]);
   						if (parentVoxel != null) {
-								SafeRootNode fatherNode = this.getPlantRoots().getRootTopology (parentVoxel);
+								SafeRootNode fatherNode = getPlantRoots().getRootTopology (parentVoxel);
 								node.setNodeParent(fatherNode);
 								fatherNode.addNodeColonised (node);									
 								node.computeDistanceFromFather(direction);	//calculate distance from father							
 								node.setTreeDistance (fatherNode.getTreeDistance () + node.getFatherDistance());
-
-								node.computeEffDist(this);
+								node.setEffectiveDistance(this);
 								voxels[i].setColonisationDirection(treeId, direction);
 						}
   						node.setFineRootsDensity (voxels[i].getTheTreeRootsDensity (treeId));
@@ -1306,63 +1267,64 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 			}
 		}
 		
-		//recursive algorithme for updating distances and carbon
+		//COARSE ROOTS CARBON AND NITROGEN DISTRIBUTION
 		if (plantedNode != null) {
 			plantedNode.setDistance(0);
-			//Initialise carbon coarse root 
-			this.carbonCoarseRootsInitialisation (plot);	
+			
+			//compute carbon coarse roots target  proportionnally to total tree fine roots
+			setTargetCarbonCoarseRoots(0);
+			SafeRootNode firstNode = getPlantRoots().getFirstRootNode () ;
+			firstNode.computeCarbonCoarseRootsTarget (this,	
+													  null,	//additionalRootLength is null for init
+													  getTreeSpecies().getWoodDensity(),
+													  getTreeSpecies().getWoodCarbonContent (),
+													  getTreeSpecies().getCRAreaToFRLengthRatio());
+
+			setCarbonCoarseRoots (getTargetCarbonCoarseRoots());
+
+			//calculation of real carbon coarse root  for each root node
+			firstNode.computeCarbonCoarseRoots (this, 
+												getTargetCarbonCoarseRoots(), 
+												getTargetCarbonCoarseRoots() * getTreeSpecies ().getOptiNCCoarseRoot (),
+												getTargetCarbonCoarseRoots()); 
+
+			//calculation of nitrogen carbon coarse root
+			setNitrogenCoarseRoots  (getCarbonCoarseRoots () *  getTreeSpecies ().getOptiNCCoarseRoot ());
+			
+			//calculation of carbon and nitrogen labile
+			setCarbonLabile((getCarbonStem()+getCarbonBranches()+getCarbonCoarseRoots ()+getCarbonStump())
+						   * getTreeSpecies().getTargetNSCFraction());
+			setNitrogenLabile (getTreeSpecies ().getTargetNCoefficient () * getTotalOptiN() - getTotalN());
+			
 		}
 		else {
 			System.out.println("Tree planting with no roots ");
+			throw new CancellationException();
 
-			throw new CancellationException();	// abort
+		}
+		
+		// initialisation of carbon senescence value	
+		setCarbonFoliageSen(0);
+		setNitrogenFoliageSen(0);
+		setCarbonFineRootsSen(0);
+		setCarbonCoarseRootsSen(0);
+		setCarbonFineRootsSenAnoxia(0);
+		setCarbonCoarseRootsSenAnoxia(0);		
+		setNitrogenFineRootsSen(0);
+		setNitrogenCoarseRootsSen(0);
+		setNitrogenFineRootsSenAnoxia(0);
+		setNitrogenCoarseRootsSenAnoxia(0);
+		setCarbonFineRootsIncrement(0);
+		setNbrDaysInShade(0);
+		
+		
+		//cold temperature accumulation have to be set to trigger temperature 
+		//otherwise budburst will not be triggered the first year 
+		if (this.getTreeSpecies ().getColdRequirement ()) {
+			setBudburstAccumulatedColdTemperatureStarted(true);
+			setBudburstAccumulatedColdTemperature(this.getTreeSpecies ().getColdBudBurstTriggerTemp());
 		}
 	}
-	
-	/**
-	* Carbon coarse roots initialization 
-	* @author Rachmat MULIA (ICRAF) - August 2004
-	* @author G.Talbot and I.Lecomte - September 2008
-	* @param plot Reference on SafePlot object
-	*/
-	public void carbonCoarseRootsInitialisation (SafePlot plot) {
-		
-		//if this tree  has fine roots !!!!
-		if (this.getPlantRoots().getFirstRootNode() != null) {
-
-			//compute coarse roots target  proportionnally to total tree fine roots
-			this.setTargetCarbonCoarseRoots(0);
-			SafeRootNode firstNode = this.getPlantRoots().getFirstRootNode () ;
-			firstNode.computeCarbonCoarseRootsTarget (this,	
-													  null,
-													  this.getTreeSpecies().getWoodDensity(),
-													  this.getTreeSpecies().getWoodCarbonContent (),
-													  this.getTreeSpecies().getCRAreaToFRLengthRatio());
-
-			this.setCarbonCoarseRoots (this.getTargetCarbonCoarseRoots());
-
-			double optiNCCoarseRoot = this.getTreeSpecies ().getOptiNCCoarseRoot ();
-			double nitrogenCoarseRootsTarget = this.getTargetCarbonCoarseRoots() * optiNCCoarseRoot;
-			double totalNodeImbalance = this.getTargetCarbonCoarseRoots(); 
-			
-			//calculation of coarse root  for each root node
-			firstNode.computeCarbonCoarseRoots (this, 
-												this.getTargetCarbonCoarseRoots(), 
-												nitrogenCoarseRootsTarget,
-												totalNodeImbalance);
-
-			//recalculation of Nitrogen pools
-			setAboveGroundCFraction ((getCarbonBranches() + getCarbonStem())
-						/ (getCarbonBranches() + getCarbonStem() + getCarbonStump()+ getCarbonCoarseRoots ()));
-
-			setCarbonLabile((getCarbonStem()+getCarbonBranches()+getCarbonCoarseRoots ()+getCarbonStump())
-						*this.getTreeSpecies().getTargetNSCFraction());
-
-			double targetNCoefficient = this.getTreeSpecies ().getTargetNCoefficient ();
-			setNitrogenCoarseRoots  (getCarbonCoarseRoots () * optiNCCoarseRoot);
-			setNitrogenLabile(targetNCoefficient*getTotalOptiN() - getTotalN());
-		}
-	}	
 
 	/**
 	* Process growth part I (before water repartition module)
@@ -1379,7 +1341,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 									boolean debug) {	
 
 		// Tree phenology 
-		if (this.getTreeSpecies ().getPhenologyType() == 3) //tropical faidherbia
+		if (this.getTreeSpecies ().getPhenologyType() == 3) //tropical faidherbia (LT 23/01/26)
 			this.tropicalPhenology (macroClimat, dayClimat, debug);
 		else 
 			this.vegetativePhenology (macroClimat, dayClimat, debug);
@@ -2011,19 +1973,21 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	private void fruitPhenology (SafeMacroClimat climat, SafeDailyClimat dayClimat) {
 
 		int julianDay = dayClimat.getJulianDay ();
+		int nbrDays = 365; 
+		if (climat.isLeapYear(dayClimat.getYear())) nbrDays = 366; 
+		if (julianDay > nbrDays) julianDay = julianDay - nbrDays;
 		float meanTemperature = dayClimat.getMeanTemperature();
-
-		int dayStart = this.getTreeSpecies ().getFloweringTempAccumulationDateStart ();	// date to start flowering temp cumulation (julian day)
+		
+		// date to start flowering temp cumulation (julian day)
+		int dayStart = this.getTreeSpecies ().getFloweringTempAccumulationDateStart ();
+		// if faidherbia, day start is replaced with its leaf budburst date (input parameter not used)
+		if (this.getTreeSpecies().getPhenologyType() == 3){
+			dayStart = this.getBudburstDate();
+		}
+		
 		double floweringTempThreshold = this.getTreeSpecies ().getFloweringTempThreshold ();
 		
-		if (climat.isLeapYear(dayClimat.getYear())) {
-			if (julianDay>366) julianDay = julianDay - 366;
-		}
-		else {
-			if (julianDay>365) julianDay = julianDay - 365;
-		}
-		
-		if (julianDay == dayStart) {
+		if (julianDay == dayStart){
 			setHeatAccumulatedTemperatureStarted(true);
 			setHeatAccumulatedTemperature(0);
 			setFloweringDate (0);
@@ -2048,7 +2012,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 
 			case 1 : // budburst started
 
-				if (heatAccumulatedTemperature > this.getTreeSpecies ().getFloweringTriggerTemp()) {
+				// if accumulated temperature is over the flowering trigger temp, then trigger flowering
+				if (heatAccumulatedTemperature > this.getTreeSpecies().getFloweringTriggerTemp()){
 					this.setFruitPhenologicalStage(2);
 					setFloweringDate (julianDay);
 					
@@ -2868,8 +2833,6 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		setCarbonStump(getCarbonStump()+stumpGrowth);
 		//Only first cohort has carbon Increment
 		setCarbonFoliage (getCarbonFoliageCohort (0) + foliageGrowth, 0);
-		setAboveGroundCFraction ((getCarbonBranches() + getCarbonStem())
-								/ (getCarbonBranches() + getCarbonStem() + getCarbonStump() + getCarbonCoarseRoots ()));
 
 		/*
 		* Nitrogen allocation
@@ -3615,59 +3578,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		this.getPlantRoots().setTotalRootsDensity(totalRootDensity);
 	}
 		
-	/**
-	* Compute TREE plant water potential 
-	**/
-	public void computePlantWaterPotential (){
-
-		if (getPlantRoots().getFirstRootNode() == null) return;  
 	
-		if (this.getTotalRootsLength() <= 0) return;
-		
-		double drySoilFactor = this.getTreeSpecies().getTreeHarmonicWeightedMean();
-		double plantPotential = 0;
-
-		for (Iterator c = getPlantRoots().getRootTopology().iterator (); c.hasNext ();) {
-			SafeVoxel voxel = (SafeVoxel) c.next ();
-			SafeRootNode node = getPlantRoots().getRootTopology (voxel);
-
-			double neededPot = voxel.getWaterPotentialTheta();	// soil water potential in this voxel
-
-			if (node.getFineRootsDensity() > 0) {			//IL 14/08/2020 add this test
-				
-				// additional potential for water flow from bulk soil to rhizosphere
-				neededPot *= (1+this.getTreeSpecies().getTreeBufferPotential()); 
-				// additional potential for water flow from root surface to xylem
-				double radialTransportPotential = -this.getWaterDemand()								// L.day-1=dm3.day-1
-													* 1000												// from L.day-1 to cm3.day-1
-													/this.getTreeSpecies().getTreeRootConductivity()	// cm day-1
-													/(this.getTotalRootsLength()*100);					// m to cm
-								
-				this.getPlantRoots().setRadialTransportPotential(radialTransportPotential);
-				
-				neededPot += radialTransportPotential;
-	
-				// additional potential to account for longitudinal water transport in coarse roots from the voxel to stem base
-				double longitudinalTransportPotential = -this.getWaterDemand()										//L.day-1=dm3.day-1
-															* 1000															// from L.day-1 to cm3.day-1
-															* this.getTreeSpecies().getTreeLongitudinalResistantFactor()	// day.cm-1.m-1
-															/(this.getTotalRootsLength()*100);								// m to cm
-				// in the model documentation from Meine et al, this term is not divided by totalRootLength... but it leads to very different longitudinal drop potential for small and large trees because of differences in water demand... so...
-				this.getPlantRoots().setLongitudinalTransportPotential(longitudinalTransportPotential);
-				neededPot += longitudinalTransportPotential*node.getTreeDistance();	// topological distance (m) between the voxel and stem base
-				
-				// additional potential to account for voxel depth
-				neededPot -= voxel.getZ()*100;		// from m to cm
-
-				plantPotential += (-node.getFineRootsDensity() * voxel.getVolume()	// m.m-3 * m3 = m
-										/ Math.pow(-neededPot, drySoilFactor));	// cm
-			}
-		}
-
-		plantPotential =-Math.pow (-this.getTotalRootsLength() /plantPotential , 1/drySoilFactor);
-		this.getPlantRoots().setRequiredWaterPotential(plantPotential);
-	}
-
 
 	/**
 	 * Foliage Senescence Computation - updated by gt 09.10.2009 : sigmoidal instead of exponential decrease
@@ -4683,8 +4594,8 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	public void updateDailyLightResults (SafeDailyClimat dayClimat ,
 										SafeGeneralParameters generalParameters) {	
 
-		float dailyDirect = dayClimat.getDirectPar ();				//Moles m-2 d-1
-		float dailyDiffuse = dayClimat.getDiffusePar ();			//Moles m-2 d-1
+		double dailyDirect = dayClimat.getDirectPar ();				//Moles m-2 d-1
+		double dailyDiffuse = dayClimat.getDiffusePar ();			//Moles m-2 d-1
 
 		setLightCompetitionIndex(1); 
 		
@@ -4695,9 +4606,9 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		setDirectParIntercepted (getCaptureFactorForDirectPar() * dailyDirect);	//m2 * Moles m-2 d-1= Moles d-1
 
 		//Global radiation intercepted by the tree
-		float parProp =(float) generalParameters.parGlobalCoefficient;
-		float directProp = dailyDirect/(dailyDirect+dailyDiffuse);
-		float dailyGlobal = dayClimat.getGlobalRadiation();
+		double parProp =(float) generalParameters.parGlobalCoefficient;
+		double directProp = dailyDirect/(dailyDirect+dailyDiffuse);
+		double dailyGlobal = dayClimat.getGlobalRadiation();
 		setGlobalRadIntercepted(dailyGlobal*(
 							(getCaptureFactorForDiffuseNir()*(1-parProp)+
 							 getCaptureFactorForDiffusePar()*parProp) * (1-directProp)+
@@ -4713,8 +4624,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		}
 
 		//InfraRed Radiation intercepted
-		float dailyInfraRed = dayClimat.getInfraRedRadiation();
-		setInfraRedIntercepted(captureFactorForInfraRed*dailyInfraRed);
+		setInfraRedIntercepted(captureFactorForInfraRed*dayClimat.getInfraRedRadiation());
 	}
 	
 	/**
@@ -4956,7 +4866,7 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		        setNbrDaysInShade(0);
 			}
 		}
-		//for faidherbia tree phenology is not reset 
+		//for faidherbia tree phenology is not reset (LT 23/01/26)
 		if (this.getTreeSpecies().getPhenologyType() != 3) {
 			this.setPhenologicalStage(0); 	
 			setBudburstAccumulatedTemperatureStarted(false);
@@ -5176,24 +5086,24 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	public void setBnfEndingDate(int d) {bnfEndingDate = d;}
 	
 	//BNF MODULE V1
-	public void setBnfNitrogenFixationPotential(double v) {bnfNitrogenFixationPotential = (float) v;}
-	public double getBnfNitrogenFixationPotential () {return (double) bnfNitrogenFixationPotential;}
-	public void setBnfNitrogenFixation(double v) {bnfNitrogenFixation = (float) v;}
-	public double getBnfNitrogenFixation() {return (double) bnfNitrogenFixation;}
-	public void setBnfAnoxStress(double v) {bnfAnoxStress = (float) v;}
-	public double getBnfAnoxStress() {return (double) bnfAnoxStress;}
-	public void setBnfWaterStress(double v) {bnfWaterStress = (float) v;}
-	public double getBnfWaterStress() {return (double) bnfWaterStress;}
-	public void setBnfTemperatureStress(double v) {bnfTemperatureStress = (float) v;}
-	public double getBnfTemperatureStress() {return (double) bnfTemperatureStress;}
-	public void setBnfNodulationInhibition(double v) {bnfNodulationInhibition = (float) v;}
-	public double getBnfNodulationInhibition() {return (double) bnfNodulationInhibition;}
-	public void setBnfSoilNitrateExcess(double v) {bnfSoilNitrateExcess = (float) v;}
-	public double getBnfSoilNitrateExcess() {return (double) bnfSoilNitrateExcess;}	
-	public void setBnfPhenologyCoefficient(double v) {bnfPhenologyCoefficient = (float) v;}
-	public double getBnfPhenologyCoefficient () {return (double) bnfPhenologyCoefficient;}
-	public void setBnfMaxNitrogenFixationPotential(double v) {bnfMaxNitrogenFixationPotential = (float) v;}
-	public double getBnfMaxNitrogenFixationPotential() {return (double) bnfMaxNitrogenFixationPotential;}
+	public void setBnfNitrogenFixationPotential(double v) {bnfNitrogenFixationPotential =  v;}
+	public double getBnfNitrogenFixationPotential () {return bnfNitrogenFixationPotential;}
+	public void setBnfNitrogenFixation(double v) {bnfNitrogenFixation = v;}
+	public double getBnfNitrogenFixation() {return bnfNitrogenFixation;}
+	public void setBnfAnoxStress(double v) {bnfAnoxStress = v;}
+	public double getBnfAnoxStress() {return  bnfAnoxStress;}
+	public void setBnfWaterStress(double v) {bnfWaterStress = v;}
+	public double getBnfWaterStress() {return  bnfWaterStress;}
+	public void setBnfTemperatureStress(double v) {bnfTemperatureStress = v;}
+	public double getBnfTemperatureStress() {return  bnfTemperatureStress;}
+	public void setBnfNodulationInhibition(double v) {bnfNodulationInhibition = v;}
+	public double getBnfNodulationInhibition() {return  bnfNodulationInhibition;}
+	public void setBnfSoilNitrateExcess(double v) {bnfSoilNitrateExcess = v;}
+	public double getBnfSoilNitrateExcess() {return  bnfSoilNitrateExcess;}	
+	public void setBnfPhenologyCoefficient(double v) {bnfPhenologyCoefficient =  v;}
+	public double getBnfPhenologyCoefficient () {return bnfPhenologyCoefficient;}
+	public void setBnfMaxNitrogenFixationPotential(double v) {bnfMaxNitrogenFixationPotential =  v;}
+	public double getBnfMaxNitrogenFixationPotential() {return bnfMaxNitrogenFixationPotential;}
 	
 	//
 	// GROWTH
@@ -5295,47 +5205,47 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	public double getDBaseMeters () {return dBaseMeters;}
 	
 	//ACCESSOR FOR LIGHT MODULE
-	public float getCaptureFactorForDiffusePar () {
-		return  (float) captureFactorForDiffusePar;
+	public double getCaptureFactorForDiffusePar () {
+		return   captureFactorForDiffusePar;
 	}
-	public float getCaptureFactorForDirectPar () {
-		return  (float)captureFactorForDirectPar;	
+	public double getCaptureFactorForDirectPar () {
+		return  captureFactorForDirectPar;	
 		}
-	public float getCaptureFactorForDirectNir () {
-		return  (float)captureFactorForDirectNir;	
+	public double getCaptureFactorForDirectNir () {
+		return  captureFactorForDirectNir;	
 	}
-	public float getCaptureFactorForDiffuseNir () {
-		return  (float)captureFactorForDiffuseNir;
+	public double getCaptureFactorForDiffuseNir () {
+		return captureFactorForDiffuseNir;
 		}
-	public float getCaptureFactorForInfraRed () {
-		return  (float)captureFactorForInfraRed;	
+	public double getCaptureFactorForInfraRed () {
+		return  captureFactorForInfraRed;	
 		}
 	public double getDiffuseParIntercepted () {
-		return  (double)diffuseParIntercepted;		
+		return  diffuseParIntercepted;		
 	}
 	public double getDirectParIntercepted () {
-		return  (double)directParIntercepted;		
+		return  directParIntercepted;		
 		}
 	public double getTotalParIntercepted () {
-		return  (double)(directParIntercepted+diffuseParIntercepted) ;		
+		return  (directParIntercepted+diffuseParIntercepted) ;		
 		}	
 	public double getGlobalRadIntercepted () {
-		return  (double)globalRadIntercepted;		
+		return  globalRadIntercepted;		
 		}
 	public double getInfraRedIntercepted () {
-		return  (double)infraRedIntercepted;		
+		return  infraRedIntercepted;		
 		}
 	public double getLightCompetitionIndex() {
 		return  lightCompetitionIndex;		
 		}
-	public float getCFdirectLonelyTree() {
-		return  (float) cFdirectLonelyTree;		
+	public double getCFdirectLonelyTree() {
+		return   cFdirectLonelyTree;		
 		}
-	public float getCFdiffuseLonelyTree() {
-		return  (float)  cFdiffuseLonelyTree;			
+	public double getCFdiffuseLonelyTree() {
+		return   cFdiffuseLonelyTree;			
 		}
 	public double getParInterceptedAnnual () {
-		return  (parInterceptedAnnual);		
+		return  parInterceptedAnnual;		
 	}
 	
 	//CD 08/12/2023
@@ -5349,27 +5259,28 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 		return (getLightCompetitionIndex()-LCImin)/(1-LCImin);		
 	}
 	
-	public void setCaptureFactorForDiffusePar (double e) {captureFactorForDiffusePar =  (float) e;}
-	public void setCaptureFactorForDirectPar (double e) {captureFactorForDirectPar =   (float) e;}
-	public void setCaptureFactorForDirectNir (double e) {captureFactorForDirectNir =   (float) e;}
-	public void setCaptureFactorForDiffuseNir (double e) {captureFactorForDiffuseNir =   (float) e;}
-	public void setCaptureFactorForInfraRed (double e) {captureFactorForInfraRed = (float) e;}
+	public void setCaptureFactorForDiffusePar (double e) {captureFactorForDiffusePar =  e;}
+	public void setCaptureFactorForDirectPar (double e) {captureFactorForDirectPar = e;}
+	public void setCaptureFactorForDirectNir (double e) {captureFactorForDirectNir = e;}
+	public void setCaptureFactorForDiffuseNir (double e) {captureFactorForDiffuseNir = e;}
+	public void setCaptureFactorForInfraRed (double e) {captureFactorForInfraRed = e;}
 	
-	public void setDiffuseParIntercepted (double e) {diffuseParIntercepted = (float) e;}
-	public void setDirectParIntercepted (double e) {directParIntercepted =  (float)e;}
-	public void setGlobalRadIntercepted (double e) {globalRadIntercepted =  (float)e;}
-	public void setInfraRedIntercepted (double e) {infraRedIntercepted =  (float)e;}
-	public void setLightCompetitionIndex (double e){lightCompetitionIndex =  (float)e;}
-	public void setCFdiffuseLonelyTree (double e){cFdiffuseLonelyTree =  (float)e;}
-	public void setCFdirectLonelyTree (double e){cFdirectLonelyTree =  (float)e;}
+	public void setDiffuseParIntercepted (double e) {diffuseParIntercepted = e;}
+	public void setDirectParIntercepted (double e) {directParIntercepted = e;}
+	public void setGlobalRadIntercepted (double e) {globalRadIntercepted = e;}
+	public void setInfraRedIntercepted (double e) {infraRedIntercepted = e;}
+	public void setLightCompetitionIndex (double e){lightCompetitionIndex = e;}
+	public void setCFdiffuseLonelyTree (double e){cFdiffuseLonelyTree = e;}
+	public void setCFdirectLonelyTree (double e){cFdirectLonelyTree = e;}
 
 	//ACCESSOR FOR C AND N ALLOCATION MODULE
 	public double getStemVolume () {return stemVolume;}
 	public double getStemVolumePerHectare () {return stemVolumePerHectare;}
 	public double getStemVolumeHarvestedPerHectare() {return stemVolumeHarvestedPerHectare;}
 	public void setStemVolumeHarvestedPerHectare(double v) {stemVolumeHarvestedPerHectare = v;}
+	//Stem yield (t.ha-1)
 	public double getStemYield () {
-		return((getStemVolumePerHectare () + getStemVolumeHarvestedPerHectare() ) * this.getTreeSpecies().getWoodDensity() );
+		return((getStemVolumePerHectare () + getStemVolumeHarvestedPerHectare() ) * this.getTreeSpecies().getWoodDensity() / 1000 );
 	}
 	
 	public double getCarbonStem () {return carbonStem;}
@@ -5577,8 +5488,12 @@ public class SafeTree extends SpatializedTree implements Speciable, SimpleCrownD
 	public void setCarbonLabile (double v) {carbonLabile = v;}
 	public void	addCarbonLabile (double v) {carbonLabile +=  v;} //AQ-26.04.2011
 	public void	addCarbonFruit (double v) {carbonFruit += v;} 
-	public double 	getAboveGroundCFraction () {return aboveGroundCFraction;}
-	public void setAboveGroundCFraction (double v) {aboveGroundCFraction =  v;}
+	public double 	getAboveGroundCFraction () {
+		if (getCarbonBranches() + getCarbonStem() + getCarbonStump()+ getCarbonCoarseRoots () > 0) 
+			return (getCarbonBranches() + getCarbonStem())
+				 / (getCarbonBranches() + getCarbonStem() + getCarbonStump()+ getCarbonCoarseRoots ());
+		else return 0;
+	}
 	public void	setCarbonIncrement (double v, int i) {carbonIncrement[i]  =  v;}
 	public void	setCarbonFoliageIncrement (double v) {carbonFoliageIncrement  =   v;}
 	public void	setCarbonStemIncrement (double v) {carbonStemIncrement  =  v;}
