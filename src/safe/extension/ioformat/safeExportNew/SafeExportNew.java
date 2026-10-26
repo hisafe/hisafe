@@ -200,7 +200,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 			
 				TreeSet zoneRecords = new TreeSet(new SafeExportRecordComparator());
 
-				// for all selected cellIds...
+				// for all selected zoneIds...
 				Collection zones = ((SafePlot)plotc).getCropZones();
 				for (Iterator itCell = zones.iterator(); itCell.hasNext();) {
 					SafeCropZone zone = (SafeCropZone) itCell.next();
@@ -237,24 +237,18 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 
 			} else if (p.getObject().equals(OBJECT_YIELD)) {
 
-				TreeSet cellRecords = new TreeSet(new SafeExportRecordComparator());
+				TreeSet zoneRecords = new TreeSet(new SafeExportRecordComparator());
 
-				// for all selected cellIds...
-				Collection cells = plotc.getCells();
-				for (Iterator itCell = cells.iterator(); itCell.hasNext();) {
-					SafeCell cell = (SafeCell) itCell.next();
-					if (cell.getCrop().getYield() > 0 ) {
-						if (p.getIdsToExport().size() > 0) {
-							if (p.getIdsToExport().contains(cell.getId())) {
-								createStepCellRecords(cellRecords, s, p, cell, paramValues);
-							}
-						} else
-							createStepCellRecords(cellRecords, s, p, cell, paramValues);
-					}
-
+				
+				// for all selected zoneIds...
+				Collection zones = ((SafePlot)plotc).getCropZones();
+				for (Iterator itCell = zones.iterator(); itCell.hasNext();) {
+					SafeCropZone zone = (SafeCropZone) itCell.next();
+					if (zone.getSimulationFinished()  ) 
+						createStepZoneRecords(zoneRecords, s, p, zone, paramValues);
 				}
-
-				writeRecords(cellRecords);
+				writeRecords(zoneRecords);
+				
 				// VOXEL EXPORT
 			} else if (p.getObject().equals(OBJECT_VOXEL)) {
 
@@ -366,9 +360,9 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 			writeHeader(projetName,p, firstZone);
 		}
 		if (p.getObject().equals(OBJECT_YIELD)) {
-			PlotOfCells plotc = (PlotOfCells) stand.getPlot(); 
-			SafeCell firstCell = (SafeCell) plotc.getCell(1);
-			writeHeader(projetName,p, firstCell);
+			SafePlot plotc = (SafePlot) stand.getPlot(); 
+			SafeCropZone firstZone = (SafeCropZone) plotc.getCropZone(0);
+			writeHeader(projetName,p, firstZone);
 		}
 		if (p.getObject().equals(OBJECT_CELL)) {
 			PlotOfCells plotc = (PlotOfCells) stand.getPlot(); 
@@ -468,9 +462,7 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 				SafeTreeSpecies species = ((SafeTree) object).getTreeSpecies();
 				if (species != null) {
 					readed = SafeExportTools.readPrimitiveVariable(species, variableName, val);
-
 				}
-
 			}
 			if (!readed) {
 				// try to read *in SafeRoot* the value using the "get"+nomVariable" method
@@ -560,18 +552,22 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 							// put the values in a line of fields
 							for (int j = 0; j < values.length; j++) {
 								val.append(values[j]);
+								
 								if (j != values.length - 1) {
 									val.append("\t");
+
 								}
 							}
+						
 						}
 					}
 				}
 			}
 
 
-			if (readed)
+			if (readed) {
 				write.append(val.toString());
+			}
 			else
 				write.append("error!");
 
@@ -823,24 +819,37 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 				// try to read the variable called "get"+nomVariable+"Size" (for variables which
 				// return array)
 				readed = SafeExportTools.readPrimitiveVariable(object, variableName + "Size", val);
+
 				if (readed) {
 					arraySize = Integer.parseInt(val.toString());
 					values = new String[arraySize];
-					String type = (val.toString());
-					
-					// fill the array values with readed variables
-					if (type.equals("Double"))
-						readed = SafeExportTools.readArrayOfDoubleVariables(object, variableName, values);
 
-					if (type.equals("Float"))
-						readed = SafeExportTools.readArrayOfFloatVariables(object, variableName, values);
-					
 					val = new StringBuffer("");
-					// put the values in a line of fields
-					for (int j = 0; j < values.length; j++) {
-						val.append(values[j]);
-						if (j != values.length - 1) {
-							val.append("\t");
+
+					readed = SafeExportTools.readPrimitiveVariable(object, variableName + "Type", val);
+
+					if (readed) {
+						String type = (val.toString());
+
+						// fill the array values with readed variables
+						if (type.equals("Double"))
+							readed = SafeExportTools.readArrayOfDoubleVariables(object, variableName, values);
+
+						if (type.equals("Float"))
+							readed = SafeExportTools.readArrayOfFloatVariables(object, variableName, values);
+
+						if (type.equals("Int"))
+							readed = SafeExportTools.readArrayOfIntVariables(object, variableName, values);
+
+						if (readed) {
+							val = new StringBuffer("");
+							// put the values in a line of fields
+							for (int j = 0; j < values.length; j++) {
+								val.append(values[j]);
+								if (j != values.length - 1) {
+									val.append("\t");
+								}
+							}
 						}
 					}
 				}
@@ -885,28 +894,44 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 			String variableName = (String) i.next();
 			val = new StringBuffer("");
 			readed = SafeExportTools.readPrimitiveVariable(object, variableName, val);
+	
 			if (!readed) {
 				val = new StringBuffer("");
 				// try to read the variable called "get"+nomVariable+"Size" (for variables which
 				// return array)
 				readed = SafeExportTools.readPrimitiveVariable(object, variableName + "Size", val);
+
 				if (readed) {
 					arraySize = Integer.parseInt(val.toString());
 					values = new String[arraySize];
-					String type = (val.toString());
-					
-					// fill the array values with readed variables
-					if (type.equals("Double"))
-						readed = SafeExportTools.readArrayOfDoubleVariables(object, variableName, values);
 
-					if (type.equals("Float"))
-						readed = SafeExportTools.readArrayOfFloatVariables(object, variableName, values);
-					
 					val = new StringBuffer("");
-					// put the values in a line of fields
-					for (int j = 0; j < values.length; j++) {
-						val.append(values[j]);
-						val.append("\t");
+
+					readed = SafeExportTools.readPrimitiveVariable(object, variableName + "Type", val);
+
+					if (readed) {
+						String type = (val.toString());
+
+						// fill the array values with readed variables
+						if (type.equals("Double"))
+							readed = SafeExportTools.readArrayOfDoubleVariables(object, variableName, values);
+
+						if (type.equals("Float"))
+							readed = SafeExportTools.readArrayOfFloatVariables(object, variableName, values);
+
+						if (type.equals("Int"))
+							readed = SafeExportTools.readArrayOfIntVariables(object, variableName, values);
+
+						if (readed) {
+							val = new StringBuffer("");
+							// put the values in a line of fields
+							for (int j = 0; j < values.length; j++) {
+								val.append(values[j]);
+								if (j != values.length - 1) {
+									val.append("\t");
+								}
+							}
+						}
 					}
 				}
 			}
@@ -917,6 +942,47 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 				SafePlot plot = null;
 				plot = (SafePlot) ((SafeStand) object).getPlot();
 				readed = SafeExportTools.readPrimitiveVariable(plot, variableName, val);
+				if (!readed) {
+					val = new StringBuffer("");
+					// try to read the variable called "get"+nomVariable+"Size" (for variables which
+					// return array)
+
+					readed = SafeExportTools.readPrimitiveVariable(plot, variableName + "Size", val);
+
+					if (readed) {
+						arraySize = Integer.parseInt(val.toString());
+						values = new String[arraySize];
+
+						val = new StringBuffer("");
+
+						readed = SafeExportTools.readPrimitiveVariable(plot, variableName + "Type", val);
+
+						if (readed) {
+							String type = (val.toString());
+
+							// fill the array values with readed variables
+							if (type.equals("Double"))
+								readed = SafeExportTools.readArrayOfDoubleVariables(plot, variableName, values);
+
+							if (type.equals("Float"))
+								readed = SafeExportTools.readArrayOfFloatVariables(plot, variableName, values);
+
+							if (type.equals("Int"))
+								readed = SafeExportTools.readArrayOfIntVariables(plot, variableName, values);
+
+							if (readed) {
+								val = new StringBuffer("");
+								// put the values in a line of fields
+								for (int j = 0; j < values.length; j++) {
+									val.append(values[j]);
+									if (j != values.length - 1) {
+										val.append("\t");
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 
 			if (!readed) {
@@ -974,23 +1040,38 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 				// try to read the variable called "get"+nomVariable+"Size" (for variables which
 				// return array)
 				readed = SafeExportTools.readPrimitiveVariable(object, variableName + "Size", val);
+
 				if (readed) {
 					arraySize = Integer.parseInt(val.toString());
 					values = new String[arraySize];
-					String type = (val.toString());
-					
-					// fill the array values with readed variables
-					if (type.equals("Double"))
-						readed = SafeExportTools.readArrayOfDoubleVariables(object, variableName, values);
 
-					if (type.equals("Float"))
-						readed = SafeExportTools.readArrayOfFloatVariables(object, variableName, values);
-					
 					val = new StringBuffer("");
-					// put the values in a line of fields
-					for (int j = 0; j < values.length; j++) {
-						val.append(values[j]);
-						val.append("\t");
+
+					readed = SafeExportTools.readPrimitiveVariable(object, variableName + "Type", val);
+
+					if (readed) {
+						String type = (val.toString());
+
+						// fill the array values with readed variables
+						if (type.equals("Double"))
+							readed = SafeExportTools.readArrayOfDoubleVariables(object, variableName, values);
+
+						if (type.equals("Float"))
+							readed = SafeExportTools.readArrayOfFloatVariables(object, variableName, values);
+
+						if (type.equals("Int"))
+							readed = SafeExportTools.readArrayOfIntVariables(object, variableName, values);
+
+						if (readed) {
+							val = new StringBuffer("");
+							// put the values in a line of fields
+							for (int j = 0; j < values.length; j++) {
+								val.append(values[j]);
+								if (j != values.length - 1) {
+									val.append("\t");
+								}
+							}
+						}
 					}
 				}
 			}
@@ -1068,6 +1149,31 @@ public class SafeExportNew extends StandRecordSet implements OFormat {
 			value = new StringBuffer("");
 			// check if the current variable returns an array of values
 			readed = SafeExportTools.readPrimitiveVariable(o, variableName + "Size", value);
+			
+			if (!readed) {
+				// try to read *in SafeCrop* the value using the "get"+nomVariable" method
+
+				if (o instanceof SafeCell) {
+					SafeCrop safeCrop = ((SafeCell) o).getCrop();
+					if (safeCrop != null) {
+						value = new StringBuffer("");
+						readed = SafeExportTools.readPrimitiveVariable(safeCrop, variableName + "Size", value);
+					}
+				}
+	
+				if (o instanceof SafeStand) {
+					// try to read *in SafeCrop* the value using the "get"+nomVariable" method
+			
+					SafePlot plot = (SafePlot) ((SafeStand) o).getPlot();
+					if (plot != null) {
+						value = new StringBuffer("");
+						readed = SafeExportTools.readPrimitiveVariable(plot, variableName + "Size", value);
+					}
+
+				}
+
+			}
+
 			if (readed) {
 				// the variable returns an array ; variable names are created using the array
 				// size

@@ -155,11 +155,8 @@ public class SafeExportProfile implements  Serializable {
 			this.addVariable("y");
 		}
 		if (object.equals(OBJECT_YIELD))  {
-			this.addVariable("idZone");
-			this.addVariable("zoneName");
-			this.addVariable("idCell");
-			this.addVariable("x");
-			this.addVariable("y");
+			this.addVariable("id");
+			this.addVariable("name");
 		}
 		if (object.equals(OBJECT_VOXEL)) {
 			this.addVariable("idZone");

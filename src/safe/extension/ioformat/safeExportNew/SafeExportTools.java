@@ -128,9 +128,9 @@ public class SafeExportTools {
 			} else if (field.getType().equals(Boolean.TYPE)) {
 				boolean val = field.getBoolean(object);
 				if (val) {
-					value2 = Translator.swap("Shared.yes");
+					value2 = "" + 1;
 				} else {
-					value2 = Translator.swap("Shared.no");
+					value2 = "" + 0;
 				}
 				ret = true;
 			} else {
@@ -302,9 +302,9 @@ public class SafeExportTools {
 					Boolean val=null;
 					val = (Boolean) m.invoke (object);	// fc - 2.12.2004 - varargs
 					if (val.booleanValue()) {
-						value.append(Translator.swap("Shared.yes"));
+						value.append("1");
 					} else
-						value.append(Translator.swap("Shared.no"));
+						value.append("0");
 					ret = true;
 				} else if (Tools.returnsType (m,new String("").getClass())) {
 					String val=null;
