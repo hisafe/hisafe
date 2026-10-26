@@ -25,6 +25,12 @@ capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/ex
 ##  30 YEARS AF plot 104m2 2 TREES (walnut+durum-wheat/rape/pea/)  
 capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/restinclieres_agroforestry_A2/restinclieres_agroforestry_A2.sim
 
+##  30 YEARS MC plot 1m2  (walnut+durum-wheat/rape/pea/)  
+capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/restinclieres_monocrop_A2/restinclieres_monocrop_A2.sim
+
+##  30 YEARS TF plot 49m2 2 TREES   
+capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/restinclieres_forestry_A4/restinclieres_forestry_A4.sim
+
 ## 1 YEAR monocrop plot 1m2 
 capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/exemple-MC/alfalfa.sim
 capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/exemple-MC/banana.sim
@@ -46,3 +52,6 @@ capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/ex
 capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/exemple-MC/tomato.sim
 capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/exemple-MC/vine.sim
 capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/exemple-MC/wheat.sim
+capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/exemple-MC/wheat.sim
+capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/exemple-MC/groundnut.sim
+capsis -p script safe.pgms.ScriptGen C:/Projets/capsis4/data/safe/simSettings/exemple-MC/pearlMillet.sim
