@@ -1,13 +1,13 @@
 /** 
- * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Tree–Crop Interactions
+ * Hi-SAFE : A 3D Agroforestry Model for Integrating Dynamic Treeï¿½Crop Interactions
  * 
  * Copyright (C) 2000-2025 INRAE - CC-BY License
  * 
  * LIST OF AUTHORS
  * --------------- 
- * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grégoire Talbot 1, Nicolas Barbault 1, 
- * Grégoire Vincent 2 , Rachmat Mulia 3, François Bussière 4, Harry Ozier-Lafontaine 4,
- * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervé Sinoquet 6,
+ * Christian Dupraz 1, Kevin J.Wolz 1 , Isabelle Lecomte 1, Grï¿½goire Talbot 1, Nicolas Barbault 1, 
+ * Grï¿½goire Vincent 2 , Rachmat Mulia 3, Franï¿½ois Bussiï¿½re 4, Harry Ozier-Lafontaine 4,
+ * Sitraka Andrianarisoa 1, Nick Jackson 5, Gerry Lawson 5, Nicolas Dones 6, Hervï¿½ Sinoquet 6,
  * Betha Lusiana 3, Degi Harja 3, Suzy Domenicano 7 , Francesco Reyes 1 , Marie Gosme 1 ,
  * Meine Van Noordwijk 3, Benoit Courbaud 8
  *
@@ -16,9 +16,9 @@
  * 3 ICRAF, Bogor 16001, Indonesia
  * 4 INRA (UR ASTRO 1231) Centre Antilles-Guyane, Petit-Bourg, 97170 Guadeloupe, France
  * 5 CEH, NERC,Wallingford OX10 8BB, UK
- * 6 INRA (UMR-PIAF), Université Clermont Auvergne, 63000 Clermont-Ferrand, France
- * 7 Centre d’étude de la forêt, Université du Quebec, Montreal H2X 3Y5, Canada
- * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-d’Hères, France
+ * 6 INRA (UMR-PIAF), Universitï¿½ Clermont Auvergne, 63000 Clermont-Ferrand, France
+ * 7 Centre dï¿½ï¿½tude de la forï¿½t, Universitï¿½ du Quebec, Montreal H2X 3Y5, Canada
+ * 8 CEMAGREF, Mountain Ecosystems and Landcapes Research Unit, Saint-Martin-dï¿½Hï¿½res, France
  *
  *----------------------------------------------------------------------------------------------
  * 
@@ -26,15 +26,15 @@
  * Hi-SAFE is free software under the terms of the CC-BY License as published by the Creative Commons Corporation
  *
  * You are free to:
- *		Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
- *		Adapt — remix, transform, and build upon the material for any purpose, even commercially.
+ *		Share ï¿½ copy and redistribute the material in any medium or format for any purpose, even commercially.
+ *		Adapt ï¿½ remix, transform, and build upon the material for any purpose, even commercially.
  *		The licensor cannot revoke these freedoms as long as you follow the license terms.
  * 
  * Under the following terms:
- * 		Attribution — 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
+ * 		Attribution ï¿½ 	You must give appropriate credit , provide a link to the license, and indicate if changes were made . 
  *               		You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
  *               
- * 		No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+ * 		No additional restrictions ï¿½ You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  *               
  * Notices:
  * 		You do not have to comply with the license for elements of the material in the public domain or where your use is permitted 
@@ -51,6 +51,7 @@ package safe.stics;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+
 import com.sun.jna.Structure;
 
 /**
@@ -67,12 +68,12 @@ public class SafeSticsTransit extends Structure implements Serializable {
 	  public float P_coefracoupe[];     	// PARAMETER // coefficient to define the proportion of dying roots after cut (grass) // SD // PARAMV6/PLT // 1 
 	  public int P_codepluiepoquet;  		// PARAMETER // option to replace rainfall by irrigation at poquet depth in the case of poquet sowing // code 1/2 // PARAMV6 // 0
 	  public int P_nbjoursrrversirrig;  	// PARAMETER // number of days during which rainfall is replaced by irrigation in the soil after a sowing poquet // jours // PARAMV6 // 1	
-	  public float P_SurfApex[];     		// PARAMETER // equivalent surface of a transpiring apex // m² // PARAMV6/PLT // 1
+	  public float P_SurfApex[];     		// PARAMETER // equivalent surface of a transpiring apex // mï¿½ // PARAMV6/PLT // 1
 	  public float P_SeuilMorTalle[];     	// PARAMETER // relative transpiring threshold to calculate tiller mortality // mm // PARAMV6/PLT // 1
 	  public float P_SigmaDisTalle[];     	// PARAMETER // Coefficient used for the gamma law calculating tiller mortality //  // PARAMV6/PLT // 1
-	  public float P_VitReconsPeupl[];     	// PARAMETER // thermal time for the regeneration of the tiller population // nb tillers/degree C/m² // PARAMV6 // 1
-	  public float P_SeuilReconsPeupl[];    // PARAMETER // tiller density threshold below which the entire population won't be regenerated // nb tillers/m² // PARAMV6/PLT // 1
-	  public float P_MaxTalle[];     		// PARAMETER // maximal density of tillers/m² // Nb tillers/ // PARAMV6/PLT // 1
+	  public float P_VitReconsPeupl[];     	// PARAMETER // thermal time for the regeneration of the tiller population // nb tillers/degree C/mï¿½ // PARAMV6 // 1
+	  public float P_SeuilReconsPeupl[];    // PARAMETER // tiller density threshold below which the entire population won't be regenerated // nb tillers/mï¿½ // PARAMV6/PLT // 1
+	  public float P_MaxTalle[];     		// PARAMETER // maximal density of tillers/mï¿½ // Nb tillers/ // PARAMV6/PLT // 1
 	  public int P_code_adapt_MO_CC;  		// PARAMETER // activation code for organic matter adaptation to climate change (1 = yes, 2 = no) // code1/2 // PARAMV6 // 0
 	  public int P_code_adaptCC_miner;  	// PARAMETER // activation code for the impact of climate change on mineralisation, parameter modification P_trefh and P_trefr (1 = yes, 2 = no) // code1/2 // PARAMV6 // 0
 	  public int P_code_adaptCC_nit;  		// PARAMETER // activation code for the impact of climate change on nitrification, parameter modification P_tnitmin, P_tnitmax, P_tnitopt and P_tnitopt2 (1 = yes, 2 = no) // code1/2 // PARAMV6 // 0
@@ -87,7 +88,7 @@ public class SafeSticsTransit extends Structure implements Serializable {
 	  public int P_eau_mini_decisemis;  	// PARAMETER // minimum amount of rainfall to start sowing (when codesemis is activated) // mm // PARAMV6 // 1
 	  public float P_humirac_decisemis;  	// PARAMETER // effect of soil moisture for sowing decision ( from 0 to 1 : 0 = no sensitivity to drought; 1 = very sensitive) // SD // PARAMV6 // 1
 	  public float P_swfacmin;  			// PARAMETER // minimul value for drought stress index (turfac, swfac, senfac) // SD // PARAMV6 // 1
-	  public float P_SeuilLAIapex[];   		// PARAMETER // Maximal value of LAI+LAIapex when LAIapex isn't nil // m²/m² // PARAMV6/PLT // 1
+	  public float P_SeuilLAIapex[];   		// PARAMETER // Maximal value of LAI+LAIapex when LAIapex isn't nil // mï¿½/mï¿½ // PARAMV6/PLT // 1
 	  public int P_codetranspitalle;  		// PARAMETER // Choice of the ratio used to calculate tiller mortality: et/etm (1) ou epc2 / eopC (2) // code 1/2 // PARAMV6 // 0
 	  public int P_codedyntalle[];   		// PARAMETER // Activation of the module simulating tiller dynamic: yes (1), no (2) // code 1/2 // PARAMV6/PLT // 0
 	  public float P_tigefeuilcoupe[];   	// PARAMETER // stem (structural part)/leaf proportion the cutting day // SD // PARAMV6/PLT // 1

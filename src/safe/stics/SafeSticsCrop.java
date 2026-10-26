@@ -1767,6 +1767,7 @@ public class SafeSticsCrop extends Structure implements Serializable {
 		this.LAIapex=0;
 		this.nmontaison=0;
 		this.onestan2=0;
+		this.group=0;
 
 		Arrays.fill(this.mafeuiltombe0 	, 0);
 		Arrays.fill(this.masecneo0 	, 0);
