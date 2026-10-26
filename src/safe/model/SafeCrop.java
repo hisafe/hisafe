@@ -1175,7 +1175,7 @@ import safe.stics.SafeSticsTransit;
 					
 			//STICS TOTAL FOR BILAN
 			this.sticsCommun.treeCarbonFineRootsLitter = this.sticsCommun.treeCarbonFineRootsLitter + (float) treeCarbonCoarseRootsLitter;      
-			this.sticsCommun.treeNitrogenFineRootsLitter = this.sticsCommun.treeNitrogenFineRootsLitter + (float) treeCarbonCoarseRootsLitter; 
+			this.sticsCommun.treeNitrogenFineRootsLitter = this.sticsCommun.treeNitrogenFineRootsLitter + (float) treeNitrogenCoarseRootsLitter; 
 		}	
 
 	}
