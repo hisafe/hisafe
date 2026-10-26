@@ -28,7 +28,6 @@ ProfileDef	voxels	SafeVoxel	1
 #=========================================================================						
 #Profile	Object	Variable	Unit	Description	Order	Export
 annualCells	SafeCell	cropSpeciesName	-	Crop species name	1	1
-annualCells	SafeCell	yieldMax	t.ha-1	Maximum value of harvested yield (grain and hay) for the year	2	1
 annualCells	SafeCell	heightMax	 m	Maximum crop height for the year	3	1
 annualCells	SafeCell	biomassMax	 t.ha-1	Maximum crop biomass for the year	4	1
 annualCells	SafeCell	grainBiomassMax	 t.ha-1	Maximum crop grain biomass for the year	4	1
@@ -73,7 +72,7 @@ monthCells	SafeCell	monthVisibleSky	%	Total monthly percetage of sky that is uno
 cells	SafeCell	cropSpeciesName	-	Crop species name	1	1
 cells	SafeCell	cropAge	years	Age of crop since sowing	2	1
 cells	SafeCell	phenologicStageVegetative	-	Crop phenologic stage reproductive 1=snu 2=plt 3=dor 4=ger 5=lev 6=amf 7=lax 8=sen 9=lan 10=rec	3	1
-cells	SafeCell	phenologicStageReproductive	-	Crop phenologic stage vegetative 1=snu 2=flo 3=drp 4=nou 5=des 6=mat 7=rec	4	1
+cells	SafeCell	harvestDay	-	Real harvest day	4	1
 cells	SafeCell	yield	t ha-1	Harvested biomass of grain and hay	5	1
 cells	SafeCell	biomass	t ha-1	Total crop biomass, including grain/fruit biomass	6	1
 cells	SafeCell	grainBiomass	t ha-1	Crop grain yield at 0% moisture (converted from g m-2 in STICS output to t ha-1 within Hi-sAFe by dividing it by 100)	7	1
@@ -139,7 +138,6 @@ cells	SafeCell	rainTransmittedByCrop	mm	Rain transmitted (not intercepted) throu
 cells	SafeCell	stemFlowByTrees	mm	Flow of rain down tree stems (onto the cells where the trees are rooted)	67	1
 cells	SafeCell	stemFlowByCrop	mm	Flow of rain down crop stems (onto the cell where the crop is rooted)	68	1
 cells	SafeCell	waterAddedByWaterTable	mm	Water input to soil from rising water table (when a voxel becomes saturated, the water table adds water to a voxel in the amount of (fieldCapacity - waterContent)	69	1
-cells	SafeCell	waterTakenByDesaturation	mm	Water taken by water table to desaturated voxels	70	1
 cells	SafeCell	irrigation	mm	Water from irrigation	71	1
 cells	SafeCell	capillaryRise	mm	Capillary uptake in the base of the soil profile	72	1
 cells	SafeCell	runOff	mm	"The ""surface"" run-off associated with soil surface conditions plus the ""overflow"" runoff associated with saturation of the top soil layer and lack of infiltribility"	73	1
@@ -267,6 +265,7 @@ annualPlot	SafePlot	annualNitrogenLeachingBottom	kg N ha-1	Annual cumulation of 
 annualPlot	SafePlot	annualNitrogenLeachingWaterTable	kg N ha-1	Annual cumulation of nitrogen Leaching to WaterTable  on the plot	24	1
 annualPlot	SafePlot	annualWaterUptakeInSaturationByTrees	kg N ha-1	Annual cumulation of water uptake by trees  on saturated voxels of the plot	25	1
 annualPlot	SafePlot	annualWaterUptakeInSaturationByCrops	kg N ha-1	Annual cumulation of water uptake by crops  on saturated voxels of the plot	26	1
+annualPlot	SafePlot	annualSaturationIndex	%	% of days of saturation each meter	2	1
 plot	SafePlot	meanCropBiomass	t ha-1	Mean biomass of the plot	2	1
 plot	SafePlot	meanCropYield	t ha-1	Mean yield of the plot	4	1
 plot	SafePlot	meanCropLai	m2 leaf m-2 soil	Mean LAI of the plot	6	1
@@ -311,7 +310,6 @@ plot	SafePlot	totalSurfaceRunOff	liters	Total of surface runOff in the plot	46	1
 plot	SafePlot	totalDrainageBottom	liters	Total of bottom drainage in the plot	47	1
 plot	SafePlot	totalDrainageArtificial	liters	Total of artificial drainage in the plot	48	1
 plot	SafePlot	totalWaterAddedByWaterTable	liters	Total  of water provided by waterTable in the plot	49	1
-plot	SafePlot	totalWaterToDesaturation	liters	Total  of water taken by waterTable in the plot	50	1
 plot	SafePlot	totalCropsNitrogenDemand	kg N ha-1	Total of crops nitrogen demand in the plot	51	1
 plot	SafePlot	totalNitrogenUptakeByCrops	kg N	Total of crops nitrogen uptake in the plot	52	1
 plot	SafePlot	totalNitrogenUptakeByTrees	kg N	Total of trees nitrogen uptake in the plot	53	1
@@ -354,6 +352,7 @@ plot	SafePlot	totalInactiveNitrogenHumusStock	kg N ha-1	Total of inactive nitrog
 plot	SafePlot	totalTreeStemVolumePerHectare	m3 ha-1	Total tree stem volume per hectare	90	1
 plot	SafePlot	totalTreeStemVolumeHarvestedPerHectare	m3 ha-1	Total tree stem volume harvested per hectare	91	1
 plot	SafePlot	totalTreeStemYield	kg C ha-1	Total tree stem yield per hectare	91	1
+plot	SafePlot	saturationIndice	-	Saturation indice (0/1) for each meter	2	1
 annualTrees	SafeTree	age	years	Age of tree since planting	1	1
 annualTrees	SafeTree	dbh	cm	Tree diameter at breast height	2	1
 annualTrees	SafeTree	height	m	tree height	3	1
@@ -630,6 +629,10 @@ voxels	SafeVoxel	treeNitrogenFineRoots	kg N	total N tree fine roots	34	1
 voxels	SafeVoxel	treeNitrogenCoarseRoots	kg N	total N tree coarses roots	35	1
 zones	SafeCropZone	area	m2	Surface area of the zone	1	1
 zones	SafeCropZone	cropSpeciesName	-	Name of crop species	2	1
+zones	SafeCropZone	minHarvestDay	-	Min harvest day	2	1
+zones	SafeCropZone	maxHarvestDay	-	Max harvest day	2	1
+zones	SafeCropZone	totalCropYield	t ha-1	Total crop yield	2	1
+zones	SafeCropZone	meanCropYield	t ha-1	Mean crop yield	2	1
 zones	SafeCropZone	meanCropBiomass	t ha-1	Mean biomass of the zone	4	1
 zones	SafeCropZone	meanCropYield	t ha-1	Mean yield of the zone	7	1
 zones	SafeCropZone	meanCropLai	m2 leaf m-2 soil	Mean LAI of the zone	10	1
@@ -711,7 +714,9 @@ zones	SafeCropZone	totalInactiveCarbonHumusStock	kg C ha-1	Total of inactive car
 zones	SafeCropZone	totalNitrogenHumusStock	kg N ha-1	Total  of nitrogen (active + inactive) in the soil humus pool of the zone	90	1
 zones	SafeCropZone	totalActiveNitrogenHumusStock	kg N ha-1	Total of active nitrogen in the soil humus pool of the zone	91	1
 zones	SafeCropZone	totalInactiveNitrogenHumusStock	kg N ha-1	Total of inactive nitrogen in the soil humus pool of the zone	92	1
-yield	SafeYield	cropSpeciesName	-	Crop species name	1	1
-yield	SafeYield	yield	t.ha-1	Maximum value of harvested yield (grain and hay) for the year	2	1
-yield	SafeYield	height	 m	Maximum crop height for the year	3	1
-yield	SafeYield	biomass	 t.ha-1	Maximum crop biomass for the year	4	1
+yield	SafeYield	area	m2	Surface area of the zone	1	1
+yield	SafeYield	cropSpeciesName	-	Name of crop species	2	1
+yield	SafeYield	minHarvestDay	-	Min harvest day	2	1
+yield	SafeYield	maxHarvestDay	-	Max harvest day	2	1
+yield	SafeYield	totalCropYield	t ha-1	Total crop yield	2	1
+yield	SafeYield	meanCropYield	t ha-1	Mean crop yield	2	1
