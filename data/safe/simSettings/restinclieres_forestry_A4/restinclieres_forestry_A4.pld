@@ -1,0 +1,67 @@
+## PLOT
+latitude = 43.7
+elevation = 62
+cellWidth = 1
+northOrientation = 1.1
+plotHeight = 7
+plotWidth = 7
+slopeIntensity = 0
+slopeAspect = 0
+
+## SOIL
+voxelThicknessMax = 0.2
+humificationDepth = 0.2
+albedo = 0.2
+cropRootObstruction = 1
+ph = 8.1
+swellingClaySoil = 0
+macroporosity = 0
+soilCrustRainMin = 50
+soilCrustDepth = 0.5
+roughnessLength = 0.01
+soilHumusCN = 12.2
+
+## WATER
+waterTable = 1
+evaporationValue = 9
+evaporationMaxDepth = 60
+evaporationDepthContribution = 5
+runOffCoefPlantMulch = 0.33
+rainRunOffFraction = 0.2
+capillary = 0
+capillaryUptake = 0
+capillaryUptakeMinWater = 0.4
+artificialDrainage = 0
+drainagePipesSpacing = 0
+drainagePipesDepth = 0
+waterConductivity = 0
+impermeableLayerDepth = 0
+
+## NITROGEN
+organicNitrogen = 0.3
+minNh4Concentration = 0
+nitrification = 1
+denitrification = 0
+denitrificationDepth = 20
+denitrificationRate = 16
+no3ConcentrationInWaterTable = 9e-06
+nh4ConcentrationInWaterTable = 0.000168
+
+## LAYERS (SOIL 2m)
+#name	thick	sand	clay	limeStone	organicMatter	partSizeSand	stone	stoneType	infiltrability
+LAYER	0.4	17.15	22.88	45.7	2.67	290	10	1	50
+LAYER	0.4	11.05	26.18	49.1	1.45	290	20	1	50
+LAYER	0.6	8.05	27.33	47.1	1.43	290	30	1	50
+LAYER	0.6	3.4	35.3	50.4	2.02	290	50	1	50
+
+## LAYER INITIALIZATION
+#name	waterContent	no3Concentration	nh4concentration
+LAYERINIT	0.2	30	0
+LAYERINIT	0.3	14	0
+LAYERINIT	0.3	5	0
+LAYERINIT	0.3	2	0
+
+## TREE SPECIES AND POSITION
+#name	treeSpeciesFileName	treeX	treeY
+TREE	walnut_hybrid	3.5	1.5
+TREE	walnut_hybrid	3.5	4.5

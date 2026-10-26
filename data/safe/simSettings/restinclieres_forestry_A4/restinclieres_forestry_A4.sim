@@ -1,0 +1,21 @@
+## SIMULATION
+simulationDateStart = 1994-10-01
+simulationDateEnd = 2024-09-30
+saveProjectOption = 0
+debugMode = 0
+sticsReport = 0
+
+## ZONES DEFINITION
+#name	zoneName	zoneCellList	zoneTecFileNameList
+ZONE	Main-TF	1-49	weed-restinclieres.tec
+
+## TREES TECHNICAL FILES
+#name	treeTecFileName
+TREETEC	walnut1.ttec
+TREETEC	walnut2.ttec
+
+## TORIC SYMETRY OPTIONS
+toricXp = 1
+toricXn = 1
+toricYp = 1
+toricYn = 1
